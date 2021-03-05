@@ -16,30 +16,12 @@ general_deps=(
     ruby-dev
     rubygems
 )
-openscenegraph_build_deps=(
-    libpng-dev
-    zlib1g-dev
-    qt5-default
-    libqt5widgets5
-    libqt5opengl5-dev
-)
 simbody_build_deps=(
     liblapack-dev
 )
-scone_build_deps=(
-    freeglut3-dev
-    libxi-dev
-    libxmu-dev
-    liblapack-dev
-    libqt5widgets5
-    libqt5opengl5-dev
-    qt5-default
-)
 all_deps=(
     "${general_deps[@]}"
-    "${openscenegraph_build_deps[@]}"
     "${simbody_build_deps[@]}"
-    "${scone_build_deps[@]}"
 )
 
 # if root is running this script then do not use `sudo` (some distros
@@ -56,7 +38,6 @@ ${sudo} apt-get update && ${sudo} apt-get install -y ${all_deps[@]}
 echo "installing fpm: used to create end-user packages (e.g. .deb)"
 ${sudo} gem install --no-document fpm
 
-try_clone_checkout "https://github.com/openscenegraph/OpenSceneGraph.git" "OpenSceneGraph-3.4.1"
 try_clone_checkout "https://github.com/tgeijten/opensim3-scone.git" "master"
 try_clone_checkout "https://github.com/simbody/simbody.git" "Simbody-3.5.4"
 

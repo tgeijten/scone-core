@@ -20,17 +20,6 @@ jobs:
     - name: Get Dependencies
       run: cd $GITHUB_WORKSPACE && ./tools/mac_1_get-dependencies
 
-    - name: Check cache for openscenegraph
-      id: cache_osg
-      uses: actions/cache@v1
-      with:
-        path: ${{ env.OSG_INSTALL_PATH }}
-        key: ${{ runner.os }}-osg-${{ hashFiles('OpenSceneGraph/src') }}
-
-    - name: Build openscenegraph
-      if: steps.cache_osg.outputs.cache-hit != 'true'
-      run: cd $GITHUB_WORKSPACE && ./tools/unix_2a_build-osg
-
     - name: Check cache for simbody
       id: cache_simbody
       uses: actions/cache@v1
@@ -48,18 +37,6 @@ jobs:
     - name: Build SCONE
       run: cd $GITHUB_WORKSPACE && ./tools/unix_2d_build-scone
 
-    - name: Rearrange SCONE into portable install dir
-      run: cd $GITHUB_WORKSPACE && ./tools/mac_3_create-install-dirtree
-
-    - name: Create .dmg file from the tree
-      run: cd $GITHUB_WORKSPACE && ./tools/mac_4_create-dmg
-
-    - name: Upload DMG file as an artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: sconestudio.dmg
-        path: build/*.dmg
-
   linux:
     name: Build on Ubuntu 18.04
     runs-on: ubuntu-18.04
@@ -76,19 +53,6 @@ jobs:
         sudo apt-get install gcc-8 g++-8
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
-
-
-    # openscenegraph: only build it if its source files have changed
-    - name: Cache openscenegraph
-      id: cache_osg
-      uses: actions/cache@v1
-      with:
-        path: ${{ env.OSG_INSTALL_PATH }}
-        key: ${{ runner.os }}-osg-${{ hashFiles('OpenSceneGraph/src') }}
-
-    - name: Build openscenegraph (if not cached)
-      if: steps.cache_osg.outputs.cache-hit != 'true'
-      run: cd $GITHUB_WORKSPACE && ./tools/unix_2a_build-osg
 
 
     # simbody: only build it if its source files have changed
@@ -116,10 +80,8 @@ jobs:
       if: steps.cache_opensim3.outputs.cache-hit != 'true'
       run: cd $GITHUB_WORKSPACE && ./tools/unix_2c_build-opensim3
 
-
     - name: Build SCONE
       run: cd $GITHUB_WORKSPACE && ./tools/unix_2d_build-scone
-
 
     - name: Rearrange binaries into single dir
       run: cd $GITHUB_WORKSPACE && ./tools/linux_3_create-install-dirtree
