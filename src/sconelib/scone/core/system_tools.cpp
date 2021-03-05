@@ -75,8 +75,6 @@ namespace scone
 		case SCONE_RESULTS_FOLDER: return GetFolder( "results" );
 		case SCONE_SCENARIO_FOLDER: return GetFolder( "scenarios" );
 		case SCONE_GEOMETRY_FOLDER: return GetFolder( "geometry" );
-		case SCONE_RESOURCE_FOLDER: return GetInstallFolder() / "resources";
-		case SCONE_UI_RESOURCE_FOLDER: return GetInstallFolder() / "resources/ui";
 		default: SCONE_THROW( "Unknown folder type" );
 		}
 	}
