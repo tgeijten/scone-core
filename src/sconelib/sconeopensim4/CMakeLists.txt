@@ -38,6 +38,30 @@ if (MSVC)
 	target_compile_definitions( sconeopensim4 PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS )
 	target_compile_definitions( sconeopensim4 PRIVATE $<$<BOOL:${SCONE_ENABLE_PROFILER}>:SCONE_ENABLE_XO_PROFILING> )
 	target_compile_options( sconeopensim4 PRIVATE "/MP" ) # multithreaded compilation on MSVC
+
+	# Copy DLLs
+	SET(DLL_TARGET_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>)
+	add_custom_command(TARGET sconeopensim4 POST_BUILD COMMENT "Updating DLLs" VERBATIM )
+
+	# Copy all OpenSim4 DLLs
+	if (SCONE_OPENSIM_4)
+		SET(OPENSIM4_INSTALL_DIR "${OpenSim_DIR}/..")
+		SET(OPENSIM4_DLLS osimTools osimAnalyses osimActuators osimSimulation osimLepton osimCommon 
+			SimTKsimbody SimTKmath SimTKcommon)
+		foreach(opensimdll ${OPENSIM4_DLLS})
+			add_custom_command(TARGET sconeopensim4 POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll ${DLL_TARGET_DIR}
+			)
+		endforeach()
+		# Copy extra opensim files
+		SET(OPENSIM4_EXTRA_DLLS libblas liblapack libgcc_s_sjlj-1 libgfortran-3 libquadmath-0)
+		foreach(opensimdll ${OPENSIM4_EXTRA_DLLS})
+			add_custom_command(TARGET sconeopensim4 POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}.dll ${DLL_TARGET_DIR}
+			)
+		endforeach()
+	endif()
+
 endif()
 
 source_group("" FILES ${MODEL_OPENSIM_4_FILES})
