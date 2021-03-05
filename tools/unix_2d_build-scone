@@ -5,10 +5,10 @@ source ./tools/build_config
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     cmake_extra_args=(
+        -DSCONE_LUA=OFF
     )
 else
     cmake_extra_args=(
-        -DCMAKE_PREFIX_PATH="${OSG_INSTALL_PATH}/lib64"
         -DSCONE_LUA=ON
    )
 fi
@@ -17,6 +17,7 @@ mkdir -p "${SCONE_BUILD_DIR}"
 mkdir -p "${SCONE_INSTALL_DIR}"
 cd "${SCONE_BUILD_DIR}"
 cmake ../ \
+    -DOSG_DIR="${OSG_INSTALL_PATH}" \
     -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
     -DCMAKE_VERBOSE_MAKEFILE="${CMAKE_VERBOSE_MAKEFILE}" \
     -DCMAKE_INSTALL_PREFIX="${SCONE_INSTALL_DIR}" \
