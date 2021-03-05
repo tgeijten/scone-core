@@ -39,6 +39,38 @@ if (MSVC)
 	target_compile_definitions( sconeopensim3 PRIVATE SCONE_MODEL_OPENSIM_3_EXPORTS )
 	target_compile_definitions( sconeopensim3 PRIVATE $<$<BOOL:${SCONE_ENABLE_PROFILER}>:SCONE_ENABLE_XO_PROFILING> )
 	target_compile_options( sconeopensim3 PRIVATE "/MP" ) # multithreaded compilation on MSVC
+
+	# Copy DLLs
+	SET(DLL_TARGET_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>)
+	add_custom_command(TARGET sconeopensim3 POST_BUILD COMMENT "Updating DLLs" VERBATIM )
+
+	# Copy all OpenSim3 DLLs (x64 only)
+	SET(OPENSIM_DLLS 
+		${OPENSIM_LIBRARY_PREFIX}Tools 
+		${OPENSIM_LIBRARY_PREFIX}Analyses 
+		${OPENSIM_LIBRARY_PREFIX}Actuators 
+		${OPENSIM_LIBRARY_PREFIX}Simulation 
+		${OPENSIM_LIBRARY_PREFIX}Lepton 
+		${OPENSIM_LIBRARY_PREFIX}Common 
+		${SIMBODY_LIBRARY_PREFIX}SimTKsimbody
+		${SIMBODY_LIBRARY_PREFIX}SimTKmath
+		${SIMBODY_LIBRARY_PREFIX}SimTKcommon
+		)
+	foreach(opensimdll ${OPENSIM_DLLS})
+		add_custom_command(TARGET sconeopensim3 POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll ${DLL_TARGET_DIR}
+		)
+	endforeach()
+
+	# Copy additional DLLs required by OpenSim
+	set(PTHREAD pthreadVC2_x64)
+	set(LIBGCC libgcc_s_sjlj-1)
+	SET(OPENSIM_EXTRA_DLLS libblas liblapack ${LIBGCC} libgfortran-3 libquadmath-0 ${PTHREAD})
+	foreach(opensimdll ${OPENSIM_EXTRA_DLLS})
+		add_custom_command(TARGET sconeopensim3 POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}.dll ${DLL_TARGET_DIR}
+		)
+	endforeach()
 endif()
 
 source_group("" FILES ${MODEL_OPENSIM_3_FILES})
