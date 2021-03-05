@@ -20,7 +20,7 @@ option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 
 # Find TCLAP
-find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_SOURCE_DIR}/contrib/tclap-1.2.1/include" )
+find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/tclap-1.2.1/include" )
 
 # Various settings
 # ----------------
@@ -59,7 +59,7 @@ endif()
 
 # Create .sconeroot in build folder
 if(MSVC)
-	file(WRITE "${CMAKE_BINARY_DIR}/.sconeroot" ${CMAKE_SOURCE_DIR})
+	file(WRITE "${CMAKE_BINARY_DIR}/.sconeroot" ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 #
