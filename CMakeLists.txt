@@ -17,8 +17,6 @@ option(SCONE_OPENSIM_4 "Support OpenSim 4.0 - EXPERIMENTAL" OFF)
 option(SCONE_LUA "Support for lua scripting" OFF)
 option(SCONE_HYFYDY "Support Hyfydy - EXPERIMENTAL" OFF)
 option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
-option(SCONE_SCONESTUDIO_REQUIRED "Require that sconestudio is built" OFF)
-option(SCONE_SCONESTUDIO "Build sconestudio" ON)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 
 # Find TCLAP
@@ -54,15 +52,14 @@ add_subdirectory(src/sconelib)
 add_subdirectory(src/sconecmd)
 add_subdirectory(src/sconeunittests)
 
-if (SCONE_SCONESTUDIO)
-    find_package(Qt5 COMPONENTS Widgets OpenGL PrintSupport REQUIRED)
-    add_subdirectory(submodules/vis)
-	add_subdirectory(src/sconestudio)
-endif()
-
 if (SCONE_HYFYDY)
 	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "../sconehfd" )
 	add_subdirectory("${SCONE_HYFYDY_DIR}" "${CMAKE_BINARY_DIR}/sconehfd")
+endif()
+
+# Create .sconeroot in build folder
+if(MSVC)
+	file(WRITE "${CMAKE_BINARY_DIR}/.sconeroot" ${CMAKE_SOURCE_DIR})
 endif()
 
 #
