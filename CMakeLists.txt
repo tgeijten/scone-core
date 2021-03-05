@@ -37,6 +37,8 @@ set(CMAKE_MACOSX_RPATH ON)
 # Build lua if SCONE_LUA is set
 if (SCONE_LUA)
 	add_subdirectory(contrib/lua-5.3.5)
+	find_path( SOL_SINGLE_INCLUDE_DIR NAMES sol/sol.hpp HINTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/sol2/single/include"
+	REQUIRED )
 endif()
 
 #
@@ -53,7 +55,7 @@ add_subdirectory(src/sconecmd)
 add_subdirectory(src/sconeunittests)
 
 if (SCONE_HYFYDY)
-	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "../sconehfd" )
+	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "${CMAKE_SOURCE_DIR}/../sconehfd" )
 	add_subdirectory("${SCONE_HYFYDY_DIR}" "${CMAKE_BINARY_DIR}/sconehfd")
 endif()
 
