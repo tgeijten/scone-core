@@ -1,15 +1,9 @@
-[submodule "submodules/qtfx"]
-	path = submodules/qtfx
-	url = https://github.com/tgeijten/qtfx.git
 [submodule "submodules/spot"]
 	path = submodules/spot
 	url = https://github.com/tgeijten/spot.git
 [submodule "submodules/xo"]
 	path = submodules/xo
 	url = https://github.com/tgeijten/xo.git
-[submodule "submodules/vis"]
-	path = submodules/vis
-	url = https://github.com/tgeijten/vis.git
 [submodule "submodules/sol2"]
 	path = submodules/sol2
 	url = https://github.com/ThePhD/sol2.git
