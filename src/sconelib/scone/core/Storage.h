@@ -73,7 +73,9 @@ namespace scone
 			TimeT m_Time;
 			std::vector< ValueT > m_Values;
 		};
-		typedef std::unique_ptr< Frame > FrameUP;
+
+		using FrameUP = std::unique_ptr< Frame >;
+		using container_t = std::vector< FrameUP >;
 
 		Storage() {}
 		Storage( const Storage& other ) {
@@ -161,26 +163,42 @@ namespace scone
 
 		size_t GetChannelCount() const { return m_Labels.size(); }
 		const std::vector< String >& GetLabels() const { return m_Labels; }
-		const std::vector< FrameUP >& GetData() const { return m_Data; }
+		const container_t& GetData() const { return m_Data; }
 
 		ValueT GetInterpolatedValue( TimeT time, index_t idx ) const {
 			SCONE_ASSERT( !m_Data.empty() );
 			return GetInterpolatedFrame( time ).value( idx );
 		}
 
+		index_t GetClosestFrameIndex( TimeT time ) const {
+			SCONE_ASSERT( !m_Data.empty() );
+			auto it = upper_bound( time );
+			if ( it == m_Data.begin() )
+				return it - m_Data.begin();
+			else if ( it == m_Data.end() )
+				return m_Data.size() - 1;
+			else {
+				auto it0 = it;
+				--it0;
+				if ( time - (*it0)->GetTime() <= (*it)->GetTime() - time )
+					return it0 - m_Data.begin();
+				else return it - m_Data.begin();
+			}
+		}
+
 	private:
 		std::vector< String > m_Labels;
-		std::vector< std::unique_ptr< Frame > > m_Data;
+		container_t m_Data;
 		std::unordered_map< String, index_t > m_LabelIndexMap;
 
+	public:
 		// interpolation related stuff
 		struct InterpolatedFrame {
 			double upper_weight;
-			typename std::vector< FrameUP >::const_iterator upper_frame, lower_frame;
+			typename container_t::const_iterator upper_frame, lower_frame;
 			ValueT value( index_t channel_idx ) const { return upper_weight * (**upper_frame)[ channel_idx ] + ( 1.0 - upper_weight ) * (**lower_frame)[ channel_idx ]; }
 		};
 
-	public:
 		InterpolatedFrame GetInterpolatedFrame( TimeT time ) const {
 			// check the cache
 			auto cacheIt = m_InterpolationCache.find( time );
@@ -189,7 +207,7 @@ namespace scone
 
 			// compute new one
 			InterpolatedFrame bf;
-			bf.upper_frame = std::upper_bound( m_Data.cbegin(), m_Data.cend(), time, []( TimeT lhs, const FrameUP &rhs) { return lhs < rhs->GetTime(); } );
+			bf.upper_frame = upper_bound( time );
 			if ( bf.upper_frame == m_Data.cend() )
 			{
 				// timestamp too high, point to most recent frame
@@ -216,6 +234,10 @@ namespace scone
 		}
 
 	private:
+		auto upper_bound( TimeT time ) const {
+			return std::upper_bound( m_Data.cbegin(), m_Data.cend(), time, []( TimeT lhs, const FrameUP& rhs ) { return lhs < rhs->GetTime(); } );
+		}
+
 		mutable std::map< TimeT, InterpolatedFrame > m_InterpolationCache;
 	};
 }
