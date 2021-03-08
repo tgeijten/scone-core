@@ -47,7 +47,9 @@ namespace scone
 		m_pModelProps( nullptr ),
 		m_pCustomProps( nullptr ),
 		m_StoreData( false ),
-		m_StoreDataFlags( { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::ContactForce } )
+		m_StoreDataFlags( { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::ContactForce } ),
+		m_PrevStoreDataTime( 0 ),
+		m_PrevStoreDataStep( 0 )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
@@ -185,8 +187,8 @@ namespace scone
 		// store simulation statistics
 		if ( flags( StoreDataTypes::SimulationStatistics ) )
 		{
-			auto dt = GetTime() - GetPreviousTime();
-			auto step_count = GetIntegrationStep() - GetPreviousIntegrationStep();
+			auto dt = GetTime() - m_PrevStoreDataTime;
+			auto step_count = GetIntegrationStep() - m_PrevStoreDataStep;
 			frame[ "simulation_frequency" ] = dt > 0 ? step_count / dt : 0.0;
 		}
 
@@ -305,6 +307,9 @@ namespace scone
 		if ( m_Data.IsEmpty() || GetTime() > m_Data.Back().GetTime() )
 			m_Data.AddFrame( GetTime() );
 		StoreData( m_Data.Back(), m_StoreDataFlags );
+
+		m_PrevStoreDataTime = GetTime();
+		m_PrevStoreDataStep = GetIntegrationStep();
 	}
 
 	void Model::CreateController( const FactoryProps& controller_fp, Params& par )

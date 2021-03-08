@@ -263,5 +263,7 @@ namespace scone
 		TimeInSeconds m_StoreDataInterval;
 		bool m_KeepAllFrames;
 		StoreDataFlags m_StoreDataFlags;
+		TimeInSeconds m_PrevStoreDataTime;
+		int m_PrevStoreDataStep;
 	};
 }
