@@ -16,13 +16,14 @@ namespace xo
 	{
 		struct scenario_test {
 			scenario_test( const path& scenario_file, const path& report_file ) :
-				scenario_file_( scenario_file ),
+				test_file_( scenario_file ),
 				report_file_( report_file )
 			{}
 
 			void operator()( test_case& XO_ACTIVE_TEST_CASE ) {
-				auto scenario_pn = xo::load_file_with_include( scenario_file_, "INCLUDE" );
-				auto eval_pn = scone::EvaluateScenario( scenario_pn, scenario_file_, xo::path() );
+				auto scenario_file = scone::FindScenario( test_file_ );
+				auto scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
+				auto eval_pn = scone::EvaluateScenario( scenario_pn, test_file_, xo::path() );
 
 				if ( xo::file_exists( report_file_ ) )
 				{
@@ -43,7 +44,7 @@ namespace xo
 				}
 			}
 
-			path scenario_file_;
+			path test_file_;
 			path report_file_;
 		};
 	}
@@ -51,21 +52,27 @@ namespace xo
 
 namespace scone
 {
-	void add_scenario_tests( const path& scenario_dir )
+	void add_scenario_tests( const path& test_dir )
 	{
-		auto scone_dir = GetFolder( SCONE_ROOT_FOLDER );
-		auto tutorials_dir = scone_dir / scenario_dir;
-		auto results_dir = scone_dir / "resources/unittestdata" / scenario_dir.filename() / xo::get_computer_name() + "_results";
+		auto full_test_dir = GetFolder( SCONE_ROOT_FOLDER ) / test_dir;
+		auto results_dir = GetFolder( SCONE_ROOT_FOLDER ) / "resources/unittestdata" / test_dir / xo::get_computer_name() + "_results";
 		xo::create_directories( results_dir );
 
-		for ( fs::directory_iterator fileit( tutorials_dir.str() ); fileit != fs::directory_iterator(); ++fileit )
+		xo::log::debug( "Adding dir: ", full_test_dir );
+
+		for ( fs::directory_iterator it( full_test_dir.str() ); it != fs::directory_iterator(); ++it )
 		{
-			auto scenario_file = xo::path( fileit->path().string() );
-			if ( scenario_file.extension_no_dot() == "scone" )
+			const auto& fs_path = it->path();
+			if ( fs::is_directory( fs_path ) && fs_path.filename() != "data" )
+				add_scenario_tests( test_dir / fs_path.filename().string() );
+
+			auto test_file = xo::path( fs_path.string() );
+			auto ext = test_file.extension_no_dot();
+			if ( ext == "scone" || ext == "par" )
 			{
-				xo::log::debug( "Adding test case: ", scenario_file.filename() );
-				xo::path report_file = results_dir / scenario_file.stem() + ".zml";
-				xo::test::add_test_case( scenario_file.stem().str(), xo::test::scenario_test( scenario_file, report_file ) );
+				xo::log::debug( "Adding test case: ", test_file.filename() );
+				xo::path report_file = results_dir / test_file.stem() + ".zml";
+				xo::test::add_test_case( test_file.stem().str(), xo::test::scenario_test( test_file, report_file ) );
 			}
 		}
 	}
