@@ -35,7 +35,7 @@ namespace scone
 		if ( scone_settings->get< path >( "folders.results" ).empty() )
 			scone_settings->set( "folders.results", GetDataFolder() / "results" );
 		if ( scone_settings->get< path >( "folders.geometry" ).empty() )
-			scone_settings->set( "folders.geometry", GetInstallFolder() / "resources/geometry" );
+			scone_settings->set( "folders.geometry", GetInstallFolder().parent_path() / "resources/geometry" );
 	}
 
 	xo::settings& GetSconeSettings()
