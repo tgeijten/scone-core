@@ -28,10 +28,14 @@ namespace {
 		{
 			if ( path config = p / ".sconeroot"; xo::exists( config ) )
 			{
+				// binary files are stored in a CMake build folder
 				return xo::load_string( config );
 			}
-			else if ( xo::exists( p / ".version" ) )
-				break;
+			else if ( xo::exists( p / "scone" ) )
+			{
+				// binary files are part of a scone studio installation
+				return p / "scone";
+			}
 		}
 		SCONE_THROW_IF( p.empty(), "Could not detect installation root folder, please run .updateversion.bat or .updateversion.sh" );
 		scone::log::debug( "SCONE root folder: ", p );
