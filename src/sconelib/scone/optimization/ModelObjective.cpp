@@ -82,7 +82,7 @@ namespace scone
 	{
 		SearchPoint params( info_ );
 		auto result = params.import_values( parfile );
-		log::info( "Read ", result.first, " of ", info().dim(), " parameters, skipped ", result.second, " from ", parfile.filename() );
+		log::debug( "Read ", result.first, " of ", info().dim(), " parameters, skipped ", result.second, " from ", parfile.filename() );
 
 		return CreateModelFromParams( params );
 	}
