@@ -37,7 +37,7 @@ namespace scone
 		// set force point, make sure it's not set yet
 		if ( !position_offset.is_null() )
 		{
-			if ( !body.GetExternalForcePoint().is_null() && body.GetExternalForcePoint() != position_offset )
+			if ( !body.GetExternalForcePoint().is_null() && !xo::equal( body.GetExternalForcePoint(), position_offset, double( xo::constantsf::ample_epsilon() ) ) )
 				SCONE_THROW( "Cannot apply multiple external forces at different points on one body" );
 			body.SetExternalForceAtPoint( Vec3::zero(), position_offset );
 		}
@@ -65,7 +65,7 @@ namespace scone
 
 		if ( active != active_ )
 		{
-			log::trace( timestamp, ": Changing perturbation state to ", active );
+			log::info( timestamp, ": Changing perturbation state to ", active );
 			body.AddExternalForce( active ? force : -force );
 			body.AddExternalMoment( active ? moment : -moment );
 			active_ = active;
