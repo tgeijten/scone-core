@@ -30,11 +30,11 @@ namespace xo
 					auto base_pn = xo::load_file( report_file_ );
 					auto& eval_result = eval_pn.get_child( "result" ).raw_value();
 					auto& base_result = base_pn.get_child( "result" ).raw_value();
-					XO_CHECK( eval_result == base_result );
+					XO_CHECK_MESSAGE( eval_result == base_result, eval_result + " != " + base_result );
 					if ( eval_result != base_result )
 					{
-						xo::log::info( "baseline:\n", base_pn );
-						xo::log::info( "evaluated:\n", eval_pn );
+						xo::log::debug( "baseline:\n", base_pn );
+						xo::log::debug( "evaluated:\n", eval_pn );
 					}
 				}
 				else
