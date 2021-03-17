@@ -27,5 +27,4 @@ SCONE.
 
 ## License
 
-SCONE is licensed under the [GNU Public License
-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+SCONE is licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
