@@ -30,7 +30,7 @@ namespace scone
 		INIT_PROP( props, duration, xo::bounds<TimeInSeconds>( 0.1, 0.1 ) );
 
 		SCONE_THROW_IF( !interval.is_null() && duration.upper > interval.lower, "Duration cannot be longer than interval" );
-		SCONE_ERROR_IF( !model.GetFeatures().allow_external_forces, "External forces are not enabled for this model, please add:\n\nuse_external_forces = 1" );
+		SCONE_ERROR_IF( !model.GetFeatures().allow_external_forces, "External forces are not enabled for this model, please add:\n\nenable_external_forces = 1" );
 
 		AddPerturbation();
 
@@ -65,7 +65,7 @@ namespace scone
 
 		if ( active != active_ )
 		{
-			log::info( timestamp, ": Changing perturbation state to ", active );
+			log::trace( timestamp, ": Changing perturbation state to ", active );
 			body.AddExternalForce( active ? force : -force );
 			body.AddExternalMoment( active ? moment : -moment );
 			active_ = active;
