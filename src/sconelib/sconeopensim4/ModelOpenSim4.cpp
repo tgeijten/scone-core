@@ -78,7 +78,7 @@ namespace scone
 		m_EndTime( xo::constants<TimeInSeconds>::max() ),
 		m_Mass( 0.0 ),
 		m_BW( 0.0 ),
-		INIT_MEMBER( props, safe_mode, true )
+		INIT_MEMBER( props, safe_mode, false )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
