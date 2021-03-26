@@ -209,7 +209,7 @@ namespace scone
 		{
 			for ( auto& d : GetDofs() )
 			{
-				auto mom = d->GetMuscleMoment();
+				auto mom = d->GetMuscleMoment() + d->GetLimitMoment();
 				frame[ d->GetName() + ".moment" ] = mom;
 				frame[ d->GetName() + ".moment_norm" ] = mom / GetMass();
 				frame[ d->GetName() + ".power" ] = mom * d->GetVel();
