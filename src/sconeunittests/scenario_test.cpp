@@ -1,5 +1,6 @@
-#include <filesystem>
+#include "scenario_test.h"
 
+#include <filesystem>
 #include "scone/core/system_tools.h"
 #include "scone/optimization/opt_tools.h"
 #include "xo/filesystem/filesystem.h"
@@ -52,7 +53,7 @@ namespace xo
 
 namespace scone
 {
-	void add_scenario_tests( const path& test_dir )
+	void add_scenario_tests( const path& test_dir, const xo::pattern_matcher& include, const xo::pattern_matcher& exclude, bool include_subdirs )
 	{
 		auto full_test_dir = GetFolder( SCONE_ROOT_FOLDER ) / test_dir;
 		auto results_dir = GetFolder( SCONE_ROOT_FOLDER ) / "resources/unittestdata" / test_dir / xo::get_computer_name() + "_results";
@@ -67,8 +68,8 @@ namespace scone
 				add_scenario_tests( test_dir / fs_path.filename().string() );
 
 			auto test_file = xo::path( fs_path.string() );
-			auto ext = test_file.extension_no_dot();
-			if ( ext == "scone" || ext == "par" )
+			auto str = test_file.filename().str();
+			if ( include( str ) && !exclude( str ) )
 			{
 				xo::log::debug( "Adding test case: ", test_file.filename() );
 				xo::path report_file = results_dir / test_file.stem() + ".zml";
