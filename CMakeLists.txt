@@ -69,6 +69,6 @@ endif()
 #
 enable_testing()
 if (XO_TEST_ENABLED)
-	add_test( xo_test "${EXECUTABLE_OUTPUT_PATH}/xo_test")
+	add_test( xo_test "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xo_test")
 endif()
-add_test( scone_unit_tests "${EXECUTABLE_OUTPUT_PATH}/sconeunittests")
+add_test( sconeunittests "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sconeunittests")
