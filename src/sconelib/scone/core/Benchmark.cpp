@@ -24,6 +24,9 @@ namespace scone
 		auto opt = CreateOptimizer( scenario_pn, file.parent_path() );
 		auto mo = dynamic_cast<ModelObjective*>( &opt->GetObjective() );
 		auto par = SearchPoint( mo->info() );
+		bool is_par_file = file.extension_no_dot() == "par";
+		if ( is_par_file )
+			par.import_values( file );
 
 		auto baseline_file = file.parent_path() / "perf" / xo::get_computer_name() / file.stem() + ".stats";
 		bool has_baseline = xo::file_exists( baseline_file );
@@ -36,7 +39,6 @@ namespace scone
 		xo::time duration;
 		for ( index_t idx = 0; idx < evals; ++idx )
 		{
-			log::info( "Trial ", idx + 1, " of ", evals );
 			xo::timer t;
 			auto model = mo->CreateModelFromParams( par );
 			model->SetStoreData( false );
@@ -51,6 +53,7 @@ namespace scone
 			if ( !timings.empty() )
 				bm_components[ "EvalSimModel" ].push_back( timings.front().second.first );
 			duration = xo::time_from_seconds( model->GetTime() );
+			log::info( "Benchmarked trial ", idx + 1, " of ", evals, "; simulated ", duration, "s in ", total_time, "s (", duration / total_time, "x real-time)" );
 			xo::sleep( 100 );
 		}
 

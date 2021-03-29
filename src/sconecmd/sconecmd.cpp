@@ -20,8 +20,12 @@
 #include "xo/system/log_sink.h"
 #include "xo/system/system_tools.h"
 #include "scone/core/Benchmark.h"
+#include "xo/filesystem/filesystem.h"
 
-using namespace scone;
+using scone::PropNode;
+using scone::String;
+using scone::path;
+using std::string;
 
 // load scenario and handle custom arguments
 PropNode load_scenario( const path& scenario_file, const TCLAP::UnlabeledMultiArg< string >& propArg )
@@ -66,25 +70,25 @@ int main(int argc, char* argv[])
 			// do optimization or evaluation
 			if ( optArg.isSet() )
 			{
-				path scenario_file = FindScenario( optArg.getValue() );
+				path scenario_file = scone::FindScenario( optArg.getValue() );
 				auto scenario_pn = load_scenario( scenario_file, propArg );
 				if ( outArg.isSet() && scenario_pn.count_children() >= 1 )
 					scenario_pn.front().second.set( "output_root", outArg.getValue() );
-				OptimizerUP o = CreateOptimizer( scenario_pn, scenario_file.parent_path() );
-				LogUnusedProperties( scenario_pn );
+				scone::OptimizerUP o = scone::CreateOptimizer( scenario_pn, scenario_file.parent_path() );
+				scone::LogUnusedProperties( scenario_pn );
 				if ( statusOutput.getValue() )
-					o->SetOutputMode( Optimizer::status_console_output );
-				else o->SetOutputMode( quietOutput.getValue() ? Optimizer::no_output : Optimizer::console_output );
+					o->SetOutputMode( scone::Optimizer::status_console_output );
+				else o->SetOutputMode( quietOutput.getValue() ? scone::Optimizer::no_output : scone::Optimizer::console_output );
 				o->Run();
 			}
 			else if ( parArg.isSet() )
 			{
-				path scenario_file = FindScenario( parArg.getValue() );
+				path scenario_file = scone::FindScenario( parArg.getValue() );
 				auto scenario_pn = load_scenario( scenario_file, propArg );
 				auto out_path = path( outArg.isSet() ? outArg.getValue() : parArg.getValue() );
-				log::info( "Evaluating ", parArg.getValue() );
-				auto results = EvaluateScenario( scenario_pn, parArg.getValue(), out_path );
-				log::info( results );
+				scone::log::info( "Evaluating ", parArg.getValue() );
+				auto results = scone::EvaluateScenario( scenario_pn, parArg.getValue(), out_path );
+				scone::log::info( results );
 
 				// store config file if arguments have changed
 				if ( propArg.isSet() && outArg.isSet() )
@@ -92,15 +96,26 @@ int main(int argc, char* argv[])
 			}
 			else if ( benchArg.isSet() )
 			{
-				path scenario_file = FindScenario( benchArg.getValue() );
-				auto scenario_pn = load_scenario( scenario_file, propArg );
-				log::info( "Benchmarking ", benchArg.getValue() );
-				BenchmarkScenario( scenario_pn, path( benchArg.getValue() ), bxArg.getValue() );
+				auto filename = xo::path( benchArg.getValue() );
+				if ( xo::directory_exists( filename ) )
+				{
+					auto files = xo::find_files( filename, "*.par", true );
+					for ( const auto& f : files )
+					{
+						auto scenario_pn = load_scenario( scone::FindScenario( f ), propArg );
+						scone::BenchmarkScenario( scenario_pn, f, bxArg.getValue() );
+					}
+				}
+				else
+				{
+					auto scenario_pn = load_scenario( scone::FindScenario( benchArg.getValue() ), propArg );
+					scone::BenchmarkScenario( scenario_pn, path( benchArg.getValue() ), bxArg.getValue() );
+				}
 			}
 		}
 		catch ( std::exception& e )
 		{
-			log::Critical( e.what() );
+			scone::log::Critical( e.what() );
 			if ( statusOutput.isSet() )
 			{
 				std::cout << std::endl << "*error=" << xo::try_quoted( e.what() ) << std::endl;
@@ -111,7 +126,7 @@ int main(int argc, char* argv[])
 	}
 	catch ( std::exception& e )
 	{
-		log::critical( e.what() );
+		scone::log::critical( e.what() );
 		return -1;
 	}
 	catch ( TCLAP::ExitException& e )
