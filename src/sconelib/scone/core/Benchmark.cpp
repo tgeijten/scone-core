@@ -19,6 +19,8 @@ namespace scone
 {
 	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, size_t evals )
 	{
+		log::info( "Benchmarking ", file );
+
 		xo::scoped_thread_priority prio_raiser( xo::thread_priority::realtime );
 
 		auto opt = CreateOptimizer( scenario_pn, file.parent_path() );
@@ -39,6 +41,8 @@ namespace scone
 		xo::time duration;
 		for ( index_t idx = 0; idx < evals; ++idx )
 		{
+			xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
+
 			xo::timer t;
 			auto model = mo->CreateModelFromParams( par );
 			model->SetStoreData( false );
@@ -54,7 +58,6 @@ namespace scone
 				bm_components[ "EvalSimModel" ].push_back( timings.front().second.first );
 			duration = xo::time_from_seconds( model->GetTime() );
 			log::info( "Benchmarked trial ", idx + 1, " of ", evals, "; simulated ", duration, "s in ", total_time, "s (", duration / total_time, "x real-time)" );
-			xo::sleep( 100 );
 		}
 
 		// read baseline
