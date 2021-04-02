@@ -4,6 +4,7 @@
 /scenarios/UnitTests/*.sto
 /scenarios/UnitTests/Hyfydy
 /scenarios/Benchmarks
+/scenarios/Backup
 /resources/unittestdata/
 /install
 /.version
