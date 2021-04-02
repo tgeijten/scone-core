@@ -65,7 +65,7 @@ namespace scone
 		{
 			const auto& fs_path = it->path();
 			if ( fs::is_directory( fs_path ) && fs_path.filename() != "data" )
-				add_scenario_tests( test_dir / fs_path.filename().string() );
+				add_scenario_tests( test_dir / fs_path.filename().string(), include, exclude, include_subdirs );
 
 			auto test_file = xo::path( fs_path.string() );
 			auto str = test_file.filename().str();
