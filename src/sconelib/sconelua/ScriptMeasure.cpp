@@ -39,7 +39,9 @@ namespace scone
 	double ScriptMeasure::ComputeResult( const Model& model )
 	{
 		LuaModel lm( const_cast<Model&>( model ) );
-		return result_( &lm );
+		auto value = result_( &lm );
+		GetReport().set_value( value );
+		return value;
 	}
 
 	bool ScriptMeasure::UpdateMeasure( const Model& model, double timestamp )
