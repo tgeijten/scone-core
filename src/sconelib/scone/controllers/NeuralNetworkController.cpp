@@ -73,6 +73,14 @@ namespace scone::NN
 				SCONE_ERROR( "Error in " + key + ": " + e.what() );
 			}
 		}
+
+		// check if everything is ok
+		for ( index_t idx = 0; idx < layers_.size(); ++idx )
+		{
+			SCONE_ERROR_IF( idx > 0 && !layers_[ idx ].update_func_, "Layer " + to_str( idx ) + " has no update function" );
+			SCONE_ERROR_IF( layers_[ idx ].neurons_.empty(), "Layer " + to_str( idx ) + " has no neurons" );
+		}
+
 	}
 
 	NeuronLayer& NeuralNetworkController::AddNeuronLayer( const PropNode& pn, const String& default_activation )
@@ -292,6 +300,15 @@ namespace scone::NN
 		return layers_[ layer_idx ].names_[ neuron_idx ];
 	}
 
+	TimeInSeconds NeuralNetworkController::GetNeuralDelay( const MuscleId& m ) const
+	{
+		if ( auto it = neural_delays_.find( m.base_line_name() ); it != neural_delays_.end() )
+			return it->second;
+		else if ( auto it = neural_delays_.find( m.base_ ); it != neural_delays_.end() )
+			return it->second;
+		SCONE_ERROR( "Could not find neural delay for " + m.base_line_side_name() );
+	}
+
 	void NeuralNetworkController::CreateComponent( const String& key, const PropNode& pn, Params& par, Model& model )
 	{
 		switch ( xo::hash( key ) )
@@ -312,7 +329,7 @@ namespace scone::NN
 				{
 					auto musid = MuscleId( mus->GetName() );
 					auto musparname = GetParName( mus->GetName(), ignore_muscle_lines, symmetric );
-					auto delay = neural_delays_[ musid.base_line_name() ];
+					auto delay = GetNeuralDelay( musid );
 					auto lofs = -pn.get<double>( "L0", 1.0 ); // defaults to -1
 					if ( force ) AddSensor( model, model.AcquireSensor<MuscleForceSensor>( *mus ), delay, 0 );
 					if ( length ) AddSensor( model, model.AcquireSensor<MuscleLengthSensor>( *mus ), delay, lofs );
@@ -461,7 +478,7 @@ namespace scone::NN
 				if ( include.empty() || include( mus->GetName() ) )
 				{
 					auto musid = MuscleId( mus->GetName() );
-					auto delay = neural_delays_[ musid.base_line_name() ];
+					auto delay = GetNeuralDelay( musid );
 					auto parname = GetParName( mus->GetName(), ignore_muscle_lines, symmetric ) + ".C0";
 					AddActuator( model, *mus, delay, par.get( parname, pn.get_child( "offset" ) ) );
 				}

@@ -5,6 +5,7 @@
 #include "xo/container/handle_vector.h"
 #include "xo/utility/hash.h"
 #include "xo/container/circular_buffer.h"
+#include "scone/model/MuscleId.h"
 #include <map>
 
 namespace scone
@@ -127,6 +128,7 @@ namespace scone
 			String GetParName( const String& name, bool ignore_muscle_lines, bool symmetric );
 			String GetParName( const String& target, const String& source, const String& type, bool ignore_muscle_lines, bool symmetric );
 			const String& GetNeuronName( index_t layer_idx, index_t neuron_idx ) const;
+			TimeInSeconds GetNeuralDelay( const MuscleId& m ) const;
 
 			void CreateLinkComponent( const PropNode& pn, Params& par, Model& model );
 			void CreateComponent( const String& key, const PropNode& pn, Params& par, Model& model );
