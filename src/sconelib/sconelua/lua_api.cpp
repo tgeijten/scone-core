@@ -52,7 +52,11 @@ namespace scone
 			"contact_moment", &LuaBody::contact_moment,
 			"contact_point", &LuaBody::contact_point,
 			"add_external_force", &LuaBody::add_external_force,
-			"add_external_moment", &LuaBody::add_external_moment
+			"add_external_moment", &LuaBody::add_external_moment,
+			"set_com_pos", &LuaBody::set_com_pos,
+			"set_ori", &LuaBody::set_ori,
+			"set_lin_vel", &LuaBody::set_lin_vel,
+			"set_ang_vel", &LuaBody::set_ang_vel
 			);
 
 		lua.new_usertype<LuaMuscle>( "LuaMuscle", sol::constructors<>(),
@@ -87,7 +91,8 @@ namespace scone
 			"muscle_count", &LuaModel::muscle_count,
 			"body", &LuaModel::body,
 			"find_body", &LuaModel::find_body,
-			"body_count", &LuaModel::body_count
+			"body_count", &LuaModel::body_count,
+			"ground_body", &LuaModel::ground_body
 			);
 
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),

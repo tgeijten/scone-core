@@ -49,6 +49,8 @@ namespace scone
 		std::vector< BodyUP >& GetBodies() { return m_Bodies; }
 		const std::vector< BodyUP >& GetBodies() const { return m_Bodies; }
 		const Body* GetRootBody() const { return m_RootBody; }
+		const Body* GetGroundBody() const { return m_GroundBody; }
+		Body* GetGroundBody() { return m_GroundBody; }
 
 		// joint access
 		const std::vector< JointUP >& GetJoints() const { return m_Joints; }
@@ -251,6 +253,7 @@ namespace scone
 		std::vector< std::unique_ptr< SensorDelayAdapter > > m_SensorDelayAdapters;
 		std::vector< std::unique_ptr< Sensor > > m_Sensors;
 		Body* m_RootBody;
+		Body* m_GroundBody;
 
 		const PropNode* m_pModelProps;
 		const PropNode* m_pCustomProps;

@@ -307,6 +307,7 @@ namespace scone
 		// #todo #osim4 OpenSim 4 has no ground body, create fake scone::Body?
 		m_Bodies.reserve( m_pOsimModel->getBodySet().getSize() + 1 );
 		m_Bodies.emplace_back( std::make_unique<BodyOpenSim4>( *this, m_pOsimModel->getGround() ) );
+		m_GroundBody = m_Bodies.front().get();
 		for ( int idx = 0; idx < m_pOsimModel->getBodySet().getSize(); ++idx )
 			m_Bodies.emplace_back( std::make_unique<BodyOpenSim4>( *this, m_pOsimModel->getBodySet().get( idx ) ) );
 		m_RootBody = m_Bodies.empty() ? nullptr : &*m_Bodies.front();

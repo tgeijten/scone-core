@@ -198,6 +198,14 @@ namespace scone
 		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
 		/// add external moment [Nm] to body
 		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
+		/// set the com position [m] of the body
+		void set_com_pos( const LuaVec3& p ) { bod_.SetPos( p ); }
+		/// set the orientation of the body
+		void set_ori( const LuaQuat& q ) { bod_.SetOrientation( q ); }
+		/// set the com velocity [m/s] of the body
+		void set_lin_vel( const LuaVec3& v ) { bod_.SetLinVel( v ); }
+		/// set the angular velocity [rad/s] of the body
+		void set_ang_vel( const LuaVec3& v ) { bod_.SetAngVel( v ); }
 
 		Body& bod_;
 	};
@@ -244,6 +252,8 @@ namespace scone
 		LuaBody find_body( LuaString name ) { return *GetByLuaName( mod_.GetBodies(), name ); }
 		/// number of bodies
 		int body_count() { return static_cast<int>( mod_.GetBodies().size() ); }
+		/// get the ground (static) body
+		LuaBody ground_body() { return *mod_.GetGroundBody(); }
 
 		Model& mod_;
 	};

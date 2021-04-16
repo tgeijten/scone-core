@@ -44,6 +44,7 @@ namespace scone
 		m_Controller( nullptr ),
 		m_ShouldTerminate( false ),
 		m_RootBody( nullptr ),
+		m_GroundBody( nullptr ),
 		m_pModelProps( nullptr ),
 		m_pCustomProps( nullptr ),
 		m_StoreData( false ),
