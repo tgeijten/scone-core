@@ -50,6 +50,7 @@ namespace scone
 		virtual std::vector<xo::path> WriteResults( const xo::path& file ) const { return std::vector<xo::path>(); }
 
 		virtual const String& GetName() const override { return name; }
+		virtual PropNode GetInfo() const { return PropNode(); }
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) { return false; }

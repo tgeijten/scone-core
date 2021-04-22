@@ -71,6 +71,14 @@ namespace scone
 		return files;
 	}
 
+	PropNode CompositeController::GetInfo() const
+	{
+		PropNode pn;
+		for ( auto& c : controllers_ )
+			pn.add_child( xo::get_clean_type_name( *c ), c->GetInfo() );
+		return pn;
+	}
+
 	String CompositeController::GetClassSignature() const
 	{
 		std::vector< String > strset;

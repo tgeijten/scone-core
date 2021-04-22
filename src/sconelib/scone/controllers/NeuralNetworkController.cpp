@@ -233,20 +233,32 @@ namespace scone::NN
 	PropNode NeuralNetworkController::GetInfo() const
 	{
 		PropNode pn;
+		auto& sensor_pn = pn.add_child( "SensorNeurons" );
 		for ( const auto& sn : sensor_links_ )
-			pn[ sn.delayed_sensor_->GetName() ] = layers_.front().neurons_[ sn.neuron_idx_ ].offset_;
+			sensor_pn[ sn.sensor_->GetName() ] = layers_.front().neurons_[ sn.neuron_idx_ ].offset_;
 
-		for ( const auto& il : links_.front().front().links_ )
+		for ( index_t layer_idx : xo::size_range( links_ ) )
 		{
-			PropNode lpn;
-			lpn[ "src_idx" ] = il.src_idx_;
-			lpn[ "trg_idx" ] = il.trg_idx_;
-			lpn[ "weight" ] = il.weight_;
-			pn.add_child( "link", lpn );
+			auto& layer_pn = pn.add_child( "LinkLayer" + to_str( layer_idx ) );
+			auto& layer = links_[ layer_idx ];
+			for ( index_t sublayer_idx : xo::size_range( layer ) )
+			{
+				auto& sublayer = layer[ sublayer_idx ];
+				auto& sublayer_pn = layer_pn.add_child( "SubLinkLayer" + to_str( sublayer_idx ) );
+				sublayer_pn[ "input_layer" ] = sublayer.input_layer_;
+				for ( const auto& link : sublayer.links_ )
+				{
+					auto src_name = GetNeuronName( sublayer.input_layer_, link.src_idx_ );
+					auto trg_name = GetNeuronName( layer_idx + 1, link.trg_idx_ );
+					auto name = src_name + " -> " + trg_name;
+					sublayer_pn[ name ] = link.weight_;
+				}
+			}
 		}
 
+		auto& motor_pn = pn.add_child( "MotorNeurons" );
 		for ( const auto& mn : motor_links_ )
-			pn[ mn.actuator_->GetName() ] = layers_[ motor_layer_ ].neurons_[ mn.neuron_idx_ ].offset_;
+			motor_pn[ mn.actuator_->GetName() ] = layers_[ motor_layer_ ].neurons_[ mn.neuron_idx_ ].offset_;
 
 		return pn;
 	}

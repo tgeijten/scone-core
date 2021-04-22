@@ -26,6 +26,8 @@ namespace scone
 
 		const PropNode* Controllers;
 
+		virtual PropNode GetInfo() const override;
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 

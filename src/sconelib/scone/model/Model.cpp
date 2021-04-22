@@ -467,6 +467,9 @@ namespace scone
 		for ( const auto& item : GetActuators() )
 			pn[ "Actuators" ].add_child( item->GetName(), item->GetInfo() );
 
+		if ( auto* c = GetController() )
+			pn.add_child( xo::get_clean_type_name( *c ), c->GetInfo() );
+
 		return pn;
 	}
 

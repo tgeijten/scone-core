@@ -108,7 +108,7 @@ namespace scone
 			virtual ~NeuralNetworkController() {}
 
 			void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
-			PropNode GetInfo() const;
+			PropNode GetInfo() const override;
 
 			const double leakyness_;
 			const bool ignore_muscle_lines_;
