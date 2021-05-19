@@ -479,8 +479,8 @@ namespace scone
 		{
 			auto geoms = b->GetDisplayGeometries();
 			for ( auto& g : geoms )
-				if ( xo::file_exists( model_path / g.filename ) )
-					AddExternalResource( model_path / g.filename );
+				if ( xo::file_exists( model_path / g.filename_ ) )
+					AddExternalResource( model_path / g.filename_ );
 		}
 	}
 }

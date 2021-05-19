@@ -241,11 +241,11 @@ namespace scone
 		for ( const auto& mesh : m_osBody.getComponentList<OpenSim::Mesh>() )
 		{
 			DisplayGeometry g;
-			g.filename = mesh.get_mesh_file();
-			g.scale = from_osim( mesh.get_scale_factors() );
+			g.filename_ = mesh.get_mesh_file();
+			g.scale_ = from_osim( mesh.get_scale_factors() );
 			auto trans = mesh.getFrame().findTransformInBaseFrame();
-			g.pos = from_osim( trans.p() );
-			g.ori = from_osim( SimTK::Quaternion( trans.R() ) );
+			g.pos_ = from_osim( trans.p() );
+			g.ori_ = from_osim( SimTK::Quaternion( trans.R() ) );
 			geoms.emplace_back( g );
 		}
 		return geoms;
