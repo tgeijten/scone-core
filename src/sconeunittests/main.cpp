@@ -25,16 +25,16 @@ int main( int argc, const char* argv[] )
 
 		sink.set_log_level( xo::log::level( args.get<int>( "l", int( xo::log::level::info ) ) ) );
 
-		if ( !args.has_flag( "skip-tutorials" ) )
+		if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) )
 			scone::add_scenario_tests( "scenarios/Tutorials" );
 #if SCONE_OPENSIM_3_ENABLED
-		if ( !args.has_flag( "skip-opensim3" ) ) {
+		if ( !args.has_flag( "skip-opensim3" ) && !args.has_flag( "skip-opensim" ) ) {
 			scone::add_scenario_tests( "scenarios/UnitTests/OpenSim3" );
 			scone::add_scenario_tests( "scenarios/Examples", "*OpenSim3*.scone" );
 		}
 #endif
 #if SCONE_OPENSIM_4_ENABLED
-		if ( !args.has_flag( "skip-opensim4" ) ) {
+		if ( !args.has_flag( "skip-opensim4" ) && !args.has_flag( "skip-opensim" ) ) {
 			//scone::add_scenario_tests( "scenarios/UnitTests/OpenSim4" );
 			scone::add_scenario_tests( "scenarios/Examples", "*OpenSim4*.scone" );
 		}
