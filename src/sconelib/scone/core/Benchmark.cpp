@@ -17,9 +17,9 @@
 
 namespace scone
 {
-	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, size_t evals )
+	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t evals )
 	{
-		log::info( "Benchmarking ", file );
+		log::info( file );
 
 		xo::scoped_thread_priority prio_raiser( xo::thread_priority::realtime );
 
@@ -30,7 +30,7 @@ namespace scone
 		if ( is_par_file )
 			par.import_values( file );
 
-		auto baseline_file = file.parent_path() / "perf" / xo::get_computer_name() / file.stem() + ".stats";
+		auto baseline_file = results_dir / xo::get_computer_name() / file.stem() + ".stats";
 		bool has_baseline = xo::file_exists( baseline_file );
 		if ( !has_baseline )
 			evals *= 4;
