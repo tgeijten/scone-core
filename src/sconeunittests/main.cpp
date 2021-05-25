@@ -44,7 +44,7 @@ int main( int argc, const char* argv[] )
 			scone::add_scenario_tests( "scenarios/UnitTests/Hyfydy", "*.par" );
 			scone::add_scenario_tests( "scenarios/Examples", "*Hyfydy*.scone" );
 			if ( args.has_flag( "add-blueprints" ) )
-				scone::add_scenario_tests( "scenarios/UnitTests/Blueprint", "*.par" );
+				scone::add_scenario_tests( "scenarios/UnitTests/Blueprints", "*.par" );
 		}
 #endif
 
