@@ -143,7 +143,7 @@ namespace scone
 	{
 		Actuator::StoreData( frame, flags );
 
-		if ( flags( StoreDataTypes::MuscleProperties) )
+		if ( flags( StoreDataTypes::MuscleProperties ) )
 		{
 			const auto& name = GetName();
 			frame[ name + ".excitation" ] = GetExcitation();
