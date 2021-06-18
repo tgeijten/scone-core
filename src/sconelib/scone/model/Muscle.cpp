@@ -198,6 +198,8 @@ namespace scone
 		for ( const Body* b = insBody; b && b != orgBody; b = b->GetParentBody() )
 		{
 			auto* j = b->GetJoint();
+			SCONE_THROW_IF( !j, "Invalid joint for muscle " + GetName() + " connecting from " + orgBody->GetName() + " to " + insBody->GetName() );
+
 			m_Joints.push_back( j );
 			xo::append( m_Dofs, j->GetDofs() );
 		}
