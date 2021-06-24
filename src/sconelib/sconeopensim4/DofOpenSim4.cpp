@@ -87,6 +87,11 @@ namespace scone
 			m_osCoord.setSpeedValue( m_Model.GetTkState(), vel );
 	}
 
+	bool DofOpenSim4::IsRotational() const
+	{
+		return m_osCoord.getMotionType() == OpenSim::Coordinate::Rotational;
+	}
+
 	Vec3 DofOpenSim4::GetRotationAxis() const
 	{
 		return m_RotationAxis;

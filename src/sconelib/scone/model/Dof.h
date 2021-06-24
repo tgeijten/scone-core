@@ -33,6 +33,7 @@ namespace scone
 		virtual void SetPos( Real pos, bool enforce_constraints = true ) = 0;
 		virtual void SetVel( Real vel ) = 0;
 
+		virtual bool IsRotational() const = 0;
 		virtual Vec3 GetRotationAxis() const = 0;
 		virtual const Joint* GetJoint() const { return m_Joint; }
 		virtual Range< Real > GetRange() const = 0;

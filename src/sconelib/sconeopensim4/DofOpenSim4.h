@@ -40,6 +40,7 @@ namespace scone
 		virtual void SetPos( Real pos, bool enforce_constraints = true ) override;
 		virtual void SetVel( Real vel ) override;
 
+		virtual bool IsRotational() const override;
 		virtual Vec3 GetRotationAxis() const override;
 		virtual Range< Real > GetRange() const override;
 
