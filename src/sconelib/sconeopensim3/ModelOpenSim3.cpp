@@ -818,6 +818,13 @@ namespace scone
 			StoreCurrentFrame();
 	}
 
+	void ModelOpenSim3::UpdateStateFromDofs()
+	{
+		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
+		if ( GetController() )
+			UpdateControlValues();
+	}
+
 	TimeInSeconds ModelOpenSim3::GetSimulationStepSize()
 	{
 		SCONE_ASSERT( use_fixed_control_step_size );

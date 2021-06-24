@@ -125,6 +125,7 @@ namespace scone
 		virtual const State& GetState() const override { return m_State; }
 		virtual void SetState( const State& state, TimeInSeconds timestamp ) override;
 		virtual void SetStateValues( const std::vector< Real >& state, TimeInSeconds timestamp ) override;
+		virtual void UpdateStateFromDofs() override;
 
 		virtual void SetController( ControllerUP c ) override;
 		void InitializeOpenSimMuscleActivations( double override_activation = 0.0 );
