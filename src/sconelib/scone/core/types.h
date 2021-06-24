@@ -60,7 +60,6 @@ namespace scone
 	using xo::index_t;
 	using xo::no_index;
 	using xo::path;
-	using namespace xo::literals;
 
 	// string types
 	using std::string;
