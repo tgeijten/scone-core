@@ -48,7 +48,7 @@ namespace scone
 		m_ExcitationChannels.reserve( model_->GetMuscles().size() );
 		for ( auto& mus : model_->GetMuscles() )
 		{
-			m_ExcitationChannels.push_back( m_Storage.GetChannelIndex( mus->GetName() + ".excitation" ) );
+			m_ExcitationChannels.push_back( m_Storage.TryGetChannelIndex( mus->GetName() + ".excitation" ) );
 			SCONE_THROW_IF( m_ExcitationChannels.back() == NoIndex, "Could not find excitation for " + mus->GetName() );
 		}
 
@@ -58,7 +58,7 @@ namespace scone
 		for ( index_t ds_idx = 0; ds_idx < ds.GetChannelCount(); ++ds_idx )
 		{
 			auto& sensor_name = ds.GetLabels()[ ds_idx ];
-			m_SensorChannels.push_back( m_Storage.GetChannelIndex( sensor_name ) );
+			m_SensorChannels.push_back( m_Storage.TryGetChannelIndex( sensor_name ) );
 			SCONE_THROW_IF( m_SensorChannels.back() == NoIndex, "Could not find sensor for " + sensor_name );
 		}
 

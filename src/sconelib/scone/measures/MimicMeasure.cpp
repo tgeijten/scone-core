@@ -41,7 +41,7 @@ namespace scone
 			auto& name = s.GetName( state_idx );
 			if ( include_states( name ) && !exclude_states( name ) )
 			{
-				index_t sto_idx = storage_.GetChannelIndex( name );
+				index_t sto_idx = storage_.TryGetChannelIndex( name );
 				if ( sto_idx != NoIndex )
 				{
 					state_storage_map_.emplace_back( state_idx, sto_idx );

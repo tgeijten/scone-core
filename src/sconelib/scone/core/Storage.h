@@ -43,7 +43,7 @@ namespace scone
 			const ValueT& operator[]( index_t idx ) const { return m_Values[ idx ]; }
 
 			ValueT& operator[]( const String& label ) {
-				index_t idx = m_Store.GetChannelIndex( label );
+				index_t idx = m_Store.TryGetChannelIndex( label );
 				if ( idx == NoIndex )
 					idx = m_Store.AddChannel( label );
 				return m_Values[ idx ];
@@ -146,7 +146,7 @@ namespace scone
 		size_t GetFrameCount() const { return m_Data.size(); }
 
 		index_t AddChannel( const String& label, ValueT default_value = ValueT( 0 ) ) {
-			SCONE_ASSERT_MSG( GetChannelIndex( label ) == NoIndex, "Channel " + label + " already exists" );
+			SCONE_ASSERT_MSG( TryGetChannelIndex( label ) == NoIndex, "Channel " + label + " already exists" );
 			m_Labels.push_back( label );
 			m_LabelIndexMap[ label ] = m_Labels.size() - 1;
 			for ( auto it = m_Data.begin(); it != m_Data.end(); ++it )
@@ -155,6 +155,12 @@ namespace scone
 		}
 
 		index_t GetChannelIndex( const String& label ) const {
+			auto it = m_LabelIndexMap.find( label );
+			SCONE_THROW_IF( it == m_LabelIndexMap.end(), "Could not find channel " + label );
+			return it->second;
+		}
+
+		index_t TryGetChannelIndex( const String& label ) const {
 			auto it = m_LabelIndexMap.find( label );
 			if ( it == m_LabelIndexMap.end() )
 				return NoIndex;
