@@ -911,10 +911,8 @@ namespace scone
 		m_pOsimModel->equilibrateMuscles( GetTkState() );
 	}
 
-	void ModelOpenSim4::SetController( ControllerUP c )
+	void ModelOpenSim4::InitializeController()
 	{
-		Model::SetController( std::move( c ) );
-
 		// Initialize muscle dynamics STEP 1
 		// equilibrate with initial small actuation so we can update the sensor delay adapters (needed for reflex controllers)
 		InitializeOpenSimMuscleActivations( initial_equilibration_activation );
@@ -924,5 +922,11 @@ namespace scone
 		// compute actual initial control values and re-equilibrate muscles
 		UpdateControlValues();
 		InitializeOpenSimMuscleActivations();
+	}
+
+	void ModelOpenSim4::SetController( ControllerUP c )
+	{
+		Model::SetController( std::move( c ) );
+		InitializeController();
 	}
 }

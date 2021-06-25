@@ -820,9 +820,9 @@ namespace scone
 
 	void ModelOpenSim3::UpdateStateFromDofs()
 	{
+		CopyStateFromTk();
 		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
-		if ( GetController() )
-			UpdateControlValues();
+		InitializeController();
 	}
 
 	TimeInSeconds ModelOpenSim3::GetSimulationStepSize()
@@ -868,10 +868,8 @@ namespace scone
 		m_pOsimModel->equilibrateMuscles( GetTkState() );
 	}
 
-	void ModelOpenSim3::SetController( ControllerUP c )
+	void ModelOpenSim3::InitializeController()
 	{
-		Model::SetController( std::move( c ) );
-
 		// Initialize muscle dynamics STEP 1
 		// equilibrate with initial small actuation so we can update the sensor delay adapters (needed for reflex controllers)
 		InitializeOpenSimMuscleActivations( initial_equilibration_activation );
@@ -881,5 +879,11 @@ namespace scone
 		// compute actual initial control values and re-equilibrate muscles
 		UpdateControlValues();
 		InitializeOpenSimMuscleActivations();
+	}
+
+	void ModelOpenSim3::SetController( ControllerUP c )
+	{
+		Model::SetController( std::move( c ) );
+		InitializeController();
 	}
 }
