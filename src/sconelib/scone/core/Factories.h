@@ -23,6 +23,16 @@
 
 namespace scone
 {
+	struct FactoryNotFoundException : public RuntimeException {
+		FactoryNotFoundException( const String& name, const PropNode& pn ) :
+			RuntimeException( "Could not find " + name ),
+			name_( name ),
+			props_( pn )
+		{}
+		String name_;
+		PropNode props_;
+	};
+
 	using ReflexFactory = xo::factory< Reflex, const PropNode&, Params&, Model&, const Location& >;
 	SCONE_API ReflexFactory& GetReflexFactory();
 	SCONE_API ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, const Location& target_area );
@@ -81,6 +91,6 @@ namespace scone
 	FactoryProps FindFactoryProps( const F& fac, const PropNode& pn, const String& fac_name ) {
 		if ( auto r = TryFindFactoryProps( fac, pn, fac_name ) )
 			return r;
-		SCONE_ERROR( "Could not find " + fac_name );
+		throw FactoryNotFoundException( fac_name, pn );
 	}
 }
