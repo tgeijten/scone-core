@@ -27,7 +27,9 @@ namespace scone
 		if ( init_ )
 		{
 			LuaModel lm( const_cast<Model&>( model ) );
-			init_( &lm );
+			LuaParams lp( par );
+			auto side = static_cast<double>( loc.GetSide() );
+			init_( &lm, &lp, side );
 		}
 
 		// add lua files as external resources
