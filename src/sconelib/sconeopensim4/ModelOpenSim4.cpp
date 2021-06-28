@@ -607,10 +607,11 @@ namespace scone
 
 		if ( use_fixed_control_step_size )
 		{
+			int number_of_steps = static_cast<int>( 0.5 + ( time - GetTime() ) / fixed_control_step_size );
+
 			// initialize the time-stepper if this is the first step
-			if ( !m_pTkTimeStepper )
+			if ( !m_pTkTimeStepper && number_of_steps > 0 )
 			{
-				// Integrate using time stepper
 				m_pTkTimeStepper = std::make_unique< SimTK::TimeStepper >( m_pOsimModel->getMultibodySystem(), *m_pTkIntegrator );
 				m_pTkTimeStepper->initialize( GetTkState() );
 				if ( GetStoreData() )
@@ -623,7 +624,6 @@ namespace scone
 			}
 
 			// start integration loop
-			int number_of_steps = static_cast<int>( 0.5 + ( time - GetTime() ) / fixed_control_step_size );
 			for ( int current_step = 0; current_step < number_of_steps; )
 			{
 				// update controls
@@ -867,6 +867,13 @@ namespace scone
 			UpdateControlValues();
 		if ( GetStoreData() )
 			StoreCurrentFrame();
+	}
+
+	void ModelOpenSim4::UpdateStateFromDofs()
+	{
+		CopyStateFromTk();
+		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
+		InitializeController();
 	}
 
 	TimeInSeconds ModelOpenSim4::GetSimulationStepSize()

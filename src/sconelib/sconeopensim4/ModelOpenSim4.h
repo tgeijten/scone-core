@@ -129,6 +129,7 @@ namespace scone
 		virtual void SetController( ControllerUP c ) override;
 		void InitializeOpenSimMuscleActivations( double override_activation = 0.0 );
 		void InitializeController();
+		virtual void UpdateStateFromDofs() override;
 
 	private:
 		void InitStateFromTk();
