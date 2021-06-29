@@ -1,7 +1,7 @@
 -- SCONE script for a high-jump measure.
 -- See Tutorial 6a - Script - High Jump
 
-function init( model )
+function init( model, par, side )
 	-- get the 'target_body' parameter from ScriptMeasure, or set to "pelvis"
 	target_body = scone.target_body or "pelvis"
 

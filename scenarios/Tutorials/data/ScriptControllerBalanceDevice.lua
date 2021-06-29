@@ -1,7 +1,7 @@
 -- SCONE script that simulates a device that generates an external moment at a specific condition.
 -- See Tutorial 6b - Script - Balance Device
 
-function init( model, par )
+function init( model, par, side )
 	-- get the 'target_body' parameter from ScriptController, or set to "pelvis"
 	target_body = model:find_body( scone.target_body or "pelvis" )
 

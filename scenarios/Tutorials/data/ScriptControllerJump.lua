@@ -1,7 +1,7 @@
 -- SCONE script for a simple feed-forward controller.
 -- See Tutorial 6a - Script - High Jump
 
-function init( model, par )
+function init( model, par, side )
 	-- keep a list of offsets and slopes to compute the excitation
 	offset = {}
 	slope = {}
@@ -30,4 +30,7 @@ function update( model )
 		local excitation = offset[ i ] + t * slope[ i ]
 		actuators[ i ]:add_input( excitation )
 	end
+
+	-- return false to keep going
+	return false
 end
