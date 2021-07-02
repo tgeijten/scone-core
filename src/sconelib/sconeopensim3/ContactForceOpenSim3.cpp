@@ -14,7 +14,12 @@ namespace scone
 	ContactForceOpenSim3::ContactForceOpenSim3( ModelOpenSim3& model, const OpenSim::HuntCrossleyForce& osForce ) :
 		m_osForce( osForce ),
 		m_Model( model ),
-		m_LastNumDynamicsRealizations( -1 )
+		m_LastNumDynamicsRealizations( -1 ),
+		m_Force(),
+		m_Moment(),
+		m_Point(),
+		m_PlaneLocation(),
+		m_PlaneNormal()
 	{
 		auto& osForceNonConst = const_cast<OpenSim::HuntCrossleyForce&>( m_osForce ); // hack for OpenSim bug
 		auto& osGeometry = osForceNonConst.getContactParametersSet().get( 0 ).getGeometry();

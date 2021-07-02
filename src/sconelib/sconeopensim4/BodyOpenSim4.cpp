@@ -240,13 +240,12 @@ namespace scone
 		std::vector< DisplayGeometry > geoms;
 		for ( const auto& mesh : m_osBody.getComponentList<OpenSim::Mesh>() )
 		{
-			DisplayGeometry g;
-			g.filename_ = mesh.get_mesh_file();
-			g.scale_ = from_osim( mesh.get_scale_factors() );
 			auto trans = mesh.getFrame().findTransformInBaseFrame();
-			g.pos_ = from_osim( trans.p() );
-			g.ori_ = from_osim( SimTK::Quaternion( trans.R() ) );
-			geoms.emplace_back( g );
+			geoms.emplace_back( 
+				mesh.get_mesh_file(),
+				from_osim( trans.p() ),
+				from_osim( SimTK::Quaternion( trans.R() ) ),
+				from_osim( mesh.get_scale_factors() ) );
 		}
 		return geoms;
 	}

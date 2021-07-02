@@ -10,7 +10,6 @@ namespace scone
 {
 	struct DisplayGeometry
 	{
-		DisplayGeometry() = default;
 		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1 ) ) :
 			filename_( file ),
 			shape_(),

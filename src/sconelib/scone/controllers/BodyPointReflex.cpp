@@ -37,6 +37,8 @@ namespace scone
 		INIT_PAR_NAMED( props, par, KA, "KA", 0.0 );
 
 		INIT_PAR_NAMED( props, par, C0, "C0", 0.0 );
+
+		u_p = u_v = u_a = 0;
 	}
 
 	void BodyPointReflex::ComputeControls( double timestamp )

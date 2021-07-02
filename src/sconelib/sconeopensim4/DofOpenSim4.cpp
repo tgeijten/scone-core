@@ -29,7 +29,8 @@ namespace scone
 		m_Model( model ),
 		m_osCoord( coord ),
 		m_pOsLimitForce( nullptr ),
-		m_OsCoordAct( nullptr )
+		m_OsCoordAct( nullptr ),
+		m_RotationAxis()
 	{
 		// find corresponding CoordinateLimitForce
 		auto& forceSet = model.GetOsimModel().getForceSet();
