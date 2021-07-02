@@ -57,6 +57,7 @@ namespace scone
 	{
 		auto full_test_dir = GetFolder( SCONE_ROOT_FOLDER ) / test_dir;
 		auto results_dir = GetFolder( SCONE_ROOT_FOLDER ) / "resources/unittestdata" / test_dir / xo::get_computer_name() + "_results";
+		if ( XO_IS_DEBUG_BUILD ) results_dir += string( "_debug" );
 		xo::create_directories( results_dir );
 
 		xo::log::debug( "Adding dir: ", full_test_dir );
