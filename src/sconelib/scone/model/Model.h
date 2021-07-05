@@ -53,6 +53,7 @@ namespace scone
 		Body* GetGroundBody() { return m_GroundBody; }
 
 		// joint access
+		std::vector< JointUP >& GetJoints() { return m_Joints; }
 		const std::vector< JointUP >& GetJoints() const { return m_Joints; }
 
 		// dof access

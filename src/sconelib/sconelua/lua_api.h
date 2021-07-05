@@ -12,6 +12,7 @@
 #include "xo/geometry/vec3_type.h"
 #include "xo/string/string_cast.h"
 #include "xo/geometry/quat_type.h"
+#include "scone/model/Joint.h"
 
 namespace sol { class state; }
 
@@ -210,6 +211,30 @@ namespace scone
 		Body& bod_;
 	};
 
+	/// Body type for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaJoint
+	{
+		LuaJoint( Joint& j ) : joint_( j ) {}
+
+		/// get the name of the body
+		LuaString name() { return joint_.GetName().c_str(); }
+		/// get the current com position [m]
+		LuaVec3 pos() { return joint_.GetPos(); }
+		/// check if this joint has a motor
+		bool has_motor() { return joint_.HasMotor(); }
+		/// set target orientation of the joint motor
+		void set_motor_target_ori( const LuaQuat& o ) { joint_.SetMotorTargetOri( o ); }
+		/// set target velocity of the joint motor
+		void set_motor_target_vel( const LuaVec3& v ) { joint_.SetMotorTargetVel( v ); }
+		/// set stiffness of the joint motor
+		void set_motor_stiffness( LuaNumber kp ) { joint_.SetMotorStiffness( kp ); }
+		/// set damping of the joint motor
+		void set_motor_damping( LuaNumber kd ) { joint_.SetMotorDamping( kd ); }
+
+		Joint& joint_;
+	};
+
 	/// Model type for use in lua scripting.
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaModel
@@ -254,6 +279,13 @@ namespace scone
 		int body_count() { return static_cast<int>( mod_.GetBodies().size() ); }
 		/// get the ground (static) body
 		LuaBody ground_body() { return *mod_.GetGroundBody(); }
+
+		/// get the joint at index (starting at 1)
+		LuaJoint joint( int index ) { return *GetByLuaIndex( mod_.GetJoints(), index ); }
+		/// find a joint with a specific name
+		LuaJoint find_joint( LuaString name ) { return *GetByLuaName( mod_.GetJoints(), name ); }
+		/// number of bodies
+		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
 
 		Model& mod_;
 	};

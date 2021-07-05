@@ -12,6 +12,7 @@
 #include "scone/core/HasData.h"
 #include "scone/core/PropNode.h"
 #include "scone/core/Vec3.h"
+#include "scone/core/Quat.h"
 
 namespace scone
 {
@@ -33,6 +34,12 @@ namespace scone
 
 		const Body& GetBody() const { return m_Body; }
 		const Body& GetParentBody() const { return m_ParentBody; }
+
+		virtual bool HasMotor() const { return false; }
+		virtual void SetMotorTargetOri( const Quat& o ) { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorTargetVel( const Vec3& v ) { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorStiffness( Real kp ) { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorDamping( Real kd ) { SCONE_THROW_NOT_IMPLEMENTED; }
 
 		const std::vector< Dof* >& GetDofs() const;
 		void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
