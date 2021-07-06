@@ -23,7 +23,7 @@ namespace scone
 	{
 		INIT_PROP( props, termination_height, 0.5 );
 		INIT_PROP( props, prepare_time, 0.2 );
-		INIT_PROP( props, recover_time, 1.0 );
+		INIT_PROP( props, recover_time, 1e9 );
 		INIT_PROP( props, terminate_on_peak, true );
 		INIT_PROP( props, negate_result, false );
 		jump_type = static_cast<JumpType>( props.get<int>( "jump_type", HighJump ) );
