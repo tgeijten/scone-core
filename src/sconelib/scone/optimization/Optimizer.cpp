@@ -138,7 +138,9 @@ namespace scone
 	{
 		SCONE_ASSERT( output_folder_.empty() );
 
-		output_folder_ = xo::create_unique_directory( output_root / GetSignature() );
+		auto p = output_root / GetSignature();
+		log::debug( "Creating folder ", p );
+		output_folder_ = xo::create_unique_directory( p );
 		id_ = output_folder_.filename().str();
 
 		// create log sink if enabled
