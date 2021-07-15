@@ -13,6 +13,7 @@
 #include "xo/string/string_cast.h"
 #include "xo/geometry/quat_type.h"
 #include "scone/model/Joint.h"
+#include "xo/geometry/quat.h"
 
 namespace sol { class state; }
 
@@ -31,6 +32,10 @@ namespace scone
 		SCONE_ERROR_IF( it == vec.end(), "Could not find \"" + name + "\"" );
 		return *it;
 	}
+
+	/// 3d vector type with components x, y, z
+	using LuaVec3 = Vec3d;
+	using LuaQuat = Quatd;
 
 	/// Access to scone logging and parameters
 	/** Use this for logging, or accessing parameters defined in scone. Lua example:
@@ -54,11 +59,13 @@ namespace scone
 		static void warning( LuaString msg ) { log::warning( msg ); }
 		/// display error message
 		static void error( LuaString msg ) { log::error( msg ); }
+		/// create quaternion from Euler angles (xyz degrees)
+		static LuaQuat quat_from_euler_deg( double x, double y, double z ) {
+			return xo::quat_from_euler( xo::degreed( x ), xo::degreed( y ), xo::degreed( z ) ); }
+		/// create quaternion from Euler angles (xyz radians)
+		static LuaQuat quat_from_euler_rad( double x, double y, double z ) {
+			return xo::quat_from_euler( xo::radiand( x ), xo::radiand( y ), xo::radiand( z ) ); }
 	};
-
-	/// 3d vector type with components x, y, z
-	using LuaVec3 = Vec3d;
-	using LuaQuat = Quatd;
 
 	/// Access to writing data for scone Analysis window
 	struct LuaFrame

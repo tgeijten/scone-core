@@ -59,6 +59,16 @@ namespace scone
 			"set_ang_vel", &LuaBody::set_ang_vel
 			);
 
+		lua.new_usertype<LuaJoint>( "LuaJoint", sol::constructors<>(),
+			"name", &LuaJoint::name,
+			"pos", &LuaJoint::pos,
+			"has_motor", &LuaJoint::has_motor,
+			"set_motor_target_ori", &LuaJoint::set_motor_target_ori,
+			"set_motor_target_vel", &LuaJoint::set_motor_target_vel,
+			"set_motor_stiffness", &LuaJoint::set_motor_stiffness,
+			"set_motor_damping", &LuaJoint::set_motor_damping
+			);
+
 		lua.new_usertype<LuaMuscle>( "LuaMuscle", sol::constructors<>(),
 			"name", &LuaMuscle::name,
 			"add_input", &LuaMuscle::add_input,
@@ -92,7 +102,10 @@ namespace scone
 			"body", &LuaModel::body,
 			"find_body", &LuaModel::find_body,
 			"body_count", &LuaModel::body_count,
-			"ground_body", &LuaModel::ground_body
+			"ground_body", &LuaModel::ground_body,
+			"joint", &LuaModel::joint,
+			"find_joint", &LuaModel::find_joint,
+			"joint_count", &LuaModel::joint_count
 			);
 
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),
@@ -105,7 +118,8 @@ namespace scone
 			"debug", &LuaScone::debug,
 			"info", &LuaScone::info,
 			"warning", &LuaScone::warning,
-			"error", &LuaScone::error
+			"error", &LuaScone::error,
+			"quat_from_euler_deg", &LuaScone::quat_from_euler_deg
 			);
 	}
 }
