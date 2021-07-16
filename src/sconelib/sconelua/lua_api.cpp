@@ -40,7 +40,7 @@ namespace scone
 		lua.new_usertype<LuaBody>( "LuaBody", sol::constructors<>(),
 			"name", &LuaBody::name,
 			"mass", &LuaBody::mass,
-			"inertia_diagonal", &LuaBody::inertia_diagonal, 
+			"inertia_diagonal", &LuaBody::inertia_diagonal,
 			"com_pos", &LuaBody::com_pos,
 			"com_vel", &LuaBody::com_vel,
 			"point_pos", &LuaBody::point_pos,
@@ -65,6 +65,7 @@ namespace scone
 			"has_motor", &LuaJoint::has_motor,
 			"set_motor_target_ori", &LuaJoint::set_motor_target_ori,
 			"set_motor_target_vel", &LuaJoint::set_motor_target_vel,
+			"set_motor_torque_offset", &LuaJoint::set_motor_torque_offset,
 			"set_motor_stiffness", &LuaJoint::set_motor_stiffness,
 			"set_motor_damping", &LuaJoint::set_motor_damping
 			);
