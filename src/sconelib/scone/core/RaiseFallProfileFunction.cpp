@@ -4,6 +4,7 @@
 
 #include "RaiseFallProfileFunction.h"
 #include "scone/core/Exception.h"
+#include "scone/core/math.h"
 #include <cmath>
 
 namespace scone
@@ -19,7 +20,7 @@ namespace scone
 
 		Real Evalute(Real aX) const {
 
-			const Real mPI = 3.14159265; 
+			const Real mPI = REAL_PI;
 			if (aX < start_time) return 0.0;
 			if (aX < start_time + raise_time) {
 				Real x = (aX - start_time)/raise_time*0.5*mPI;
