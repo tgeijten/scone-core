@@ -38,6 +38,8 @@ namespace scone
 
 		index_t AddVariable( const String& name, Real value = Real( 0 ) );
 		void SetValue( index_t i, Real value ) { SCONE_ASSERT( i < values_.size() ); values_[ i ] = value; }
+		void SetValue( const String& name, Real value );
+		void TrySetValue( const String& name, Real value );
 		void SetValues( const std::vector<Real>& v );
 
 	private:

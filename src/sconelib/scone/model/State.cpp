@@ -21,6 +21,19 @@ namespace scone
 		return names_.size() - 1;
 	}
 
+	void State::SetValue( const String& name, Real value )
+	{
+		auto idx = FindIndex( name );
+		SCONE_ERROR_IF( idx == NoIndex, "Could not find state: " + name );
+		values_[ idx ] = value;
+	}
+
+	void State::TrySetValue( const String& name, Real value )
+	{
+		if ( auto idx = FindIndex( name ); idx != NoIndex )
+			values_[ idx ] = value;
+	}
+
 	void State::SetValues( const std::vector<Real>& v )
 	{
 		SCONE_ASSERT( values_.size() <= v.size() );
