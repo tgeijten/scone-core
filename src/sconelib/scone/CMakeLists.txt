@@ -32,6 +32,8 @@ set(CORE_MATH_FILES
 	core/SineWave.cpp
 	core/RaisedCosine.h
 	core/RaisedCosine.cpp
+	core/RaiseFallProfileFunction.h
+	core/RaiseFallProfileFunction.cpp
 	core/Bezier.h
 	core/Bezier.cpp
 	)
