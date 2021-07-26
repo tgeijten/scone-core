@@ -29,6 +29,7 @@
 #include "scone/core/Bezier.h"
 #include "scone/core/RaisedCosine.h"
 #include "scone/core/RaiseFallProfileFunction.h"
+#include "scone/core/InterpolataryCubicSpline.h"
 
 #include "scone/measures/BalanceMeasure.h"
 #include "scone/measures/BodyMeasure.h"
@@ -153,7 +154,8 @@ namespace scone
 			.register_type< SineWave >()
 			.register_type< Bezier >()
     		.register_type< RaisedCosine >()
-			.register_type< RaiseFallProfileFunction >();
+			.register_type< RaiseFallProfileFunction >()
+			.register_type< InterpolataryCubicSpline >();
 
 		return g_FunctionFactory;
 	}

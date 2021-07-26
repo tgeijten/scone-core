@@ -34,6 +34,8 @@ set(CORE_MATH_FILES
 	core/RaisedCosine.cpp
 	core/RaiseFallProfileFunction.h
 	core/RaiseFallProfileFunction.cpp
+	core/InterpolataryCubicSpline.h
+	core/InterpolataryCubicSpline.cpp
 	core/Bezier.h
 	core/Bezier.cpp
 	)
