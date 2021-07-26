@@ -41,6 +41,7 @@
 #include "spot/par_tools.h"
 
 #include <mutex>
+#include "xo/serialization/serialize.h"
 
 using std::cout;
 using std::endl;
@@ -744,17 +745,30 @@ namespace scone
 
 	void ModelOpenSim4::ReadState( const path& file )
 	{
-		// create a copy of the storage
-		auto store = g_StorageCache( file.str() );
-		OpenSim::Array< double > data = store->getStateVector( 0 )->getData();
-		OpenSim::Array< std::string > storeLabels = store->getColumnLabels();
-
-		// for all storage channels, check if there's a matching state
-		for ( int i = 0; i < storeLabels.getSize(); i++ )
+		if ( file.extension() == ".sto" )
 		{
-			index_t idx = FindStateIndex( storeLabels[ i ], store->getFileVersion() );
-			if ( idx != NoIndex )
-				m_State[ idx ] = data[ store->getStateIndex( storeLabels[ i ] ) ];
+			// create a copy of the storage
+			auto store = g_StorageCache( file.str() );
+			OpenSim::Array< double > data = store->getStateVector( 0 )->getData();
+			OpenSim::Array< std::string > storeLabels = store->getColumnLabels();
+
+			// for all storage channels, check if there's a matching state
+			for ( int i = 0; i < storeLabels.getSize(); i++ )
+			{
+				index_t idx = FindStateIndex( storeLabels[ i ], store->getFileVersion() );
+				if ( idx != NoIndex )
+					m_State[ idx ] = data[ store->getStateIndex( storeLabels[ i ] ) ];
+			}
+		}
+		else if ( file.extension() == ".zml" )
+		{
+			auto pn = xo::load_file( file );
+			for ( const auto& [key, value] : pn[ "values" ] )
+				if ( auto idx = m_State.FindIndexByPattern( "/jointset/*/" + key + "/value" ); idx != NoIndex )
+					m_State.SetValue( idx, value.get<Real>() );
+			for ( const auto& [key, value] : pn[ "velocities" ] )
+				if ( auto idx = m_State.FindIndexByPattern( "/jointset/*/" + key + "/speed" ); idx != NoIndex )
+					m_State.SetValue( idx, value.get<Real>() );
 		}
 	}
 
