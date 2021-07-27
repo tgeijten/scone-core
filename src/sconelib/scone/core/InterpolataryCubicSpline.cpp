@@ -40,7 +40,7 @@ namespace scone
 			int i, j, k;
 			Real dx;
 
-			int n = _x.size();
+			int n = static_cast<int>( _x.size() );
 
 			/* Check if the abscissa is out of range of the function. If it is,
 			* then use the slope of the function at the appropriate end point to
@@ -121,7 +121,7 @@ namespace scone
 		void CalcCoefficients()
 		{
 			Real TINY_NUMBER = 1e-7;
-			int n = _x.size();
+			int n = static_cast<int>( _x.size() );
 			int nm1, nm2, i, j;
 			Real t;
 
@@ -236,7 +236,7 @@ namespace scone
 			const std::vector<Real>& knots = _x;
 			bool derivative = false;
 
-			int n = points.size();    // number or points / tangents / knots
+			int n = static_cast<int>( points.size() );    // number or points / tangents / knots
 			int i0, i1;
 			// find knot interval for t
 			int i;
@@ -298,7 +298,7 @@ namespace scone
 		std::vector<Real> _d;
 
 		Real Evalute(Real aX) const {
-			int n = _x.size();
+			int n = static_cast<int>( _x.size() );
 			SCONE_ERROR_IF(n < 2, "There must be more than 1 coefficient for MonotonicCubicInterpolation");
 
 			// find knot interval for t
@@ -320,7 +320,7 @@ namespace scone
 
 		void CalcCoefficients()
 		{
-			int n = _x.size();
+			int n = static_cast<int>( _x.size() );
 			SCONE_ERROR_IF(n < 2, "There must be more than 1 coefficient for MonotonicCubicInterpolation");
 
 			std::vector<Real> _h, _m;
