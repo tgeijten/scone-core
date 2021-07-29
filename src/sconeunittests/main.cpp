@@ -19,11 +19,10 @@ int main( int argc, const char* argv[] )
 	xo::log::console_sink sink( xo::log::level::info );
 	try
 	{
-		scone::Initialize();
-
 		auto args = xo::arg_parser( argc, argv );
-
 		sink.set_log_level( xo::log::level( args.get<int>( "l", int( xo::log::level::info ) ) ) );
+
+		scone::Initialize();
 
 		if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) )
 			scone::add_scenario_tests( "scenarios/Tutorials" );
