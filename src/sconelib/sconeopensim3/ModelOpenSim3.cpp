@@ -328,6 +328,8 @@ namespace scone
 				// #todo: add support for displaying mesh contacts
 				auto file = FindFile( model_file.parent_path() / cm->getFilename() );
 				AddExternalResource( file );
+				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
+					name, bod, file.filename(), loc, ori ) );
 			}
 		}
 
@@ -361,6 +363,8 @@ namespace scone
 		{
 			if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &forces.get( i ) ) )
 				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim3>( *this, *hcf ) );
+			else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &forces.get( i ) ) )
+				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim3>( *this, *eff ) );
 		}
 
 		// create legs and connect stance_contact forces

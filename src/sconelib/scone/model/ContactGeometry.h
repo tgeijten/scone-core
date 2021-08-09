@@ -24,13 +24,25 @@ namespace scone
 			m_Body( b ),
 			m_Shape( s ),
 			m_Pos( p ),
-			m_Ori( q )
+			m_Ori( q ),
+			m_FileName()
+		{}
+
+		ContactGeometry( const String& name, const Body& b, const xo::path& f, const Vec3& p, const Quat& q ) :
+			m_Name( name ),
+			m_Body( b ),
+			m_Shape(),
+			m_Pos( p ),
+			m_Ori( q ),
+			m_FileName( f )
 		{}
 
 		virtual const String& GetName() const override { return m_Name; }
 
 		const Body& GetBody() const { return m_Body; }
 		const xo::shape& GetShape() const { return m_Shape; }
+		const xo::path& GetFileName() const { return m_FileName; }
+		bool HasFileName() const { return !m_FileName.empty(); }
 		const Vec3& GetPos() const { return m_Pos; }
 		const Quat& GetOri() const { return m_Ori; }
 
@@ -40,5 +52,6 @@ namespace scone
 		xo::shape m_Shape;
 		Vec3 m_Pos;
 		Quat m_Ori;
+		xo::path m_FileName;
 	};
 }

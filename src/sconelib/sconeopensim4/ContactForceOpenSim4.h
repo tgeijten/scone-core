@@ -14,7 +14,7 @@
 
 namespace OpenSim
 {
-	class HuntCrossleyForce;
+	class Force;
 }
 
 namespace scone
@@ -22,7 +22,7 @@ namespace scone
 	class SCONE_OPENSIM_4_API ContactForceOpenSim4 : public ContactForce
 	{
 	public:
-		ContactForceOpenSim4( class ModelOpenSim4& model, const OpenSim::HuntCrossleyForce& force );
+		ContactForceOpenSim4( class ModelOpenSim4& model, const OpenSim::Force& force );
 		virtual ~ContactForceOpenSim4();
 
 		virtual const String& GetName() const override;
@@ -34,7 +34,7 @@ namespace scone
 		ForceValue GetForceValue() const override;
 
 	private:
-		const OpenSim::HuntCrossleyForce& m_osForce;
+		const OpenSim::Force& m_osForce;
 		ModelOpenSim4& m_Model;
 
 		mutable Vec3 m_Force;

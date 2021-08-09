@@ -1,6 +1,7 @@
 #include "ContactForceOpenSim4.h"
 
 #include <OpenSim/Simulation/Model/HuntCrossleyForce.h>
+#include <OpenSim/Simulation/Model/ElasticFoundationForce.h>
 #include <OpenSim/Simulation/Model/Model.h>
 
 #include "ModelOpenSim4.h"
@@ -11,7 +12,14 @@
 
 namespace scone
 {
-	ContactForceOpenSim4::ContactForceOpenSim4( ModelOpenSim4& model, const OpenSim::HuntCrossleyForce& osForce ) :
+	std::vector<std::string> make_string_list( const OpenSim::Property<std::string>& osList ) {
+		std::vector<std::string> list;
+		for ( int idx = 0; idx < osList.size(); ++idx )
+			list.push_back( osList.getValue( idx ) );
+		return list;
+	}
+
+	ContactForceOpenSim4::ContactForceOpenSim4( ModelOpenSim4& model, const OpenSim::Force& osForce ) :
 		m_osForce( osForce ),
 		m_Model( model ),
 		m_LastNumDynamicsRealizations( -1 ),
@@ -21,11 +29,21 @@ namespace scone
 		m_PlaneLocation(),
 		m_PlaneNormal()
 	{
-		auto& osForceNonConst = const_cast<OpenSim::HuntCrossleyForce&>( m_osForce ); // hack for OpenSim bug
-		auto& osGeometry = osForceNonConst.getContactParametersSet().get( 0 ).getGeometry();
-		for ( int idx = 0; idx < osGeometry.size(); ++idx )
+		std::vector<std::string> geom_names;
+		if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &osForce ) )
 		{
-			auto& name = osGeometry.getValue( idx );
+			auto hcfnc = const_cast<OpenSim::HuntCrossleyForce&>( *hcf ); // hack for OpenSim bug
+			geom_names = make_string_list( hcfnc.getContactParametersSet().get( 0 ).getGeometry() );
+		}
+		else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &osForce ) )
+		{
+			auto effnc = const_cast<OpenSim::ElasticFoundationForce&>( *eff ); // hack for OpenSim bug
+			geom_names = make_string_list( effnc.getContactParametersSet().get( 0 ).getGeometry() );
+		}
+		else SCONE_ERROR( "Unsupported contact force: " + osForce.getName() );
+
+		for ( const auto& name : geom_names )
+		{
 			auto& cgvec = model.GetContactGeometries();
 			// #todo #osim4: need a contact geometry for "ground" to make this work
 			//auto& cg = *FindByName( model.GetContactGeometries(), name );
