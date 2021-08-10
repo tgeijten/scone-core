@@ -5,7 +5,6 @@
 SCONE is open source software for predictive simulation of biological
 motion. More information on SCONE, including tutorials, examples, community
 guidelines and documentation can be found on https://scone.software.
-The user interface is located in a separate [SCONE Studio](https://github.com/tgeijten/scone-studio) reposity.
 
 ## Installing SCONE (Windows 64 bit)
 
