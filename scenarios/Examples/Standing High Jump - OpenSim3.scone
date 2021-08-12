@@ -9,6 +9,7 @@ CmaOptimizer {
 		ModelOpenSim3 {
 			model_file = data/H0914M_osim3.osim
 			signature_postfix = OS3
+			state_init_file = data/InitStateJump.zml
 			fixed_control_step_size = 0.005
 		}
 		
