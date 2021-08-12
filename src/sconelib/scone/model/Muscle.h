@@ -91,6 +91,7 @@ namespace scone
 		virtual PropNode GetInfo() const;
 
 	protected:
+		void InitBodyJointDofs( const Body* b );
 		void InitJointsDofs();
 		mutable std::vector< const Joint* > m_Joints;
 		mutable std::vector< const Dof* > m_Dofs;

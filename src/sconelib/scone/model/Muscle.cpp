@@ -190,18 +190,32 @@ namespace scone
 		return pn;
 	}
 
+	void Muscle::InitBodyJointDofs( const Body* b )
+	{
+		auto* j = b->GetJoint();
+		SCONE_THROW_IF( !j, "Invalid joint for body " + b->GetName() + " while initializing muscle " + GetName() );
+		m_Joints.push_back( j );
+		xo::append( m_Dofs, j->GetDofs() );
+	}
+
 	void Muscle::InitJointsDofs()
 	{
 		SCONE_ASSERT( m_Joints.empty() && m_Dofs.empty() );
-		const Body* orgBody = &GetOriginBody();
-		const Body* insBody = &GetInsertionBody();
-		for ( const Body* b = insBody; b && b != orgBody; b = b->GetParentBody() )
-		{
-			auto* j = b->GetJoint();
-			SCONE_THROW_IF( !j, "Invalid joint for muscle " + GetName() + " connecting from " + orgBody->GetName() + " to " + insBody->GetName() );
+		const Body* const orgBody = &GetOriginBody();
+		const Body* const insBody = &GetInsertionBody();
+		const Body* const rootBody = GetModel().GetRootBody();
+		const Body* b = nullptr;
 
-			m_Joints.push_back( j );
-			xo::append( m_Dofs, j->GetDofs() );
+		// add joints, traversing from insertion to origin
+		for ( b = insBody; b && b != orgBody && b != rootBody; b = b->GetParentBody() )
+			InitBodyJointDofs( b );
+
+		if ( b == rootBody )
+		{
+			// In this case, the muscle crosses the root body and
+			// we need to add joints from insertion to root as well.
+			for ( b = orgBody; b && b != rootBody; b = b->GetParentBody() )
+				InitBodyJointDofs( b );
 		}
 	}
 }
