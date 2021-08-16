@@ -46,7 +46,7 @@ namespace scone
 
 		virtual const Model& GetModel() const = 0;
 
-	private:
+	protected:
 		const Joint* m_Joint;
 	};
 }

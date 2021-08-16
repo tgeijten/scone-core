@@ -36,11 +36,12 @@ namespace scone
 		const Body& GetParentBody() const { return m_ParentBody; }
 
 		virtual bool HasMotor() const { return false; }
-		virtual void SetMotorTargetOri( const Quat& o ) { SCONE_THROW_NOT_IMPLEMENTED; }
-		virtual void SetMotorTargetVel( const Vec3& v ) { SCONE_THROW_NOT_IMPLEMENTED; }
-		virtual void SetMotorTorqueOffset( const Vec3& v ) { SCONE_THROW_NOT_IMPLEMENTED; }
-		virtual void SetMotorStiffness( Real kp ) { SCONE_THROW_NOT_IMPLEMENTED; }
-		virtual void SetMotorDamping( Real kd ) { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual Real GetMotorMaxTorque() const { return 0.0; }
+		virtual void SetMotorTargetOri( const Quat& o ) const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorTargetVel( const Vec3& v ) const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorTorqueOffset( const Vec3& v ) const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorStiffness( Real kp ) const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetMotorDamping( Real kd ) const { SCONE_THROW_NOT_IMPLEMENTED; }
 
 		const std::vector< Dof* >& GetDofs() const;
 		void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
