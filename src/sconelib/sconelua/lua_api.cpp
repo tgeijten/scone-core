@@ -65,7 +65,7 @@ namespace scone
 			"has_motor", &LuaJoint::has_motor,
 			"set_motor_target_ori", &LuaJoint::set_motor_target_ori,
 			"set_motor_target_vel", &LuaJoint::set_motor_target_vel,
-			"set_motor_torque_offset", &LuaJoint::set_motor_torque_offset,
+			"add_motor_torque", &LuaJoint::add_motor_torque,
 			"set_motor_stiffness", &LuaJoint::set_motor_stiffness,
 			"set_motor_damping", &LuaJoint::set_motor_damping
 			);

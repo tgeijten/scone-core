@@ -235,7 +235,7 @@ namespace scone
 		/// set target velocity of the joint motor
 		void set_motor_target_vel( const LuaVec3& v ) { joint_.SetMotorTargetVel( v ); }
 		/// set target velocity of the joint motor
-		void set_motor_torque_offset( const LuaVec3& v ) { joint_.SetMotorTorqueOffset( v ); }
+		void add_motor_torque( const LuaVec3& v ) { joint_.AddMotorTorque( v ); }
 		/// set stiffness of the joint motor
 		void set_motor_stiffness( LuaNumber kp ) { joint_.SetMotorStiffness( kp ); }
 		/// set damping of the joint motor

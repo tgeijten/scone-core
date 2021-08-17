@@ -39,7 +39,7 @@ namespace scone
 		virtual Real GetMotorMaxTorque() const { return 0.0; }
 		virtual void SetMotorTargetOri( const Quat& o ) const { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetMotorTargetVel( const Vec3& v ) const { SCONE_THROW_NOT_IMPLEMENTED; }
-		virtual void SetMotorTorqueOffset( const Vec3& v ) const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void AddMotorTorque( const Vec3& v ) const { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetMotorStiffness( Real kp ) const { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetMotorDamping( Real kd ) const { SCONE_THROW_NOT_IMPLEMENTED; }
 

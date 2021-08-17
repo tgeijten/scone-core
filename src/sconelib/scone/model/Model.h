@@ -88,9 +88,6 @@ namespace scone
 		void SetMeasure( MeasureUP m ) { SCONE_ASSERT( !m_Measure ); m_Measure = std::move( m ); }
 		void CreateMeasure( const FactoryProps& measure_fp, Params& par );
 
-		void UpdateControlValues();
-		void UpdateAnalyses();
-
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }
 		const Leg& GetLeg( size_t idx ) const { return *m_Legs[ idx ]; }
@@ -224,6 +221,8 @@ namespace scone
 	protected:
 		virtual String GetClassSignature() const override;
 		void UpdateSensorDelayAdapters();
+		void UpdateControlValues();
+		void UpdateAnalyses();
 		void CreateControllers( const PropNode& pn, Params& par );
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
