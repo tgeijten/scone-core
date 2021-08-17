@@ -41,6 +41,9 @@ int main( int argc, const char* argv[] )
 #if SCONE_HYFYDY_ENABLED
 		if ( !args.has_flag( "skip-hyfydy" ) ) {
 			scone::add_scenario_tests( "scenarios/UnitTests/Hyfydy", "*.par" );
+#if SCONE_EXPERIMENTAL_FEATURES_ENABLED
+			scone::add_scenario_tests( "scenarios/UnitTests/HyfydyExperimental", "*.par" );
+#endif
 			scone::add_scenario_tests( "scenarios/Examples", "*Hyfydy*.scone" );
 			if ( args.has_flag( "add-blueprints" ) )
 				scone::add_scenario_tests( "scenarios/UnitTests/Blueprints", "*.par" );

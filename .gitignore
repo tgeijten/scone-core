@@ -3,6 +3,7 @@
 /scenarios/Tutorials/*.sto
 /scenarios/UnitTests/*.sto
 /scenarios/UnitTests/Hyfydy
+/scenarios/UnitTests/HyfydyExperimental
 /scenarios/UnitTests/Blueprints
 /scenarios/Benchmarks
 /scenarios/Backup
