@@ -1,6 +1,7 @@
 /_output/
 /bin/
 /scenarios/Tutorials/*.sto
+/scenarios/Examples/*.sto
 /scenarios/UnitTests/*.sto
 /scenarios/UnitTests/Hyfydy
 /scenarios/UnitTests/HyfydyExperimental
