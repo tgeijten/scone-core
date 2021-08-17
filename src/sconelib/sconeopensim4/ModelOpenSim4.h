@@ -131,6 +131,9 @@ namespace scone
 		void InitializeController();
 		virtual void UpdateStateFromDofs() override;
 
+		static String GetOpenSimBuildVersion();
+		virtual String GetBuildVersion() const override;
+
 	private:
 		void InitStateFromTk();
 		void CopyStateFromTk();

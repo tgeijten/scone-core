@@ -14,6 +14,7 @@
 #include "scone/core/Factories.h"
 #include "scone/core/math.h"
 #include "scone/optimization/Objective.h"
+#include "scone/optimization/ModelObjective.h"
 
 #include "xo/filesystem/filesystem.h"
 #include "xo/container/prop_node_tools.h"
@@ -74,6 +75,13 @@ namespace scone
 				init_file_include, init_file_exclude );
 			log::debug( "Imported ", result.first, " of ", GetObjective().info().dim(), ", skipped ", result.second, " parameters from ", init_file );
 		}
+
+		// inject model build version if this is a model objective
+		if ( const auto* mo = dynamic_cast<ModelObjective*>( m_Objective.get() ) )
+			if ( auto opt_fp = FindFactoryProps( GetOptimizerFactory(), scenario_pn_copy_, "Optimizer" ) )
+				if ( auto obj_fp = FindFactoryProps( GetObjectiveFactory(), opt_fp.props(), "Objective" ) )
+					if ( auto mod_fp = FindFactoryProps( GetModelFactory(), obj_fp.props(), "Model" ) )
+						const_cast<PropNode&>( mod_fp.props() ).set( "build_version", mo->GetModel().GetBuildVersion() );
 	}
 
 	Optimizer::~Optimizer()

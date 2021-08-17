@@ -841,6 +841,9 @@ namespace scone
 		InitializeController();
 	}
 
+	String ModelOpenSim3::GetOpenSimBuildVersion() { return "3.3-2021-01-28"; } // API doesn't provide a version :-(
+	String ModelOpenSim3::GetBuildVersion() const { return GetOpenSimBuildVersion(); }
+
 	TimeInSeconds ModelOpenSim3::GetSimulationStepSize()
 	{
 		SCONE_ASSERT( use_fixed_control_step_size );

@@ -219,6 +219,8 @@ namespace scone
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }
 
+		virtual String GetBuildVersion() const = 0;
+
 	protected:
 		virtual String GetClassSignature() const override;
 		void UpdateSensorDelayAdapters();

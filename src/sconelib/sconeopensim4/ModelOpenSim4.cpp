@@ -894,6 +894,9 @@ namespace scone
 		InitializeController();
 	}
 
+	String ModelOpenSim4::GetOpenSimBuildVersion() { return OpenSim::GetVersion(); }
+	String ModelOpenSim4::GetBuildVersion() const { return GetOpenSimBuildVersion(); }
+
 	TimeInSeconds ModelOpenSim4::GetSimulationStepSize()
 	{
 		SCONE_ASSERT( use_fixed_control_step_size );
