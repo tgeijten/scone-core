@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 				auto filename = xo::path( benchArg.getValue() );
 				if ( xo::directory_exists( filename ) )
 				{
-					auto files = xo::find_files( filename, "*.par", true );
+					auto files = xo::find_files( filename, "*.par", true, 1 );
 					for ( const auto& f : files )
 					{
 						auto scenario_pn = load_scenario( scone::FindScenario( f ), propArg );
