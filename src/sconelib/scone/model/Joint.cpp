@@ -54,8 +54,8 @@ namespace scone
 	PropNode Joint::GetInfo() const
 	{
 		PropNode pn;
-		for ( auto& d : GetDofs() )
-			pn[ d->GetName() ] = d->GetInfo();
+		pn[ "parent" ] = GetParentBody().GetName();
+		pn[ "child" ] = GetBody().GetName();
 		return pn;
 	}
 
