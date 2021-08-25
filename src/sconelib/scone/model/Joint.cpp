@@ -20,12 +20,20 @@ namespace scone
 		m_Body.m_Joint = this;
 	}
 
-	Real Joint::GetLimitMoment() const
+	Vec3 Joint::GetLimitTorque() const
 	{
-		Real force{ 0 };
-		for ( const auto& dof : GetDofs() )
-			force += dof->GetLimitMoment();
-		return force;
+		auto torque = Vec3::zero();
+		for ( const auto& d : GetDofs() )
+			torque += d->GetLimitMoment() * d->GetRotationAxis();
+		return torque;
+	}
+
+	Real Joint::GetLimitPower() const
+	{
+		Real pow = 0.0;
+		for ( const auto& d : GetDofs() )
+			pow += d->GetVel() * d->GetLimitMoment();
+		return pow;
 	}
 
 	Real Joint::GetLoad() const

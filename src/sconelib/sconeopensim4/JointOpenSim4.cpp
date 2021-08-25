@@ -65,14 +65,6 @@ namespace scone
 #endif
 	}
 
-	Real JointOpenSim4::GetLimitPower() const
-	{
-		Real pow = 0.0;
-		for ( const auto& d : GetDofs() )
-			pow += d->GetVel() * d->GetLimitMoment();
-		return pow;
-	}
-
 	Vec3 JointOpenSim4::GetPos() const
 	{
 #if 1
