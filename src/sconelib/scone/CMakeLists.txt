@@ -211,6 +211,7 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/State.cpp
 	model/State.h
 	model/ContactGeometry.h
+	model/DisplayGeometry.h
 	model/StateComponent.h
 	)
 set(SIM_SENSORSANDACTUATORS_FILES

@@ -10,19 +10,19 @@ namespace scone
 {
 	struct DisplayGeometry
 	{
-		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1 ) ) :
+		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ) ) :
 			filename_( file ),
 			shape_(),
 			pos_( p ),
 			ori_( q ),
 			scale_( s )
 		{}
-		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat() ) :
+		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ) ) :
 			filename_(),
 			shape_( sh ),
 			pos_( p ),
 			ori_( q ),
-			scale_( Vec3::diagonal( 1 ) )
+			scale_( s )
 		{}
 
 		xo::path filename_;
