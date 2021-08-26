@@ -75,7 +75,10 @@ namespace scone
 	{
 		PropNode pn;
 		for ( auto& c : controllers_ )
-			pn.add_child( xo::get_clean_type_name( *c ), c->GetInfo() );
+		{
+			if ( auto cpn = c->GetInfo(); !cpn.empty() )
+				pn.add_child( xo::get_clean_type_name( *c ), cpn );
+		}
 		return pn;
 	}
 

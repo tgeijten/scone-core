@@ -9,6 +9,7 @@
 #include "Dof.h"
 #include "Model.h"
 #include "Muscle.h"
+#include "Joint.h"
 
 #pragma warning( disable: 4355 )
 
@@ -26,5 +27,21 @@ namespace scone
 				mom += mus->GetMoment( *this );
 		}
 		return mom;
+	}
+
+	PropNode Dof::GetInfo()
+	{
+		PropNode pn;
+		pn[ "min" ] = GetRange().min;
+		pn[ "max" ] = GetRange().max;
+		if ( IsActuated() ) {
+			pn[ "min_torque" ] = GetMinTorque();
+			pn[ "max_torque" ] = GetMaxTorque();
+		}
+		if ( IsRotational() )
+			pn[ "rotation_axis" ] = GetRotationAxis();
+		if ( GetJoint() )
+			pn[ "joint" ] = GetJoint()->GetName();
+		return pn;
 	}
 }

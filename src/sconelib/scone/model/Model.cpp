@@ -460,17 +460,28 @@ namespace scone
 	{
 		PropNode pn;
 
+		auto& model_pn = pn.add_child( "Model" );
+		model_pn[ "mass" ] = GetMass();
+		model_pn[ "gravity" ] = GetGravity();
+		model_pn[ "bw_force" ] = GetBW();
+		model_pn[ "com_pos" ] = GetComPos();
+		model_pn[ "leg_count" ] = GetLegCount();
+
 		for ( const auto& item : GetBodies() )
 			pn[ "Bodies" ].add_child( item->GetName(), item->GetInfo() ); 
 
 		for ( const auto& item : GetJoints() )
 			pn[ "Joints" ].add_child( item->GetName(), item->GetInfo() );
 
+		for ( const auto& item : GetDofs() )
+			pn[ "Coordinates" ].add_child( item->GetName(), item->GetInfo() );
+
 		for ( const auto& item : GetActuators() )
 			pn[ "Actuators" ].add_child( item->GetName(), item->GetInfo() );
 
 		if ( auto* c = GetController() )
-			pn.add_child( xo::get_clean_type_name( *c ), c->GetInfo() );
+			if ( auto cpn = c->GetInfo(); !cpn.empty() )
+				pn.add_child( xo::get_clean_type_name( *c ), cpn );
 
 		return pn;
 	}

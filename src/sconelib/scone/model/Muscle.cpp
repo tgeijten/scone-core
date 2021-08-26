@@ -184,9 +184,12 @@ namespace scone
 	PropNode Muscle::GetInfo() const
 	{
 		PropNode pn;
+		pn[ "origin" ] = GetOriginBody().GetName();
+		pn[ "insertion" ] = GetInsertionBody().GetName();
 		pn[ "max_isometric_force" ] = GetMaxIsometricForce();
 		pn[ "optimal_fiber_length" ] = GetOptimalFiberLength();
 		pn[ "tendon_slack_length" ] = GetTendonSlackLength();
+		pn[ "max_contraction_velocity" ] = GetMaxContractionVelocity();
 		return pn;
 	}
 

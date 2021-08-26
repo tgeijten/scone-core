@@ -46,6 +46,8 @@ namespace scone
 
 		virtual const Model& GetModel() const = 0;
 
+		virtual PropNode GetInfo();
+
 	protected:
 		const Joint* m_Joint;
 	};

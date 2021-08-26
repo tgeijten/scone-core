@@ -59,6 +59,17 @@ namespace scone
 		PropNode pn;
 		pn[ "mass" ] = GetMass();
 		pn[ "inertia" ] = GetInertiaTensorDiagonal();
+		for ( auto& dg : GetDisplayGeometries() )
+		{
+			bool is_shape = dg.filename_.empty();
+			auto& dg_pn = pn[ "DisplayGeometry" ].add_child( is_shape ? string( "shape" ) : dg.filename_.str() );
+			if ( is_shape )
+				dg_pn.append( to_prop_node( dg.shape_ ) );
+			dg_pn[ "position" ] = dg.pos_;
+			dg_pn[ "orientation" ] = dg.ori_;
+			dg_pn[ "scale" ] = dg.scale_;
+		}
+
 		return pn;
 	}
 }
