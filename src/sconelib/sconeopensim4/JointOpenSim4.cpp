@@ -38,11 +38,12 @@ namespace scone
 
 	Vec3 JointOpenSim4::GetReactionForce() const
 	{
-		auto& model = m_osJoint.getModel();
+		auto& model = m_Model.GetOsimModel();
 		auto& matter = model.getMatterSubsystem();
 		auto& state = m_Model.GetTkState();
 		auto child_body_idx = m_osJoint.getChildFrame().getMobilizedBodyIndex();
 
+		model.getMultibodySystem().realize( state, SimTK::Stage::Acceleration );
 		SimTK::Vector_< SimTK::SpatialVec > forcesAtMInG;
 		matter.calcMobilizerReactionForces( state, forcesAtMInG ); // state should be at acceleration
 
