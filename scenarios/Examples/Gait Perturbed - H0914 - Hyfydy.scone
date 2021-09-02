@@ -15,7 +15,7 @@ CmaOptimizer {
 			initial_state_offset =	0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			
-			# Required for Pertrubations
+			# Required for Perturbations
 			enable_external_forces = 1
 			
 			<< data/HfdConfigM2012Planar.zml >>
