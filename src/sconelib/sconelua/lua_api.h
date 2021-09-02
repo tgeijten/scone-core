@@ -254,6 +254,8 @@ namespace scone
 		LuaNumber time() { return mod_.GetTime(); }
 		/// get the previous simulation delta time [s]
 		LuaNumber delta_time() { return mod_.GetDeltaTime(); }
+		/// get the max_duration of the simulation objective
+		LuaNumber max_duration() { return mod_.GetSimulationEndTime(); }
 		/// get the current com position [m]
 		LuaVec3 com_pos() { return mod_.GetComPos(); }
 		/// get the current com velocity [m/s]

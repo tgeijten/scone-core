@@ -89,6 +89,7 @@ namespace scone
 		lua.new_usertype<LuaModel>( "LuaModel", sol::constructors<>(),
 			"time", &LuaModel::time,
 			"delta_time", &LuaModel::delta_time,
+			"max_duration", &LuaModel::max_duration,
 			"com_pos", &LuaModel::com_pos,
 			"com_vel", &LuaModel::com_vel,
 			"actuator", &LuaModel::actuator,
