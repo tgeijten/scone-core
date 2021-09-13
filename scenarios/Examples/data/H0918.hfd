@@ -1,12 +1,14 @@
 model {
-	$stiffness = 1e6
-	$limit_stiffness = 500
 	material {
 		name = default_material
 		static_friction = 0.9
 		dynamic_friction = 0.9
 		stiffness = 5975.21
 		damping = 1
+	}
+	model_options {
+		joint_stiffness = 1e+06
+		joint_limit_stiffness = 500
 	}
 	body {
 		name = ground
@@ -31,8 +33,6 @@ model {
 			parent = pelvis
 			pos_in_parent { x = 0 y = -0.0661 z = 0.0835 }
 			pos_in_child { x = 0 y = 0.17 z = 0 }
-			stiffness = $stiffness
-			limit_stiffness = $limit_stiffness
 			limits { x = 0..0 y = 0..0 z = -120..120 }
 		}
 		mesh { file = femur.vtp pos { x = 0 y = 0.17 z = 0 } }
@@ -46,7 +46,6 @@ model {
 			parent = femur_r
 			pos_in_parent { x = 0 y = -0.226 z = 0 }
 			pos_in_child { x = 0 y = 0.1867 z = 0 }
-			stiffness = $stiffness
 			limit_stiffness = 114.592
 			limit_damping = 2.86479
 			limits { x = 0..0 y = 0..0 z = -120..-5 }
@@ -63,8 +62,6 @@ model {
 			parent = tibia_r
 			pos_in_parent { x = 0 y = -0.2433 z = 0 }
 			pos_in_child { x = -0.05123 y = 0.01195 z = -0.00792 }
-			stiffness = $stiffness
-			limit_stiffness = $limit_stiffness
 			limits { x = 0..0 y = 0..0 z = -120..120 }
 		}
 		mesh { file = foot.vtp pos { x = -0.1 y = -0.03 z = 0 } }
@@ -80,8 +77,6 @@ model {
 			parent = pelvis
 			pos_in_parent { x = 0 y = -0.0661 z = -0.0835 }
 			pos_in_child { x = 0 y = 0.17 z = 0 }
-			stiffness = $stiffness
-			limit_stiffness = $limit_stiffness
 			limits { x = 0..0 y = 0..0 z = -120..120 }
 		}
 		mesh { file = l_femur.vtp pos { x = 0 y = 0.17 z = 0 } }
@@ -95,7 +90,6 @@ model {
 			parent = femur_l
 			pos_in_parent { x = 0 y = -0.226 z = 0 }
 			pos_in_child { x = 0 y = 0.1867 z = 0 }
-			stiffness = $stiffness
 			limit_stiffness = 114.592
 			limit_damping = 2.86479
 			limits { x = 0..0 y = 0..0 z = -120..-5 }
@@ -112,8 +106,6 @@ model {
 			parent = tibia_l
 			pos_in_parent { x = 0 y = -0.2433 z = 0 }
 			pos_in_child { x = -0.05123 y = 0.01195 z = 0.00792 }
-			stiffness = $stiffness
-			limit_stiffness = $limit_stiffness
 			limits { x = 0..0 y = 0..0 z = -120..120 }
 		}
 		mesh { file = l_foot.vtp pos { x = -0.1 y = -0.03 z = 0 } }
@@ -129,8 +121,6 @@ model {
 			parent = pelvis
 			pos_in_parent { x = -0.03 y = 0.0815 z = 0 }
 			pos_in_child { x = 0.03 y = -0.32 z = 0 }
-			stiffness = $stiffness
-			limit_stiffness = $limit_stiffness
 			limits { x = 0..0 y = 0..0 z = 0..0 }
 		}
 		mesh { file = hat_spine.vtp pos { x = 0.03 y = -0.32 z = 0 } }
@@ -144,8 +134,6 @@ model {
 		optimal_fiber_length = 0.109
 		max_isometric_force = 2594
 		pennation_angle = 0
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = -0.05526 y = -0.10257 z = 0.06944 } }
 			{ body = tibia_r pos { x = -0.028 y = 0.1667 z = 0.02943 } }
@@ -158,8 +146,6 @@ model {
 		optimal_fiber_length = 0.173
 		max_isometric_force = 804
 		pennation_angle = 0.401426
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_r pos { x = 0.005 y = -0.0411 z = 0.0234 } }
 			{ body = tibia_r pos { x = -0.028 y = 0.1667 z = 0.02943 } }
@@ -172,8 +158,6 @@ model {
 		optimal_fiber_length = 0.147
 		max_isometric_force = 1944
 		pennation_angle = 0
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = -0.0642 y = 0.0176 z = 0.0563 } }
 			{ body = pelvis pos { x = -0.0669 y = -0.052 z = 0.0914 } }
@@ -187,8 +171,6 @@ model {
 		optimal_fiber_length = 0.1
 		max_isometric_force = 2342
 		pennation_angle = 0.139626
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = 0.006 y = 0.0887 z = 0.0289 } }
 			{ body = pelvis pos { x = 0.0407 y = -0.01 z = 0.076 } }
@@ -202,8 +184,6 @@ model {
 		optimal_fiber_length = 0.114
 		max_isometric_force = 1169
 		pennation_angle = 0.0872665
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = 0.0412 y = -0.0311 z = 0.0968 } }
 			{ body = tibia_r pos { x = 0.04 y = 0.2117 z = 0.0018 } }
@@ -215,8 +195,6 @@ model {
 		optimal_fiber_length = 0.087
 		max_isometric_force = 4530
 		pennation_angle = 0.0523599
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_r pos { x = 0.029 y = -0.0224 z = 0.031 } }
 			{ body = femur_r pos { x = 0.0335 y = -0.0384 z = 0.0285 } }
@@ -229,8 +207,6 @@ model {
 		optimal_fiber_length = 0.06
 		max_isometric_force = 2241
 		pennation_angle = 0.296706
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_r pos { x = -0.02 y = -0.216 z = -0.024 } }
 			{ body = calcn_r pos { x = -0.1 y = 0.001 z = -0.0053 } }
@@ -242,8 +218,6 @@ model {
 		optimal_fiber_length = 0.05
 		max_isometric_force = 3549
 		pennation_angle = 0.436332
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = tibia_r pos { x = -0.0024 y = 0.0334 z = 0.0071 } }
 			{ body = calcn_r pos { x = -0.1 y = 0.001 z = -0.0053 } }
@@ -255,8 +229,6 @@ model {
 		optimal_fiber_length = 0.098
 		max_isometric_force = 1759
 		pennation_angle = 0.0872665
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = tibia_r pos { x = 0.0179 y = 0.0243 z = 0.0115 } }
 			{ body = tibia_r pos { x = 0.0329 y = -0.2084 z = -0.0177 } }
@@ -269,8 +241,6 @@ model {
 		optimal_fiber_length = 0.109
 		max_isometric_force = 2594
 		pennation_angle = 0
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = -0.05526 y = -0.10257 z = -0.06944 } }
 			{ body = tibia_l pos { x = -0.028 y = 0.1667 z = -0.02943 } }
@@ -283,8 +253,6 @@ model {
 		optimal_fiber_length = 0.173
 		max_isometric_force = 804
 		pennation_angle = 0.401426
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_l pos { x = 0.005 y = -0.0411 z = -0.0234 } }
 			{ body = tibia_l pos { x = -0.028 y = 0.1667 z = -0.02943 } }
@@ -297,8 +265,6 @@ model {
 		optimal_fiber_length = 0.147
 		max_isometric_force = 1944
 		pennation_angle = 0
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = -0.0642 y = 0.0176 z = -0.0563 } }
 			{ body = pelvis pos { x = -0.0669 y = -0.052 z = -0.0914 } }
@@ -312,8 +278,6 @@ model {
 		optimal_fiber_length = 0.1
 		max_isometric_force = 2342
 		pennation_angle = 0.139626
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = 0.006 y = 0.0887 z = -0.0289 } }
 			{ body = pelvis pos { x = 0.0407 y = -0.01 z = -0.076 } }
@@ -327,8 +291,6 @@ model {
 		optimal_fiber_length = 0.114
 		max_isometric_force = 1169
 		pennation_angle = 0.0872665
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = pelvis pos { x = 0.0412 y = -0.0311 z = -0.0968 } }
 			{ body = tibia_l pos { x = 0.04 y = 0.2117 z = -0.0018 } }
@@ -340,8 +302,6 @@ model {
 		optimal_fiber_length = 0.087
 		max_isometric_force = 4530
 		pennation_angle = 0.0523599
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_l pos { x = 0.029 y = -0.0224 z = -0.031 } }
 			{ body = femur_l pos { x = 0.0335 y = -0.0384 z = -0.0285 } }
@@ -354,8 +314,6 @@ model {
 		optimal_fiber_length = 0.06
 		max_isometric_force = 2241
 		pennation_angle = 0.296706
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = femur_l pos { x = -0.02 y = -0.216 z = 0.024 } }
 			{ body = calcn_l pos { x = -0.1 y = 0.001 z = 0.0053 } }
@@ -367,8 +325,6 @@ model {
 		optimal_fiber_length = 0.05
 		max_isometric_force = 3549
 		pennation_angle = 0.436332
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = tibia_l pos { x = -0.0024 y = 0.0334 z = -0.0071 } }
 			{ body = calcn_l pos { x = -0.1 y = 0.001 z = 0.0053 } }
@@ -380,8 +336,6 @@ model {
 		optimal_fiber_length = 0.098
 		max_isometric_force = 1759
 		pennation_angle = 0.0872665
-		activation_rate = 100
-		deactivation_rate = 25
 		path [
 			{ body = tibia_l pos { x = 0.0179 y = 0.0243 z = -0.0115 } }
 			{ body = tibia_l pos { x = 0.0329 y = -0.2084 z = 0.0177 } }
@@ -428,13 +382,13 @@ model {
 		pos { x = 0.085 y = -0.015 z = 0 }
 		ori { x = 0 y = 0 z = 0 }
 	}
-	dof { pelvis_tilt = pelvis_rz }
-	dof { pelvis_tx = pelvis_tx }
-	dof { pelvis_ty = pelvis_ty }
-	dof { hip_flexion_r = hip_rz_r }
-	dof { knee_angle_r = knee_rz_r }
-	dof { ankle_angle_r = ankle_rz_r }
-	dof { hip_flexion_l = hip_rz_l }
-	dof { knee_angle_l = knee_rz_l }
-	dof { ankle_angle_l = ankle_rz_l }
+	dof { name = pelvis_tilt source = pelvis_rz range = -90..90 }
+	dof { name = pelvis_tx source = pelvis_tx range = -5..5 }
+	dof { name = pelvis_ty source = pelvis_ty range = -1..2 }
+	dof { name = hip_flexion_r source = hip_rz_r range = -120..120 }
+	dof { name = knee_angle_r source = knee_rz_r range = -120..10 }
+	dof { name = ankle_angle_r source = ankle_rz_r range = -60..60 }
+	dof { name = hip_flexion_l source = hip_rz_l range = -120..120 }
+	dof { name = knee_angle_l source = knee_rz_l range = -120..10 }
+	dof { name = ankle_angle_l source = ankle_rz_l range = -60..60 }
 }
