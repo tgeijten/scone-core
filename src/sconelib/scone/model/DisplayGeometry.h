@@ -5,24 +5,27 @@
 #include "scone/core/types.h"
 #include "xo/filesystem/path.h"
 #include "xo/shape/shape.h"
+#include "xo/utility/color.h"
 
 namespace scone
 {
 	struct DisplayGeometry
 	{
-		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ) ) :
+		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ), const xo::color& c = xo::color::null() ) :
 			filename_( file ),
 			shape_(),
 			pos_( p ),
 			ori_( q ),
-			scale_( s )
+			scale_( s ),
+			color_( c )
 		{}
-		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ) ) :
+		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ), const xo::color& c = xo::color::null() ) :
 			filename_(),
 			shape_( sh ),
 			pos_( p ),
 			ori_( q ),
-			scale_( s )
+			scale_( s ),
+			color_( c )
 		{}
 
 		xo::path filename_;
@@ -30,5 +33,6 @@ namespace scone
 		Vec3 pos_;
 		Quat ori_;
 		Vec3 scale_;
+		xo::color color_;
 	};
 }
