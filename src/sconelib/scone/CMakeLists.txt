@@ -213,6 +213,7 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/ContactGeometry.h
 	model/DisplayGeometry.h
 	model/StateComponent.h
+	model/UserInput.h
 	)
 set(SIM_SENSORSANDACTUATORS_FILES
 	model/Actuator.cpp

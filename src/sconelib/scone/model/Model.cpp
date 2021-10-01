@@ -11,6 +11,7 @@
 #include "Dof.h"
 #include "Joint.h"
 #include "Muscle.h"
+#include "UserInput.h"
 #include "SensorDelayAdapter.h"
 #include "State.h"
 #include "scone/controllers/CompositeController.h"

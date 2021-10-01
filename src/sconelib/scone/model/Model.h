@@ -70,6 +70,10 @@ namespace scone
 		// Contact forces
 		const std::vector< ContactForceUP >& GetContactForces() const { return m_ContactForces; }
 
+		// Model UserInput
+		const std::vector< UserInputUP >& GetUserInputs() const { return m_UserInputs; }
+		virtual void UpdateModelFromUserInputs() {}
+
 		// Contact force values
 		virtual std::vector< ForceValue > GetContactForceValues() const;
 
@@ -240,6 +244,7 @@ namespace scone
 		std::vector< LegUP > m_Legs;
 		std::vector< ContactGeometryUP > m_ContactGeometries;
 		std::vector< ContactForceUP > m_ContactForces;
+		std::vector< UserInputUP > m_UserInputs;
 
 		MeasureUP m_Measure;
 		ControllerUP m_Controller;
