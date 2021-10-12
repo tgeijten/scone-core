@@ -14,6 +14,7 @@ namespace scone
 
 		virtual const String& GetName() const = 0;
 		virtual const String& GetLabel() const = 0;
+		virtual const String& GetGroupName() const = 0;
 		virtual Real GetValue() const = 0;
 		virtual Range<Real> GetRange() const = 0;
 
