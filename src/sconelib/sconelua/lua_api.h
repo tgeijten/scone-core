@@ -186,6 +186,8 @@ namespace scone
 		LuaVec3 com_pos() { return bod_.GetComPos(); }
 		/// get the current com velocity [m/s]
 		LuaVec3 com_vel() { return bod_.GetComVel(); }
+		/// get the current com acceleration [m/s^2]
+		LuaVec3 com_acc() { return bod_.GetComAcc(); }
 		/// get the global position [m] of a local point p on the body
 		LuaVec3 point_pos( const LuaVec3& p ) { return bod_.GetPosOfPointOnBody( p ); }
 		/// get the global linear velocity [m/s] of a local point p on the body
@@ -196,6 +198,8 @@ namespace scone
 		LuaVec3 ang_pos() { return rotation_vector_from_quat( bod_.GetOrientation() ); }
 		/// get the angular velocity [rad/s] of the body
 		LuaVec3 ang_vel() { return bod_.GetAngVel(); }
+		/// get the angular acceleration [rad/s^2] of the body
+		LuaVec3 ang_acc() { return bod_.GetAngAcc(); }
 		/// get the contact force vector [N] applied to this body via contact geometry
 		LuaVec3 contact_force() { return bod_.GetContactForce(); }
 		/// get the contact moment vector [Nm] applied to this body via contact geometry
