@@ -40,6 +40,12 @@ namespace scone
 {
 	Model::Model( const PropNode& props, Params& par ) :
 		HasSignature( props ),
+		INIT_MEMBER( props, state_init_file, path() ),
+		INIT_MEMBER( props, initial_load, 0.2 ),
+		INIT_MEMBER( props, initial_load_dof, "pelvis_ty" ),
+		INIT_MEMBER( props, sensor_delay_scaling_factor, 1.0 ),
+		INIT_MEMBER( props, initial_equilibration_activation, 0.05 ),
+		INIT_MEMBER( props, user_input_file, "" ),
 		m_Profiler( props.get<bool>( "enable_profiler", false ) ),
 		m_RootBody( nullptr ),
 		m_GroundBody( nullptr ),
@@ -80,11 +86,6 @@ namespace scone
 		fixed_step_size = std::min( fixed_control_step_size, fixed_measure_step_size );
 		fixed_control_step_interval = static_cast<int>( std::round( fixed_control_step_size / fixed_step_size ) );
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );
-
-		INIT_PROP( props, initial_load, 0.2 );
-		INIT_PROP( props, initial_load_dof, "pelvis_ty" );
-		INIT_PROP( props, sensor_delay_scaling_factor, 1.0 );
-		INIT_PROP( props, initial_equilibration_activation, 0.05 );
 
 		// set store data info from settings
 		auto& flags = GetStoreDataFlags();
@@ -430,7 +431,7 @@ namespace scone
 	Real Model::GetTotalContactForce() const
 	{
 		return xo::accumulate( GetLegs(), 0.0,
-			[]( double v, const LegUP& l ) { return v + xo::length( l->GetContactForce() ); }  );
+			[]( double v, const LegUP& l ) { return v + xo::length( l->GetContactForce() ); } );
 	}
 
 	Real Model::GetBW() const
@@ -469,7 +470,7 @@ namespace scone
 		model_pn[ "leg_count" ] = GetLegCount();
 
 		for ( const auto& item : GetBodies() )
-			pn[ "Bodies" ].add_child( item->GetName(), item->GetInfo() ); 
+			pn[ "Bodies" ].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetJoints() )
 			pn[ "Joints" ].add_child( item->GetName(), item->GetInfo() );

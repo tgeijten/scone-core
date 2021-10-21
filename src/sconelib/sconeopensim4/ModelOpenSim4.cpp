@@ -89,7 +89,6 @@ namespace scone
 		INIT_PROP( props, integration_method, String( "SemiExplicitEuler2" ) );
 
 		INIT_PROP_REQUIRED( props, model_file );
-		INIT_PROP( props, state_init_file, path() );
 		INIT_PROP( props, probe_class, String() );
 
 		INIT_PROP( props, enable_external_forces, false );

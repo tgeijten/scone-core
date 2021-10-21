@@ -175,6 +175,9 @@ namespace scone
 		template< typename SensorT, typename... Args > SensorDelayAdapter& AcquireDelayedSensor( Args&&... args )
 		{ return AcquireSensorDelayAdapter( AcquireSensor< SensorT >( std::forward< Args >( args )... ) ); }
 
+		/// File containing the initial state (or pose) of the model.
+		path state_init_file;
+
 		/// Offset [rad] or [m] to apply to initial state; default = 0.
 		const PropNode* initial_state_offset;
 
@@ -210,6 +213,9 @@ namespace scone
 
 		/// Activation used to equilibrate muscles before control inputs are known; default = 0.05
 		Real initial_equilibration_activation;
+
+		/// File containing user input values, only for model with user inputs; default = "".
+		path user_input_file;
 
 		virtual void SetStoreData( bool store ) { m_StoreData = store; }
 		bool GetStoreData() const;
