@@ -233,10 +233,11 @@ namespace scone
 		virtual void StoreCurrentFrame();
 
 		virtual void AddExternalDisplayGeometries( const path& model_path );
+		virtual void Clear();
 
-	protected:
 		mutable xo::profiler m_Profiler;
 
+		// model components
 		std::vector< MuscleUP > m_Muscles;
 		std::vector< BodyUP > m_Bodies;
 		std::vector< JointUP > m_Joints;
@@ -244,37 +245,39 @@ namespace scone
 		std::vector< LegUP > m_Legs;
 		std::vector< ContactGeometryUP > m_ContactGeometries;
 		std::vector< ContactForceUP > m_ContactForces;
-		std::vector< UserInputUP > m_UserInputs;
 
-		MeasureUP m_Measure;
-		ControllerUP m_Controller;
-		bool m_ShouldTerminate;
-
-		// step size
-		double fixed_step_size;
-		int fixed_control_step_interval;
-		int fixed_analysis_step_interval;
-
-		// non-owning storage
+		// non-owning model components
 		std::vector< Actuator* > m_Actuators;
-		Storage< Real > m_SensorDelayStorage;
-		std::vector< std::unique_ptr< SensorDelayAdapter > > m_SensorDelayAdapters;
-		std::vector< std::unique_ptr< Sensor > > m_Sensors;
 		Body* m_RootBody;
 		Body* m_GroundBody;
 
-		const PropNode* m_pModelProps;
-		const PropNode* m_pCustomProps;
-		PropNode m_UserData;
-		ModelFeatures m_Features;
+		// controller, measure components
+		ControllerUP m_Controller;
+		MeasureUP m_Measure;
+		std::vector< std::unique_ptr< Sensor > > m_Sensors;
+		std::vector< std::unique_ptr< SensorDelayAdapter > > m_SensorDelayAdapters;
 
-		// storage for HasData classes
+		// simulation data
+		bool m_ShouldTerminate;
+		Storage< Real > m_SensorDelayStorage;
 		Storage< Real, TimeInSeconds > m_Data;
-		bool m_StoreData;
-		TimeInSeconds m_StoreDataInterval;
-		bool m_KeepAllFrames;
-		StoreDataFlags m_StoreDataFlags;
+		PropNode m_UserData;
 		TimeInSeconds m_PrevStoreDataTime;
 		int m_PrevStoreDataStep;
+
+		// model properties
+		std::vector< UserInputUP > m_UserInputs;
+		const PropNode* m_pModelProps;
+		const PropNode* m_pCustomProps;
+		ModelFeatures m_Features;
+
+		// simulation settings
+		double fixed_step_size;
+		int fixed_control_step_interval;
+		int fixed_analysis_step_interval;
+		bool m_StoreData;
+		TimeInSeconds m_StoreDataInterval;
+		StoreDataFlags m_StoreDataFlags;
+		bool m_KeepAllFrames;
 	};
 }

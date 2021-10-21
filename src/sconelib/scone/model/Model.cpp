@@ -41,17 +41,19 @@ namespace scone
 	Model::Model( const PropNode& props, Params& par ) :
 		HasSignature( props ),
 		m_Profiler( props.get<bool>( "enable_profiler", false ) ),
-		m_Measure( nullptr ),
-		m_Controller( nullptr ),
-		m_ShouldTerminate( false ),
 		m_RootBody( nullptr ),
 		m_GroundBody( nullptr ),
+		m_Controller( nullptr ),
+		m_Measure( nullptr ),
+		m_ShouldTerminate( false ),
+		m_PrevStoreDataTime( 0 ),
+		m_PrevStoreDataStep( 0 ),
 		m_pModelProps( nullptr ),
 		m_pCustomProps( nullptr ),
 		m_StoreData( false ),
+		m_StoreDataInterval( 1.0 / GetSconeSetting<double>( "data.frequency" ) ),
 		m_StoreDataFlags( { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::ContactForce } ),
-		m_PrevStoreDataTime( 0 ),
-		m_PrevStoreDataStep( 0 )
+		m_KeepAllFrames( GetSconeSetting<bool>( "data.keep_all_frames" ) )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
@@ -85,8 +87,6 @@ namespace scone
 		INIT_PROP( props, initial_equilibration_activation, 0.05 );
 
 		// set store data info from settings
-		m_KeepAllFrames = GetSconeSetting<bool>( "data.keep_all_frames" );
-		m_StoreDataInterval = 1.0 / GetSconeSetting<double>( "data.frequency" );
 		auto& flags = GetStoreDataFlags();
 		flags.set( StoreDataTypes::BodyPosition, GetSconeSetting<bool>( "data.body" ) );
 		flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( "data.joint" ) );
@@ -496,5 +496,31 @@ namespace scone
 				if ( xo::file_exists( model_path / g.filename_ ) )
 					AddExternalResource( model_path / g.filename_ );
 		}
+	}
+
+	void Model::Clear()
+	{
+		m_Muscles.clear();
+		m_Bodies.clear();
+		m_Joints.clear();
+		m_Dofs.clear();
+		m_Legs.clear();
+		m_ContactGeometries.clear();
+		m_ContactForces.clear();
+
+		m_Actuators.clear();
+		m_RootBody = m_GroundBody = nullptr;
+
+		m_Controller.reset();
+		m_Measure.reset();
+		m_Sensors.clear();
+		m_SensorDelayAdapters.clear();
+
+		m_ShouldTerminate = false;
+		m_SensorDelayStorage.Clear();
+		m_Data.Clear();
+		m_UserData.clear();
+		m_PrevStoreDataTime = 0;
+		m_PrevStoreDataStep = 0;
 	}
 }
