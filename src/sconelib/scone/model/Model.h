@@ -83,13 +83,11 @@ namespace scone
 		// Controller access
 		Controller* GetController() { return m_Controller.get(); }
 		const Controller* GetController() const { return m_Controller.get(); }
-		virtual void SetController( ControllerUP c ) { SCONE_ASSERT( !m_Controller ); m_Controller = std::move( c ); }
 		void CreateController( const FactoryProps& controller_fp, Params& par );
 
 		// Measure access
 		Measure* GetMeasure() { return m_Measure.get(); }
 		const Measure* GetMeasure() const { return m_Measure.get(); }
-		void SetMeasure( MeasureUP m ) { SCONE_ASSERT( !m_Measure ); m_Measure = std::move( m ); }
 		void CreateMeasure( const FactoryProps& measure_fp, Params& par );
 
 		// leg access
@@ -227,7 +225,10 @@ namespace scone
 		void UpdateSensorDelayAdapters();
 		void UpdateControlValues();
 		void UpdateAnalyses();
+
 		void CreateControllers( const PropNode& pn, Params& par );
+		virtual void SetController( ControllerUP c ) { SCONE_ASSERT( !m_Controller ); m_Controller = std::move( c ); }
+		void SetMeasure( MeasureUP m ) { SCONE_ASSERT( !m_Measure ); m_Measure = std::move( m ); }
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual void StoreCurrentFrame();
