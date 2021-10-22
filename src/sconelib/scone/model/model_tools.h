@@ -10,12 +10,16 @@
 
 #include <vector>
 #include "scone/core/platform.h"
+#include "scone/core/types.h"
 #include "scone/core/Vec3.h"
 #include "scone/core/math.h"
+#include "scone/core/PropNode.h"
 
 namespace scone
 {
-	class Muscle;
 	SCONE_API Vec3 GetGroundCop( const Vec3& force, const Vec3& moment, Real min_force = REAL_WIDE_EPSILON );
 	SCONE_API Vec3 GetPlaneCop( const Vec3& normal, const Vec3& location, const Vec3& force, const Vec3& moment, Real min_force = REAL_WIDE_EPSILON );
+
+	SCONE_API PropNode MakePropNode( const std::vector< UserInputUP >& user_inputs );
+	SCONE_API size_t SetUserInputsFromPropNode( const PropNode& pn, const std::vector<UserInputUP>& user_inputs );
 }

@@ -10,12 +10,7 @@
 
 #include "scone/core/string_tools.h"
 #include "scone/core/profiler_config.h"
-#include "Sensors.h"
-#include "Muscle.h"
-#include "Joint.h"
-#include "Dof.h"
-#include "Side.h"
-#include "xo/geometry/vec3.h"
+#include "scone/model/UserInput.h"
 
 using std::vector;
 using std::pair;
@@ -42,5 +37,24 @@ namespace scone
 			return pos;
 		}
 		else return Vec3::zero();
+	}
+
+	PropNode MakePropNode( const std::vector<UserInputUP>& user_inputs )
+	{
+		PropNode pn;
+		for ( auto& ui : user_inputs )
+			pn[ ui->GetName() ] = ui->GetValue();
+		return pn;
+	}
+
+	size_t SetUserInputsFromPropNode( const PropNode& pn, const std::vector<UserInputUP>& user_inputs )
+	{
+		size_t count = 0;
+		for ( auto& ui : user_inputs )
+		{
+			if ( auto v = pn.try_get<Real>( ui->GetName() ) )
+				ui->SetValue( *v ), ++count;
+		}
+		return count;
 	}
 }
