@@ -11,7 +11,6 @@
 #	define SCONE_PROFILE_START Profiler::GetGlobalInstance().Reset()
 #	define SCONE_PROFILE_REPORT log::info( Profiler::GetGlobalInstance().GetReport() )
 #elif defined SCONE_ENABLE_XO_PROFILING
-#	include "PropNode.h"
 #	include "xo/system/profiler.h"
 #	define SCONE_PROFILE_FUNCTION( profiler ) xo::scope_profiler scoped_profile_var( __FUNCTION__, profiler )
 #	define SCONE_PROFILE_SCOPE( profiler, scope_name_arg ) xo::scope_profiler scoped_profile_var( scope_name_arg, profiler )
@@ -19,3 +18,9 @@
 #	define SCONE_PROFILE_FUNCTION( profiler ) void()
 #	define SCONE_PROFILE_SCOPE( profiler, scope_name_arg ) void()
 #endif
+
+namespace scone
+{
+	SCONE_API bool SetProfilerEnabled( bool enabled );
+	SCONE_API bool GetProfilerEnabled();
+}
