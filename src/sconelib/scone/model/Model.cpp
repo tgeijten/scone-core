@@ -119,6 +119,16 @@ namespace scone
 		else return **it;
 	}
 
+	DelayedSensorValue Model::GetDelayedSensor( Sensor& sensor, TimeInSeconds delay )
+	{
+		return m_DelayedSensors.GetDelayedSensorValue( sensor, delay, fixed_control_step_size );
+	}
+
+	DelayedActuatorValue Model::GetDelayedActuator( Actuator& actuator, TimeInSeconds delay )
+	{
+		return m_DelayedActuators.GetDelayedActuatorValue( actuator, delay, fixed_control_step_size );
+	}
+
 	String Model::GetClassSignature() const
 	{
 		auto sig = GetName();
@@ -337,9 +347,29 @@ namespace scone
 		for ( Actuator* a : GetActuators() )
 			a->ClearInput();
 
+		if ( GetTime() > 0 )
+		{
+			m_DelayedActuators.UpdateActuatorInputs();
+			m_DelayedActuators.AdvanceActuatorBuffers();
+			m_DelayedActuators.ClearActuatorBufferValues();
+		}
+		else {
+			m_DelayedSensors.UpdateSensorBufferValues();
+			m_DelayedActuators.ClearActuatorBufferValues();
+		}
+
 		bool terminate = false;
 		if ( auto* c = GetController() )
 			terminate |= c->UpdateControls( *this, GetTime() );
+
+		if ( GetTime() > 0 )
+		{
+			m_DelayedSensors.AdvanceSensorBuffers();
+			m_DelayedSensors.UpdateSensorBufferValues();
+		}
+		else {
+			m_DelayedActuators.UpdateActuatorInputs();
+		}
 
 		if ( terminate )
 			RequestTermination();

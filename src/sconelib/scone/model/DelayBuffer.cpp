@@ -7,18 +7,19 @@
 
 namespace scone
 {
-	DelayedSensorValue DelayedSensorGroup::GetDelayedSensorValue( Sensor* sensor, size_t delay )
+	DelayedSensorValue DelayedSensorGroup::GetDelayedSensorValue( Sensor& sensor, TimeInSeconds delay, TimeInSeconds step_size )
 	{
-		auto it = xo::find_if( sensors_, [&]( const auto& p ) { return p.first == sensor; } );
+		auto delay_size = GetDelaySampleSize( delay, step_size );
+		auto it = xo::find_if( sensors_, [&]( const auto& p ) { return p.first == &sensor; } );
 		if ( it != sensors_.end() )
 		{
-			SCONE_ERROR_IF( delay != it->second.delay(), "Sensor " + sensor->GetName() + " cannot have different delay values" );
+			SCONE_ERROR_IF( delay_size != it->second.delay(), "Sensor " + sensor.GetName() + " cannot have different delay values" );
 			return DelayedSensorValue{ it->second };
 		}
 		else {
-			auto& buf = buffers_[ delay ];
+			auto& buf = buffers_.try_emplace( delay_size, delay_size, 0 ).first->second;
 			auto idx = buf.add_channel();
-			sensors_.emplace_back( sensor, DelayBufferChannel{ buf, idx } );
+			sensors_.emplace_back( &sensor, DelayBufferChannel{ &buf, idx } );
 			return DelayedSensorValue{ sensors_.back().second };
 		}
 	}
@@ -35,18 +36,19 @@ namespace scone
 			s.second.back() = s.first->GetValue();
 	}
 
-	DelayedActuatorValue DelayedActuatorGroup::GetDelayedActuatorValue( Actuator* actuator, size_t delay )
+	DelayedActuatorValue DelayedActuatorGroup::GetDelayedActuatorValue( Actuator& actuator, TimeInSeconds delay, TimeInSeconds step_size )
 	{
-		auto it = xo::find_if( actuators_, [&]( const auto& p ) { return p.first == actuator; } );
+		auto delay_size = GetDelaySampleSize( delay, step_size );
+		auto it = xo::find_if( actuators_, [&]( const auto& p ) { return p.first == &actuator; } );
 		if ( it != actuators_.end() )
 		{
-			SCONE_ERROR_IF( delay != it->second.delay(), "Actuator " + actuator->GetName() + " cannot have different delay values" );
+			SCONE_ERROR_IF( delay_size != it->second.delay(), "Actuator " + actuator.GetName() + " cannot have different delay values" );
 			return DelayedActuatorValue{ it->second };
 		}
 		else {
-			auto& buf = buffers_[ delay ];
+			auto& buf = buffers_.try_emplace( delay_size, delay_size, 0 ).first->second;
 			auto idx = buf.add_channel();
-			actuators_.emplace_back( actuator, DelayBufferChannel{ buf, idx } );
+			actuators_.emplace_back( &actuator, DelayBufferChannel{ &buf, idx } );
 			return DelayedActuatorValue{ actuators_.back().second };
 		}
 	}

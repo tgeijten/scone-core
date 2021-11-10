@@ -7,6 +7,7 @@
 #include "xo/container/circular_buffer.h"
 #include "scone/model/MuscleId.h"
 #include <map>
+#include "scone/model/DelayBuffer.h"
 
 namespace scone
 {
@@ -84,10 +85,10 @@ namespace scone
 			Real get() const { return buffer_it_->second.get( channel_idx_ ); }
 		};
 
-
 		struct SensorNeuronLink {
 			SensorDelayAdapter* delayed_sensor_;
 			Sensor* sensor_;
+			DelayedSensorValue delayed_sensor_value_;
 			TimeInSeconds delay_;
 			index_t neuron_idx_;
 			const Muscle* muscle_;
@@ -96,6 +97,7 @@ namespace scone
 
 		struct MotorNeuronLink {
 			Actuator* actuator_;
+			DelayedActuatorValue delayed_actuator_value_;
 			index_t neuron_idx_;
 			const Muscle* muscle_;
 			DelayBufferChannel buffer_channel_;
@@ -123,7 +125,7 @@ namespace scone
 			NeuronLayer& AddNeuronLayer( const PropNode& pn, const String& default_activation );
 			LinkLayer& AddLinkLayer( index_t input_layer, index_t output_layer );
 			Neuron& AddSensor( Model& model, Sensor& sensor, TimeInSeconds delay, double offset );
-			Neuron& AddActuator( const Model& model, Actuator& actuator, TimeInSeconds delay, double offset );
+			Neuron& AddActuator( Model& model, Actuator& actuator, TimeInSeconds delay, double offset );
 			const String& GetParAlias( const String& name );
 			String GetParName( const String& name, bool ignore_muscle_lines, bool symmetric );
 			String GetParName( const String& target, const String& source, const String& type, bool ignore_muscle_lines, bool symmetric );

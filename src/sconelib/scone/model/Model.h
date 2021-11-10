@@ -31,6 +31,7 @@
 #include <vector>
 #include <type_traits>
 #include <utility>
+#include "DelayBuffer.h"
 
 namespace scone
 {
@@ -168,12 +169,17 @@ namespace scone
 			else return dynamic_cast<SensorT&>( **it ); // return found element
 		}
 
-		// create delayed sensors
+		// create delayed sensors (old system)
 		SensorDelayAdapter& AcquireSensorDelayAdapter( Sensor& source );
 		Storage< Real >& GetSensorDelayStorage() { return m_SensorDelayStorage; }
-
 		template< typename SensorT, typename... Args > SensorDelayAdapter& AcquireDelayedSensor( Args&&... args )
 		{ return AcquireSensorDelayAdapter( AcquireSensor< SensorT >( std::forward< Args >( args )... ) ); }
+
+		// get delayed sensor, recommended approach
+		DelayedSensorValue GetDelayedSensor( Sensor& sensor, TimeInSeconds delay );
+
+		// get delayed actuator, recommended approach
+		DelayedActuatorValue GetDelayedActuator( Actuator& actuator, TimeInSeconds delay );
 
 		/// File containing the initial state (or pose) of the model.
 		path state_init_file;
@@ -263,6 +269,8 @@ namespace scone
 		MeasureUP m_Measure;
 		std::vector< std::unique_ptr< Sensor > > m_Sensors;
 		std::vector< std::unique_ptr< SensorDelayAdapter > > m_SensorDelayAdapters;
+		DelayedSensorGroup m_DelayedSensors;
+		DelayedActuatorGroup m_DelayedActuators;
 
 		// simulation data
 		bool m_ShouldTerminate;
