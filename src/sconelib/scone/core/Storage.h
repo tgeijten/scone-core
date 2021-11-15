@@ -169,6 +169,7 @@ namespace scone
 
 		size_t GetChannelCount() const { return m_Labels.size(); }
 		const std::vector< String >& GetLabels() const { return m_Labels; }
+		const String& GetLabel( index_t idx ) const { return m_Labels[ idx ]; }
 		const container_t& GetData() const { return m_Data; }
 
 		ValueT GetInterpolatedValue( TimeT time, index_t idx ) const {
