@@ -261,7 +261,7 @@ namespace scone
 
 		// non-owning model components
 		std::vector< Actuator* > m_Actuators;
-		Body* m_RootBody;
+		const Body* m_RootBody;
 		Body* m_GroundBody;
 
 		// controller, measure components
