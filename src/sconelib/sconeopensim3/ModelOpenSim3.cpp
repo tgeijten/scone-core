@@ -432,7 +432,7 @@ namespace scone
 			//  - dynamic_cast<OpenSim::Property<double>*>( &os_prop )
 			if ( os_prop.getTypeName() == "double" ) // must we do a string check here? :-(
 			{
-				SCONE_ERROR_IF( prop_val.raw_value().empty(), "Error setting " + os_object.getName() + ": '" + prop_key + "' must have a value" );
+				SCONE_ERROR_IF( prop_val.get_str().empty(), "Error setting " + os_object.getName() + ": '" + prop_key + "' must have a value" );
 				double scenario_value = par.get( prop_key, prop_val );
 				if ( prop_qualifier == "factor" )
 					os_prop.updValue<double>() *= scenario_value;
