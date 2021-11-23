@@ -15,6 +15,7 @@
 #include "scone/core/HasData.h"
 #include "DisplayGeometry.h"
 #include "scone/core/PropNode.h"
+#include "ForceValue.h"
 
 namespace scone
 {
@@ -49,6 +50,7 @@ namespace scone
 		virtual Vec3 GetContactForce() const = 0;
 		virtual Vec3 GetContactMoment() const = 0;
 		virtual Vec3 GetContactPoint() const = 0;
+		virtual ForceValue GetContactForceValue() const = 0;
 
 		virtual void SetExternalForce( const Vec3& force ) = 0;
 		virtual void SetExternalForceAtPoint( const Vec3& force, const Vec3& point ) = 0;

@@ -68,7 +68,7 @@ namespace scone
 
 	Vec3 BodyOpenSim3::GetContactPoint() const
 	{
-		if ( m_ContactForces.size() >= 2 )
+		if ( m_ContactForces.size() != 1 )
 		{
 			// weighted average
 			Vec3 point = Vec3::zero();
@@ -82,7 +82,30 @@ namespace scone
 
 			return total_force > 0 ? point / total_force : Vec3::zero();
 		}
-		else return m_ContactForces.front()->GetPoint();
+		return m_ContactForces.front()->GetPoint();
+	}
+
+	ForceValue BodyOpenSim3::GetContactForceValue() const
+	{
+		if ( m_ContactForces.size() == 1 )
+			return m_ContactForces.front()->GetForceValue();
+		else if ( m_ContactForces.size() >= 2 )
+		{
+			auto fv = ForceValue();
+			double total_force = 0.0;
+			for ( auto& cf : m_ContactForces )
+			{
+				auto f = cf->GetForce();
+				auto fl = xo::length( f );
+				fv.force += f;
+				fv.point += fl * cf->GetPoint();
+				total_force += fl;
+			}
+			if ( total_force > 0.0 )
+				fv.point /= total_force;
+			return fv;
+		}
+		else return ForceValue();
 	}
 
 	Vec3 BodyOpenSim3::GetOriginPos() const

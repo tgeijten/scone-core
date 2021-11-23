@@ -87,6 +87,29 @@ namespace scone
 		else return m_ContactForces.front()->GetPoint();
 	}
 
+	ForceValue BodyOpenSim4::GetContactForceValue() const
+	{
+		if ( m_ContactForces.size() == 1 )
+			return m_ContactForces.front()->GetForceValue();
+		else if ( m_ContactForces.size() >= 2 )
+		{
+			auto fv = ForceValue();
+			double total_force = 0.0;
+			for ( auto& cf : m_ContactForces )
+			{
+				auto f = cf->GetForce();
+				auto fl = xo::length( f );
+				fv.force += f;
+				fv.point += fl * cf->GetPoint();
+				total_force += fl;
+			}
+			if ( total_force > 0.0 )
+				fv.point /= total_force;
+			return fv;
+		}
+		else return ForceValue();
+	}
+
 	Vec3 BodyOpenSim4::GetOriginPos() const
 	{
 		// #todo: see if we need to do this call to realize every time (maybe do it once before controls are updated)
