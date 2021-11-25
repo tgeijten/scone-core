@@ -47,6 +47,7 @@ namespace scone
 
 		virtual const String& GetName() const override;
 
+		virtual bool HasContactGeometry() const override;
 		virtual Vec3 GetContactForce() const override;
 		virtual Vec3 GetContactMoment() const override;
 		virtual Vec3 GetContactPoint() const override;

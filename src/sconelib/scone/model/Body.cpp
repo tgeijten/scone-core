@@ -30,6 +30,14 @@ namespace scone
 		return m_Joint ? &m_Joint->GetParentBody() : nullptr;
 	}
 
+	bool Body::IsChildOf( const Body& parent ) const
+	{
+		for ( auto* b = GetParentBody(); b != nullptr; b = b->GetParentBody() )
+			if ( b == &parent )
+				return true;
+		return false;
+	}
+
 	void Body::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		auto& name = GetName();

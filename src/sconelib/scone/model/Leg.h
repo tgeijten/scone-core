@@ -32,6 +32,7 @@ namespace scone
 		Vec3 GetContactForce() const;
 		Vec3 GetRelFootPos() const;
 		void GetContactForceMomentCop( Vec3& force, Vec3& moment, Vec3& cop ) const;
+		ForceValue GetContactForceValue() const;
 		Real GetLoad() const;
 		Real GetLength() const { return m_LegLength; }
 
@@ -46,6 +47,7 @@ namespace scone
 		const Body& m_Base;
 		String m_Name;
 		const ContactForce* m_ContactForce;
+		std::vector<Body*> m_ContactBodies;
 	};
 
 	inline index_t GetLegIndex( index_t idx, bool mirrored ) { return mirrored ? ( idx ^ 1 ) : idx; }

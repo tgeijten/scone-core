@@ -56,6 +56,11 @@ namespace scone
 		return m_osBody.getName();
 	}
 
+	bool BodyOpenSim4::HasContactGeometry() const
+	{
+		return !m_ContactForces.empty();
+	}
+
 	Vec3 BodyOpenSim4::GetContactForce() const
 	{
 		return std::accumulate( m_ContactForces.begin(), m_ContactForces.end(), Vec3::zero(),

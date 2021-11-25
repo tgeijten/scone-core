@@ -8,6 +8,8 @@ namespace scone
 	{
 		Vec3 force;
 		Vec3 point;
+
+		Vec3 moment() const { return xo::cross_product( point, force ); }
 	};
 
 	inline ForceValue& operator+=( ForceValue& fv1, const ForceValue& fv2 ) {

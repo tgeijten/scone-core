@@ -30,6 +30,11 @@ namespace scone
 	{
 		// measure length during construction, as it could be pose-dependent
 		m_LegLength = MeasureLength();
+
+		for ( const auto& b : m_Upper.GetModel().GetBodies() )
+			if ( b->IsChildOf( m_Upper ) && b->HasContactGeometry() )
+				m_ContactBodies.emplace_back( b.get() );
+		SCONE_ERROR_IF( m_ContactBodies.empty(), "Leg with upper body " + m_Upper.GetName() + " has no contact geometry" );
 	}
 
 	Leg::~Leg()
@@ -38,7 +43,7 @@ namespace scone
 
 	Vec3 Leg::GetContactForce() const
 	{
-		return m_ContactForce ? m_ContactForce->GetForce() : m_Foot.GetContactForce();
+		return GetContactForceValue().force;
 	}
 
 	Vec3 Leg::GetRelFootPos() const
@@ -48,11 +53,28 @@ namespace scone
 
 	void Leg::GetContactForceMomentCop( Vec3& force, Vec3& moment, Vec3& cop ) const
 	{
-		// #todo: use ForceAtPoint struct
 		if ( m_ContactForce )
 			std::tie( force, moment, cop ) = m_ContactForce->GetForceMomentPoint();
-		else 
-			force = m_Foot.GetContactForce(), moment = m_Foot.GetContactMoment(), cop = m_Foot.GetContactPoint();
+		else {
+			ForceValue v = GetContactForceValue();
+			force = v.force;
+			cop = v.point;
+			moment = v.moment();
+		}
+	}
+
+	ForceValue Leg::GetContactForceValue() const
+	{
+		if ( m_ContactForce )
+			return m_ContactForce->GetForceValue();
+		else if ( m_ContactBodies.size() <= 1 ) 
+			return m_Foot.GetContactForceValue();
+		else {
+			ForceValue v = m_ContactBodies.front()->GetContactForceValue();
+			for ( index_t i = 1; i < m_ContactBodies.size(); ++i )
+				v += m_ContactBodies[ i ]->GetContactForceValue();
+			return v;
+		}
 	}
 
 	Real Leg::MeasureLength() const

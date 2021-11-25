@@ -47,6 +47,7 @@ namespace scone
 		virtual Vec3 GetAngAcc() const = 0;
 		virtual Vec3 GetLinAccOfPointOnBody( Vec3 point ) const = 0;
 
+		virtual bool HasContactGeometry() const = 0;
 		virtual Vec3 GetContactForce() const = 0;
 		virtual Vec3 GetContactMoment() const = 0;
 		virtual Vec3 GetContactPoint() const = 0;
@@ -75,6 +76,7 @@ namespace scone
 
 		const Joint* GetJoint() const { return m_Joint; }
 		const Body* GetParentBody() const;
+		bool IsChildOf( const Body& parent ) const;
 
 		virtual std::vector< DisplayGeometry > GetDisplayGeometries() const { return std::vector< DisplayGeometry >(); }
 
