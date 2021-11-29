@@ -62,6 +62,7 @@ namespace scone
 	PropNode Joint::GetInfo() const
 	{
 		PropNode pn;
+		pn[ "name" ] = GetName();
 		pn[ "parent" ] = GetParentBody().GetName();
 		pn[ "child" ] = GetBody().GetName();
 		return pn;

@@ -493,6 +493,7 @@ namespace scone
 		PropNode pn;
 
 		auto& model_pn = pn.add_child( "Model" );
+		model_pn[ "name" ] = GetName();
 		model_pn[ "mass" ] = GetMass();
 		model_pn[ "gravity" ] = GetGravity();
 		model_pn[ "bw_force" ] = GetBW();

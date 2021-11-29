@@ -32,16 +32,19 @@ namespace scone
 	PropNode Dof::GetInfo()
 	{
 		PropNode pn;
-		pn[ "min" ] = GetRange().min;
-		pn[ "max" ] = GetRange().max;
+		pn[ "name" ] = GetName();
+		if ( GetJoint() )
+			pn[ "joint" ] = GetJoint()->GetName();
+		pn[ "type" ] = IsRotational() ? "rotational" : "translational";
+		Real f = IsRotational() ? xo::rad_to_deg( 1.0 ) : 1.0;
+		pn[ "min" ] = f * GetRange().min;
+		pn[ "max" ] = f * GetRange().max;
 		if ( IsActuated() ) {
 			pn[ "min_torque" ] = GetMinTorque();
 			pn[ "max_torque" ] = GetMaxTorque();
 		}
 		if ( IsRotational() )
 			pn[ "rotation_axis" ] = GetRotationAxis();
-		if ( GetJoint() )
-			pn[ "joint" ] = GetJoint()->GetName();
 		return pn;
 	}
 }

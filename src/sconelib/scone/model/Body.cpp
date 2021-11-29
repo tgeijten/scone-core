@@ -65,6 +65,7 @@ namespace scone
 	PropNode Body::GetInfo() const
 	{
 		PropNode pn;
+		pn[ "name" ] = GetName();
 		pn[ "mass" ] = GetMass();
 		pn[ "inertia" ] = GetInertiaTensorDiagonal();
 		for ( auto& dg : GetDisplayGeometries() )
