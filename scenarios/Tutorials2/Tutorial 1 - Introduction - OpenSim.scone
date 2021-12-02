@@ -1,0 +1,32 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	
+	SimulationObjective {
+		max_duration = 2
+		
+		# Model used in simulation
+		ModelOpenSim3 {
+			model_file = data/H0914M_osim3.osim
+			state_init_file = data/InitStateJump.zml
+			fixed_control_step_size = 0.01
+		}
+		
+		# Controller for the Model
+		FeedForwardController {
+			symmetric = 1
+			
+			# Function for feed-forward pattern
+			PieceWiseConstant {
+				control_points = 2
+				control_point_y = 0.3~0.01<0,1>
+				control_point_dt = 0.2~0.01<0,1>
+			}
+		}
+		
+		# Fitness measure for jumping
+		JumpMeasure {
+			termination_height = 0.75
+			prepare_time = 0.25
+		}
+	}
+}

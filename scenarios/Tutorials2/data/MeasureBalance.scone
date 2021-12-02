@@ -1,0 +1,21 @@
+# Measure for standing balance
+CompositeMeasure {
+	# Penalize falling
+	BalanceMeasure {
+		termination_height = 0.6
+		weight = 100
+	}
+	
+	# Minimize effort
+	EffortMeasure {
+		name = Effort
+		weight = 0.01
+		measure_type = Wang2012
+	}
+	
+	# Penalize locked knees
+	DofMeasure {
+		dof = knee_angle_r
+		position { min = -30 max = 0 abs_penalty = 10 }
+	}
+}

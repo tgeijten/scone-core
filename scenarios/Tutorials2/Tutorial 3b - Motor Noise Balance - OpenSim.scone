@@ -1,0 +1,32 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-3
+	
+	SimulationObjective {
+		max_duration = 30
+		
+		# Model used in simulation
+		ModelOpenSim3 {
+			model_file = data/H0918M_osim3.osim
+			state_init_file = data/InitStateStand.zml
+			initial_load = 1
+			fixed_control_step_size = 0.005
+		}
+		
+		# CompositeController with multiple sub-controllers
+		CompositeController {
+			
+			# Controller for reflex based balance (different file)
+			<< data/ControllerReflexBalance.scone >>
+			
+			# Motor noise controller
+			NoiseController {
+				base_noise = 0.01
+				proportional_noise = 0.15
+			}
+		}
+		
+		# Measure for standing balance (different file)
+		<< data/MeasureBalance.scone >>
+	}
+}

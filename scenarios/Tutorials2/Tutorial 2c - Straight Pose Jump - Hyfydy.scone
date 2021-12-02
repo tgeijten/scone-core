@@ -1,0 +1,48 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	
+	SimulationObjective {
+		max_duration = 2
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = data/H0914.hfd
+			state_init_file = data/InitStateJump.zml
+			fixed_control_step_size = 0.01
+			
+			<< data/HfdConfigPlanarV2.zml >>
+		}
+		
+		# Controller for the Model
+		FeedForwardController {
+			symmetric = 1
+			
+			# 3rd degree polynomial ax^3 + bx^2 + cx + d
+			Polynomial {
+				degree = 3
+				coefficient0 = 0.3~0.01<0,1> # initial value for d
+				coefficient1 = 0~0.1<-10,10> # initial value for c
+				coefficient2 = 0~1<-10,10> # initial value for b
+				coefficient3 = 0~1<-10,10> # initial value for a
+			}
+		}
+		
+		# Composite measure for straight pose jumping
+		CompositeMeasure {
+			minimize = 0 # Maximize this measure
+			
+			# Fitness measure for jumping
+			JumpMeasure {
+				termination_height = 0.75
+				prepare_time = 0.25
+				terminate_on_peak = 0
+			}
+			
+			# Penalize backwards leaning pose
+			DofMeasure {
+				dof = pelvis_tilt
+				position { min = -45 max = 0 abs_penalty = -10 }
+			}
+		}
+	}
+}
