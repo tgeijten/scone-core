@@ -1,0 +1,12 @@
+composite_force {
+	planar_joint_force_pnld {}
+	simple_collision_detection {}
+	contact_force_hunt_crossley_sb { transition_velocity = 0.15 }
+	muscle_force_m2012fast { xi = 0.1 use_pennation_during_equilibration = 1 }
+}
+error_control_integrator_psem {
+	activation_rate = 100
+	deactivation_rate = 25
+	angular_error_weight = 0.25
+	accuracy = 0.01
+}
