@@ -79,12 +79,12 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
-		String probe_class;
-
 		INIT_PROP( props, integration_accuracy, 0.001 );
 		INIT_PROP( props, integration_method, String( "SemiExplicitEuler2" ) );
 
 		INIT_PROP_REQUIRED( props, model_file );
+
+		String probe_class;
 		INIT_PROP( props, probe_class, String() );
 
 		INIT_PROP( props, enable_external_forces, false );
@@ -841,7 +841,6 @@ namespace scone
 	}
 
 	String ModelOpenSim3::GetOpenSimBuildVersion() { return "3.3-2021-01-28"; } // API doesn't provide a version :-(
-	String ModelOpenSim3::GetBuildVersion() const { return GetOpenSimBuildVersion(); }
 
 	TimeInSeconds ModelOpenSim3::GetSimulationStepSize()
 	{

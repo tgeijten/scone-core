@@ -21,6 +21,7 @@
 #include "scone/core/Settings.h"
 #include "scone/core/StorageIo.h"
 #include "scone/measures/Measure.h"
+#include "scone/core/version.h"
 
 #include "xo/container/container_tools.h"
 #include "xo/string/string_tools.h"
@@ -46,6 +47,7 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, sensor_delay_scaling_factor, 1.0 ),
 		INIT_PAR_MEMBER( props, par, initial_equilibration_activation, 0.05 ),
 		INIT_MEMBER( props, user_input_file, "" ),
+		INIT_MEMBER( props, scone_version, GetSconeVersion() ),
 		m_Profiler( GetProfilerEnabled() ),
 		m_RootBody( nullptr ),
 		m_GroundBody( nullptr ),
@@ -79,10 +81,10 @@ namespace scone
 			INIT_PROP( props, initial_state_offset_exclude, "" );
 		}
 
-		INIT_PROP( props, max_step_size, 0.001 );
+		INIT_PROP( props, use_fixed_control_step_size, true );
 		INIT_PROP( props, fixed_control_step_size, 0.001 );
 		INIT_PROP( props, fixed_measure_step_size, fixed_control_step_size );
-		INIT_PROP( props, use_fixed_control_step_size, fixed_control_step_size > 0 );
+		INIT_PROP( props, max_step_size, scone_version >= version( 2, 0, 0 ) ? fixed_control_step_size : 0.001 );
 		fixed_step_size = std::min( fixed_control_step_size, fixed_measure_step_size );
 		fixed_control_step_interval = static_cast<int>( std::round( fixed_control_step_size / fixed_step_size ) );
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );
@@ -423,6 +425,13 @@ namespace scone
 		}
 	}
 
+	PropNode Model::GetSimulationReport() const
+	{
+		PropNode sim_pn;
+		sim_pn[ "simulation_frequency" ] = ( GetIntegrationStep() / GetTime() );
+		return sim_pn;
+	}
+
 	std::vector<scone::path> Model::WriteResults( const path& file ) const
 	{
 		std::vector<path> files;
@@ -515,6 +524,11 @@ namespace scone
 				pn.add_child( xo::get_clean_type_name( *c ), cpn );
 
 		return pn;
+	}
+
+	void Model::AddVersionToPropNode( PropNode& pn ) const
+	{
+		pn.set( "scone_version", scone_version );
 	}
 
 	void Model::AddExternalDisplayGeometries( const path& model_path )

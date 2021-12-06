@@ -102,7 +102,7 @@ namespace scone
 		virtual int GetPreviousIntegrationStep() const override;
 		virtual TimeInSeconds GetSimulationStepSize() override;
 
-		/// Get the OpenSim model attached to this model
+		// Get the OpenSim model attached to this model
 		OpenSim::Model& GetOsimModel() { return *m_pOsimModel; }
 		const OpenSim::Model& GetOsimModel() const { return *m_pOsimModel; }
 		SimTK::Integrator& GetTkIntegrator() { return *m_pTkIntegrator; }
@@ -129,7 +129,6 @@ namespace scone
 		virtual void UpdateStateFromDofs() override;
 
 		static String GetOpenSimBuildVersion();
-		virtual String GetBuildVersion() const override;
 
 	private:
 		void InitStateFromTk();

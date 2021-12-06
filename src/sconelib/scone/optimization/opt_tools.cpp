@@ -18,12 +18,13 @@
 #include "xo/serialization/char_stream.h"
 #include "xo/utility/irange.h"
 #include "xo/container/container_algorithms.h"
+#include "xo/serialization/serialize.h"
 
 using xo::timer;
 
 namespace scone
 {
-	SCONE_API bool LogUnusedProperties( const PropNode& pn )
+	bool LogUnusedProperties( const PropNode& pn )
 	{
 		// report unused properties
 		if ( pn.count_unaccessed() > 0 )
@@ -77,5 +78,33 @@ namespace scone
 			return file;
 		auto folder = file.parent_path();
 		return xo::find_file( { path( file ).replace_extension( "scone" ), folder / "config.scone", folder / "config.xml" } );
+	}
+
+	PropNode* TryGetModelPropNode( PropNode& scenario_pn )
+	{
+		if ( auto opt_fp = FindFactoryProps( GetOptimizerFactory(), scenario_pn, "Optimizer" ) )
+			if ( auto obj_fp = FindFactoryProps( GetObjectiveFactory(), opt_fp.props(), "Objective" ) )
+				if ( auto mod_fp = FindFactoryProps( GetModelFactory(), obj_fp.props(), "Model" ) )
+					return &const_cast<PropNode&>( mod_fp.props() );
+		return nullptr;
+	}
+
+	void AddEmptyVersionForOldScenarios( PropNode& scenario_pn )
+	{
+		if ( auto* pn = TryGetModelPropNode( scenario_pn ) )
+		{
+			if ( !pn->has_key( "scone_version" ) )
+				pn->add_key_value( "scone_version", xo::version() );
+		}
+		else log::warning( "Could not find Model in scenario" );
+	}
+
+	PropNode LoadScenario( const path& scenario_file, bool add_missing_version )
+	{
+		PropNode scenario_pn;
+		scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
+		if ( add_missing_version )
+			AddEmptyVersionForOldScenarios( scenario_pn );
+		return scenario_pn;
 	}
 }

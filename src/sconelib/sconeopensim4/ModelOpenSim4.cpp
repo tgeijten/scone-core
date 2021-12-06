@@ -83,12 +83,12 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
-		String probe_class;
-
 		INIT_PROP( props, integration_accuracy, 0.001 );
 		INIT_PROP( props, integration_method, String( "SemiExplicitEuler2" ) );
 
 		INIT_PROP_REQUIRED( props, model_file );
+
+		String probe_class;
 		INIT_PROP( props, probe_class, String() );
 
 		INIT_PROP( props, enable_external_forces, false );
@@ -894,7 +894,6 @@ namespace scone
 	}
 
 	String ModelOpenSim4::GetOpenSimBuildVersion() { return OpenSim::GetVersion(); }
-	String ModelOpenSim4::GetBuildVersion() const { return GetOpenSimBuildVersion(); }
 
 	TimeInSeconds ModelOpenSim4::GetSimulationStepSize()
 	{

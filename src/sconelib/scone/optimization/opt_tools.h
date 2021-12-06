@@ -26,4 +26,13 @@ namespace scone
 
 	/// Returns .scone file for a given .par file, or returns argument if already .scone.
 	SCONE_API path FindScenario( const path& scenario_or_par_file );
+
+	/// Find the model PropNode in a scenario
+	SCONE_API PropNode* TryGetModelPropNode( PropNode& scenario_pn );
+
+	/// Insert empty "scone_version" and "simulator_version" for when loading older results that don't have versions stored
+	SCONE_API void AddEmptyVersionForOldScenarios( PropNode& scenario_pn );
+
+	/// Loads a scenario prop_node, optionally adding empty versions when missing
+	SCONE_API PropNode LoadScenario( const path& scenario_file, bool add_missing_version = false );
 }

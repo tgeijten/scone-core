@@ -120,7 +120,7 @@ namespace scone
 		virtual void SetSimulationEndTime( double time ) = 0;
 		virtual bool HasSimulationEnded() { return m_ShouldTerminate || GetTime() >= GetSimulationEndTime(); }
 		virtual void RequestTermination() { m_ShouldTerminate = true; }
-		virtual PropNode GetSimulationReport() const { return PropNode(); }
+		virtual PropNode GetSimulationReport() const;
 		virtual void UpdatePerformanceStats( const path& filename ) const {}
 		virtual std::vector<std::pair<String, std::pair<xo::time, size_t>>> GetBenchmarks() const { return {}; }
 
@@ -153,6 +153,9 @@ namespace scone
 
 		// features supported by this model
 		virtual const ModelFeatures& GetFeatures() const { return m_Features; }
+
+		// store current version for optimization results
+		virtual void AddVersionToPropNode( PropNode& pn ) const;
 
 		// acquire a sensor of type SensorT with a source of type SourceT
 		template< typename SensorT, typename... Args > SensorT& AcquireSensor( Args&&... args ) {
@@ -196,9 +199,6 @@ namespace scone
 		/// Pattern matching the states to exclude in initial offset (semicolon seperated); default = "".
 		String initial_state_offset_exclude;
 
-		/// Maximum integration step size; default = 0.001.
-		double max_step_size;
-
 		/// Use fixed step size for controllers; default = true.
 		bool use_fixed_control_step_size;
 
@@ -207,6 +207,9 @@ namespace scone
 
 		/// Step size used for measures (not supported by all model types); default = ''fixed_control_step_size''.
 		double fixed_measure_step_size;
+
+		/// Maximum integration step size; default = fixed_control_step_size.
+		double max_step_size;
 
 		/// Initial load [BW] at which to place the model initially; default = 0.2;
 		Real initial_load;
@@ -223,14 +226,15 @@ namespace scone
 		/// File containing user input values, only for model with user inputs; default = "".
 		path user_input_file;
 
+		/// scone version; this is set automatically when running an optimization.
+		xo::version scone_version;
+
 		virtual void SetStoreData( bool store ) { m_StoreData = store; }
 		bool GetStoreData() const;
 		StoreDataFlags& GetStoreDataFlags() { return m_StoreDataFlags; }
 		const StoreDataFlags& GetStoreDataFlags() const { return m_StoreDataFlags; }
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }
-
-		virtual String GetBuildVersion() const = 0;
 
 	protected:
 		virtual String GetClassSignature() const override;

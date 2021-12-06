@@ -27,14 +27,20 @@ using scone::String;
 using scone::path;
 using std::string;
 
-// load scenario and handle custom arguments
-PropNode load_scenario( const path& scenario_file, const TCLAP::UnlabeledMultiArg< string >& propArg )
+// add custom arguments to prop_node
+void handle_custom_arguments( PropNode& scenario_pn, const TCLAP::UnlabeledMultiArg< string >& propArg )
 {
-	PropNode scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
 	for ( auto kvstring : propArg ) {
 		auto kvp = xo::make_key_value_str( kvstring );
 		scenario_pn.set_query( kvp.first, kvp.second, '.' );
 	}
+}
+
+// load scenario and handle custom arguments
+PropNode load_scenario( const path& scenario_file, const TCLAP::UnlabeledMultiArg< string >& propArg )
+{
+	PropNode scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
+	handle_custom_arguments( scenario_pn, propArg );
 	return scenario_pn;
 }
 
@@ -84,7 +90,8 @@ int main(int argc, char* argv[])
 			else if ( parArg.isSet() )
 			{
 				path scenario_file = scone::FindScenario( parArg.getValue() );
-				auto scenario_pn = load_scenario( scenario_file, propArg );
+				auto scenario_pn = scone::LoadScenario( scenario_file, true ); // for compatibility of versions < 2.0.0
+				handle_custom_arguments( scenario_pn, propArg );
 				auto out_path = path( outArg.isSet() ? outArg.getValue() : parArg.getValue() );
 				scone::log::info( "Evaluating ", parArg.getValue() );
 				auto results = scone::EvaluateScenario( scenario_pn, parArg.getValue(), out_path );
