@@ -65,6 +65,9 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
+		if ( scone_version > GetSconeVersion() )
+			log::warning( "This scenario was created for using a newer version of SCONE (", scone_version, ")" );
+
 		// old-style initialization (for backwards compatibility)
 		if ( auto sio = props.try_get_child( "state_init_optimization" ) )
 		{
