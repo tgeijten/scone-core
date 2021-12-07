@@ -1,0 +1,52 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	init_file = data/ResultH0914Gait10-672.par
+	
+	SimulationObjective {
+		max_duration = 30
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = data/H0914.hfd
+			
+			# Optimize initial state parameters
+			state_init_file = data/InitStateGait10.zml
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			fixed_control_step_size = 0.005
+			enable_external_forces = 1 # Required when applying external forces
+			
+			<< data/HfdConfigPlanarV2.zml >>
+		}
+		
+		CompositeController {
+			# Controller for gait, based on [Geyer & Herr 2010]
+			<< data/ControllerGH2010.scone >>
+			
+			# Perturbation backwards every 4 seconds
+			PerturbationController {
+				name = PushBack
+				start_time = 3
+				duration = 0.1
+				interval = 4
+				force = [ -150 0 0 ]
+				body = torso
+				position_offset = [ 0 0.05 0 ]
+			}
+			
+			# Perturbation forwards every other 4 seconds
+			PerturbationController {
+				name = PushForward
+				start_time = 5
+				duration = 0.1
+				interval = 4
+				force = [ 150 0 0 ]
+				body = torso
+				position_offset = [ 0 0.05 0 ]
+			}
+		}
+		
+		# Measure for gait
+		<< data/MeasureGait10Grf15.scone >>
+	}
+}

@@ -1,0 +1,35 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	
+	SimulationObjective {
+		max_duration = 10
+		signature_postfix = weak_pf
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = data/H0914.hfd
+			
+			# Override model properties
+			Properties {
+				gastroc_l { max_isometric_force.factor = 0.2 }
+				gastroc_r { max_isometric_force.factor = 0.2 }
+				soleus_l { max_isometric_force.factor = 0.2 }
+				soleus_r { max_isometric_force.factor = 0.2 }
+			}
+			
+			# Optimize initial state parameters
+			state_init_file = data/InitStateGait10.zml
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			fixed_control_step_size = 0.005
+
+			<< data/HfdConfigPlanarV2.zml >>
+		}
+		
+		# Controller for gait, based on [Geyer & Herr 2010]
+		<< data/ControllerGH2010.scone >>
+		
+		# Measure for gait
+		<< data/MeasureGait05Grf15.scone >>
+	}
+}
