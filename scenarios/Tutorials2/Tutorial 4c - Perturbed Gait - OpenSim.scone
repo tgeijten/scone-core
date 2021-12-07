@@ -45,6 +45,6 @@ CmaOptimizer {
 		}
 		
 		# Measure for gait
-		<< data/MeasureGait05.scone >>
+		<< data/MeasureGait10Grf15.scone >>
 	}
 }
