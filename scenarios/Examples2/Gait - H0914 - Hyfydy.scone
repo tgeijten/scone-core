@@ -1,9 +1,9 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
-	min_progress = 1e-4
 	
 	SimulationObjective {
 		max_duration = 10
+		auto_std_factor = 0.02
 		
 		# Model used in simulation
 		ModelHyfydy {
@@ -13,7 +13,6 @@ CmaOptimizer {
 			state_init_file = data/InitStateGait10.zml
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
-			initial_load = ~0.5<0.1,1>
 			fixed_control_step_size = 0.005
 			
 			<< data/HfdConfigPlanarV2.zml >>
