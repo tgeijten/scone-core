@@ -24,7 +24,7 @@ CmaOptimizer {
 			# Motor noise controller
 			NoiseController {
 				base_noise = 0.01
-				proportional_noise = 0.15
+				proportional_noise = 0.1
 			}
 		}
 		
