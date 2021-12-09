@@ -12,13 +12,12 @@
 namespace scone
 {
 	Controller::Controller( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
-	HasSignature( props ),
-	INIT_MEMBER( props, name, "" )
+		HasSignature( props ),
+		INIT_MEMBER( props, name, "" ),
+		INIT_PAR_MEMBER( props, par, start_time, 0.0 ),
+		INIT_PAR_MEMBER( props, par, stop_time, 0.0 ),
+		INIT_MEMBER( props, disabled_, false )
 	{
-		INIT_PROP( props, disabled_, false );
-		INIT_PAR( props, par, start_time, 0.0 );
-		INIT_PAR( props, par, stop_time, 0.0 );
-
 		// add custom parameters
 		if ( auto par_pn = props.try_get_child( "Parameters" ) )
 		{
@@ -28,8 +27,7 @@ namespace scone
 	}
 
 	Controller::~Controller()
-	{
-	}
+	{}
 
 	bool Controller::UpdateControls( Model& model, double timestamp )
 	{

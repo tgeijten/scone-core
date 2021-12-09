@@ -25,14 +25,14 @@ namespace scone
 		Controller( const PropNode& props, Params& par, Model& model, const Location& target_area );
 		virtual ~Controller();
 
+		/// Name of the controller, uses as a prefix for the control parameters; empty by default
+		String name;
+
 		/// Time [s] at which Controller becomes active; default = 0.
 		TimeInSeconds start_time;
 
 		/// Time [s] at which Controller becomes inactive; default = until simulation ends.
 		TimeInSeconds stop_time;
-
-		/// Name of the controller, uses as a prefix for the control parameters; empty by default
-		String name;
 
 		// Called each step, returns true on termination request, checks IsActive() first
 		bool UpdateControls( Model& model, double timestamp );
