@@ -22,6 +22,7 @@ function init( model, par )
 	-- initialize global variables that keep track of the gyro state
 	gyro_start = 0
 	gyro_moment = 0
+	torso_ori = 0
 end
 
 function update( model )
@@ -41,11 +42,11 @@ function update( model )
 		-- gyro is not active, check if we activate it
 	elseif gyro_start == 0 then -- gyro was not activated before
 		-- get the current body orientation in degrees and check with body_min / body_max
-		local ori = 57.3 * target_body:ang_pos().z
+		torso_ori = 57.3 * target_body:ang_pos().z
 		local ang_vel = target_body:ang_vel().z
-		if ori < body_min and ang_vel < 0 then
+		if torso_ori < body_min and ang_vel < 0 then
 			gyro_moment = -ang_vel * pos_moment_gain
-		elseif ori > body_max and ang_vel > 0 then
+		elseif torso_ori > body_max and ang_vel > 0 then
 			gyro_moment = -ang_vel * neg_moment_gain
 		end
 		
@@ -55,7 +56,7 @@ function update( model )
 			target_body:add_external_moment( 0, 0, gyro_moment )
 			
 			-- print a message to the scone messages window
-			scone.debug( "gyro activated at t=" .. t .. " ori=" .. ori .. " moment=" .. gyro_moment )
+			scone.debug( "gyro activated at t=" .. t .. " torso_ori=" .. torso_ori .. " moment=" .. gyro_moment )
 		end
 	end
 	
@@ -66,4 +67,5 @@ end
 function store_data( frame )
 	-- store some values for analysis
 	frame:set_value( "gyro_moment", gyro_moment )
+	frame:set_value( "torso_ori", torso_ori )
 end

@@ -1,6 +1,7 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
-	
+	min_progress = 1e-4
+		
 	SimulationObjective {
 		max_duration = 10
 		
@@ -16,7 +17,7 @@ CmaOptimizer {
 		}
 		
 		# Controller for gait, based on [Geyer & Herr 2010]
-		<< data/ControllerGH2010.scone >>
+		<< data/ControllerGH2010v9.scone >>
 		
 		# Measure for gait
 		<< data/MeasureGait15Grf15.scone >>
