@@ -146,8 +146,8 @@ namespace scone
 	{
 		switch ( jump_type )
 		{
-		case scone::JumpMeasure::HighJump: return "HighJump";
-		case scone::JumpMeasure::LongJump: return "LongJump";
+		case scone::JumpMeasure::HighJump: return "Jump";
+		case scone::JumpMeasure::LongJump: return "Jump";
 		default:
 			SCONE_THROW( "Invalid jump type" );
 			break;
