@@ -2373,7 +2373,7 @@
 								<geometry>platform r_heel r_toe</geometry>
 								<stiffness>2000000</stiffness>
 								<dissipation>1</dissipation>
-								<static_friction>0.2</static_friction>
+								<static_friction>0.3</static_friction>
 								<dynamic_friction>0.2</dynamic_friction>
 								<viscous_friction>0.2</viscous_friction>
 							</HuntCrossleyForce::ContactParameters>
@@ -2394,7 +2394,7 @@
 								<geometry>platform l_heel l_toe</geometry>
 								<stiffness>2000000</stiffness>
 								<dissipation>1</dissipation>
-								<static_friction>0.2</static_friction>
+								<static_friction>0.3</static_friction>
 								<dynamic_friction>0.2</dynamic_friction>
 								<viscous_friction>0.2</viscous_friction>
 							</HuntCrossleyForce::ContactParameters>
