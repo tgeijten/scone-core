@@ -24,6 +24,7 @@ namespace OpenSim
 		constructProperties();
 		setNull();
 		setAuthors( "Thomas Geijtenbeek" );
+		setName( "constantforce_" + bodyName );
 
 		state_variable_names_.reserve( 9 );
 		state_variable_names_.push_back( bodyName + "_force_x" );
@@ -102,7 +103,7 @@ namespace OpenSim
 
 	void ConstantForce::extendConnectToModel( Model& model )
 	{
-		Super::connectToModel( model );
+		Super::extendConnectToModel( model );
 
 		const std::string& bodyName = get_body();
 		if ( !model.updBodySet().contains( bodyName ) )
