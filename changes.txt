@@ -1,8 +1,7 @@
 ~~NOCACHE~~
 ====== SCONE Version History ======
 
-=== New Simulators ===
-  * OpenSim 4.2
+See changes.txt in SCONE Studio for the most recent updates.
 
 === New User Interface Features ===
   * Added support for computing and analyzing muscle moment arms and muscle moments.
