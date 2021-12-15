@@ -1,4 +1,4 @@
-<img align="right" height="120" src="https://github.com/tgeijten/SCONE/blob/master/resources/ui/scone_logo_notext.png">
+<img align="right" height="120" src="https://github.com/tgeijten/scone-studio/blob/main/resources/ui/scone_logo_notext.png">
 
 # Welcome to SCONE!
 ![.github/workflows/continuous-integration-workflow.yml](https://github.com/opensim-org/SCONE/workflows/.github/workflows/continuous-integration-workflow.yml/badge.svg)
