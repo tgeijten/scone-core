@@ -1,12 +1,8 @@
-<img align="right" height="120" src="https://github.com/tgeijten/scone-studio/blob/main/resources/ui/scone_logo_notext.png">
-
 # Welcome to SCONE!
 ![.github/workflows/continuous-integration-workflow.yml](https://github.com/opensim-org/SCONE/workflows/.github/workflows/continuous-integration-workflow.yml/badge.svg)
+<img align="right" width="112" height="90" src="https://github.com/opensim-org/SCONE/blob/master/resources/ui/scone_logo_notext.png">
 
-### About
-SCONE is open source software for predictive simulation of biological motion. The User Interface for SCONE is in a separate [SCONE Studio repository](https://github.com/tgeijten/scone-studio).
-
-For more information on SCONE, including tutorials, examples, community guidelines and documentation, see https://scone.software.
+SCONE is open source software for predictive simulation of biological motion. The User Interface for SCONE is in a separate [SCONE Studio repository](https://github.com/tgeijten/scone-studio). For more information on SCONE, including tutorials, examples, community guidelines and documentation, see https://scone.software.
 
 ### Installing SCONE (Windows 64 bit)
 
