@@ -14,16 +14,16 @@
 
 namespace OpenSim
 {
-	/// Transforms a scone::StateComponent, that implements a
-	/// differential equation (continuous or hybrid), into an
-	/// OpenSim::ModelComponent so that the differential equation can
-	/// be integrated numerically by OpenSim.
+	// Transforms a scone::StateComponent, that implements a
+	// differential equation (continuous or hybrid), into an
+	// OpenSim::ModelComponent so that the differential equation can
+	// be integrated numerically by OpenSim.
 	class StateComponentOpenSim3 : public OpenSim::ModelComponent
 	{
 	private:
 		OpenSim_DECLARE_CONCRETE_OBJECT(StateComponentOpenSim3, ModelComponent);
-		/// A class that introduces event detection and handling for
-		/// hybrid systems.
+		// A class that introduces event detection and handling for
+		// hybrid systems.
 		class EventHandler : public SimTK::TriggeredEventHandler
 		{
 		public:
@@ -38,17 +38,17 @@ namespace OpenSim
 		};
 
 	public:
-		/// Takes ownership of the StateComponent pointer.
+		// Takes ownership of the StateComponent pointer.
 		StateComponentOpenSim3( scone::StateComponent* stateComponent );
-		/// Extract the state of this component from global state.
+		// Extract the state of this component from global state.
 		std::vector<scone::Real> getStateVariables( const SimTK::State& s ) const;
-		/// Extract the state of this component from global state.
+		// Extract the state of this component from global state.
 		void setStateVariables( SimTK::State& s, std::vector< scone::Real > x0 ) const;
-		/// Calculate the state derivative.
+		// Calculate the state derivative.
 		SimTK::Vector computeStateVariableDerivatives( const SimTK::State& s ) const override;
-		/// Initializes the state from properties
+		// Initializes the state from properties
 		void initStateFromProperties( SimTK::State& s ) const override;
-		/// Add state variables to the system.
+		// Add state variables to the system.
 		void addToSystem( SimTK::MultibodySystem& system ) const override;
 
 	private:
