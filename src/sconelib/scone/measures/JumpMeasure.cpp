@@ -29,12 +29,14 @@ namespace scone
 		jump_type = static_cast<JumpType>( props.get<int>( "jump_type", HighJump ) );
 		INIT_PROP( props, minimize, false ); // defaults to false
 		INIT_PROP( props, offset, Vec3::zero() );
+		INIT_PROP( props, jump_angle, Degree( 0 ) );
+		jump_dir = quat_from_z_angle( -jump_angle ) * Vec3::unit_y();
 
 		if ( auto body = props.try_get_any< String >( { "body", "target_body" } ) )
 			target_body = FindByName( model.GetBodies(), *body ).get();
 
 		prepare_com = init_com = model.GetComPos();
-		peak_height = GetTargetPos( model ).y;
+		peak_dist = dot_dir( GetTargetPos( model ) );
 
 		for ( auto& body : model.GetBodies() )
 			init_min_x = std::min( init_min_x, body->GetComPos().x );
@@ -74,7 +76,7 @@ namespace scone
 		}
 
 		current_pos = GetTargetPos( model );
-		peak_height = xo::max( peak_height, current_pos.y );
+		peak_dist = xo::max( peak_dist, dot_dir( current_pos ) );
 
 		switch ( state )
 		{
@@ -157,16 +159,16 @@ namespace scone
 	void JumpMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( flags.get< StoreDataTypes::ControllerData >() )
-			frame[ "jump_height" ] = current_pos.y;
+			frame[ "jump_dist" ] = dot_dir( current_pos );
 	}
 
 	double JumpMeasure::GetHighJumpResult( const Model& model )
 	{
 		current_pos = GetTargetPos( model );
-		peak_height = xo::max( peak_height, current_pos.y );
+		peak_dist = xo::max( peak_dist, dot_dir( current_pos ) );
 
 		double early_jump_penalty = 100 * std::max( 0.0, prepare_com.y - init_com.y );
-		double jump_height = 100 * peak_height;
+		double jump_height = 100 * peak_dist;
 		double result = 0.0;
 
 		switch ( state )

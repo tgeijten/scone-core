@@ -13,6 +13,7 @@
 #include "scone/core/PropNode.h"
 #include "scone/optimization/Params.h"
 #include "scone/model/Model.h"
+#include "scone/core/Angle.h"
 
 namespace scone
 {
@@ -45,6 +46,9 @@ namespace scone
 		/// Offset of body to measure from origin (NOT COM); default = [ 0 0 0 ].
 		Vec3 offset;
 
+		/// Direction to jump in [deg], 0 is up, 90 is forward; default = 0
+		Degree jump_angle;
+
 		virtual double ComputeResult( const Model& model ) override;
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
@@ -57,15 +61,17 @@ namespace scone
 		double GetLongJumpResult( const Model& m );
 		static double GetLandingDist( const Vec3& pos, const Vec3& vel, double floor_height = 0.0 );
 		Vec3 GetTargetPos( const Model& m ) const;
+		Real dot_dir( const Vec3& v ) const { return xo::dot_product( jump_dir, v ); }
 
 		State state;
+		Vec3 jump_dir;
 		Vec3 init_com;
 		Vec3 current_pos;
 		double init_min_x;
 		Vec3 prepare_com;
 		Vec3 peak_com;
 		Vec3 peak_com_vel;
-		double peak_height;
+		double peak_dist;
 		Vec3 recover_com;
 		TimeInSeconds recover_start_time;
 		Real recover_cop_dist = 1000.0;
