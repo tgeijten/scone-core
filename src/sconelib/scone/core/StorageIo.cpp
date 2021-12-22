@@ -140,7 +140,7 @@ namespace scone
 	{
 		auto str = xo::char_stream( xo::load_string( file ) );
 		SCONE_ERROR_IF( !str.good(), "Could not open file " + file.str() );
-		ReadStorageSto( storage, str );
+		SCONE_TRY_RETHROW( ReadStorageSto( storage, str ), "Error reading " + file.str() );
 	}
 
 	void ReadStorageSto( Storage<Real, TimeInSeconds>& storage, xo::char_stream& str )
@@ -158,7 +158,7 @@ namespace scone
 	{
 		auto str = xo::char_stream( xo::load_string( file ) );
 		SCONE_ERROR_IF( !str.good(), "Could not open file " + file.str() );
-		ReadStorageTxt( storage, str );
+		SCONE_TRY_RETHROW( ReadStorageTxt( storage, str ), "Error reading " + file.str() );
 	}
 
 	void ReadStorageTxt( Storage<Real, TimeInSeconds>& storage, xo::char_stream& str )

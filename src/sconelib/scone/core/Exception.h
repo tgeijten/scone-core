@@ -56,5 +56,6 @@ namespace scone
 #define SCONE_ERROR_IF( _condition_, _message_ ) \
 	if ( _condition_ ) throw scone::RuntimeException( std::string( _message_ ) );
 
-#define SCONE_CATCH_AND_THROW( _message_ ) \
-	catch ( const std::exception& e ) { throw scone::RuntimeException( std::string( _message_ ) + e.what() ); }
+#define SCONE_TRY_RETHROW( _func_, _msg_ ) \
+	try { _func_; } catch( std::exception& e ) { throw scone::RuntimeException( _msg_ + std::string( ":\n   " ) + xo::replace_str( e.what(), "\n", "\n   " ) ); }
+

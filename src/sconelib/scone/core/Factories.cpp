@@ -45,6 +45,7 @@
 #include "scone/measures/MuscleMeasure.h"
 #include "scone/measures/StepMeasure.h"
 
+#include "scone/core/Exception.h"
 #include "scone/optimization/CmaOptimizerSpot.h"
 #include "scone/optimization/CmaPoolOptimizer.h"
 #include "scone/optimization/ImitationObjective.h"
@@ -54,9 +55,6 @@
 #include "scone/controllers/NeuralNetworkController.h"
 #include "xo/filesystem/filesystem.h"
 #include "xo/string/string_tools.h"
-
-#define SCONE_WRAP_EXCEPTION( _func_, _msg_ ) \
-try { _func_; } catch( std::exception& e ) { SCONE_ERROR( _msg_ + std::string( ":\n   " ) + xo::replace_str( e.what(), "\n", "\n   " ) ); }
 
 namespace scone
 {
@@ -83,7 +81,7 @@ namespace scone
 	{
 		ScopedParamSetPrefixer param_prefix( par, fp.props().get<String>( "name", "" ), true );
 		spot::scoped_par_options param_options( fp.props(), par );
-		SCONE_WRAP_EXCEPTION(
+		SCONE_TRY_RETHROW(
 			return GetControllerFactory().create( fp.type(), fp.props(), par, model, target_area ),
 			fp.type() );
 	}
@@ -119,7 +117,7 @@ namespace scone
 
 	MeasureUP CreateMeasure( const FactoryProps& fp, Params& par, const Model& model, const Location& target_area )
 	{
-		SCONE_WRAP_EXCEPTION(
+		SCONE_TRY_RETHROW(
 			return GetMeasureFactory().create( fp.type(), fp.props(), par, model, target_area ),
 			fp.type() );
 	}
@@ -195,7 +193,7 @@ namespace scone
 	ModelUP CreateModel( const FactoryProps& fp, Params& par, const path& scenario_dir )
 	{
 		xo::current_find_file_path( scenario_dir );
-		SCONE_WRAP_EXCEPTION(
+		SCONE_TRY_RETHROW(
 			return GetModelFactory().create( fp.type(), fp.props(), par ),
 			fp.type() );
 	}
