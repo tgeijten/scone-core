@@ -44,7 +44,7 @@ namespace scone
 		set_max_threads( (int)max_threads );
 #endif // !SPOT_EVALUATOR_ENABLED
 
-		enable_fitness_tracking( window_size );
+		set_fitness_tracking_window_size( window_size );
 
 		// stop conditions
 		add_stop_condition( std::make_unique< spot::max_steps_condition >( max_generations ) );
