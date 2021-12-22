@@ -7,6 +7,7 @@
 */
 
 #include "GaitStateController.h"
+#include "scone/model/Side.h"
 #include "scone/model/Model.h"
 #include "scone/model/Leg.h"
 #include "scone/model/Muscle.h"
