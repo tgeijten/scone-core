@@ -12,7 +12,6 @@
 #include "types.h"
 #include "Exception.h"
 #include "Vec3.h"
-#include "string_tools.h"
 
 #include <memory>
 #include <map>
@@ -20,6 +19,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <string>
 
 namespace scone
 {
@@ -124,7 +124,7 @@ namespace scone
 
 		Frame& AddFrame( TimeT time, ValueT default_value = ValueT( 0 ) ) {
 			SCONE_ERROR_IF( !m_Data.empty() && time <= m_Data.back()->GetTime(),
-				stringf( "Timestamp %f is not higher than previous frame time", time ) );
+				"Timestamp is not higher than previous frame time: " + std::to_string( time ) );
 			m_Data.push_back( std::make_unique<Frame>( *this, time, default_value ) );
 			m_InterpolationCache.clear(); // cached iterators have become invalid
 			return *m_Data.back();
