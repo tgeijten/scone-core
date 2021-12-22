@@ -40,10 +40,6 @@ namespace scone
 		mu_ = mu();
 		sigma_ = sigma();
 
-#if !SPOT_EVALUATOR_ENABLED
-		set_max_threads( (int)max_threads );
-#endif // !SPOT_EVALUATOR_ENABLED
-
 		set_fitness_tracking_window_size( window_size );
 
 		// stop conditions
