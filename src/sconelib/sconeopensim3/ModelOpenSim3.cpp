@@ -367,7 +367,7 @@ namespace scone
 		}
 
 		// create legs and connect stance_contact forces
-		for ( auto side : { LeftSide, RightSide } )
+		for ( auto side : { Side::Left, Side::Right } )
 		{
 			Body* upper_body = nullptr;
 			Body* lower_body = nullptr;

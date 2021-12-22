@@ -9,8 +9,8 @@ namespace scone
 		{
 			if ( auto fp = MakeFactoryProps( GetControllerFactory(), pn, "Controller" ) )
 			{
-				c0 = CreateController( fp, par, model, Location( RightSide, loc.symmetric_ ) );
-				c1 = CreateController( fp, par, model, Location( LeftSide, loc.symmetric_ ) );
+				c0 = CreateController( fp, par, model, Location( Side::Right, loc.symmetric_ ) );
+				c1 = CreateController( fp, par, model, Location( Side::Left, loc.symmetric_ ) );
 			}
 		}
 	}

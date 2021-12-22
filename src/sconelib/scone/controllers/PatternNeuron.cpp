@@ -17,11 +17,11 @@
 namespace scone
 {
 	PatternNeuron::PatternNeuron( const PropNode& pn, Params& par, NeuralController& nc, int index, bool mirrored ) :
-	Neuron( pn, stringf( "CPG%d", index ), index, mirrored ? RightSide : LeftSide, "linear" ),
+	Neuron( pn, stringf( "CPG%d", index ), index, mirrored ? Side::Right : Side::Left, "linear" ),
 	mirrored_( mirrored ),
 	model_( nc.GetModel() )
 	{
-		side_ = mirrored ? RightSide : LeftSide;
+		side_ = mirrored ? Side::Right : Side::Left;
 
 		period_ = par.get( "CPG.period", pn[ "period" ] );
 		auto amount = pn.get< int >( "amount" );

@@ -26,12 +26,12 @@ namespace scone
 		Controller( props, par, model, loc )
 	{
 		INIT_PROP( props, symmetric, loc.symmetric_ );
-		INIT_PROP( props, dual_sided, loc.side_ == NoSide );
+		INIT_PROP( props, dual_sided, loc.side_ == Side::None );
 
 		// create reflexes for single or both sides
 		auto create_reflex = [&]( const FactoryProps& fp ) {
 			if ( dual_sided ) {
-				for ( auto side : { LeftSide, RightSide } )
+				for ( auto side : { Side::Left, Side::Right } )
 					m_Reflexes.push_back( CreateReflex( fp, par, model, Location( side, symmetric ) ) );
 			}
 			else m_Reflexes.push_back( CreateReflex( fp, par, model, Location( loc.side_, symmetric ) ) );

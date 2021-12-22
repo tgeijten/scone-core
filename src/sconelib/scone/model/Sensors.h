@@ -125,7 +125,7 @@ namespace scone
 
 	struct SCONE_API DofPosVelSensor : public DofSensor
 	{
-		DofPosVelSensor( const Dof& dof, double kv, const Dof* root_dof = nullptr, Side side = NoSide ) :
+		DofPosVelSensor( const Dof& dof, double kv, const Dof* root_dof = nullptr, Side side = Side::None ) :
 			DofSensor( dof, root_dof ), kv_( kv ), side_( side ) {}
 		virtual String GetName() const override;
 		virtual Real GetValue() const override;

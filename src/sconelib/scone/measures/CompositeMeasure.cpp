@@ -22,8 +22,8 @@ namespace scone
 	{
 		auto create_measure = [&]( const FactoryProps& fp ) {
 			if ( dual_sided ) {
-				m_Measures.push_back( CreateMeasure( fp, par, model, Location( LeftSide, true ) ) );
-				m_Measures.push_back( CreateMeasure( fp, par, model, Location( RightSide, true ) ) );
+				m_Measures.push_back( CreateMeasure( fp, par, model, Location( Side::Left, true ) ) );
+				m_Measures.push_back( CreateMeasure( fp, par, model, Location( Side::Right, true ) ) );
 			}
 			else m_Measures.push_back( CreateMeasure( fp, par, model, loc ) );
 		};

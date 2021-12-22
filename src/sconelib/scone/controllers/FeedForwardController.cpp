@@ -41,7 +41,7 @@ namespace scone
 				ai.actuator_idx = idx;
 
 				// see if this actuator is on the right side
-				if ( target_area.side_ == NoSide || target_area.side_ == ai.side )
+				if ( target_area.side_ == Side::None || target_area.side_ == ai.side )
 					m_ActInfos.push_back( ai );
 			}
 		}

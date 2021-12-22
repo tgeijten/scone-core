@@ -86,8 +86,8 @@ namespace scone
 		if ( common_joints > 0 )
 		{
 			double gain = 0, offset = 0;
-			auto mpvec = nc.GetMuscleParams( muscle_, false, GetSide() == RightSide );
-			auto spvec = nc.GetMuscleParams( sensor->muscle_, true, GetSide() == RightSide );
+			auto mpvec = nc.GetMuscleParams( muscle_, false, GetSide() == Side::Right );
+			auto spvec = nc.GetMuscleParams( sensor->muscle_, true, GetSide() == Side::Right );
 
 			//log::trace( muscle_->GetName(), " <-- ", sensor->GetParName() );
 			for ( auto& mp : mpvec )
@@ -125,11 +125,11 @@ namespace scone
 		case InterNeuron::synergetic_plus:
 			return muscle_ && sensor->muscle_ && muscle_->GetSide() == sensor->muscle_->GetSide()
 				&& ( muscle_->HasSharedBodies( *sensor->muscle_ ) || muscle_->HasSharedDofs( *sensor->muscle_ ) );
-		case InterNeuron::ipsilateral: return sensor->GetSide() == GetSide() || sensor->GetSide() == NoSide;
-		case InterNeuron::contralateral: return sensor->GetSide() != GetSide() || sensor->GetSide() == NoSide;
+		case InterNeuron::ipsilateral: return sensor->GetSide() == GetSide() || sensor->GetSide() == Side::None;
+		case InterNeuron::contralateral: return sensor->GetSide() != GetSide() || sensor->GetSide() == Side::None;
 		case InterNeuron::source:
 			return GetNameNoSide( sensor->source_name_ ) == pn.get< string >( "source" )
-				&& ( muscle_->GetSide() == sensor->GetSide() || sensor->GetSide() == NoSide );
+				&& ( muscle_->GetSide() == sensor->GetSide() || sensor->GetSide() == Side::None );
 		case InterNeuron::none: return false;
 		default: SCONE_THROW( "Invalid connection type: " + connection_dict( connect ) );
 		}
@@ -158,7 +158,7 @@ namespace scone
 		connection_t connect = connection_dict( pn.get< string >( "connect", pn.has_key( "source" ) ? "source" : "none" ) );
 		string input_type = pn.get< string >( "type", "*" );
 		string input_layer = pn.get< string >( "input_layer", connect == none ? "" : "0" );
-		bool right_side = GetSide() == RightSide;
+		bool right_side = GetSide() == Side::Right;
 
 		auto mpvec = nc.GetMuscleParams( muscle_, false, right_side );
 
@@ -225,11 +225,11 @@ namespace scone
 					AddInput( input, par.try_get( input->GetName( right_side ), pn, "gain", 1.0 ) );
 					break;
 				case scone::InterNeuron::ipsilateral:
-					if ( input->GetSide() == GetSide() || input->GetSide() == NoSide )
+					if ( input->GetSide() == GetSide() || input->GetSide() == Side::None )
 						AddInput( input, par.try_get( input->GetParName(), pn, "gain", 1.0 ) );
 					break;
 				case scone::InterNeuron::contralateral:
-					if ( input->GetSide() != GetSide() || input->GetSide() == NoSide )
+					if ( input->GetSide() != GetSide() || input->GetSide() == Side::None )
 						AddInput( input, par.try_get( input->GetParName(), pn, "gain", 1.0 ) );
 					break;
 				default: SCONE_THROW( "Invalid connection type: " + connection_dict( connect ) );

@@ -18,7 +18,7 @@ namespace scone
 	class SCONE_API Leg : public HasName
 	{
 	public:
-		Leg( Body& upper, Body& foot, size_t index, Side side = NoSide, size_t rank = 0, const ContactForce* cf = nullptr );
+		Leg( Body& upper, Body& foot, size_t index, Side side = Side::None, size_t rank = 0, const ContactForce* cf = nullptr );
 		virtual ~Leg();
 
 		const Body& GetUpperBody() const { return m_Upper; }

@@ -16,9 +16,9 @@ namespace scone
 		auto name_side = GetSideFromName( name );
 		auto name_no_side = GetNameNoSide( name );
 	
-		if ( name_side == NoSide ) // no side in name, add location side
+		if ( name_side == Side::None ) // no side in name, add location side
 			return name_no_side + GetSideName( side_ );
-		else if ( name_side == OppositeSide )
+		else if ( name_side == Side::Opposite )
 			return name_no_side + GetSideName( GetOppositeSide( side_ ) );
 		else return name; // keep original side
 	}

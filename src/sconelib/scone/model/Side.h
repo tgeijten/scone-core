@@ -22,19 +22,19 @@
 
 namespace scone
 {
-	enum Side {
-		LeftSide = -1,
-		NoSide = 0,
-		RightSide = 1,
-		OppositeSide = 999
+	enum class Side {
+		Left = -1,
+		None = 0,
+		Right = 1,
+		Opposite = 999
 	};
 
 	inline Side GetOppositeSide( Side s ) {
 		switch ( s )
 		{
-		case LeftSide: return RightSide;
-		case NoSide: return NoSide;
-		case RightSide: return LeftSide;
+		case Side::Left: return Side::Right;
+		case Side::None: return Side::None;
+		case Side::Right: return Side::Left;
 		default: SCONE_THROW( "Cannot determine opposite side" );
 		}
 	}
@@ -44,35 +44,35 @@ namespace scone
 		if ( str.length() >= 2 )
 		{
 			String substr = xo::to_lower( str.substr( str.size() - 2 ) );
-			if ( substr == "_r" ) return RightSide;
-			else if ( substr == "_l" ) return LeftSide;
-			else if ( substr == "_o" ) return OppositeSide;
+			if ( substr == "_r" ) return Side::Right;
+			else if ( substr == "_l" ) return Side::Left;
+			else if ( substr == "_o" ) return Side::Opposite;
 		}
 
-		return NoSide;
+		return Side::None;
 	}
 
 	inline String GetNameNoSide( const String& str )
 	{
-		if ( GetSideFromName( str ) != NoSide )
+		if ( GetSideFromName( str ) != Side::None )
 			return str.substr( 0, str.length() - 2 );
 		else return str;
 	}
 
 	inline String GetSideName( const Side& side )
 	{
-		if ( side == LeftSide ) return "_l";
-		else if ( side == RightSide ) return "_r";
-		else if ( side == OppositeSide ) return "_o";
+		if ( side == Side::Left ) return "_l";
+		else if ( side == Side::Right ) return "_r";
+		else if ( side == Side::Opposite ) return "_o";
 		else return "";
 	}
 
 	inline String GetFullSideName( const Side& side )
 	{
-		if ( side == LeftSide ) return "Left";
-		else if ( side == RightSide ) return "Right";
-		else if ( side == OppositeSide ) return "Opposite";
-		else return "NoSide";
+		if ( side == Side::Left ) return "Left";
+		else if ( side == Side::Right ) return "Right";
+		else if ( side == Side::Opposite ) return "Opposite";
+		else return "Side::None";
 	}
 
 	inline String GetSidedName( const String& str, const Side& side )
@@ -85,15 +85,15 @@ namespace scone
 		return GetNameNoSide( str ) + GetSideName( GetOppositeSide( GetSideFromName( str ) ) );
 	}
 
-	// get direction vector that is mirrored in the XY plane for LeftSide, used in e.g. BodyOrientationSensor
+	// get direction vector that is mirrored in the XY plane for Side::Left, used in e.g. BodyOrientationSensor
 	inline Vec3 GetSidedAxis( Vec3 axis, Side side ) {
-		if ( side == LeftSide ) { axis.x = -axis.x; axis.y = -axis.y; }
+		if ( side == Side::Left ) { axis.x = -axis.x; axis.y = -axis.y; }
 		return axis;
 	}
 
-	// get direction vector that is mirrored in the XY plane for LeftSide, used in e.g. ComBosSensor
+	// get direction vector that is mirrored in the XY plane for Side::Left, used in e.g. ComBosSensor
 	inline Vec3 GetSidedDirection( Vec3 dir, Side side ) {
-		if ( side == LeftSide ) dir.z = -dir.z;
+		if ( side == Side::Left ) dir.z = -dir.z;
 		return dir;
 	}
 
@@ -125,13 +125,13 @@ namespace xo
 	inline bool from_str( const string& s, scone::Side& v )
 	{
 		if ( str_equals_any_of( s, { "left", "l" } ) )
-			v = scone::LeftSide;
+			v = scone::Side::Left;
 		else if ( str_equals_any_of( s, { "right", "r" } ) )
-			v = scone::RightSide;
+			v = scone::Side::Right;
 		else if ( str_equals_any_of( s, { "both", "none" } ) )
-			v = scone::NoSide;
+			v = scone::Side::None;
 		else if ( str_equals_any_of( s, { "opposite", "other" } ) )
-			v = scone::OppositeSide;
+			v = scone::Side::Opposite;
 		else return false; // could not extract side
 		return true;
 	}

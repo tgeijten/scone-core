@@ -25,7 +25,7 @@ namespace scone
 		m_Upper( proximal ),
 		m_Foot( foot ),
 		m_Base( xo::dereference_or_throw( proximal.GetParentBody(), proximal.GetName() + "is an upper leg body without a parent" ) ),
-		m_Name( stringf( "leg%d", index ) + ( ( side == LeftSide ) ? "_l" : "_r" ) ),
+		m_Name( stringf( "leg%d", index ) + ( ( side == Side::Left ) ? "_l" : "_r" ) ),
 		m_ContactForce( cf )
 	{
 		// measure length during construction, as it could be pose-dependent

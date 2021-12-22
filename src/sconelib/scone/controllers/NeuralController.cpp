@@ -125,8 +125,8 @@ namespace scone
 				SCONE_THROW_IF( source_names.empty(), "Could not find any DOF matching " + xo::quoted( source_mask ) + " excluding " + xo::quoted( exclude_mask ) );
 				for ( auto& name : source_names )
 				{
-					m_SensorNeurons.emplace_back( std::make_unique< SensorNeuron >( child_pn, par, *this, name, m_SensorNeurons.size(), LeftSide, "linear" ) );
-					m_SensorNeurons.emplace_back( std::make_unique< SensorNeuron >( child_pn, par, *this, name, m_SensorNeurons.size(), RightSide, "linear" ) );
+					m_SensorNeurons.emplace_back( std::make_unique< SensorNeuron >( child_pn, par, *this, name, m_SensorNeurons.size(), Side::Left, "linear" ) );
+					m_SensorNeurons.emplace_back( std::make_unique< SensorNeuron >( child_pn, par, *this, name, m_SensorNeurons.size(), Side::Right, "linear" ) );
 				}
 			}
 		}
@@ -150,7 +150,7 @@ namespace scone
 		auto& layer = m_InterNeurons[ layer_name ];
 		for ( int i = 0; i < amount; ++i )
 		{
-			for ( auto side : { LeftSide, RightSide } )
+			for ( auto side : { Side::Left, Side::Right } )
 			{
 				layer.emplace_back( std::make_unique< InterNeuron >( pn, par, layer_name, i, side, act_func ) );
 				for ( auto& child : pn )
@@ -325,7 +325,7 @@ namespace scone
 		for ( auto& m : GetModel().GetMuscles() )
 		{
 			str << m->GetName();
-			auto mp = GetVirtualMuscles( m.get(), GetSideFromName( m->GetName() ) == RightSide );
+			auto mp = GetVirtualMuscles( m.get(), GetSideFromName( m->GetName() ) == Side::Right );
 			for ( auto& par : mp )
 				str << "\t" << par.name << "\t" << par.correlation;
 			str << std::endl;

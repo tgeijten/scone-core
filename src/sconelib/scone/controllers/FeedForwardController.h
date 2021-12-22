@@ -45,7 +45,7 @@ namespace scone
 		// actuator info
 		struct ActInfo
 		{
-			ActInfo() : side( NoSide ), function_idx( NoIndex ), actuator_idx( NoIndex ) {};
+			ActInfo() : side( Side::None ), function_idx( NoIndex ), actuator_idx( NoIndex ) {};
 			String name;
 			Side side;
 			String full_name;

@@ -16,9 +16,9 @@ namespace scone
 	std::vector<GaitCycle> ExtractGaitCycles( const Storage<>& sto, Real threshold, TimeInSeconds min_stance )
 	{
 		std::vector<GaitCycle> cycles;
-		for ( auto side : { LeftSide, RightSide } )
+		for ( auto side : { Side::Left, Side::Right } )
 		{
-			string leg_name = ( side == LeftSide ) ? "leg0_l" : "leg1_r";
+			string leg_name = ( side == Side::Left ) ? "leg0_l" : "leg1_r";
 			index_t grf_chan = sto.GetChannelIndex( leg_name + ".grf_norm_y" );
 			index_t cop_chan = sto.GetChannelIndex( leg_name + ".cop_x" );
 

@@ -384,7 +384,7 @@ namespace scone::NN
 		case "BodyOrientationSensor"_hash:
 		{
 			const auto& body = *FindByName( model.GetBodies(), pn.get<String>( "body" ) );
-			for ( auto side : { RightSide, LeftSide } )
+			for ( auto side : { Side::Right, Side::Left } )
 				AddSensor( model,
 					model.AcquireSensor<BodyOrientationSensor>( body, pn.get<Vec3>( "dir" ), pn.get<String>( "postfix" ), side ),
 					pn.get<double>( "delay" ), 0 );
@@ -393,7 +393,7 @@ namespace scone::NN
 		case "BodyAngularVelocitySensor"_hash:
 		{
 			const auto& body = *FindByName( model.GetBodies(), pn.get<String>( "body" ) );
-			for ( auto side : { RightSide, LeftSide } )
+			for ( auto side : { Side::Right, Side::Left } )
 				AddSensor( model,
 					model.AcquireSensor<BodyAngularVelocitySensor>( body, pn.get<Vec3>( "dir" ), pn.get<String>( "postfix" ), side ),
 					pn.get<double>( "delay" ), 0 );
@@ -406,7 +406,7 @@ namespace scone::NN
 			const auto& body = *FindByName( model.GetBodies(), body_name );
 			auto kv = par.try_get( body_name + postfix + ".KV", pn, "velocity_gain", 0.1 );
 			const auto target = par.try_get( body_name + postfix + ".P0", pn, "target", 0 );;
-			for ( auto side : { RightSide, LeftSide } )
+			for ( auto side : { Side::Right, Side::Left } )
 				AddSensor( model,
 					model.AcquireSensor<BodyOriVelSensor>( body, pn.get<Vec3>( "dir" ), kv, postfix, side, target ),
 					pn.get<double>( "delay" ), 0 );
@@ -421,7 +421,7 @@ namespace scone::NN
 			const auto load_gain = pn.get<double>( "load_gain", 1.0 );
 			const auto target = par.try_get( body_name + postfix + ".P0", pn, "target", 0 );;
 			const auto delay = pn.get<double>( "delay" );
-			for ( auto side : { RightSide, LeftSide } )
+			for ( auto side : { Side::Right, Side::Left } )
 			{
 				auto& bov = model.AcquireSensor<BodyOriVelSensor>( body, pn.get<Vec3>( "dir" ), kv, postfix, side, target );
 				auto& load = model.AcquireSensor<LegLoadSensor>( model.GetLeg( Location( side ) ) );
@@ -435,7 +435,7 @@ namespace scone::NN
 			auto kv = par.try_get( name + ".KV", pn, "velocity_gain", 0.1 );
 			const auto delay = pn.get<double>( "delay" );
 			const auto load_gain = pn.get<double>( "load_gain", 4.0 );
-			for ( auto side : { RightSide, LeftSide } )
+			for ( auto side : { Side::Right, Side::Left } )
 			{
 				auto& cb = model.AcquireSensor<ComBosSensor>( model, pn.get<Vec3>( "dir" ), kv, name, side );
 				auto& load = model.AcquireSensor<LegLoadSensor>( model.GetLeg( Location( side ) ) );
@@ -451,8 +451,8 @@ namespace scone::NN
 			Dof* parent_dof = pn.has_key( "parent_dof" ) ? &*FindByName( model.GetDofs(), pn.get<String>( "parent_dof" ) ) : nullptr;
 			if ( pn.get<bool>( "dual_sided", false ) )
 			{
-				AddSensor( model, model.AcquireSensor<DofPosVelSensor>( dof, kv, parent_dof, RightSide ), neural_delays_[ dof_name ], 0 );
-				AddSensor( model, model.AcquireSensor<DofPosVelSensor>( dof, kv, parent_dof, LeftSide ), neural_delays_[ dof_name ], 0 );
+				AddSensor( model, model.AcquireSensor<DofPosVelSensor>( dof, kv, parent_dof, Side::Right ), neural_delays_[ dof_name ], 0 );
+				AddSensor( model, model.AcquireSensor<DofPosVelSensor>( dof, kv, parent_dof, Side::Left ), neural_delays_[ dof_name ], 0 );
 			}
 			else AddSensor( model, model.AcquireSensor<DofPosVelSensor>( dof, kv, parent_dof ), neural_delays_[ dof_name ], 0 );
 			break;
@@ -473,15 +473,15 @@ namespace scone::NN
 			if ( auto neurons = pn.try_get<index_t>( "neurons" ) )
 			{
 				neuron_names.reserve( neuron_names.size() + *neurons * 2 );
-				for ( auto s : { RightSide, LeftSide } )
+				for ( auto s : { Side::Right, Side::Left } )
 					for ( index_t idx = 0; idx < *neurons; ++idx )
-						neuron_names.emplace_back( xo::stringf( "I%d_%d_%c", layer.layer_idx_, idx, s == LeftSide ? 'l' : 'r' ) );
+						neuron_names.emplace_back( xo::stringf( "I%d_%d_%c", layer.layer_idx_, idx, s == Side::Left ? 'l' : 'r' ) );
 			}
 			else if ( const auto names = pn.try_get<String>( "names" ) )
 			{
 				auto base_names = xo::split_str( *names, " ;," );
 				neuron_names.reserve( neuron_names.size() + base_names.size() * 2 );
-				for ( auto s : { RightSide, LeftSide } )
+				for ( auto s : { Side::Right, Side::Left } )
 					for ( const auto& name : base_names )
 						neuron_names.emplace_back( name + GetSideName( s ) );
 			}
@@ -602,7 +602,7 @@ namespace scone::NN
 				auto src_side = GetSideFromName( source_name );
 				auto trg_side = GetSideFromName( target_name );
 
-				if ( ipsilateral && !src_side == NoSide && src_side != trg_side )
+				if ( ipsilateral && src_side != Side::None && src_side != trg_side )
 					continue; // neuron not on same side
 				if ( contralateral && src_side == trg_side )
 					continue; // neuron not on opposite side

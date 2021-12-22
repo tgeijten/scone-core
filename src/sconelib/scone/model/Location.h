@@ -16,7 +16,7 @@ namespace scone
 	class SCONE_API Location
 	{
 	public:
-		Location( Side side = NoSide, bool symmetric = true ) : side_( side ), symmetric_( symmetric ) {}
+		Location( Side side = Side::None, bool symmetric = true ) : side_( side ), symmetric_( symmetric ) {}
 
 		Side side_;
 		bool symmetric_;
@@ -31,7 +31,7 @@ namespace scone
 	template< typename T > const T& FindByLocation( const std::vector< T >& cont, const String& name, const Location& loc )
 	{
 		auto side = GetSideFromName( name );
-		if ( side == NoSide ) {
+		if ( side == Side::None ) {
 			// name has no side, try object without side, then object with location side
 			if ( auto it = TryFindByName( cont, name ); it != cont.end() )
 				return *it;

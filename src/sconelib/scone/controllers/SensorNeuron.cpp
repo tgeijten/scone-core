@@ -76,7 +76,7 @@ namespace scone
 		}
 
 		// mirror sensor gain for right side sensors of MirrorDofs
-		if ( dof && nc.IsMirrorDof( *dof ) && side == RightSide )
+		if ( dof && nc.IsMirrorDof( *dof ) && side == Side::Right )
 			sensor_gain_ *= -1;
 
 		xo_error_if( !input_sensor_, "Unknown type " + type_ );

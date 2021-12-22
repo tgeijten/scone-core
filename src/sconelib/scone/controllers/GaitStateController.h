@@ -9,7 +9,6 @@
 #pragma once
 
 #include "scone/core/types.h"
-#include "scone/model/Side.h"
 #include "scone/controllers/Controller.h"
 #include "scone/model/Leg.h"
 #include "scone/core/TimedValue.h"

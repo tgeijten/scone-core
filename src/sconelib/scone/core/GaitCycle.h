@@ -10,7 +10,7 @@ namespace scone
 {
 	struct GaitCycle
 	{
-		Side side_ = NoSide;
+		Side side_ = Side::None;
 		TimeInSeconds begin_ = 0;
 		TimeInSeconds swing_ = 0;
 		TimeInSeconds end_ = 0;
