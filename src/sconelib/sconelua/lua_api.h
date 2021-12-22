@@ -313,7 +313,7 @@ namespace scone
 
 		/// get or create an optimization parameter with a specific name, mean, stdev, minval and maxval
 		LuaNumber create_from_mean_std( LuaString name, LuaNumber mean, LuaNumber stdev, LuaNumber minval, LuaNumber maxval ) {
-			return par_.get( name, mean, stdev, minval, maxval );
+			return par_.get( name, spot::par_t( mean ), spot::par_t( stdev ), spot::par_t( minval ), spot::par_t( maxval ) );
 		}
 		/// get or create an optimization parameter from a string
 		LuaNumber create_from_string( LuaString name, const std::string& value ) {
