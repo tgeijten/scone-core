@@ -24,29 +24,36 @@ int main( int argc, const char* argv[] )
 
 		scone::Initialize();
 
-		if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) )
+		if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) ) {
 			scone::add_scenario_tests( "scenarios/Tutorials" );
+		}
 #if SCONE_OPENSIM_3_ENABLED
 		if ( !args.has_flag( "skip-opensim3" ) && !args.has_flag( "skip-opensim" ) ) {
 			scone::add_scenario_tests( "scenarios/UnitTests/OpenSim3" );
 			scone::add_scenario_tests( "scenarios/Examples", "*OpenSim3*.scone" );
+			scone::add_scenario_tests( "scenarios/Examples2", "*OpenSim3*.scone" );
+			scone::add_scenario_tests( "scenarios/Tutorials2", "*OpenSim.scone" );
 		}
 #endif
 #if SCONE_OPENSIM_4_ENABLED
 		if ( !args.has_flag( "skip-opensim4" ) && !args.has_flag( "skip-opensim" ) ) {
 			//scone::add_scenario_tests( "scenarios/UnitTests/OpenSim4" );
 			scone::add_scenario_tests( "scenarios/Examples", "*OpenSim4*.scone" );
+			scone::add_scenario_tests( "scenarios/Examples2", "*OpenSim4*.scone" );
 		}
 #endif
 #if SCONE_HYFYDY_ENABLED
 		if ( !args.has_flag( "skip-hyfydy" ) ) {
 			scone::add_scenario_tests( "scenarios/UnitTests/Hyfydy", "*.par" );
+			scone::add_scenario_tests( "scenarios/Examples", "*Hyfydy.scone" );
+			scone::add_scenario_tests( "scenarios/Examples2", "*Hyfydy.scone" );
+			scone::add_scenario_tests( "scenarios/Tutorials2", "*Hyfydy.scone" );
+
 #if SCONE_EXPERIMENTAL_FEATURES_ENABLED
 			scone::add_scenario_tests( "scenarios/UnitTests/HyfydyExperimental", "*.par" );
-#endif
-			scone::add_scenario_tests( "scenarios/Examples", "*Hyfydy*.scone" );
 			if ( args.has_flag( "add-blueprints" ) )
 				scone::add_scenario_tests( "scenarios/UnitTests/Blueprints", "*.par" );
+#endif
 		}
 #endif
 
