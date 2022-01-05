@@ -196,10 +196,11 @@ namespace scone
 
 	void Muscle::InitBodyJointDofs( const Body* b )
 	{
-		auto* j = b->GetJoint();
-		SCONE_THROW_IF( !j, "Invalid joint for body " + b->GetName() + " while initializing muscle " + GetName() );
-		m_Joints.push_back( j );
-		xo::append( m_Dofs, j->GetDofs() );
+		if ( auto* j = b->GetJoint() )
+		{
+			m_Joints.push_back( j );
+			xo::append( m_Dofs, j->GetDofs() );
+		}
 	}
 
 	void Muscle::InitJointsDofs()
