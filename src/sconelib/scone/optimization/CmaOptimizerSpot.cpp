@@ -42,6 +42,8 @@ namespace scone
 		add_stop_condition( std::make_unique< spot::max_steps_condition >( max_generations ) );
 		add_stop_condition( std::make_unique< spot::min_progress_condition >( min_progress, min_progress_samples ) );
 		find_stop_condition< spot::flat_fitness_condition >().epsilon_ = flat_fitness_epsilon_;
+		if ( target_fitness_ == target_fitness_ )
+			add_stop_condition( std::make_unique< spot::target_fitness_condition>( target_fitness_ ) );
 	}
 
 	void CmaOptimizerSpot::SetOutputMode( OutputMode m )

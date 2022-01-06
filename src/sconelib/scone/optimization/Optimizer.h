@@ -74,6 +74,9 @@ namespace scone
 		/// The maximum number of iterations without file output; default = 1000.
 		size_t max_generations_without_file_output;
 
+		/// Target fitness value, stop optimization if better; default = not set.
+		double target_fitness_;
+
 		Objective& GetObjective() { return *m_Objective; }
 		const Objective& GetObjective() const { return *m_Objective; }
 		virtual void Run() = 0;

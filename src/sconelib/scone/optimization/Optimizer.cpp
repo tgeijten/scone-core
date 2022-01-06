@@ -27,6 +27,7 @@
 
 #include <mutex>
 #include <sstream>
+#include <limits>
 
 namespace scone
 {
@@ -66,6 +67,8 @@ namespace scone
 		INIT_PROP( props, min_progress, 1e-5 );
 		INIT_PROP( props, window_size, 500 );
 		INIT_PROP( props, min_progress_samples, window_size );
+
+		INIT_PROP( props, target_fitness_, std::numeric_limits<double>::quiet_NaN() );
 
 		// initialize parameters from file
 		if ( use_init_file && !init_file.empty() )
