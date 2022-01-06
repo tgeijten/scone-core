@@ -8,17 +8,12 @@
 
 #include "CmaOptimizerSpot.h"
 
+#include "scone/core/Exception.h"
+#include "scone/optimization/opt_tools.h"
+
 #include "spot/stop_condition.h"
 #include "spot/file_reporter.h"
-#include "spot/console_reporter.h"
 
-#include "scone/core/Exception.h"
-#include "scone/core/Log.h"
-#include "scone/core/Settings.h"
-#include "spot/async_evaluator.h"	
-#include "spot/pooled_evaluator.h"
-#include "spot/batch_evaluator.h"
-#include "opt_tools.h"
 
 namespace scone
 {
