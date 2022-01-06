@@ -48,6 +48,7 @@
 #include "scone/core/Exception.h"
 #include "scone/optimization/CmaOptimizerSpot.h"
 #include "scone/optimization/CmaPoolOptimizer.h"
+#include "scone/optimization/MesOptimizer.h"
 #include "scone/optimization/ImitationObjective.h"
 #include "scone/optimization/SimilarityObjective.h"
 #include "scone/optimization/SimulationObjective.h"
@@ -170,7 +171,8 @@ namespace scone
 		static OptimizerFactory g_OptimizerFactory = OptimizerFactory()
 			.register_type< CmaOptimizerSpot >( "CmaOptimizer" )
 			.register_type< CmaOptimizerSpot >()
-			.register_type< CmaPoolOptimizer >();
+			.register_type< CmaPoolOptimizer >()
+			.register_type< MesOptimizer >();
 
 		return g_OptimizerFactory;
 	}
