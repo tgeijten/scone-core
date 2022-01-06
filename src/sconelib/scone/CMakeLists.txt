@@ -171,8 +171,8 @@ set(MEASURE_FILES
 	measures/StepMeasure.h
 	)
 set(OPT_API_FILES
-	optimization/CmaOptimizer.cpp
-	optimization/CmaOptimizer.h
+	optimization/EsOptimizer.cpp
+	optimization/EsOptimizer.h
 	optimization/CmaOptimizerSpot.cpp
 	optimization/CmaOptimizerSpot.h
 	optimization/CmaPoolOptimizer.cpp

@@ -9,12 +9,13 @@
 #include "CmaPoolOptimizer.h"
 #include "CmaOptimizerSpot.h"
 #include "spot/file_reporter.h"
+#include "opt_tools.h"
 
 namespace scone
 {
 	CmaPoolOptimizer::CmaPoolOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir ) :
 	Optimizer( pn, scenario_pn, scenario_dir ),
-	optimizer_pool( *m_Objective, CmaOptimizerSpot::GetEvaluator(), pn )
+	optimizer_pool( *m_Objective, GetSpotEvaluator(), pn )
 	{
 		// re-initialize these parameters because we want different defaults
 		INIT_PROP( pn, prediction_window_, window_size );
@@ -89,7 +90,7 @@ namespace scone
 		auto& pool = dynamic_cast<const CmaPoolOptimizer&>( opt );
 		for ( const auto& o : pool.optimizers() )
 		{
-			auto& cma = dynamic_cast<const CmaOptimizer&>( *o );
+			auto& cma = dynamic_cast<const EsOptimizer&>( *o );
 			for ( auto&& pn : cma.GetStatusMessages() )
 				pool.OutputStatus( std::move( pn ) );
 		}

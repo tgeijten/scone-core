@@ -19,6 +19,11 @@
 #include "xo/utility/irange.h"
 #include "xo/container/container_algorithms.h"
 #include "xo/serialization/serialize.h"
+#include "scone/core/Settings.h"
+#include "xo/thread/thread_priority.h"
+#include "spot/batch_evaluator.h"
+#include "spot/async_evaluator.h"
+#include "spot/pooled_evaluator.h"
 
 using xo::timer;
 
@@ -106,5 +111,35 @@ namespace scone
 		if ( add_missing_version )
 			AddEmptyVersionForOldScenarios( scenario_pn );
 		return scenario_pn;
+	}
+
+	spot::evaluator& GetSpotEvaluator()
+	{
+		auto eval = GetSconeSetting<int>( "optimizer.evaluator" );
+		auto max_threads = GetSconeSetting<int>( "optimizer.max_threads" );
+		auto thread_prio = static_cast<xo::thread_priority>( GetSconeSetting<int>( "optimizer.thread_priority" ) );
+		if ( eval == 0 )
+		{
+			static spot::sequential_evaluator sequential_eval;
+			return sequential_eval;
+		}
+		else if ( eval == 1 )
+		{
+			static spot::batch_evaluator batch_eval;
+			return batch_eval;
+		}
+		else if ( eval == 2 )
+		{
+			static spot::async_evaluator async_eval( max_threads );
+			async_eval.set_max_threads( max_threads, thread_prio );
+			return async_eval;
+		}
+		else if ( eval == 3 )
+		{
+			static spot::pooled_evaluator pooled_eval( max_threads, thread_prio );
+			pooled_eval.set_max_threads( max_threads, thread_prio );
+			return pooled_eval;
+		}
+		else SCONE_THROW( "Invalid evaluator setting" );
 	}
 }
