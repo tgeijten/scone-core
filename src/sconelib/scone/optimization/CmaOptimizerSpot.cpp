@@ -53,19 +53,8 @@ namespace scone
 	{
 		xo_assert( output_mode_ == no_output ); // output mode can only be set once
 		output_mode_ = m;
-		switch ( output_mode_ )
-		{
-		case Optimizer::no_output:
-			break;
-		case Optimizer::console_output:
-			add_reporter( std::make_unique<spot::console_reporter>() );
-			break;
-		case Optimizer::status_console_output:
-		case Optimizer::status_queue_output:
-			add_reporter( std::make_unique<EsOptimizerReporter>() );
-			break;
-		default: SCONE_THROW( "Unknown output mode" );
-		}
+		if ( auto p = MakeSpotReporter( output_mode_ ) )
+			add_reporter( std::move( p ) );
 	}
 
 	void CmaOptimizerSpot::Run()

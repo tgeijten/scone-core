@@ -24,6 +24,8 @@
 #include "spot/batch_evaluator.h"
 #include "spot/async_evaluator.h"
 #include "spot/pooled_evaluator.h"
+#include "EsOptimizer.h"
+#include "spot/console_reporter.h"
 
 using xo::timer;
 
@@ -141,5 +143,20 @@ namespace scone
 			return pooled_eval;
 		}
 		else SCONE_THROW( "Invalid evaluator setting" );
+	}
+
+	std::unique_ptr<spot::reporter> MakeSpotReporter( Optimizer::OutputMode m )
+	{
+		switch ( m )
+		{
+		case Optimizer::no_output:
+			return nullptr;
+		case Optimizer::console_output:
+			return std::make_unique<spot::console_reporter>();
+		case Optimizer::status_console_output:
+		case Optimizer::status_queue_output:
+			return std::make_unique<EsOptimizerReporter>();
+		default: SCONE_THROW( "Unknown output mode" );
+		}
 	}
 }
