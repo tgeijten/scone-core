@@ -13,12 +13,6 @@
 
 namespace scone
 {
-	using spot::optimizer;
-	using spot::search_point;
-	using spot::search_point_vec;
-	using spot::fitness_vec;
-	using xo::index_t;
-
 	/// Optimizer based on the CMA-ES algorithm by [Hansen].
 	class SCONE_API CmaOptimizerSpot : public EsOptimizer, public spot::cma_optimizer
 	{

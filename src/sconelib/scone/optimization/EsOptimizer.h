@@ -51,6 +51,7 @@ namespace scone
 	class SCONE_API EsOptimizerReporter : public spot::reporter
 	{
 	public:
+		EsOptimizerReporter();
 		virtual void on_start( const spot::optimizer& opt ) override;
 		virtual void on_stop( const spot::optimizer& opt, const spot::stop_condition& s ) override;
 		virtual void on_pre_evaluate_population( const spot::optimizer& opt, const spot::search_point_vec& pop ) override;

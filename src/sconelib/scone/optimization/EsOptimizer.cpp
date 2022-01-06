@@ -38,6 +38,10 @@ namespace scone
 		return str;
 	}
 
+	EsOptimizerReporter::EsOptimizerReporter() :
+		number_of_evaluations_( 0 )
+	{}
+
 	void EsOptimizerReporter::on_start( const spot::optimizer& opt )
 	{
 		auto& cma = dynamic_cast<const EsOptimizer&>( opt );

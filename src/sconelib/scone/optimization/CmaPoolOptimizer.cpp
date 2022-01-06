@@ -73,7 +73,7 @@ namespace scone
 			dynamic_cast<Optimizer&>( *o ).SetOutputMode( m );
 	}
 
-	void CmaPoolOptimizerReporter::on_start( const optimizer& opt )
+	void CmaPoolOptimizerReporter::on_start( const spot::optimizer& opt )
 	{
 		auto& cma = dynamic_cast<const CmaPoolOptimizer&>( opt );
 		auto pn = cma.GetStatusPropNode();
@@ -85,7 +85,7 @@ namespace scone
 		cma.OutputStatus( std::move( pn ) );
 	}
 
-	void CmaPoolOptimizerReporter::on_post_step( const optimizer& opt )
+	void CmaPoolOptimizerReporter::on_post_step( const spot::optimizer& opt )
 	{
 		auto& pool = dynamic_cast<const CmaPoolOptimizer&>( opt );
 		for ( const auto& o : pool.optimizers() )
@@ -96,7 +96,7 @@ namespace scone
 		}
 	}
 
-	void CmaPoolOptimizerReporter::on_stop( const optimizer& opt, const spot::stop_condition& s )
+	void CmaPoolOptimizerReporter::on_stop( const spot::optimizer& opt, const spot::stop_condition& s )
 	{
 		auto& cma = dynamic_cast<const CmaPoolOptimizer&>( opt );
 		cma.OutputStatus( "finished", s.what() );

@@ -13,7 +13,7 @@
 
 #include "spot/stop_condition.h"
 #include "spot/file_reporter.h"
-
+#include "scone/core/Settings.h"
 
 namespace scone
 {
@@ -58,8 +58,11 @@ namespace scone
 		PrepareOutputFolder();
 
 		// create file reporter
-		add_reporter( std::make_unique< spot::file_reporter >(
-			GetOutputFolder(), min_improvement_for_file_output, max_generations_without_file_output ) );
+		auto fr = std::make_unique< spot::file_reporter >( GetOutputFolder(), min_improvement_for_file_output, max_generations_without_file_output );
+		fr->output_fitness_history_ = GetSconeSetting<bool>( "optimizer.output_fitness_history" );
+		fr->output_par_history_ = GetSconeSetting<bool>( "optimizer.output_par_history" );
+
+		add_reporter( std::move( fr ) );
 
 		run();
 	}
