@@ -14,21 +14,26 @@
 #include "spot/stop_condition.h"
 #include "spot/file_reporter.h"
 #include "scone/core/Settings.h"
+#include "xo/container/prop_node_tools.h"
 
 namespace scone
 {
+	spot::mes_options make_mes_options( const PropNode& pn ) {
+		spot::mes_options mo;
+		TRY_INIT_PROP( pn, mo.lambda );
+		TRY_INIT_PROP( pn, mo.mu );
+		TRY_INIT_PROP( pn, mo.random_seed );
+		TRY_INIT_PROP( pn, mo.mean_sigma );
+		TRY_INIT_PROP( pn, mo.var_sigma );
+		TRY_INIT_PROP( pn, mo.mom_sigma );
+		TRY_INIT_PROP( pn, mo.mom_offset );
+		TRY_INIT_PROP( pn, mo.mom_offset_stdev );
+		return mo;
+	}
+
 	MesOptimizer::MesOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir ) :
 		EsOptimizer( pn, scenario_pn, scenario_dir ),
-		mes_optimizer( *m_Objective, GetSpotEvaluator(),
-			spot::mes_options{
-				EsOptimizer::lambda_,
-				EsOptimizer::mu_,
-				EsOptimizer::random_seed,
-				pn.get<spot::par_t>( "mean_sigma", 0.2 ),
-				pn.get<spot::par_t>( "var_sigma", 0.2 ),
-				pn.get<spot::par_t>( "mom_sigma", 0.2 )
-			}
-		),
+		mes_optimizer( *m_Objective, GetSpotEvaluator(), make_mes_options( pn ) ),
 		INIT_MEMBER( pn, max_errors, max_errors_ )
 	{
 		SCONE_ASSERT( GetObjective().dim() > 0 );
