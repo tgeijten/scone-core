@@ -48,7 +48,6 @@
 #include "scone/core/Exception.h"
 #include "scone/optimization/CmaOptimizerSpot.h"
 #include "scone/optimization/CmaPoolOptimizer.h"
-#include "scone/optimization/MesOptimizer.h"
 #include "scone/optimization/ImitationObjective.h"
 #include "scone/optimization/SimilarityObjective.h"
 #include "scone/optimization/SimulationObjective.h"
@@ -56,6 +55,11 @@
 #include "scone/controllers/NeuralNetworkController.h"
 #include "xo/filesystem/filesystem.h"
 #include "xo/string/string_tools.h"
+
+#ifdef SCONE_EXPERIMENTAL_FEATURES
+#	include "scone/optimization/MesOptimizer.h"
+#	include "scone/optimization/EvaOptimizer.h"
+#endif
 
 namespace scone
 {
@@ -171,8 +175,11 @@ namespace scone
 		static OptimizerFactory g_OptimizerFactory = OptimizerFactory()
 			.register_type< CmaOptimizerSpot >( "CmaOptimizer" )
 			.register_type< CmaOptimizerSpot >()
-			.register_type< CmaPoolOptimizer >()
-			.register_type< MesOptimizer >();
+#ifdef SCONE_EXPERIMENTAL_FEATURES
+			.register_type< MesOptimizer >()
+			.register_type< EvaOptimizer >()
+#endif
+			.register_type< CmaPoolOptimizer >();
 
 		return g_OptimizerFactory;
 	}

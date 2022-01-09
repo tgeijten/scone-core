@@ -179,6 +179,8 @@ set(OPT_API_FILES
 	optimization/CmaPoolOptimizer.h
 	optimization/MesOptimizer.cpp
 	optimization/MesOptimizer.h
+	optimization/EvaOptimizer.cpp
+	optimization/EvaOptimizer.h
 	optimization/Objective.cpp
 	optimization/Objective.h
 	optimization/Optimizer.cpp
