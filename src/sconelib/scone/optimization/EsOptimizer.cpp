@@ -11,6 +11,7 @@
 #include "xo/filesystem/filesystem.h"
 #include "spot/optimizer.h"
 #include "scone/core/Log.h"
+#include "xo/container/container_algorithms.h"
 
 namespace scone
 {
