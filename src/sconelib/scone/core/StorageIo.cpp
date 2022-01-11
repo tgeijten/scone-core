@@ -168,7 +168,7 @@ namespace scone
 		// read time label
 		String dummy;
 		str >> dummy;
-		SCONE_ERROR_IF( dummy != "time", "First column should be labeled 'time'" );
+		//SCONE_ERROR_IF( dummy != "time", "First column should be labeled 'time'" );
 
 		String header = str.get_line();
 		SCONE_ERROR_IF( str.fail(), "Error reading file labels" );
