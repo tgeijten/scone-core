@@ -89,9 +89,9 @@ namespace scone
 
 	PropNode* TryGetModelPropNode( PropNode& scenario_pn )
 	{
-		if ( auto opt_fp = FindFactoryProps( GetOptimizerFactory(), scenario_pn, "Optimizer" ) )
-			if ( auto obj_fp = FindFactoryProps( GetObjectiveFactory(), opt_fp.props(), "Objective" ) )
-				if ( auto mod_fp = FindFactoryProps( GetModelFactory(), obj_fp.props(), "Model" ) )
+		if ( auto opt_fp = TryFindFactoryProps( GetOptimizerFactory(), scenario_pn, "Optimizer" ) )
+			if ( auto obj_fp = TryFindFactoryProps( GetObjectiveFactory(), opt_fp.props(), "Objective" ) )
+				if ( auto mod_fp = TryFindFactoryProps( GetModelFactory(), obj_fp.props(), "Model" ) )
 					return &const_cast<PropNode&>( mod_fp.props() );
 		return nullptr;
 	}
