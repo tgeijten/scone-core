@@ -17,7 +17,7 @@
 namespace scone
 {
 	/// TestObjective function types
-	xo_smart_enum_class( TestObjectiveFunction, Sphere, Rosenbrock, Schwefel, Rastrigin );
+	xo_smart_enum_class( TestObjectiveFunction, Sphere, Ellipsoid, Rosenbrock, Schwefel, Rastrigin );
 
 	/// Objective used for testing
 	class SCONE_API TestObjective : public Objective

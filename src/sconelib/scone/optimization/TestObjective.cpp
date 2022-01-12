@@ -11,49 +11,19 @@
 #include "xo/string/string_tools.h"
 #include "scone/core/string_tools.h"
 #include "xo/numerical/math.h"
+#include "spot/test_objectives.h"
 
 namespace scone
 {
-	double sphere( const spot::par_vec& v )
-	{
-		double sum = 0.0;
-		for ( unsigned int i = 0; i < v.size(); ++i )
-			sum += xo::squared( v[ i ] );
-		return sum;
-	}
-
-	double rosenbrock( const spot::par_vec& v )
-	{
-		double sum = 0.0;
-		for ( unsigned int i = 0; i < v.size() - 1; i++ )
-			sum += 100 * xo::squared( v[ i + 1 ] - xo::squared( v[ i ] ) ) + xo::squared( 1. - v[ i ] );
-		return sum;
-	}
-
-	double schwefel( const spot::par_vec& v )
-	{
-		double sum = 0.0;
-		for ( index_t i = 0; i < v.size(); ++i )
-			sum += v[ i ] * sin( sqrt( fabs( v[ i ] ) ) );
-		return 418.9829 * v.size() - sum;
-	}
-
-	double rastrigin( const spot::par_vec& v )
-	{
-		double sum = 10.0 * v.size();
-		for ( index_t i = 0; i < v.size(); ++i )
-			sum += xo::squared( v[ i ] ) - 10.0 * cos( 2 * xo::constantsd::pi() * v[ i ] );
-		return sum;
-	}
-
 	auto get_function_ptr( TestObjectiveFunction fun )
 	{
 		switch ( fun )
 		{
-		case TestObjectiveFunction::Sphere: return &sphere;
-		case TestObjectiveFunction::Rosenbrock: return &rosenbrock;
-		case TestObjectiveFunction::Schwefel:return &schwefel;
-		case TestObjectiveFunction::Rastrigin: return &rastrigin;
+		case TestObjectiveFunction::Sphere: return &spot::sphere;
+		case TestObjectiveFunction::Ellipsoid: return &spot::sphere;
+		case TestObjectiveFunction::Rosenbrock: return &spot::rosenbrock;
+		case TestObjectiveFunction::Schwefel:return &spot::schwefel;
+		case TestObjectiveFunction::Rastrigin: return &spot::rastrigin;
 		default: xo_error( "Unsupported test function" );
 		}
 	}
@@ -63,6 +33,7 @@ namespace scone
 		switch ( fun )
 		{
 		case TestObjectiveFunction::Sphere: return { -1e9, 1e9 };
+		case TestObjectiveFunction::Ellipsoid: return { -1e9, 1e9 };
 		case TestObjectiveFunction::Rosenbrock: return { -5, 10 };
 		case TestObjectiveFunction::Schwefel:return { -500, 500 };
 		case TestObjectiveFunction::Rastrigin: return { -5.12, 5.12 };
