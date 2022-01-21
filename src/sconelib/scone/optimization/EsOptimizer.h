@@ -15,8 +15,7 @@
 
 namespace scone
 {
-	/// Optimizer based on the CMA-ES algorithm by [Hansen].
-	/// This is an abstract base class, use a derived class instead.
+	/// Base class for optimizers that use Evolutionary Strategies (ES).
 	class SCONE_API EsOptimizer : public Optimizer
 	{
 	public:
