@@ -43,6 +43,8 @@ namespace scone
 				m_BaseBodies.push_back( &l->GetFootBody() );
 		}
 
+		SCONE_ERROR_IF( m_BaseBodies.size() < 2, "Could not find base bodies. Please set the base_bodies parameter, or make sure the Model has properly defined legs." );
+
 		m_InitGaitDist = m_PrevGaitDist = GetGaitDist( model );
 		m_InitialComPos = model.GetComPos();
 	}
@@ -131,9 +133,10 @@ namespace scone
 		m_PrevGaitDist = gait_dist;
 	}
 
-	scone::Real GaitMeasure::GetGaitDist( const Model &model )
+	Real GaitMeasure::GetGaitDist( const Model &model )
 	{
 		// compute average of feet and Com (smallest 2 values)
+		SCONE_ASSERT( m_BaseBodies.size() >= 2 );
 		xo::sorted_vector< double > distances;
 		distances.reserve( 3 );
 		distances.insert( model.GetComPos().x );
