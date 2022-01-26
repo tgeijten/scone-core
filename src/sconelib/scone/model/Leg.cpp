@@ -34,7 +34,8 @@ namespace scone
 		for ( const auto& b : m_Upper.GetModel().GetBodies() )
 			if ( b->IsChildOf( m_Upper ) && b->HasContactGeometry() )
 				m_ContactBodies.emplace_back( b.get() );
-		SCONE_ERROR_IF( m_ContactBodies.empty(), "Leg with upper body " + m_Upper.GetName() + " has no contact geometry" );
+		if ( m_ContactBodies.empty() )
+			log::warning( "Leg with upper body " + m_Upper.GetName() + " has no contact geometry" );
 	}
 
 	Leg::~Leg()
@@ -67,12 +68,10 @@ namespace scone
 	{
 		if ( m_ContactForce )
 			return m_ContactForce->GetForceValue();
-		else if ( m_ContactBodies.size() <= 1 ) 
-			return m_Foot.GetContactForceValue();
 		else {
-			ForceValue v = m_ContactBodies.front()->GetContactForceValue();
-			for ( index_t i = 1; i < m_ContactBodies.size(); ++i )
-				v += m_ContactBodies[ i ]->GetContactForceValue();
+			ForceValue v;
+			for ( auto& b : m_ContactBodies )
+				v += b->GetContactForceValue();
 			return v;
 		}
 	}
