@@ -44,12 +44,14 @@ namespace scone::NN
 		return fac.create( pn.get<String>( "activation", default_activation ), pn );
 	}
 
+#ifdef USE_OLD_DELAY_SENSORS
 	DelayBufferChannel make_delay_buffer_channel( DelayBufferMap& buffers, TimeInSeconds delay, TimeInSeconds step_size )
 	{
 		auto delay_samples = std::max( size_t{ 1 }, xo::round_cast<size_t>( 0.5 * delay / step_size ) );
 		auto buffer_it = buffers.try_emplace( delay_samples, delay_samples, 0 ).first;
 		return { buffer_it, buffer_it->second.add_channel() };
 	}
+#endif
 
 	NeuralNetworkController::NeuralNetworkController( const PropNode& pn, Params& par, Model& model, const Location& area ) :
 		Controller( pn, par, model, area ),

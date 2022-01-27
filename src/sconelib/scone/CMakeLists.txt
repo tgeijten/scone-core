@@ -135,6 +135,10 @@ set(CS_CONTROLLERS_COMPOSITE_FILES
 	controllers/SequentialController.cpp
 	controllers/SequentialController.h
 	)
+set(CS_CONTROLLERS_EXPERIMENTAL_FILES
+	controllers/SpinalController.cpp
+	controllers/SpinalController.h
+	)
 set(MEASURE_FILES
 	measures/BalanceMeasure.cpp
 	measures/BalanceMeasure.h
@@ -279,6 +283,10 @@ set (SCONELIB_FILES
 	${SIM_TOPOLOGY_FILES}
 	)
 
+if (SCONE_EXPERIMENTAL_FEATURES)
+	list( APPEND SCONELIB_FILES ${CS_CONTROLLERS_EXPERIMENTAL_FILES} )
+endif()
+
 # add sources to single lib
 add_library(sconelib SHARED ${SCONELIB_FILES} ${SCONE_RESOURCE_FILES} )
 
@@ -314,12 +322,13 @@ source_group("core\\tools" FILES ${CORE_TOOL_FILES})
 source_group("core\\properties" FILES ${CORE_PROPNODE_FILES})
 source_group("core\\storage" FILES ${CORE_STORAGE_FILES})
 
-source_group("controllers" FILES ${CS_CONTROLLERS_FILES} )
-source_group("controllers\\State Control" FILES ${CS_CONTROLLERS_STATE_FILES} )
-source_group("controllers\\Composite Control" FILES ${CS_CONTROLLERS_COMPOSITE_FILES} )
-source_group("controllers\\Reflex Control" FILES ${CS_CONTROLLERS_REFLEX_FILES})
-source_group("controllers\\Neural Control" FILES ${CS_CONTROLLERS_NC_FILES})
+source_group("controllers" FILES ${CS_CONTROLLERS_FILES})
 source_group("controllers" FILES ${CS_SYSTEM_FILES})
+source_group("controllers" FILES ${CS_CONTROLLERS_EXPERIMENTAL_FILES})
+source_group("controllers\\State Control" FILES ${CS_CONTROLLERS_STATE_FILES})
+source_group("controllers\\Composite Control" FILES ${CS_CONTROLLERS_COMPOSITE_FILES})
+source_group("controllers\\ReflexController" FILES ${CS_CONTROLLERS_REFLEX_FILES})
+source_group("controllers\\NeuralController" FILES ${CS_CONTROLLERS_NC_FILES})
 source_group("controllers\\Meta Reflex Control" FILES ${CS_CONTROLLERS_MRC_FILES})
 
 source_group("measures" FILES ${MEASURE_FILES})

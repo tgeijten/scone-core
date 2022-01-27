@@ -76,6 +76,7 @@ namespace scone
 			std::vector<Link> links_;
 		};
 
+#ifdef USE_OLD_DELAY_SENSORS
 		using DelayBufferMap = std::map< size_t, xo::circular_buffer<Real> >;
 		using DelayBufferMapIter = DelayBufferMap::iterator;
 		struct DelayBufferChannel {
@@ -84,6 +85,7 @@ namespace scone
 			void set( Real value ) const { buffer_it_->second.set( channel_idx_, value ); }
 			Real get() const { return buffer_it_->second.get( channel_idx_ ); }
 		};
+#endif
 
 		struct SensorNeuronLink {
 			SensorDelayAdapter* delayed_sensor_;
@@ -144,8 +146,10 @@ namespace scone
 			std::vector<MotorNeuronLink> motor_links_;
 			index_t motor_layer_ = no_index;
 
+#ifdef USE_OLD_DELAY_SENSORS
 			DelayBufferMap sensor_buffers_;
 			DelayBufferMap actuator_buffers_;
+#endif
 		};
 	}
 }
