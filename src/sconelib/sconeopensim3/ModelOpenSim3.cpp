@@ -560,7 +560,6 @@ namespace scone
 		}
 	}
 
-
 	void ModelOpenSim3::StoreCurrentFrame()
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
@@ -606,6 +605,7 @@ namespace scone
 
 				{
 					SCONE_PROFILE_SCOPE( GetProfiler(), "SimTK::TimeStepper::stepTo" );
+					auto st = xo::scoped_timer_starter( m_SimulationTimer );
 					auto status = m_pTkTimeStepper->stepTo( target_time );
 					if ( status == SimTK::Integrator::EndOfSimulation )
 						RequestTermination();
@@ -641,6 +641,8 @@ namespace scone
 		else
 		{
 			// Integrate from initial time to final time (the old way)
+			SCONE_PROFILE_SCOPE( GetProfiler(), "OpenSim::Manager::integrate" );
+			auto st = xo::scoped_timer_starter( m_SimulationTimer );
 			m_pOsimManager->setFinalTime( time );
 			m_pOsimManager->integrate( GetTkState() );
 		}

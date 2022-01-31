@@ -12,6 +12,7 @@
 #include "scone/core/types.h"
 #include "xo/filesystem/path.h"
 #include "xo/system/profiler.h"
+#include "xo/time/timer.h"
 
 #include "ContactForce.h"
 #include "ContactGeometry.h"
@@ -121,6 +122,7 @@ namespace scone
 		virtual bool HasSimulationEnded() { return m_ShouldTerminate || GetTime() >= GetSimulationEndTime(); }
 		virtual void RequestTermination() { m_ShouldTerminate = true; }
 		virtual PropNode GetSimulationReport() const;
+		virtual TimeInSeconds GetSimulationDuration() const { return m_SimulationTimer().secondsd(); }
 		virtual void UpdatePerformanceStats( const path& filename ) const {}
 		virtual std::vector<std::pair<String, std::pair<xo::time, size_t>>> GetBenchmarks() const { return {}; }
 
@@ -283,6 +285,7 @@ namespace scone
 		PropNode m_UserData;
 		TimeInSeconds m_PrevStoreDataTime;
 		int m_PrevStoreDataStep;
+		xo::timer m_SimulationTimer;
 
 		// model properties
 		std::vector< UserInputUP > m_UserInputs;

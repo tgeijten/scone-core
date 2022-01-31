@@ -594,7 +594,6 @@ namespace scone
 		}
 	}
 
-
 	void ModelOpenSim4::StoreCurrentFrame()
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
@@ -640,6 +639,7 @@ namespace scone
 
 				{
 					SCONE_PROFILE_SCOPE( GetProfiler(), "SimTK::TimeStepper::stepTo" );
+					auto st = xo::scoped_timer_starter( m_SimulationTimer );
 					auto status = m_pTkTimeStepper->stepTo( target_time );
 					if ( status == SimTK::Integrator::EndOfSimulation )
 						RequestTermination();

@@ -56,6 +56,7 @@ namespace scone
 		m_ShouldTerminate( false ),
 		m_PrevStoreDataTime( 0 ),
 		m_PrevStoreDataStep( 0 ),
+		m_SimulationTimer( false ),
 		m_pModelProps( nullptr ),
 		m_pCustomProps( nullptr ),
 		m_StoreData( false ),
@@ -430,9 +431,12 @@ namespace scone
 
 	PropNode Model::GetSimulationReport() const
 	{
-		PropNode sim_pn;
-		sim_pn[ "simulation_frequency" ] = ( GetIntegrationStep() / GetTime() );
-		return sim_pn;
+		PropNode pn;
+		auto& perf_pn = pn[ "Simulation Performance" ];
+		perf_pn[ "simulation_frequency" ] = ( GetIntegrationStep() / GetTime() );
+		if ( auto sd = GetSimulationDuration(); sd > 0 )
+			perf_pn[ "simulation_duration" ] = xo::stringf( "%.3fs (%.4gx real-time)", sd, GetTime() / sd );
+		return pn;
 	}
 
 	std::vector<scone::path> Model::WriteResults( const path& file ) const
