@@ -57,7 +57,6 @@ namespace scone
 	{
 		for ( auto& a : actuators_ )
 			a.first->AddInput( a.second.front() );
-
 	}
 
 	void DelayedActuatorGroup::AdvanceActuatorBuffers()

@@ -301,6 +301,7 @@ set_target_properties(sconelib PROPERTIES PROJECT_LABEL sconelib )
 
 if (SCONE_EXPERIMENTAL_FEATURES)
 	target_compile_definitions(sconelib PUBLIC SCONE_EXPERIMENTAL_FEATURES)
+	target_include_directories(sconelib PUBLIC ${SNEL_INCLUDE_DIR})
 endif()
 
 if (MSVC)
