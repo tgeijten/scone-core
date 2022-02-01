@@ -52,13 +52,14 @@
 #include "scone/optimization/SimilarityObjective.h"
 #include "scone/optimization/SimulationObjective.h"
 #include "scone/optimization/TestObjective.h"
-#include "scone/controllers/NeuralNetworkController.h"
 #include "xo/filesystem/filesystem.h"
 #include "xo/string/string_tools.h"
 
 #ifdef SCONE_EXPERIMENTAL_FEATURES
 #	include "scone/optimization/MesOptimizer.h"
 #	include "scone/optimization/EvaOptimizer.h"
+#	include "scone/controllers/NeuralNetworkController.h"
+#	include "scone/controllers/SpinalController.h"
 #endif
 
 namespace scone
@@ -68,6 +69,7 @@ namespace scone
 		static ControllerFactory g_ControllerFactory = ControllerFactory()
 #ifdef SCONE_EXPERIMENTAL_FEATURES
 			.register_type< NN::NeuralNetworkController >( "NeuralNetworkController" )
+			.register_type< SpinalController >()
 #endif
 			.register_type< FeedForwardController >()
 			.register_type< GaitStateController >()

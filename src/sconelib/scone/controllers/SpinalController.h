@@ -18,7 +18,6 @@ namespace scone
 		xo::pattern_matcher muscles_;
 		std::vector<string> antagonists_;
 		std::vector<string> synergists_;
-		std::vector<string> linked_;
 	};
 
 	xo_smart_enum_class( NeuronGroupType, spindle, force, vestibular, motor, group );
@@ -58,7 +57,7 @@ namespace scone
 
 		std::vector<MuscleGroup> muscle_groups_;
 
-		snel::network nn_;
+		snel::network network_;
 		snel::group_id spindle_group_, motor_group_, ia_group_;
 		std::vector<DelayedSensorValue> delayed_spindle_sensors_;
 		std::vector<DelayedActuatorValue> delayed_actuators_;
