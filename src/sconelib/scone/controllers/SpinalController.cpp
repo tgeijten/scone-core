@@ -11,7 +11,7 @@ namespace scone
 {
 	using xo::uint32;
 
-	uint32 sided_idx( uint32 idx, Side s ) { return idx * 2 + uint32( s == Side::Left ); }
+	uint32 muscle_group_idx( uint32 idx, Side s ) { return idx * 2 + uint32( s == Side::Left ); }
 
 	MuscleGroup::MuscleGroup( const PropNode& pn ) :
 		INIT_MEMBER_REQUIRED( pn, name_ ),
@@ -39,10 +39,9 @@ namespace scone
 		// create delayed sensors and actuators
 		for ( auto& mus : muscles ) {
 			auto nd = GetNeuralDelay( *mus );
-			auto sp = model.AcquireSensor<MuscleLengthSensor>( *mus );
-			log::debug( "adding ", mus->GetName(), " nd=", nd );
+			auto& sp = model.AcquireSensor<MuscleLengthSensor>( *mus );
 			delayed_spindle_sensors_.push_back( model.GetDelayedSensor( sp, nd ) );
-			//delayed_actuators_.push_back( model.GetDelayedActuator( *mus, nd ) );
+			delayed_actuators_.push_back( model.GetDelayedActuator( *mus, nd ) );
 		}
 
 		// add neuron groups
@@ -69,13 +68,14 @@ namespace scone
 				auto& mus = muscles[ mi ];
 				for ( auto side : { Side::Right, Side::Left } )	{
 					if ( side == mus->GetSide() && mg.muscles_.match( mus->GetName() ) ) {
-						auto lid = network_.connect( spindle_group_, mi, ia_group, sided_idx( mi, side ) );
+						log::debug( "connecting ", mus->GetName(), " to ", mg.name_, " on side ", int( side ) );
+						auto lid = network_.connect( spindle_group_, mi, ia_group, muscle_group_idx( mgi, side ) );
 						auto par_name = "Ia." + mg.name_ + "." + muscles[ mi ]->GetName();
 						network_.set_weight( lid, float( par.try_get( par_name, pn, "l_ia_weight", 0.0 ) ) );
 					}
 
 					//if ( side == mus->GetSide() && mg.antagonists_.match( mus->GetName() ) ) {
-					//	auto lid = network_.connect( ia_group, sided_idx( mi, side ), motor_group_, mi );
+					//	auto lid = network_.connect( ia_group, muscle_group_idx( mi, side ), motor_group_, mi );
 					//	auto par_name = muscles[ mi ]->GetName() + ".Ia." + mg.name_;
 					//	network_.set_weight( lid, float( par.try_get( muscles[ mi ]->GetName() + ".L", pn, "ia_mn_weight", 0.0 ) ) );
 					//}
