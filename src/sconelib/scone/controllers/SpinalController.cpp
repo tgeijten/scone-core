@@ -11,57 +11,14 @@ namespace scone
 {
 	using xo::uint32;
 
-	MuscleGroup::MuscleGroup( const PropNode& pn, const Model& model, Side side, uint32 idx ) :
-		pn_( pn ), name_( pn.get_str( "name" ) ), side_( side ), index_( idx )
-	{
-		auto& muscles = model.GetMuscles();
-		auto& muscle_pattern = pn_.get<xo::pattern_matcher>( "muscles" );
-		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
-			if ( side_ == muscles[ mi ]->GetSide() && muscle_pattern.match( muscles[ mi ]->GetName() ) )
-				muscle_indices_.emplace_back( mi );
-	}
-
-	void MuscleGroup::Initialize( const Model& model, const std::vector<MuscleGroup>& muscle_groups )
-	{
-		auto& muscles = model.GetMuscles();
-		auto antagonists = pn_.try_get<xo::pattern_matcher>( "antagonists" );
-		for ( uint32 amgi = 0; amgi < muscle_groups.size(); ++amgi ) {
-			if ( side_ == muscle_groups[ amgi ].side_ ) {
-				if ( antagonists && antagonists->match( muscle_groups[ amgi ].name_ ) ) {
-					antaganist_group_indices_.emplace_back( amgi );
-					xo::append( antaganist_muscle_indices_, muscle_groups[ amgi ].muscle_indices_ );
-				}
-			}
-		}
-		string str = "antagonists of " + name_ + ":";
-		for ( auto ami : antaganist_muscle_indices_ )
-			str += " " + muscles[ ami ]->GetName();
-		log::debug( str );
-	}
-
-	NeuronGroup::NeuronGroup( const PropNode& pn ) :
-		INIT_MEMBER_REQUIRED( pn, type_ )
-	{}
-
-	NeuronLink::NeuronLink( const PropNode& pn, SpinalController& sc ) :
-		INIT_MEMBER_REQUIRED( pn, type_ ),
-		INIT_MEMBER_REQUIRED( pn, activation_ )
-	{}
-
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
 		INIT_MEMBER_REQUIRED( pn, neural_delays_ )
 	{
-		// setup muscle groups
-		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) )
-			for ( auto side : { Side::Left, Side::Right } )
-				muscle_groups_.emplace_back( mgpn, model, side, uint32( muscle_groups_.size() ) );
-		for ( auto& mg : muscle_groups_ )
-			mg.Initialize( model, muscle_groups_ );
+		InitMuscleInfo( pn, model );
 
 		// create delayed sensors and actuators
-		auto& muscles = model.GetMuscles();
-		for ( auto& mus : muscles ) {
+		for ( auto& mus : model.GetMuscles() ) {
 			auto nd = GetNeuralDelay( *mus );
 			auto& sp = model.AcquireSensor<MuscleLengthSensor>( *mus );
 			delayed_spindle_sensors_.push_back( model.GetDelayedSensor( sp, nd ) );
@@ -70,16 +27,16 @@ namespace scone
 
 		// add neuron groups
 		spindle_group_ = network_.add_group( snel::update_linear );
-		for ( auto& mus : muscles )
-			AddNeuron( spindle_group_, "L_" + mus->GetName(), 0.0 );
+		for ( auto& minf : muscle_infos_ )
+			AddNeuron( spindle_group_, "L_" + minf.name_, 0.0 );
 
 		auto ia_group = network_.add_group( snel::update_tanh_norm );
 		for ( auto& mg : muscle_groups_ )
 			AddNeuron( ia_group, "IA_" + mg.sided_name(), par.try_get( "IA_" + mg.name_ + ".C0", pn, "ia_bias", 0.0 ) );
 
 		motor_group_ = network_.add_group( snel::update_tanh_norm );
-		for ( auto& mus : muscles )
-			AddNeuron( motor_group_, "MN_" + mus->GetName(), par.try_get( GetNameNoSide( mus->GetName() ) + ".C0", pn, "mn_bias", -0.3 ) );
+		for ( auto& minf : muscle_infos_ )
+			AddNeuron( motor_group_, "MN_" + minf.name_, par.try_get( GetNameNoSide( minf.name_ ) + ".C0", pn, "mn_bias", -0.3 ) );
 
 		// connect ia interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
@@ -87,7 +44,7 @@ namespace scone
 			double muscle_scale = 1.0 / mg.muscle_indices_.size();
 			for ( auto mi : mg.muscle_indices_ )
 				Connect( spindle_group_, mi, ia_group, mgi,
-					muscle_scale * par.try_get( "IA_" + mg.name_ + "." + GetNameNoSide( muscles[ mi ]->GetName() ), pn, "l_ia_weight", 0.5 ) );
+					muscle_scale * par.try_get( "IA_" + mg.name_ + "." + GetNameNoSide( muscle_infos_[ mi ].name_ ), pn, "l_ia_weight", 0.5 ) );
 			double group_scale = 1.0 / mg.antaganist_group_indices_.size();
 			for ( auto amgi : mg.antaganist_group_indices_ )
 				Connect( ia_group, amgi, ia_group, mgi,
@@ -95,13 +52,12 @@ namespace scone
 		}
 
 		// connect motor units
-		for ( uint32 mi = 0; mi < muscles.size(); ++mi ) {
-			Connect( spindle_group_, mi, motor_group_, mi, par.try_get( GetNameNoSide( muscles[ mi ]->GetName() ) + ".L", pn, "ia_mono", 0.5 ) );
-			for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
-				if ( xo::contains( muscle_groups_[ mgi ].antaganist_muscle_indices_, mi ) )
-					Connect( ia_group, mgi, motor_group_, mi,
-						par.try_get( GetNameNoSide( muscles[ mi ]->GetName() ) + ".IA_" + muscle_groups_[ mgi ].name_, pn, "ia_mn_weight", -0.5 ) );
-			}
+		for ( uint32 mi = 0; mi < muscle_infos_.size(); ++mi ) {
+			Connect( spindle_group_, mi, motor_group_, mi, par.try_get( GetNameNoSide( muscle_infos_[ mi ].name_ ) + ".L", pn, "ia_mono", 0.5 ) );
+			auto scale = 1.0 / muscle_infos_[ mi ].antaganist_group_indices_.size();
+			for ( auto amgi : muscle_infos_[ mi ].antaganist_group_indices_ )
+				Connect( ia_group, amgi, motor_group_, mi,
+					scale * par.try_get( GetNameNoSide( muscle_infos_[ mi ].name_ ) + ".IA_" + muscle_groups_[ amgi ].name_, pn, "ia_mn_weight", -0.5 ) );
 		}
 	}
 
@@ -127,10 +83,45 @@ namespace scone
 	}
 
 	PropNode SpinalController::GetInfo() const { return PropNode(); }
+	String SpinalController::GetClassSignature() const { return "SN"; }
 
-	String SpinalController::GetClassSignature() const
+	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model )
 	{
-		return "SN";
+		// setup muscle info
+		for ( auto& mus : model.GetMuscles() )
+			muscle_infos_.emplace_back( mus->GetName() );
+
+		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
+			for ( auto side : { Side::Left, Side::Right } ) {
+				auto& mg = muscle_groups_.emplace_back( mgpn, side );
+				auto& muscle_pattern = mgpn.get<xo::pattern_matcher>( "muscles" );
+				for ( uint32 mi = 0; mi < muscle_infos_.size(); ++mi )
+					if ( mg.side_ == muscle_infos_[ mi ].side_ && muscle_pattern.match( muscle_infos_[ mi ].name_ ) )
+						mg.muscle_indices_.emplace_back( mi );
+			}
+		}
+
+		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
+			for ( auto mi : muscle_groups_[ mgi ].muscle_indices_ )
+				muscle_infos_[ mi ].group_indices_.push_back( mgi );
+			auto antagonists = muscle_groups_[ mgi ].pn_.try_get<xo::pattern_matcher>( "antagonists" );
+			for ( uint32 amgi = 0; amgi < muscle_groups_.size(); ++amgi ) {
+				if ( muscle_groups_[ mgi ].side_ == muscle_groups_[ amgi ].side_ ) {
+					if ( antagonists && antagonists->match( muscle_groups_[ amgi ].name_ ) ) {
+						muscle_groups_[ mgi ].antaganist_group_indices_.emplace_back( amgi );
+						for ( auto mi : muscle_groups_[ mgi ].muscle_indices_ )
+							muscle_infos_[ mi ].antaganist_group_indices_.push_back( amgi );
+					}
+				}
+			}
+		}
+	}
+
+	TimeInSeconds SpinalController::GetNeuralDelay( const Muscle& m ) const
+	{
+		auto it = neural_delays_.find( MuscleId( m.GetName() ).base_ );
+		SCONE_ERROR_IF( it == neural_delays_.end(), "Could not find neural delay for " + m.GetName() );
+		return it->second;
 	}
 
 	snel::neuron_id SpinalController::AddNeuron( snel::group_id group, String name, Real bias )
@@ -142,16 +133,15 @@ namespace scone
 
 	snel::link_id SpinalController::Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight )
 	{
-		auto snid = network_.get_id( sgid, sidx );
-		auto tnid = network_.get_id( tgid, tidx );
-		log::debug( neuron_names_[ snid.value() ], " -> ", neuron_names_[ tnid.value() ], " weight=", weight );
 		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 
-	TimeInSeconds SpinalController::GetNeuralDelay( const Muscle& m ) const
+	snel::link_id SpinalController::Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real scale, Params& par, const PropNode& pn, const string& pinf )
 	{
-		auto it = neural_delays_.find( MuscleId( m.GetName() ).base_ );
-		SCONE_ERROR_IF( it == neural_delays_.end(), "Could not find neural delay for " + m.GetName() );
-		return it->second;
+		auto snid = network_.get_id( sgid, sidx );
+		auto tnid = network_.get_id( tgid, tidx );
+		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "." + GetNameNoSide( neuron_names_[ snid.value() ] );
+		auto weight = scale * par.try_get( par_name, pn, pinf, 0.0 );
+		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 }
