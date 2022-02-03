@@ -31,15 +31,15 @@ namespace scone
 		// add neuron groups
 		spindle_group_ = network_.add_group( snel::update_linear );
 		for ( auto& minf : muscles_ )
-			AddNeuron( spindle_group_, "L_" + minf.name_, 0.0 );
+			AddNeuron( spindle_group_, "L." + minf.name_, 0.0 );
 
 		auto ia_group = network_.add_group( snel::update_tanh_norm );
 		for ( auto& mg : muscle_groups_ )
-			AddNeuron( ia_group, "IA_" + mg.sided_name(), par, pn, "ia_bias" );
+			AddNeuron( ia_group, "IA." + mg.sided_name(), par, pn, "ia_bias" );
 
 		motor_group_ = network_.add_group( snel::update_tanh_norm );
 		for ( auto& minf : muscles_ )
-			AddNeuron( motor_group_, "MN_" + minf.name_, par, pn, "mn_bias" );
+			AddNeuron( motor_group_, "MN." + minf.name_, par, pn, "mn_bias" );
 
 		// connect ia interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
@@ -130,7 +130,7 @@ namespace scone
 
 	snel::neuron_id SpinalController::AddNeuron( snel::group_id group, String name, Params& par, const PropNode& pn, const string& pinf )
 	{
-		auto bias = par.try_get( GetNameNoSide( name ) + ".C0", pn, pinf, 0.0 );
+		auto bias = par.try_get( GetNameNoSide( name ), pn, pinf, 0.0 );
 		return AddNeuron( group, name, bias );
 	}
 
@@ -144,7 +144,7 @@ namespace scone
 		SCONE_ASSERT( size > 0 );
 		auto snid = network_.get_id( sgid, sidx );
 		auto tnid = network_.get_id( tgid, tidx );
-		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "." + GetNameNoSide( neuron_names_[ snid.value() ] );
+		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "-" + GetNameNoSide( neuron_names_[ snid.value() ] );
 		auto weight = par.try_get( par_name, pn, pinf, 0.0 ) / Real( size );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
