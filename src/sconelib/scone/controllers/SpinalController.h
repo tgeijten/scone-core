@@ -18,7 +18,7 @@ namespace scone
 		string name_;
 		Side side_;
 		std::vector<xo::uint32> group_indices_;
-		std::vector<xo::uint32> antaganist_group_indices_;
+		std::vector<xo::uint32> ant_group_indices_;
 	};
 
 	struct MuscleGroup {
@@ -29,7 +29,7 @@ namespace scone
 		string name_;
 		Side side_;
 		std::vector<xo::uint32> muscle_indices_;
-		std::vector<xo::uint32> antaganist_group_indices_;
+		std::vector<xo::uint32> ant_group_indices_;
 
 		const PropNode& pn_;
 	};
@@ -53,13 +53,14 @@ namespace scone
 		void InitMuscleInfo( const PropNode& pn, Model& model );
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
 		snel::neuron_id AddNeuron( snel::group_id group, String name, Real bias );
+		snel::neuron_id AddNeuron( snel::group_id group, String name, Params& par, const PropNode& pn, const string& pinf );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real scale, Params& par, const PropNode& pn, const string& pinf );
+		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const string& pinf, size_t size );
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;
 
 		std::vector<MuscleGroup> muscle_groups_;
-		std::vector<MuscleInfo> muscle_infos_;
+		std::vector<MuscleInfo> muscles_;
 
 		snel::network network_;
 		snel::group_id spindle_group_, motor_group_;
