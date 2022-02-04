@@ -7,6 +7,7 @@
 #include "scone/model/Muscle.h"
 #include "scone/core/Log.h"
 #include "scone/core/profiler_config.h"
+#include "snel/snel_tools.h"
 
 namespace scone
 {
@@ -14,7 +15,8 @@ namespace scone
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
-		INIT_MEMBER_REQUIRED( pn, neural_delays_ )
+		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
+		INIT_MEMBER_REQUIRED( pn, activation_ )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -29,32 +31,24 @@ namespace scone
 		}
 
 		// add neuron groups
-		spindle_group_ = network_.add_group( snel::update_linear );
-		for ( auto& minf : muscles_ )
-			AddNeuron( spindle_group_, "L." + minf.name_, 0.0 );
-
-		auto ia_group = network_.add_group( snel::update_tanh_norm );
-		for ( auto& mg : muscle_groups_ )
-			AddNeuron( ia_group, "IA." + mg.sided_name(), par, pn, "ia_bias" );
-
-		motor_group_ = network_.add_group( snel::update_tanh_norm );
-		for ( auto& minf : muscles_ )
-			AddNeuron( motor_group_, "MN." + minf.name_, par, pn, "mn_bias" );
+		spindle_group_ = AddMuscleNeurons( "L", pn, par );
+		auto ia_group = AddGroupNeurons( "IA", pn, par );
+		motor_group_ = AddMuscleNeurons( "MN", pn, par );
 
 		// connect ia interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
 			for ( auto mi : mg.muscle_indices_ )
-				Connect( spindle_group_, mi, ia_group, mgi, par, pn, "l_ia_weight", mg.muscle_indices_.size() );
+				Connect( spindle_group_, mi, ia_group, mgi, par, pn, "L_IA_weight", mg.muscle_indices_.size() );
 			for ( auto amgi : mg.ant_group_indices_ )
-				Connect( ia_group, amgi, ia_group, mgi, par, pn, "ia_ia_weight", mg.ant_group_indices_.size() );
+				Connect( ia_group, amgi, ia_group, mgi, par, pn, "IA_IA_weight", mg.ant_group_indices_.size() );
 		}
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			Connect( spindle_group_, mi, motor_group_, mi, par, pn, "l_mn_weight", 1 );
+			Connect( spindle_group_, mi, motor_group_, mi, par, pn, "L_MN_weight", 1 );
 			for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
-				Connect( ia_group, amgi, motor_group_, mi, par, pn, "ia_mn_weight", muscles_[ mi ].ant_group_indices_.size() );
+				Connect( ia_group, amgi, motor_group_, mi, par, pn, "IA_MN_weight", muscles_[ mi ].ant_group_indices_.size() );
 		}
 	}
 
@@ -130,8 +124,26 @@ namespace scone
 
 	snel::neuron_id SpinalController::AddNeuron( snel::group_id group, String name, Params& par, const PropNode& pn, const string& pinf )
 	{
-		auto bias = par.try_get( GetNameNoSide( name ), pn, pinf, 0.0 );
+		auto bias = !pinf.empty() ? par.try_get( GetNameNoSide( name ), pn, pinf, 0.0 ) : 0.0;
 		return AddNeuron( group, name, bias );
+	}
+
+	snel::group_id SpinalController::AddMuscleNeurons( String name, const PropNode& pn, Params& par )
+	{
+		auto gid = network_.add_group( snel::get_update_fn( pn.get<string>( name + "_activation", activation_ ) ) );
+		auto bias_inf = name + "_bias";
+		for ( auto& mus : muscles_ )
+			AddNeuron( gid, name + '.' + mus.name_, par, pn, bias_inf );
+		return gid;
+	}
+
+	snel::group_id SpinalController::AddGroupNeurons( String name, const PropNode& pn, Params& par )
+	{
+		auto gid = network_.add_group( snel::get_update_fn( pn.get<string>( name + "_activation", activation_ ) ) );
+		auto bias_inf = name + "_bias";
+		for ( auto& mg : muscle_groups_ )
+			AddNeuron( gid, name + '.' + mg.sided_name(), par, pn, bias_inf );
+		return gid;
 	}
 
 	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Real weight )

@@ -24,17 +24,13 @@ namespace scone
 	struct MuscleGroup {
 		MuscleGroup( const PropNode& pn, Side side ) : pn_( pn ), name_( pn.get_str( "name" ) ), side_( side ) {}
 
-		string sided_name() const { return GetSidedName( name_, side_ ); }
-
 		string name_;
 		Side side_;
 		std::vector<xo::uint32> muscle_indices_;
 		std::vector<xo::uint32> ant_group_indices_;
-
 		const PropNode& pn_;
+		string sided_name() const { return GetSidedName( name_, side_ ); }
 	};
-
-	xo_smart_enum_class( ActivationType, relu, leaky_relu, tanh, tanh_norm );
 
 	class SpinalController : public Controller
 	{
@@ -54,10 +50,13 @@ namespace scone
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
 		snel::neuron_id AddNeuron( snel::group_id group, String name, Real bias );
 		snel::neuron_id AddNeuron( snel::group_id group, String name, Params& par, const PropNode& pn, const string& pinf );
+		snel::group_id AddMuscleNeurons( String name, const PropNode& pn, Params& par );
+		snel::group_id AddGroupNeurons( String name, const PropNode& pn, Params& par );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const string& pinf, size_t size );
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;
+		string activation_;
 
 		std::vector<MuscleGroup> muscle_groups_;
 		std::vector<MuscleInfo> muscles_;
