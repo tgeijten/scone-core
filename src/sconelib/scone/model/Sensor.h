@@ -15,8 +15,10 @@ namespace scone
 {
 	struct Sensor
 	{
-		Sensor() {}
-		virtual ~Sensor() {}
+		Sensor() = default;
+		Sensor( const Sensor& ) = delete;
+		virtual ~Sensor() = default;
+
 		virtual String GetName() const = 0;
 		virtual Real GetValue() const = 0;
 	};
