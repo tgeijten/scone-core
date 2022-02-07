@@ -89,6 +89,8 @@ namespace scone
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( mg.side_ == muscles_[ mi ].side_ && muscle_pattern.match( muscles_[ mi ].name_ ) )
 						mg.muscle_indices_.emplace_back( mi );
+				if ( mg.muscle_indices_.empty() )
+					muscle_groups_.pop_back();
 			}
 		}
 
