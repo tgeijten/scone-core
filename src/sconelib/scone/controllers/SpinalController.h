@@ -52,6 +52,7 @@ namespace scone
 		snel::neuron_id AddNeuron( snel::group_id group, String name, Params& par, const PropNode& pn, const string& pinf );
 		snel::group_id AddMuscleNeurons( String name, const PropNode& pn, Params& par );
 		snel::group_id AddGroupNeurons( String name, const PropNode& pn, Params& par );
+		snel::group_id AddInterNeurons( String name, size_t count, const PropNode& pn, Params& par );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const string& pinf, size_t size );
 
@@ -62,9 +63,10 @@ namespace scone
 		std::vector<MuscleInfo> muscles_;
 
 		snel::network network_;
-		snel::group_id spindle_group_, motor_group_;
-		std::vector<DelayedSensorValue> delayed_spindle_sensors_;
-		std::vector<DelayedActuatorValue> delayed_actuators_;
+		snel::group_id l_group_, ves_group_, mn_group_;
+		std::vector<DelayedSensorValue> l_sensors_;
+		std::vector<DelayedSensorValue> ves_sensors_;
+		std::vector<DelayedActuatorValue> actuators_;
 		std::vector<String> neuron_names_;
 	};
 }

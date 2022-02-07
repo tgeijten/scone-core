@@ -22,47 +22,68 @@ namespace scone
 
 		InitMuscleInfo( pn, model );
 
-		// create delayed sensors and actuators
+		// create delayed muscle sensors and actuators
 		for ( auto& mus : model.GetMuscles() ) {
 			auto nd = GetNeuralDelay( *mus );
 			auto& sp = model.AcquireSensor<MuscleLengthSensor>( *mus );
-			delayed_spindle_sensors_.push_back( model.GetDelayedSensor( sp, nd ) );
-			delayed_actuators_.push_back( model.GetDelayedActuator( *mus, nd ) );
+			l_sensors_.push_back( model.GetDelayedSensor( sp, nd ) );
+			actuators_.push_back( model.GetDelayedActuator( *mus, nd ) );
+		}
+
+		l_group_ = AddMuscleNeurons( "L", pn, par );
+
+		auto* ves_pn = pn.try_get_child( "VES" );
+		if ( ves_pn ) {
+			ves_group_ = network_.add_group( snel::no_update );
+			const auto& body = *FindByName( model.GetBodies(), ves_pn->get_str( "body" ) );
+			const auto& dir = Vec3::unit_z();
+			for ( auto side : { Side::Right, Side::Left } ) {
+				auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, dir, 0.2, "_z", side, 0.0 );
+				ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_pn->get<Real>( "delay" ) ) );
+				AddNeuron( ves_group_, "BOV_z" + GetSideName( side ), 0.0 );
+			}
 		}
 
 		// add neuron groups
-		spindle_group_ = AddMuscleNeurons( "L", pn, par );
 		auto ia_group = AddGroupNeurons( "IA", pn, par );
-		motor_group_ = AddMuscleNeurons( "MN", pn, par );
+		mn_group_ = AddMuscleNeurons( "MN", pn, par );
 
-		// connect ia interneurons
+		// connect IA interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
 			for ( auto mi : mg.muscle_indices_ )
-				Connect( spindle_group_, mi, ia_group, mgi, par, pn, "L_IA_weight", mg.muscle_indices_.size() );
+				Connect( l_group_, mi, ia_group, mgi, par, pn, "L_IA_weight", mg.muscle_indices_.size() );
 			for ( auto amgi : mg.ant_group_indices_ )
 				Connect( ia_group, amgi, ia_group, mgi, par, pn, "IA_IA_weight", mg.ant_group_indices_.size() );
+			if ( ves_group_ )
+				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
+					Connect( ves_group_, vi, ia_group, mgi, par, pn, "VES_IA_weight", 1 );
 		}
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			Connect( spindle_group_, mi, motor_group_, mi, par, pn, "L_MN_weight", 1 );
+			Connect( l_group_, mi, mn_group_, mi, par, pn, "L_MN_weight", 1 );
 			for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
-				Connect( ia_group, amgi, motor_group_, mi, par, pn, "IA_MN_weight", muscles_[ mi ].ant_group_indices_.size() );
+				Connect( ia_group, amgi, mn_group_, mi, par, pn, "IA_MN_weight", muscles_[ mi ].ant_group_indices_.size() );
 		}
 	}
 
 	bool SpinalController::ComputeControls( Model& model, double timestamp )
 	{
-		auto& muscles = model.GetMuscles();
+		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
+		auto& muscles = model.GetMuscles();
 		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
-			network_.set_value( spindle_group_, mi, snel::real( delayed_spindle_sensors_[ mi ].GetValue() ) );
+			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() ) );
+		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi ) {
+			auto v = snel::real( ves_sensors_[ vi ].GetValue() );
+			network_.set_value( ves_group_, vi, v );
+		}
 
 		network_.update();
 
 		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
-			delayed_actuators_[ mi ].AddInput( network_.value( motor_group_, mi ) );
+			actuators_[ mi ].AddInput( network_.value( mn_group_, mi ) );
 
 		return false;
 	}
@@ -148,6 +169,16 @@ namespace scone
 		return gid;
 	}
 
+	snel::group_id SpinalController::AddInterNeurons( String name, size_t count, const PropNode& pn, Params& par )
+	{
+		auto gid = network_.add_group( snel::get_update_fn( pn.get<string>( name + "_activation", activation_ ) ) );
+		auto bias_inf = name + "_bias";
+		for ( auto side : { Side::Right, Side::Left } )
+			for ( size_t i = 0; i < count; ++i )
+				AddNeuron( gid, GetSidedName( name + '.' + to_str( i ), side ), par, pn, bias_inf );
+		return gid;
+	}
+
 	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Real weight )
 	{
 		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
@@ -159,7 +190,7 @@ namespace scone
 		auto snid = network_.get_id( sgid, sidx );
 		auto tnid = network_.get_id( tgid, tidx );
 		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "-" + GetNameNoSide( neuron_names_[ snid.value() ] );
-		auto weight = par.try_get( par_name, pn, pinf, 0.0 ) / Real( size );
+		auto weight = par.get( par_name, pn[ pinf ] ) / Real( size );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 }
