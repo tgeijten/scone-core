@@ -102,8 +102,7 @@ namespace scone
 
 	PropNode SpinalController::GetInfo() const { return PropNode(); }
 	String SpinalController::GetClassSignature() const {
-		String s = "SN";
-		if ( ves_group_ ) s += ".VES";
+		auto s = String( "SN" ) + ( ves_group_ ? "VES" : "" );
 		return s;
 	}
 
@@ -150,11 +149,12 @@ namespace scone
 	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Params& par, const PropNode& pn, size_t size )
 	{
 		SCONE_ASSERT( size > 0 );
-		auto pinf = GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight";
+		auto s = 1.0 / Real( size );
+		auto pinf = ParInfo( "", pn.get_child( GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight" ), par.options() );
 		auto snid = network_.get_id( sgid, sidx );
 		auto tnid = network_.get_id( tgid, tidx );
 		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "-" + GetNameNoSide( neuron_names_[ snid.value() ] );
-		auto weight = par.get( par_name, pn[ pinf ] ) / Real( size );
+		auto weight = par.get( par_name, s * pinf.mean, s * pinf.std, s * pinf.min, s * pinf.max );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
