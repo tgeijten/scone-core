@@ -32,14 +32,17 @@ namespace scone
 		}
 
 		// create VES neurons
+		static const char* vec3_postfix[] = { "_x", "_y", "_z" };
 		if ( auto* ves_pn = pn.try_get_child( "VES" ) ) {
 			ves_group_ = AddInputNeuronGroup( "VES" );
 			const auto& body = *FindByName( model.GetBodies(), ves_pn->get_str( "body" ) );
-			const auto& dir = Vec3::unit_z();
-			for ( auto side : { Side::Right, Side::Left } ) {
-				auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, dir, 0.2, "_z", side, 0.0 );
-				ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_pn->get<Real>( "delay" ) ) );
-				AddNeuron( ves_group_, "z" + GetSideName( side ), 0.0 );
+			bool mode_3d = ves_pn->get<string>( "mode", "2d" ) == "3d";
+			for ( int dir_idx = mode_3d ? 0 : 2; dir_idx < 3; ++dir_idx ) {
+				for ( auto side : { Side::Right, Side::Left } ) {
+					auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( dir_idx ), 0.2, vec3_postfix[ dir_idx ], side, 0.0 );
+					ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_pn->get<Real>( "delay" ) ) );
+					AddNeuron( ves_group_, "z" + GetSideName( side ), 0.0 );
+				}
 			}
 		}
 
