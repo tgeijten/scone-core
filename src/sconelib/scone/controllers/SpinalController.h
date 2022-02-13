@@ -54,11 +54,12 @@ namespace scone
 		snel::group_id AddMuscleGroupNeurons( String name, const PropNode& pn, Params& par );
 
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, size_t size );
+		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg, size_t size );
 
 		void InitMuscleInfo( const PropNode& pn, Model& model );
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
 		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
+		const string& GetNeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;
 		string activation_;

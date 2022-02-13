@@ -57,20 +57,21 @@ namespace scone
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
 			for ( auto mi : mg.muscle_indices_ )
-				Connect( l_group_, mi, ia_group, mgi, par, pn, mg.muscle_indices_.size() );
+				Connect( l_group_, mi, ia_group, mgi, par, pn, &mg, mg.muscle_indices_.size() );
 			for ( auto amgi : mg.ant_group_indices_ )
-				Connect( ia_group, amgi, ia_group, mgi, par, pn, mg.ant_group_indices_.size() );
+				Connect( ia_group, amgi, ia_group, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
 			if ( ves_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 					if ( mgi % 2 == vi % 2 ) // this is to match sides, might consider something nicer
-						Connect( ves_group_, vi, ia_group, mgi, par, pn, 1 );
+						Connect( ves_group_, vi, ia_group, mgi, par, pn, &mg, 1 );
 		}
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			Connect( l_group_, mi, mn_group_, mi, par, pn, 1 );
+			MuscleGroup* mg = muscles_[ mi ].group_indices_.empty() ? nullptr : &muscle_groups_[ muscles_[ mi ].group_indices_.front() ];
+			Connect( l_group_, mi, mn_group_, mi, par, pn, mg, 1 );
 			for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
-				Connect( ia_group, amgi, mn_group_, mi, par, pn, muscles_[ mi ].ant_group_indices_.size() );
+				Connect( ia_group, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
 		}
 	}
 
@@ -146,14 +147,14 @@ namespace scone
 		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 
-	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Params& par, const PropNode& pn, size_t size )
+	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg, size_t size )
 	{
 		SCONE_ASSERT( size > 0 );
 		auto s = 1.0 / Real( size );
-		auto pinf = ParInfo( "", pn.get_child( GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight" ), par.options() );
-		auto snid = network_.get_id( sgid, sidx );
-		auto tnid = network_.get_id( tgid, tidx );
-		auto par_name = GetNameNoSide( neuron_names_[ tnid.value() ] ) + "-" + GetNameNoSide( neuron_names_[ snid.value() ] );
+		auto par_info_name = GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight";
+		const PropNode* mg_pn = mg ? mg->pn_.try_get_child( par_info_name ) : nullptr;
+		auto pinf = ParInfo( "", mg_pn ? *mg_pn : pn.get_child( par_info_name ), par.options() );
+		auto par_name = GetNameNoSide( GetNeuronName( tgid, tidx ) ) + "-" + GetNameNoSide( GetNeuronName( sgid, sidx ) );
 		auto weight = par.get( par_name, s * pinf.mean, s * pinf.std, s * pinf.min, s * pinf.max );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
