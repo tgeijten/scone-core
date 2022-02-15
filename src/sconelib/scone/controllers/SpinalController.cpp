@@ -107,7 +107,7 @@ namespace scone
 
 	PropNode SpinalController::GetInfo() const { return PropNode(); }
 	String SpinalController::GetClassSignature() const {
-		auto s = String( "SN" ) + ( ves_group_ ? "VES" : "" );
+		auto s = stringf( "SN%d", network_.neurons_.size() );
 		return s;
 	}
 
