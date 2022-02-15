@@ -42,6 +42,8 @@ namespace scone
 		void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		PropNode GetInfo() const override;
 
+		bool planar;
+
 	protected:
 		bool ComputeControls( Model& model, double timestamp ) override;
 		String GetClassSignature() const override;
@@ -60,6 +62,7 @@ namespace scone
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
 		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
 		const string& GetNeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
+		const string GetParName( const string& src, const string& trg ) const;
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;
 		string activation_;

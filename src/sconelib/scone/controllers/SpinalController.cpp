@@ -12,11 +12,13 @@
 namespace scone
 {
 	using xo::uint32;
+	constexpr auto both_sides = { Side::Right, Side::Left };
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
 		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
-		INIT_MEMBER_REQUIRED( pn, activation_ )
+		INIT_MEMBER_REQUIRED( pn, activation_ ),
+		INIT_MEMBER( pn, planar, model.GetDofs().size() < 14 )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -32,16 +34,15 @@ namespace scone
 		}
 
 		// create VES neurons
-		static const char* vec3_postfix[] = { "_x", "_y", "_z" };
+		static const char* axis_name[] = { "x", "y", "z" };
 		if ( auto* ves_pn = pn.try_get_child( "VES" ) ) {
 			ves_group_ = AddInputNeuronGroup( "VES" );
 			const auto& body = *FindByName( model.GetBodies(), ves_pn->get_str( "body" ) );
-			bool mode_3d = ves_pn->get<string>( "mode", "2d" ) == "3d";
-			for ( int dir_idx = mode_3d ? 0 : 2; dir_idx < 3; ++dir_idx ) {
-				for ( auto side : { Side::Right, Side::Left } ) {
-					auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( dir_idx ), 0.2, vec3_postfix[ dir_idx ], side, 0.0 );
+			for ( int axis = planar ? 2 : 0; axis < 3; ++axis ) {
+				for ( auto side : both_sides ) {
+					auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( axis ), 0.2, axis_name[ axis ], side, 0.0 );
 					ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_pn->get<Real>( "delay" ) ) );
-					AddNeuron( ves_group_, "z" + GetSideName( side ), 0.0 );
+					AddNeuron( ves_group_, axis_name[ axis ] + GetSideName( side ), 0.0 );
 				}
 			}
 		}
@@ -157,8 +158,10 @@ namespace scone
 		auto par_info_name = GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight";
 		const PropNode* mg_pn = mg ? mg->pn_.try_get_child( par_info_name ) : nullptr;
 		auto pinf = ParInfo( "", mg_pn ? *mg_pn : pn.get_child( par_info_name ), par.options() );
-		auto par_name = GetNameNoSide( GetNeuronName( tgid, tidx ) ) + "-" + GetNameNoSide( GetNeuronName( sgid, sidx ) );
-		auto weight = par.get( par_name, s * pinf.mean, s * pinf.std, s * pinf.min, s * pinf.max );
+		auto pname = GetParName( GetNeuronName( sgid, sidx ), GetNeuronName( tgid, tidx ) );
+		auto weight = pinf.is_constant() ? s * pinf.mean : par.get( pname, s * pinf.mean, s * pinf.std, s * pinf.min, s * pinf.max );
+
+		//log::debug( GetNeuronName( sgid, sidx ), " -> ", GetNeuronName( tgid, tidx ), " ", par_name, "=", weight );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
@@ -169,7 +172,7 @@ namespace scone
 			muscles_.emplace_back( mus->GetName(), GetNeuralDelay( *mus ) );
 
 		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
-			for ( auto side : { Side::Left, Side::Right } ) {
+			for ( auto side : both_sides ) {
 				auto& mg = muscle_groups_.emplace_back( mgpn, side );
 				auto& muscle_pattern = mgpn.get<xo::pattern_matcher>( "muscles" );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
@@ -181,19 +184,26 @@ namespace scone
 		}
 
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
-			for ( auto mi : muscle_groups_[ mgi ].muscle_indices_ )
+			auto& mg = muscle_groups_[ mgi ];
+			for ( auto mi : mg.muscle_indices_ )
 				muscles_[ mi ].group_indices_.push_back( mgi );
-			auto antagonists = muscle_groups_[ mgi ].pn_.try_get<xo::pattern_matcher>( "antagonists" );
+			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
+			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
 			for ( uint32 amgi = 0; amgi < muscle_groups_.size(); ++amgi ) {
-				if ( muscle_groups_[ mgi ].side_ == muscle_groups_[ amgi ].side_ ) {
-					if ( antagonists && antagonists->match( muscle_groups_[ amgi ].name_ ) ) {
-						muscle_groups_[ mgi ].ant_group_indices_.emplace_back( amgi );
-						for ( auto mi : muscle_groups_[ mgi ].muscle_indices_ )
-							muscles_[ mi ].ant_group_indices_.push_back( amgi );
-					}
+				auto& amg = muscle_groups_[ amgi ];
+				if ( ( apat && mg.side_ == amg.side_ && apat->match( amg.name_ ) ) ||
+					( cl_apat && mg.side_ != amg.side_ && cl_apat->match( amg.name_ ) ) )
+				{
+					mg.ant_group_indices_.emplace_back( amgi );
+					for ( auto mi : mg.muscle_indices_ )
+						muscles_[ mi ].ant_group_indices_.push_back( amgi );
 				}
 			}
 		}
+
+		for ( auto& m : muscles_ )
+			if ( m.group_indices_.empty() )
+				log::warning( m.name_, " is not part of any MuscleGroup" );
 	}
 
 	TimeInSeconds SpinalController::GetNeuralDelay( const Muscle& m ) const
@@ -201,5 +211,11 @@ namespace scone
 		auto it = neural_delays_.find( MuscleId( m.GetName() ).base_ );
 		SCONE_ERROR_IF( it == neural_delays_.end(), "Could not find neural delay for " + m.GetName() );
 		return it->second;
+	}
+	const string SpinalController::GetParName( const string& src, const string& trg ) const
+	{
+		if ( GetSideFromName( src ) == GetSideFromName( trg ) )
+			return GetNameNoSide( trg ) + "-" + GetNameNoSide( src );
+		else return GetNameNoSide( trg ) + "-" + GetNameNoSide( src ) + "_o";
 	}
 }
