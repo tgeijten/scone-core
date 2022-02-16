@@ -7,6 +7,7 @@
 #include "xo/container/prop_node_tools.h"
 #include "scone/model/DelayBuffer.h"
 #include "scone/model/Side.h"
+#include "xo/container/flat_set.h"
 
 namespace scone
 {
@@ -18,8 +19,8 @@ namespace scone
 		string name_;
 		Side side_;
 		TimeInSeconds delay_;
-		std::vector<xo::uint32> group_indices_;
-		std::vector<xo::uint32> ant_group_indices_;
+		xo::flat_set<xo::uint32> group_indices_;
+		xo::flat_set<xo::uint32> ant_group_indices_;
 	};
 
 	struct MuscleGroup {

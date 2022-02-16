@@ -215,7 +215,7 @@ namespace scone
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
 			for ( auto mi : mg.muscle_indices_ )
-				muscles_[ mi ].group_indices_.push_back( mgi );
+				muscles_[ mi ].group_indices_.insert( mgi );
 			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
 			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
 			for ( uint32 amgi = 0; amgi < muscle_groups_.size(); ++amgi ) {
@@ -225,7 +225,7 @@ namespace scone
 				{
 					mg.ant_group_indices_.emplace_back( amgi );
 					for ( auto mi : mg.muscle_indices_ )
-						muscles_[ mi ].ant_group_indices_.push_back( amgi );
+						muscles_[ mi ].ant_group_indices_.insert( amgi );
 				}
 			}
 		}
