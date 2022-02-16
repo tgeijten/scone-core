@@ -50,8 +50,8 @@ namespace scone
 		String GetClassSignature() const override;
 
 	private:
-		snel::neuron_id AddNeuron( snel::group_id group, const String& name, Real bias );
-		snel::neuron_id AddNeuron( snel::group_id group, const String& name, const PropNode& pn, Params& par );
+		xo::uint32 AddNeuron( snel::group_id group, const String& name, Real bias );
+		xo::uint32 AddNeuron( snel::group_id group, const String& name, const PropNode& pn, Params& par );
 		snel::group_id AddNeuronGroup( const String& name, const PropNode& pn );
 		snel::group_id AddInputNeuronGroup( const String& name );
 		snel::group_id AddMuscleGroupNeurons( String name, const PropNode& pn, Params& par );
@@ -63,6 +63,7 @@ namespace scone
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
 		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
 		const string& GetNeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
+		Side GetNeuronSide( snel::group_id gid, xo::uint32 idx ) const { return GetSideFromName( GetNeuronName( gid, idx ) ); }
 		const string GetParName( const string& src, const string& trg ) const;
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;

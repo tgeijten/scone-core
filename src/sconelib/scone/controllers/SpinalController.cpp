@@ -47,7 +47,27 @@ namespace scone
 			}
 		}
 
-		// add neuron groups
+		// CPG neurons
+		snel::group_id cpg_group;
+		if ( auto* cpg_pn = pn.try_get_child( "CPG" ) ) {
+			cpg_group = AddNeuronGroup( "CPG", pn );
+			for ( auto side : both_sides ) {
+				auto flex_idx = AddNeuron( cpg_group, GetSidedName( "flex", side ), pn, par );
+				auto& flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
+				auto ext_idx = AddNeuron( cpg_group, GetSidedName( "ext", side ), pn, par );
+				auto& ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
+				Connect( cpg_group, ext_idx, cpg_group, flex_idx, par, pn, nullptr, 1 );
+				for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) 
+					if ( muscles_[ mi ].side_ == side && flex_pat.match( GetNeuronName( l_group_, mi ) ) )
+						Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+				Connect( cpg_group, flex_idx, cpg_group, ext_idx, par, pn, nullptr, 1 );
+				for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) 
+					if ( muscles_[ mi ].side_ == side && ext_pat.match( GetNeuronName( l_group_, mi ) ) )
+						Connect( l_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+			}
+		}
+
+		// IA interneurons
 		auto ia_group = AddMuscleGroupNeurons( "IA", pn, par );
 
 		// add motor neurons
@@ -66,8 +86,12 @@ namespace scone
 				Connect( ia_group, amgi, ia_group, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
 			if ( ves_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-					if ( mgi % 2 == vi % 2 ) // this is to match sides, might consider something nicer
+					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
 						Connect( ves_group_, vi, ia_group, mgi, par, pn, &mg, 1 );
+			if ( cpg_group )
+				for ( uint32 ci = 0; ci < network_.group_size( cpg_group ); ++ci )
+					if ( GetNeuronSide( cpg_group, ci ) == mg.side_ )
+						Connect( cpg_group, ci, ia_group, mgi, par, pn, &mg, 1 );
 		}
 
 		// connect motor units
@@ -101,19 +125,21 @@ namespace scone
 
 	String SpinalController::GetClassSignature() const { return stringf( "SN%d", network_.neurons_.size() ); }
 
-	snel::neuron_id SpinalController::AddNeuron( snel::group_id gid, const String& name, Real bias )
+	uint32 SpinalController::AddNeuron( snel::group_id gid, const String& name, Real bias )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
 		neuron_names_.emplace_back( neuron_group_names_[ gid.value() ] + '.' + name );
-		return network_.add_neuron( gid, snel::real( bias ) );
+		auto nid = network_.add_neuron( gid, snel::real( bias ) );
+		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
 	}
 
-	snel::neuron_id SpinalController::AddNeuron( snel::group_id gid, const String& name, const PropNode& pn, Params& par )
+	uint32 SpinalController::AddNeuron( snel::group_id gid, const String& name, const PropNode& pn, Params& par )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
 		neuron_names_.emplace_back( neuron_group_names_[ gid.value() ] + '.' + name );
 		auto bias = par.try_get( GetNameNoSide( neuron_names_.back() ), pn, neuron_group_names_[ gid.value() ] + "_bias", 0.0 );
-		return network_.add_neuron( gid, snel::real( bias ) );
+		auto nid = network_.add_neuron( gid, snel::real( bias ) );
+		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
 	}
 
 	snel::group_id SpinalController::AddNeuronGroup( const String& name, const PropNode& pn )
@@ -162,9 +188,9 @@ namespace scone
 		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
 			for ( auto side : both_sides ) {
 				auto& mg = muscle_groups_.emplace_back( mgpn, side );
-				auto& muscle_pattern = mgpn.get<xo::pattern_matcher>( "muscles" );
+				auto& muscle_pat = mgpn.get<xo::pattern_matcher>( "muscles" );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( mg.side_ == muscles_[ mi ].side_ && muscle_pattern.match( muscles_[ mi ].name_ ) )
+					if ( mg.side_ == muscles_[ mi ].side_ && muscle_pat.match( muscles_[ mi ].name_ ) )
 						mg.muscle_indices_.emplace_back( mi );
 				if ( mg.muscle_indices_.empty() )
 					muscle_groups_.pop_back();
