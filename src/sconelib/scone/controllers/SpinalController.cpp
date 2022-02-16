@@ -99,47 +99,7 @@ namespace scone
 		return false;
 	}
 
-	void SpinalController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
-	{
-		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		for ( index_t i = 0; i < network_.neuron_count(); ++i )
-			frame[ "sn." + neuron_names_[ i ] ] = network_.values_[ i ];
-	}
-
-	PropNode SpinalController::GetInfo() const {
-		PropNode pn;
-		auto& muscles_pn = pn.add_child( "Muscles" );
-		for ( auto& m : muscles_ ) {
-			auto& mpn = muscles_pn.add_child( m.name_ );
-			mpn[ "delay" ] = m.delay_;
-			mpn[ "groups" ] = m.group_indices_;
-			mpn[ "antagonists" ] = m.ant_group_indices_;
-		}
-		auto& mgspn = pn.add_child( "MuscleGroups" );
-		for ( auto& mg : muscle_groups_ ){
-			auto& mgpn = mgspn .add_child( mg.sided_name() );
-			mgpn[ "muscles" ] = mg.muscle_indices_;
-			mgpn[ "antagonists" ] = mg.ant_group_indices_;
-		}
-		auto& nspn = pn.add_child( "Neurons" );
-		for ( auto gid = snel::group_id( 0 ); gid.value() < network_.groups_.size(); ++( gid.value() ) ) {
-			auto& gpn = nspn.add_child( neuron_group_names_[ gid.value() ] );
-			for ( uint32 nidx = 0; nidx < network_.group_size( snel::group_id( gid ) ); ++nidx ) {
-				auto nid = network_.get_id( gid, nidx );
-				auto& n = network_.neurons_[ nid.value() ];
-				auto& npn = gpn.add_child( neuron_names_[ nid.value() ] );
-				npn[ "bias" ] = n.bias_;
-				for ( auto lit = n.input_begin_.iter( network_.links_ ); lit != n.input_end_.iter( network_.links_ ); ++lit )
-					npn[ neuron_names_[ lit->input_.value() ] ] = lit->weight_;
-			}
-		}
-		return pn;
-	}
-
-	String SpinalController::GetClassSignature() const {
-		auto s = stringf( "SN%d", network_.neurons_.size() );
-		return s;
-	}
+	String SpinalController::GetClassSignature() const { return stringf( "SN%d", network_.neurons_.size() ); }
 
 	snel::neuron_id SpinalController::AddNeuron( snel::group_id gid, const String& name, Real bias )
 	{
@@ -178,6 +138,7 @@ namespace scone
 
 	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Real weight )
 	{
+		//log::debug( GetNeuronName( sgid, sidx ), " -> ", GetNeuronName( tgid, tidx ), " ", par_name, "=", weight );
 		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 
@@ -187,10 +148,8 @@ namespace scone
 		auto s = 1.0 / Real( size );
 		auto par_info_name = GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight";
 		const PropNode* mg_pn = mg ? mg->pn_.try_get_child( par_info_name ) : nullptr;
-		auto pinf = ParInfo( "", mg_pn ? *mg_pn : pn.get_child( par_info_name ), par.options() );
 		auto pname = GetParName( GetNeuronName( sgid, sidx ), GetNeuronName( tgid, tidx ) );
-		auto weight = pinf.is_constant() ? s * pinf.mean : par.get( pname, s * pinf.mean, s * pinf.std, s * pinf.min, s * pinf.max );
-		//log::debug( GetNeuronName( sgid, sidx ), " -> ", GetNeuronName( tgid, tidx ), " ", par_name, "=", weight );
+		auto weight = s * par.get( pname, mg_pn ? *mg_pn : pn.get_child( par_info_name ) );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
@@ -247,5 +206,42 @@ namespace scone
 		if ( GetSideFromName( src ) == GetSideFromName( trg ) )
 			return GetNameNoSide( trg ) + "-" + GetNameNoSide( src );
 		else return GetNameNoSide( trg ) + "-" + GetNameNoSide( src ) + "_o";
+	}
+
+	void SpinalController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
+	{
+		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
+		for ( index_t i = 0; i < network_.neuron_count(); ++i )
+			frame[ "sn." + neuron_names_[ i ] ] = network_.values_[ i ];
+	}
+
+	PropNode SpinalController::GetInfo() const {
+		PropNode pn;
+		auto& muscles_pn = pn.add_child( "Muscles" );
+		for ( auto& m : muscles_ ) {
+			auto& mpn = muscles_pn.add_child( m.name_ );
+			mpn[ "delay" ] = m.delay_;
+			mpn[ "groups" ] = m.group_indices_;
+			mpn[ "antagonists" ] = m.ant_group_indices_;
+		}
+		auto& mgspn = pn.add_child( "MuscleGroups" );
+		for ( auto& mg : muscle_groups_ ) {
+			auto& mgpn = mgspn.add_child( mg.sided_name() );
+			mgpn[ "muscles" ] = mg.muscle_indices_;
+			mgpn[ "antagonists" ] = mg.ant_group_indices_;
+		}
+		auto& nspn = pn.add_child( "Neurons" );
+		for ( auto gid = snel::group_id( 0 ); gid.value() < network_.groups_.size(); ++( gid.value() ) ) {
+			auto& gpn = nspn.add_child( neuron_group_names_[ gid.value() ] );
+			for ( uint32 nidx = 0; nidx < network_.group_size( snel::group_id( gid ) ); ++nidx ) {
+				auto nid = network_.get_id( gid, nidx );
+				auto& n = network_.neurons_[ nid.value() ];
+				auto& npn = gpn.add_child( neuron_names_[ nid.value() ] );
+				npn[ "bias" ] = n.bias_;
+				for ( auto lit = n.input_begin_.iter( network_.links_ ); lit != n.input_end_.iter( network_.links_ ); ++lit )
+					npn[ neuron_names_[ lit->input_.value() ] ] = lit->weight_;
+			}
+		}
+		return pn;
 	}
 }
