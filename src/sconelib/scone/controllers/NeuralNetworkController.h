@@ -44,8 +44,6 @@ namespace scone
 				deact_rate_( pn.get<float>( "deact_rate" ) ),
 				act_rate_( pn.get<float>( "act_rate" ) )
 			{}
-
-			DynamicOutputUpdater( double act_rate, double deact_rate, double dt ) {}
 			virtual void Update( std::vector<Neuron>& nv, const double dt ) override {
 				for ( auto& n : nv ) {
 					auto ds = n.input_ + n.offset_ - n.sum_;

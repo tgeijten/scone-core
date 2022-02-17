@@ -73,9 +73,10 @@ namespace scone
 		std::vector<MuscleInfo> muscles_;
 
 		snel::network network_;
-		snel::group_id l_group_, ves_group_, mn_group_;
+		snel::group_id l_group_, ves_group_, load_group_, mn_group_;
 		std::vector<DelayedSensorValue> l_sensors_;
 		std::vector<DelayedSensorValue> ves_sensors_;
+		std::vector<DelayedSensorValue> load_sensors_;
 		std::vector<DelayedActuatorValue> actuators_;
 		std::vector<String> neuron_names_;
 		std::vector<String> neuron_group_names_;
