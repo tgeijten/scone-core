@@ -34,6 +34,15 @@ namespace scone
 			AddNeuron( l_group_, mus.GetName(), 0.0 );
 		}
 
+		// create F neurons
+		f_group_ = AddInputNeuronGroup( "F" );
+		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
+			auto& mus = *model.GetMuscles()[ mi ];
+			auto& sp = model.AcquireSensor<MuscleForceSensor>( mus );
+			f_sensors_.push_back( model.GetDelayedSensor( sp, muscles_[ mi ].delay_ ) );
+			AddNeuron( f_group_, mus.GetName(), 0.0 );
+		}
+
 		// create VES neurons
 		if ( auto* ves_pn = pn.try_get_child( "VES" ) ) {
 			ves_group_ = AddInputNeuronGroup( "VES" );
@@ -64,17 +73,23 @@ namespace scone
 			cpg_group = AddNeuronGroup( "CPG", pn );
 			for ( auto side : both_sides ) {
 				auto flex_idx = AddNeuron( cpg_group, GetSidedName( "flex", side ), pn, par );
-				auto& flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
+				auto flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
 				auto ext_idx = AddNeuron( cpg_group, GetSidedName( "ext", side ), pn, par );
-				auto& ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
+				auto ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
 				Connect( cpg_group, ext_idx, cpg_group, flex_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( muscles_[ mi ].side_ == side && flex_pat.match( GetNeuronName( l_group_, mi ) ) )
-						Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+					if ( muscles_[ mi ].side_ == side ) 
+						if ( flex_pat.match( GetNeuronName( l_group_, mi ) ) )
+							Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+						else if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
+							Connect( f_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
 				Connect( cpg_group, flex_idx, cpg_group, ext_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( muscles_[ mi ].side_ == side && ext_pat.match( GetNeuronName( l_group_, mi ) ) )
-						Connect( l_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+					if ( muscles_[ mi ].side_ == side )
+						if ( ext_pat.match( GetNeuronName( l_group_, mi ) ) )
+							Connect( l_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+						else if ( ext_pat.match( GetNeuronName( f_group_, mi ) ) )
+							Connect( f_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
 			}
 		}
 
@@ -123,8 +138,10 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
 		auto& muscles = model.GetMuscles();
-		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
+		for ( uint32 mi = 0; mi < muscles.size(); ++mi ) {
 			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() ) );
+			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
+		}
 		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi )
 			network_.set_value( ves_group_, vi, snel::real( ves_sensors_[ vi ].GetValue() ));
 		for ( uint32 vi = 0; vi < load_sensors_.size(); ++vi )
