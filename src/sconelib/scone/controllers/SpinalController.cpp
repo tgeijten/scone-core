@@ -78,7 +78,7 @@ namespace scone
 				auto ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
 				Connect( cpg_group, ext_idx, cpg_group, flex_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( muscles_[ mi ].side_ == side ) 
+					if ( muscles_[ mi ].side_ == side )
 						if ( flex_pat.match( GetNeuronName( l_group_, mi ) ) )
 							Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
 						else if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
@@ -94,7 +94,10 @@ namespace scone
 		}
 
 		// IA interneurons
-		auto ia_group = AddMuscleGroupNeurons( "IA", pn, par );
+		ia_group_ = AddMuscleGroupNeurons( "IA", pn, par );
+
+		if ( pn.has_key( "IB_bias" ) )
+			ib_group_ = AddMuscleGroupNeurons( "IB", pn, par );
 
 		// add motor neurons
 		mn_group_ = AddNeuronGroup( "MN", pn );
@@ -103,33 +106,59 @@ namespace scone
 			AddNeuron( mn_group_, muscles_[ mi ].name_, pn, par );
 		}
 
-		// connect IA interneurons
+		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
-			for ( auto mi : mg.muscle_indices_ )
-				Connect( l_group_, mi, ia_group, mgi, par, pn, &mg, mg.muscle_indices_.size() );
-			for ( auto amgi : mg.ant_group_indices_ )
-				Connect( ia_group, amgi, ia_group, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
+
+			// IA interneurons
+			if ( ia_group_ ) {
+				for ( auto mi : mg.muscle_indices_ )
+					Connect( l_group_, mi, ia_group_, mgi, par, pn, &mg, mg.muscle_indices_.size() );
+				for ( auto amgi : mg.ant_group_indices_ )
+					Connect( ia_group_, amgi, ia_group_, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
+			}
+
+			// VES -> IA
 			if ( ves_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
-						Connect( ves_group_, vi, ia_group, mgi, par, pn, &mg, 1 );
+						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg, 1 );
+			// Load -> IA
 			if ( load_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-					//if ( GetNeuronSide( load_group_, vi ) == mg.side_ )
-						Connect( load_group_, vi, ia_group, mgi, par, pn, &mg, 1 );
+					Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg, 1 );
+			// CPG -> IA
 			if ( cpg_group )
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group ); ++ci )
 					if ( GetNeuronSide( cpg_group, ci ) == mg.side_ )
-						Connect( cpg_group, ci, ia_group, mgi, par, pn, &mg, 1 );
+						Connect( cpg_group, ci, ia_group_, mgi, par, pn, &mg, 1 );
+
+			// IB interneurons
+			if ( ib_group_ ) {
+				for ( auto mi : mg.muscle_indices_ )
+					Connect( f_group_, mi, ib_group_, mgi, par, pn, &mg, mg.muscle_indices_.size() );
+				for ( auto amgi : mg.ant_group_indices_ )
+					Connect( ib_group_, amgi, ib_group_, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
+			}
 		}
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
 			MuscleGroup* mg = muscles_[ mi ].group_indices_.empty() ? nullptr : &muscle_groups_[ muscles_[ mi ].group_indices_.front() ];
-			Connect( l_group_, mi, mn_group_, mi, par, pn, mg, 1 );
-			for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
-				Connect( ia_group, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
+
+			// monosynaptic L connections
+			if ( l_group_ )
+				Connect( l_group_, mi, mn_group_, mi, par, pn, mg, 1 );
+
+			// connect IAIN to antagonists
+			if ( ia_group_ )
+				for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
+					Connect( ia_group_, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
+
+			// connect IBIN to group members
+			if ( ib_group_ )
+				for ( auto amgi : muscles_[ mi ].group_indices_ )
+					Connect( ib_group_, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
 		}
 	}
 
@@ -143,9 +172,9 @@ namespace scone
 			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
 		}
 		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi )
-			network_.set_value( ves_group_, vi, snel::real( ves_sensors_[ vi ].GetValue() ));
+			network_.set_value( ves_group_, vi, snel::real( ves_sensors_[ vi ].GetValue() ) );
 		for ( uint32 vi = 0; vi < load_sensors_.size(); ++vi )
-			network_.set_value( load_group_, vi, snel::real( load_sensors_[ vi ].GetValue() ));
+			network_.set_value( load_group_, vi, snel::real( load_sensors_[ vi ].GetValue() ) );
 
 		network_.update();
 
