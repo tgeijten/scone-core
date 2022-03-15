@@ -35,14 +35,17 @@ namespace scone
 		/// Use only best match instead of average match -- useful when data contains a single pose; default = false.
 		bool use_best_match;
 
-		/// Average error above which to terminate simulation early (if set to non-zero); default = 0;
+		/// Average error above which to terminate simulation early (if set to non-zero); default = 0.
 		Real average_error_limit;
 
-		/// Peak error above which to terminate simulation early (if set to non-zero); default = ''2 * average_error_limit'';
+		/// Peak error above which to terminate simulation early (if set to non-zero); default = ''2 * average_error_limit''.
 		Real peak_error_limit;
 
-		/// Time in the .sto file to start measuring; default = 0;
+		/// Time in the .sto file to start measuring; default = 0.
 		TimeInSeconds time_offset;
+
+		/// weight applied to muscle activation error; default = 1.
+		Real activation_error_weight;
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
@@ -52,7 +55,12 @@ namespace scone
 		virtual String GetClassSignature() const override;
 		Storage<> storage_;
 		Statistic<> result_;
-		std::vector< std::pair< index_t, index_t > > state_storage_map_;
+		struct Channel {
+			index_t state_idx_;
+			index_t storage_idx_;
+			double weight_ = 1.0;
+		};
+		std::vector< Channel > state_storage_map_;
 		std::vector< std::pair< String, double > > channel_errors_;
 
 	protected:

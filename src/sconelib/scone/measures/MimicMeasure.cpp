@@ -24,27 +24,30 @@ namespace scone
 		INIT_MEMBER( pn, use_best_match, false ),
 		INIT_MEMBER( pn, average_error_limit, 0 ),
 		INIT_MEMBER( pn, peak_error_limit, 2 * average_error_limit ),
-		INIT_MEMBER( pn, time_offset, 0 )
+		INIT_MEMBER( pn, time_offset, 0 ),
+		INIT_MEMBER( pn, activation_error_weight, 1.0 )
+
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		ReadStorageSto( storage_, file );
+		ReadStorage( storage_, file );
 		SCONE_THROW_IF( storage_.IsEmpty(), file.str() + " contains no data" );
 
 		// automatically set stop_time to match data, if not set
 		if ( stop_time == 0 || stop_time > storage_.Back().GetTime() )
 			stop_time = storage_.Back().GetTime();
 
-		auto& s = model.GetState();
-		for ( index_t state_idx = 0; state_idx < s.GetSize(); ++state_idx )
+		auto& state = model.GetState();
+		for ( index_t state_idx = 0; state_idx < state.GetSize(); ++state_idx )
 		{
-			auto& name = s.GetName( state_idx );
+			auto& name = state.GetName( state_idx );
 			if ( include_states( name ) && !exclude_states( name ) )
 			{
 				index_t sto_idx = storage_.TryGetChannelIndex( name );
 				if ( sto_idx != NoIndex )
 				{
-					state_storage_map_.emplace_back( state_idx, sto_idx );
+					auto w = xo::str_ends_with( name, "activation" ) ? activation_error_weight : 1.0;
+					state_storage_map_.emplace_back( Channel{ state_idx, sto_idx, w } );
 					channel_errors_.emplace_back( name, 0.0 );
 				}
 			}
@@ -64,12 +67,13 @@ namespace scone
 		if ( !use_best_match && timestamp > storage_.Back().GetTime() )
 			return false;
 
-		auto& s = model.GetState();
+		auto& state = model.GetState();
 		double error = 0.0;
 		index_t error_idx = 0;
 		for ( auto& m : state_storage_map_ )
 		{
-			auto e = xo::squared( s[ m.first ] - storage_.GetInterpolatedValue( timestamp + time_offset, m.second ) );
+			auto storage_value = storage_.GetInterpolatedValue( timestamp + time_offset, m.storage_idx_ );
+			auto e = m.weight_ * xo::squared( state[ m.state_idx_ ] - storage_value );
 			channel_errors_[ error_idx++ ].second = e;
 			error += e;
 		}

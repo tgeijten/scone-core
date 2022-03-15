@@ -29,4 +29,7 @@ namespace scone
 
 	void SCONE_API ReadStorageSto( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
 	void SCONE_API ReadStorageSto( Storage< Real, TimeInSeconds >& storage, xo::char_stream& str );
+
+	/// read storage file, autodetect format (txt or sto)
+	void SCONE_API ReadStorage( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
 }

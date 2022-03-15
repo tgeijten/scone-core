@@ -14,6 +14,7 @@
 #include "xo/numerical/constants.h"
 #include <sstream>
 #include <fstream>
+#include "xo/utility/hash.h"
 
 #ifdef XO_COMP_MSVC
 #pragma warning( disable: 4996 )
@@ -152,6 +153,16 @@ namespace scone
 
 		if ( str.good() )
 			ReadStorageTxt( storage, str ); // read as txt once we have found the header
+	}
+
+	void ReadStorage( Storage<Real, TimeInSeconds>& storage, const xo::path& file )
+	{
+		switch ( xo::hash( file.extension_no_dot().str() ) )
+		{
+		case "txt"_hash: return ReadStorageTxt( storage, file );
+		case "sto"_hash: return ReadStorageSto( storage, file );
+		default: SCONE_ERROR( "Unsupported file format: " + file.str() );
+		}
 	}
 
 	void ReadStorageTxt( Storage<Real, TimeInSeconds>& storage, const xo::path& file )
