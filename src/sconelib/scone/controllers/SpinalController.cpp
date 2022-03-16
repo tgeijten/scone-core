@@ -68,29 +68,28 @@ namespace scone
 		}
 
 		// CPG neurons
-		snel::group_id cpg_group;
 		if ( auto* cpg_pn = pn.try_get_child( "CPG" ) ) {
-			cpg_group = AddNeuronGroup( "CPG", pn );
+			cpg_group_ = AddNeuronGroup( "CPG", pn );
 			for ( auto side : both_sides ) {
-				auto flex_idx = AddNeuron( cpg_group, GetSidedName( "flex", side ), pn, par );
+				auto flex_idx = AddNeuron( cpg_group_, GetSidedName( "flex", side ), pn, par );
 				auto flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
-				auto ext_idx = AddNeuron( cpg_group, GetSidedName( "ext", side ), pn, par );
+				auto ext_idx = AddNeuron( cpg_group_, GetSidedName( "ext", side ), pn, par );
 				auto ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
-				Connect( cpg_group, ext_idx, cpg_group, flex_idx, par, pn, nullptr, 1 );
+				Connect( cpg_group_, ext_idx, cpg_group_, flex_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( muscles_[ mi ].side_ == side ) {
 						if ( flex_pat.match( GetNeuronName( l_group_, mi ) ) )
-							Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+							Connect( l_group_, mi, cpg_group_, flex_idx, par, pn, nullptr, 1 );
 						if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
-							Connect( f_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+							Connect( f_group_, mi, cpg_group_, flex_idx, par, pn, nullptr, 1 );
 					}
-				Connect( cpg_group, flex_idx, cpg_group, ext_idx, par, pn, nullptr, 1 );
+				Connect( cpg_group_, flex_idx, cpg_group_, ext_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( muscles_[ mi ].side_ == side ) {
 						if ( ext_pat.match( GetNeuronName( l_group_, mi ) ) )
-							Connect( l_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+							Connect( l_group_, mi, cpg_group_, ext_idx, par, pn, nullptr, 1 );
 						if ( ext_pat.match( GetNeuronName( f_group_, mi ) ) )
-							Connect( f_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+							Connect( f_group_, mi, cpg_group_, ext_idx, par, pn, nullptr, 1 );
 					}
 			}
 		}
@@ -130,10 +129,10 @@ namespace scone
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
 					Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg, 1 );
 			// CPG -> IA
-			if ( cpg_group )
-				for ( uint32 ci = 0; ci < network_.group_size( cpg_group ); ++ci )
-					if ( GetNeuronSide( cpg_group, ci ) == mg.side_ )
-						Connect( cpg_group, ci, ia_group_, mgi, par, pn, &mg, 1 );
+			if ( cpg_group_ )
+				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
+					if ( GetNeuronSide( cpg_group_, ci ) == mg.side_ )
+						Connect( cpg_group_, ci, ia_group_, mgi, par, pn, &mg, 1 );
 
 			// IB interneurons
 			if ( ib_group_ ) {
@@ -161,6 +160,12 @@ namespace scone
 			if ( ib_group_ )
 				for ( auto amgi : muscles_[ mi ].group_indices_ )
 					Connect( ib_group_, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
+
+			// CPG -> MN
+			if ( cpg_group_ )
+				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
+					if ( GetNeuronSide( cpg_group_, ci ) == muscles_[ mi ].side_ )
+						Connect( cpg_group_, ci, mn_group_, mi, par, pn, nullptr, 1 );
 		}
 	}
 
@@ -300,8 +305,15 @@ namespace scone
 	void SpinalController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		for ( index_t i = 0; i < network_.neuron_count(); ++i )
+		for ( index_t i = 0; i < network_.neuron_count(); ++i ) {
 			frame[ neuron_names_[ i ] ] = network_.values_[ i ];
+			const auto& n = network_.neurons_[ i ];
+			for ( auto lid = n.input_begin_; lid != n.input_end_; ++lid ) {
+				const auto& l = network_.links_[ lid.value() ];
+				auto v = network_.value( l.input_ ) * l.weight_;
+				frame[ neuron_names_[ i ] + '-' + neuron_names_[ l.input_.value() ] ] = v;
+			}
+		}
 	}
 
 	PropNode SpinalController::GetInfo() const {
