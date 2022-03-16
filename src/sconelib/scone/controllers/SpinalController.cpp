@@ -78,18 +78,20 @@ namespace scone
 				auto ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
 				Connect( cpg_group, ext_idx, cpg_group, flex_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( muscles_[ mi ].side_ == side )
+					if ( muscles_[ mi ].side_ == side ) {
 						if ( flex_pat.match( GetNeuronName( l_group_, mi ) ) )
 							Connect( l_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
-						else if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
+						if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
 							Connect( f_group_, mi, cpg_group, flex_idx, par, pn, nullptr, 1 );
+					}
 				Connect( cpg_group, flex_idx, cpg_group, ext_idx, par, pn, nullptr, 1 );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( muscles_[ mi ].side_ == side )
+					if ( muscles_[ mi ].side_ == side ) {
 						if ( ext_pat.match( GetNeuronName( l_group_, mi ) ) )
 							Connect( l_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
-						else if ( ext_pat.match( GetNeuronName( f_group_, mi ) ) )
+						if ( ext_pat.match( GetNeuronName( f_group_, mi ) ) )
 							Connect( f_group_, mi, cpg_group, ext_idx, par, pn, nullptr, 1 );
+					}
 			}
 		}
 
@@ -299,7 +301,7 @@ namespace scone
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
 		for ( index_t i = 0; i < network_.neuron_count(); ++i )
-			frame[ "sn." + neuron_names_[ i ] ] = network_.values_[ i ];
+			frame[ neuron_names_[ i ] ] = network_.values_[ i ];
 	}
 
 	PropNode SpinalController::GetInfo() const {
