@@ -12,7 +12,7 @@
 
 namespace scone
 {
-	/// Reflex based on the value of a specific DOF.
+	/// Reflex based on the global orientation of a specific Body.
 	/// Must be part of ReflexController.
 	class BodyOrientationReflex : public Reflex
 	{
@@ -22,11 +22,11 @@ namespace scone
 
 		virtual void ComputeControls( double timestamp ) override;
 
-		/// Name of the DOF that is the source of this Reflex, append with _o for DOF on opposite side.
+		/// Name of the Body that is the source of this Reflex, append with _o for Body on opposite side.
 		String source;
 		/// Orientation axis; default = [ 0 0 1 ]
 		Vec3 axis;
-		/// Name of the axis; default = ""
+		/// Name of the axis, should be provided when using multiple; default = ""
 		String axis_name;
 
 		/// Target orientation [rad]; default = 0.
