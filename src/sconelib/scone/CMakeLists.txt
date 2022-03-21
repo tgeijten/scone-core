@@ -200,6 +200,8 @@ set(OPT_API_FILES
 	optimization/TestObjective.h
 	optimization/ImitationObjective.cpp
 	optimization/ImitationObjective.h
+	optimization/ReplicationObjective.cpp
+	optimization/ReplicationObjective.h
 	optimization/SimilarityObjective.cpp
 	optimization/SimilarityObjective.h
 	optimization/opt_tools.cpp

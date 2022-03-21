@@ -50,6 +50,7 @@
 #include "scone/optimization/CmaOptimizerSpot.h"
 #include "scone/optimization/CmaPoolOptimizer.h"
 #include "scone/optimization/ImitationObjective.h"
+#include "scone/optimization/ReplicationObjective.h"
 #include "scone/optimization/SimilarityObjective.h"
 #include "scone/optimization/SimulationObjective.h"
 #include "scone/optimization/TestObjective.h"
@@ -229,6 +230,7 @@ namespace scone
 		static ObjectiveFactory g_ObjectiveFactory = ObjectiveFactory()
 			.register_type< SimulationObjective >()
 			.register_type< ImitationObjective >()
+			.register_type< ReplicationObjective >()
 			.register_type< SimilarityObjective >()
 			.register_type< TestObjective >();
 
