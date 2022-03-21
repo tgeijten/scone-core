@@ -7,6 +7,7 @@
 */
 
 #pragma once
+#include "xo/utility/cached_var.h"
 
 #include "scone/core/platform.h"
 #include "scone/core/types.h"
@@ -189,6 +190,9 @@ namespace scone
 		/// File containing the initial state (or pose) of the model.
 		path state_init_file;
 
+		/// Ignore muscle activations from state_init_file (if present); default = 0.
+		bool state_init_file_ignore_activations;
+
 		/// Offset [rad] or [m] to apply to initial state; default = 0.
 		const PropNode* initial_state_offset;
 
@@ -224,6 +228,9 @@ namespace scone
 
 		/// Activation used to equilibrate muscles before control inputs are known; default = 0.05
 		Real initial_equilibration_activation;
+
+		/// Initrialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
+		xo::optional<bool> initialize_activations_from_controller;
 
 		/// File containing user input values, only for model with user inputs; default = "".
 		path user_input_file;

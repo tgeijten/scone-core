@@ -71,6 +71,7 @@ namespace scone
 
 		virtual std::vector< Vec3 > GetMusclePath() const override;
 		virtual void SetExcitation( Real u ) override;
+		virtual void InitializeActivation( Real a ) override;
 
 		OpenSim::Muscle& GetOsMuscle() { return m_osMus; }
 

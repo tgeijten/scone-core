@@ -237,4 +237,10 @@ namespace scone
 	{
 		m_osMus.setExcitation( m_Model.GetTkState(), u );
 	}
+
+	void MuscleOpenSim4::InitializeActivation( Real a )
+	{
+		m_osMus.setExcitation( m_Model.GetTkState(), a );
+		m_osMus.setActivation( m_Model.GetTkState(), a );
+	}
 }

@@ -40,6 +40,8 @@ namespace scone
 		else if ( auto mus = dynamic_cast<OpenSim::Thelen2003Muscle*>( &m_osMus ) )
 			m_MinActivation = mus->getMinimumActivation();
 		else m_MinActivation = m_osMus.getMinControl();
+
+		InitializeActivation( model.initial_equilibration_activation );
 	}
 
 	MuscleOpenSim3::~MuscleOpenSim3()
@@ -234,5 +236,11 @@ namespace scone
 	void MuscleOpenSim3::SetExcitation( Real u )
 	{
 		m_osMus.setExcitation( m_Model.GetTkState(), u );
+	}
+
+	void MuscleOpenSim3::InitializeActivation( Real a )
+	{
+		m_osMus.setExcitation( m_Model.GetTkState(), a );
+		m_osMus.setActivation( m_Model.GetTkState(), a );
 	}
 }

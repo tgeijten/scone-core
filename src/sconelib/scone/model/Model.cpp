@@ -42,10 +42,12 @@ namespace scone
 	Model::Model( const PropNode& props, Params& par ) :
 		HasSignature( props ),
 		INIT_MEMBER( props, state_init_file, path() ),
+		INIT_MEMBER( props, state_init_file_ignore_activations, false ),
 		INIT_PAR_MEMBER( props, par, initial_load, 0.2 ),
 		INIT_MEMBER( props, initial_load_dof, "pelvis_ty" ),
 		INIT_PAR_MEMBER( props, par, sensor_delay_scaling_factor, 1.0 ),
 		INIT_PAR_MEMBER( props, par, initial_equilibration_activation, 0.05 ),
+		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, user_input_file, "" ),
 		INIT_MEMBER( props, scone_version, GetSconeVersion() ),
 		m_Profiler( GetProfilerEnabled() ),

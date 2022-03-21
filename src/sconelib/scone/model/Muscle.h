@@ -75,6 +75,7 @@ namespace scone
 		virtual Real GetActivation() const = 0;
 		virtual Real GetExcitation() const = 0;
 		virtual void SetExcitation( Real u ) = 0;
+		virtual void InitializeActivation( Real u ) = 0;
 
 		virtual Side GetSide() const;
 
