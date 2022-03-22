@@ -32,7 +32,7 @@ namespace scone
 
 		virtual void AdvanceSimulationTo( Model& m, TimeInSeconds t ) const override;
 		virtual TimeInSeconds GetDuration() const override { return max_duration; }
-		virtual fitness_t GetResult( Model& m ) const override { return m.GetMeasure()->GetWeightedResult( m ); }
-		virtual PropNode GetReport( Model& m ) const override { return m.GetMeasure()->GetReport(); }
+		virtual fitness_t GetResult( Model& m ) const override { return m.GetMeasure() ? m.GetMeasure()->GetWeightedResult( m ) : 0; }
+		virtual PropNode GetReport( Model& m ) const override { return m.GetMeasure() ? m.GetMeasure()->GetReport() : PropNode(); }
 	};
 }
