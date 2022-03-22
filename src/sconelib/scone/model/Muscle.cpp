@@ -143,10 +143,12 @@ namespace scone
 	{
 		Actuator::StoreData( frame, flags );
 
+		if ( flags( StoreDataTypes::ActuatorInput ) || flags( StoreDataTypes::MuscleProperties ) )
+			frame[ GetName() + ".excitation" ] = GetExcitation();
+
 		if ( flags( StoreDataTypes::MuscleProperties ) )
 		{
 			const auto& name = GetName();
-			frame[ name + ".excitation" ] = GetExcitation();
 			if ( !flags( StoreDataTypes::State ) ) // activation is also part of state
 				frame[ name + ".activation" ] = GetActivation();
 
