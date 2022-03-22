@@ -1,7 +1,7 @@
 /*
 ** ReplicationObjective.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -35,7 +35,8 @@ namespace scone
 		virtual PropNode GetReport( Model& m ) const override;
 
 	private:
-		Storage<> m_Storage;
-		std::vector< index_t > m_ExcitationChannels;
+		Storage<> storage_;
+		std::vector<index_t> state_channels_;
+		std::vector<index_t> excitation_channels_;
 	};
 }
