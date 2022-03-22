@@ -195,6 +195,8 @@ namespace scone
 			}
 		}
 
+		const Frame& GetClosestFrame( TimeT time ) const { return GetFrame( GetClosestFrameIndex( time ) ); }
+
 	private:
 		std::vector< String > m_Labels;
 		container_t m_Data;
