@@ -20,7 +20,8 @@
 #include "xo/container/container_tools.h"
 #include "scone/core/Log.h"
 #include "xo/container/container_algorithms.h"
-#include <xstddef>
+
+#include <functional>
 
 namespace scone
 {
