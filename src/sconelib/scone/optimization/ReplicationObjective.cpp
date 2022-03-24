@@ -19,6 +19,8 @@
 #include "xo/container/prop_node.h"
 #include "xo/container/container_tools.h"
 #include "scone/core/Log.h"
+#include "xo/container/container_algorithms.h"
+#include <xstddef>
 
 namespace scone
 {
@@ -40,9 +42,9 @@ namespace scone
 		state_channels_.reserve( state.GetSize() );
 		for ( index_t state_idx = 0; state_idx < state.GetSize(); ++state_idx ) {
 			state_channels_.push_back( storage_.TryGetChannelIndex( state.GetName( state_idx ) ) );
-			SCONE_THROW_IF( state_channels_.back() == NoIndex , "Could not find state " + state.GetName( state_idx ) );
+			SCONE_THROW_IF( state_channels_.back() == NoIndex, "Could not find state " + state.GetName( state_idx ) );
 		}
-		
+
 		// find excitation channels
 		excitation_channels_.reserve( model_->GetMuscles().size() );
 		for ( auto& mus : model_->GetMuscles() )
@@ -59,19 +61,30 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
+		const bool store_data = model.GetStoreData() || !model.GetData().IsEmpty();
+		const bool first_frame = !model.GetUserData().has_key( "RPL_err" );
+		const auto& muscles = model.GetMuscles();
+		SCONE_ASSERT( muscles.size() == excitation_channels_.size() );
+
 		// intermediate results are stored in the model
-		if ( !model.GetUserData().has_key( "RPL_RES" ) )
-		{
-			model.GetUserData()[ "RPL_RES" ] = 0.0;
-			model.GetUserData()[ "RPL_SMP" ] = 0;
+		auto& mud = model.GetUserData();
+		if ( first_frame ) {
+			mud[ "RPL_err" ] = 0.0;
+			mud[ "RPL_smp" ] = 0;
+			if ( store_data )
+				for ( index_t idx = 0; idx < muscles.size(); ++idx )
+					mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ] = 0.0;
 		}
 
-		// compute result
-		double result = 0.0;
-		size_t samples = 0;
+		// intermediate values
 		std::vector<double> state_values( state_channels_.size() );
+		std::vector<double> errors( excitation_channels_.size() );
+		double total_error = 0.0;
+		size_t samples = 0;
+
+		// loop over data
 		auto t = model.GetTime() == 0.0 ? 0.0 : model.GetTime() + model.fixed_control_step_size;
-		for (; t < end_time; t += model.fixed_control_step_size )
+		while ( t < end_time && !model.HasSimulationEnded() )
 		{
 			const auto& f = storage_.GetClosestFrame( t );
 			for ( index_t state_idx = 0; state_idx < state_channels_.size(); ++state_idx )
@@ -80,17 +93,31 @@ namespace scone
 			model.AdvancePlayback( state_values, t );
 
 			// compare excitations
-			for ( index_t idx = 0; idx < excitation_channels_.size(); ++idx )
-				result += abs( model.GetMuscles()[ idx ]->GetExcitation() - f[ excitation_channels_[ idx ] ] );
+			for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
+				const auto& mus = *muscles[ idx ];
+				auto error = abs( mus.GetExcitation() - f[ excitation_channels_[ idx ] ] );
+				total_error += error;
+				if ( store_data ) {
+					model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ excitation_channels_[ idx ] ];
+					errors[ idx ] += error;
+				}
+			}
+
 			++samples;
+			t += model.fixed_control_step_size;
 		}
 
 		if ( samples > 0 )
 		{
-			result = 100 * result / excitation_channels_.size();
+			total_error = 100 * total_error / muscles.size();
 			//log::trace( "t=", t, " frames=", frame_count, " start=", frame_start, " result=", result );
-			model.GetUserData()[ "RPL_RES" ] = result + model.GetUserData().get< double >( "RPL_RES" );
-			model.GetUserData()[ "RPL_SMP" ] = samples + model.GetUserData().get< size_t >( "RPL_SMP" );
+			mud[ "RPL_err" ] = total_error + mud[ "RPL_err" ].get<double>();
+			mud[ "RPL_smp" ] = samples + mud[ "RPL_smp" ].get<size_t>();
+			if ( store_data )
+				for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
+					auto& rpl_mus_pn = mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ];
+					rpl_mus_pn = rpl_mus_pn.get<double>() + 100 * errors[ idx ];
+				}
 		}
 	}
 
@@ -101,11 +128,20 @@ namespace scone
 
 	fitness_t ReplicationObjective::GetResult( Model& m ) const
 	{
-		return m.GetUserData().get< fitness_t >( "RPL_RES" ) / ( m.GetUserData().get< index_t >( "RPL_SMP" ) );
+		auto& mud = m.GetUserData();
+		return mud.get< fitness_t >( "RPL_err" ) / mud.get< index_t >( "RPL_smp" );
 	}
 
 	PropNode ReplicationObjective::GetReport( Model& m ) const
 	{
-		return xo::to_prop_node( GetResult( m ) );
+		auto pn = xo::to_prop_node( GetResult( m ) );
+		auto& muscles = m.GetMuscles();
+		auto& mus_pn = m.GetUserData()[ "RPL_mus" ];
+		auto samples = m.GetUserData().get< index_t >( "RPL_smp" );
+		auto errors = mus_pn.get<std::vector<double>>();
+		auto sidx = xo::sorted_indices( errors, std::greater<double>() );
+		for ( auto idx : sidx )
+			pn[ muscles[ idx ]->GetName() + ".error" ] = mus_pn[ idx ].get<double>() / samples;
+		return pn;
 	}
 }

@@ -129,7 +129,8 @@ namespace scone
 		virtual std::vector<std::pair<String, std::pair<xo::time, size_t>>> GetBenchmarks() const { return {}; }
 
 		// Model data
-		virtual const Storage< Real, TimeInSeconds >& GetData() const { return m_Data; }
+		virtual const Storage<Real, TimeInSeconds>& GetData() const { return m_Data; }
+		virtual Storage<Real, TimeInSeconds>::Frame& GetCurrentFrame() { SCONE_ASSERT( !m_Data.IsEmpty() ); return m_Data.Back(); }
 		virtual std::vector<path> WriteResults( const path& file_base ) const;
 
 		// get dynamic model statistics
