@@ -60,8 +60,8 @@ namespace scone
 		snel::group_id AddMuscleGroupNeurons( String name, const PropNode& pn, Params& par );
 
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg, size_t size );
-		void Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg );
+		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, size_t size );
+		void Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2 );
 
 		void InitMuscleInfo( const PropNode& pn, Model& model );
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;

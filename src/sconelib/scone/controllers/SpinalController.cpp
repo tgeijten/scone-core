@@ -114,49 +114,49 @@ namespace scone
 
 			// IA interneurons
 			if ( ia_group_ ) {
-				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg );
-				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg );
+				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
+				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
 			}
 
 			// VES -> IA
 			if ( ves_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
-						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg, 1 );
+						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 			// Load -> IA
 			if ( load_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-					Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg, 1 );
+					Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 			// CPG -> IA
 			if ( cpg_group_ )
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
 					if ( GetNeuronSide( cpg_group_, ci ) == mg.side_ )
-						Connect( cpg_group_, ci, ia_group_, mgi, par, pn, &mg, 1 );
+						Connect( cpg_group_, ci, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 
 			// IB interneurons
 			if ( ib_group_ ) {
-				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg );
+				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				if ( pn.has_key( "L_IB_weight" ) )
-					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg );
-				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg );
+					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
+				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 			}
 		}
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			MuscleGroup* mg = muscles_[ mi ].group_indices_.empty() ? nullptr : &muscle_groups_[ muscles_[ mi ].group_indices_.front() ];
+			const PropNode* mg_pn = muscles_[ mi ].group_indices_.empty() ? nullptr : &muscle_groups_[ muscles_[ mi ].group_indices_.front() ].pn_;
 
 			// monosynaptic L connections
 			if ( l_group_ )
-				Connect( l_group_, mi, mn_group_, mi, par, pn, mg, 1 );
+				Connect( l_group_, mi, mn_group_, mi, par, pn, mg_pn, 1 );
 
 			// connect IAIN to antagonists
 			if ( ia_group_ )
-				Connect( ia_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg );
+				Connect( ia_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// connect IBIN to group members
 			if ( ib_group_ )
-				Connect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg );
+				Connect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// CPG -> MN
 			if ( cpg_group_ )
@@ -233,21 +233,21 @@ namespace scone
 		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 
-	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg, size_t size )
+	snel::link_id SpinalController::Connect( snel::group_id sgid, uint32 sidx, snel::group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, size_t size )
 	{
 		SCONE_ASSERT( size > 0 );
 		auto s = 1.0 / Real( size );
 		auto par_info_name = GroupName( sgid ) + '_' + GroupName( tgid ) + "_weight";
-		const PropNode* mg_pn = mg ? mg->pn_.try_get_child( par_info_name ) : nullptr;
+		const PropNode* mg_pn = pn2 ? pn2->try_get_child( par_info_name ) : nullptr;
 		auto pname = GetParName( GetNeuronName( sgid, sidx ), GetNeuronName( tgid, tidx ) );
 		auto weight = s * par.get( pname, mg_pn ? *mg_pn : pn.get_child( par_info_name ) );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
-	void SpinalController::Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg )
+	void SpinalController::Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2 )
 	{
 		for ( auto sidx : sidxvec )
-			Connect( sgid, sidx, tgid, tidx, par, pn, mg, sidxvec.size() );
+			Connect( sgid, sidx, tgid, tidx, par, pn, pn2, sidxvec.size() );
 	}
 
 	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model )
