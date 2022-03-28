@@ -27,6 +27,7 @@ namespace scone
 
 		// create L neurons
 		l_group_ = AddInputNeuronGroup( "L" );
+		l_bias_ = pn.get<Real>( "L_bias", 0.0 );
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
 			auto& mus = *model.GetMuscles()[ mi ];
 			auto& sp = model.AcquireSensor<MuscleLengthSensor>( mus );
@@ -113,10 +114,8 @@ namespace scone
 
 			// IA interneurons
 			if ( ia_group_ ) {
-				for ( auto mi : mg.muscle_indices_ )
-					Connect( l_group_, mi, ia_group_, mgi, par, pn, &mg, mg.muscle_indices_.size() );
-				for ( auto amgi : mg.ant_group_indices_ )
-					Connect( ia_group_, amgi, ia_group_, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
+				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg );
+				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg );
 			}
 
 			// VES -> IA
@@ -136,10 +135,10 @@ namespace scone
 
 			// IB interneurons
 			if ( ib_group_ ) {
-				for ( auto mi : mg.muscle_indices_ )
-					Connect( f_group_, mi, ib_group_, mgi, par, pn, &mg, mg.muscle_indices_.size() );
-				for ( auto amgi : mg.ant_group_indices_ )
-					Connect( ib_group_, amgi, ib_group_, mgi, par, pn, &mg, mg.ant_group_indices_.size() );
+				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg );
+				if ( pn.has_key( "L_IB_weight" ) )
+					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg );
+				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg );
 			}
 		}
 
@@ -153,13 +152,11 @@ namespace scone
 
 			// connect IAIN to antagonists
 			if ( ia_group_ )
-				for ( auto amgi : muscles_[ mi ].ant_group_indices_ )
-					Connect( ia_group_, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
+				Connect( ia_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg );
 
 			// connect IBIN to group members
 			if ( ib_group_ )
-				for ( auto amgi : muscles_[ mi ].group_indices_ )
-					Connect( ib_group_, amgi, mn_group_, mi, par, pn, mg, muscles_[ mi ].ant_group_indices_.size() );
+				Connect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg );
 
 			// CPG -> MN
 			if ( cpg_group_ )
@@ -175,7 +172,7 @@ namespace scone
 
 		auto& muscles = model.GetMuscles();
 		for ( uint32 mi = 0; mi < muscles.size(); ++mi ) {
-			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() ) );
+			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() - l_bias_ ) );
 			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
 		}
 		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi )
@@ -247,6 +244,12 @@ namespace scone
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
+	void SpinalController::Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg )
+	{
+		for ( auto sidx : sidxvec )
+			Connect( sgid, sidx, tgid, tidx, par, pn, mg, sidxvec.size() );
+	}
+
 	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model )
 	{
 		// setup muscle info
@@ -270,16 +273,19 @@ namespace scone
 			for ( auto mi : mg.muscle_indices_ )
 				muscles_[ mi ].group_indices_.insert( mgi );
 			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
+			auto ppat = mg.pn_.try_get<xo::pattern_matcher>( "parents" );
 			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
-			for ( uint32 amgi = 0; amgi < muscle_groups_.size(); ++amgi ) {
-				auto& amg = muscle_groups_[ amgi ];
-				if ( ( apat && mg.side_ == amg.side_ && apat->match( amg.name_ ) ) ||
-					( cl_apat && mg.side_ != amg.side_ && cl_apat->match( amg.name_ ) ) )
+			for ( uint32 mgi_other = 0; mgi_other < muscle_groups_.size(); ++mgi_other ) {
+				auto& mg_other = muscle_groups_[ mgi_other ];
+				if ( ( apat && mg.side_ == mg_other.side_ && apat->match( mg_other.name_ ) ) ||
+					( cl_apat && mg.side_ != mg_other.side_ && cl_apat->match( mg_other.name_ ) ) )
 				{
-					mg.ant_group_indices_.emplace_back( amgi );
+					mg.ant_group_indices_.emplace_back( mgi_other );
 					for ( auto mi : mg.muscle_indices_ )
-						muscles_[ mi ].ant_group_indices_.insert( amgi );
+						muscles_[ mi ].ant_group_indices_.insert( mgi_other );
 				}
+				if ( ppat && ppat->match( mg_other.name_ ) )
+					mg.parent_group_indices_.emplace_back( mgi_other );
 			}
 		}
 

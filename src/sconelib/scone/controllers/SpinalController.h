@@ -13,6 +13,8 @@ namespace scone
 {
 	class SpinalController;
 
+	using index_vec = std::vector<xo::uint32>;
+
 	struct MuscleInfo {
 		MuscleInfo( const string& name, TimeInSeconds delay ) : name_( name ), side_( GetSideFromName( name ) ), delay_( delay ) {}
 
@@ -28,8 +30,9 @@ namespace scone
 
 		string name_;
 		Side side_;
-		std::vector<xo::uint32> muscle_indices_;
-		std::vector<xo::uint32> ant_group_indices_;
+		index_vec muscle_indices_;
+		index_vec ant_group_indices_;
+		index_vec parent_group_indices_;
 		const PropNode& pn_;
 		string sided_name() const { return GetSidedName( name_, side_ ); }
 	};
@@ -58,6 +61,7 @@ namespace scone
 
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg, size_t size );
+		void Connect( snel::group_id sgid, const index_vec& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const MuscleGroup* mg );
 
 		void InitMuscleInfo( const PropNode& pn, Model& model );
 		TimeInSeconds GetNeuralDelay( const Muscle& m ) const;
@@ -74,6 +78,7 @@ namespace scone
 
 		snel::network network_;
 		snel::group_id l_group_, f_group_, ves_group_, load_group_, ia_group_, ib_group_, cpg_group_, mn_group_;
+		Real l_bias_;
 		std::vector<DelayedSensorValue> l_sensors_;
 		std::vector<DelayedSensorValue> f_sensors_;
 		std::vector<DelayedSensorValue> ves_sensors_;
