@@ -132,6 +132,9 @@ namespace scone
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
 					if ( GetNeuronSide( cpg_group_, ci ) == mg.side_ )
 						Connect( cpg_group_, ci, ia_group_, mgi, par, pn, &mg.pn_, 1 );
+			// IB -> IA
+			if ( pn.has_key( "IB_IA_weight" ) )
+				Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 
 			// IB interneurons
 			if ( ib_group_ ) {
@@ -139,6 +142,7 @@ namespace scone
 				if ( pn.has_key( "L_IB_weight" ) )
 					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
+				Connect( ib_group_, mg.related_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 			}
 		}
 
@@ -273,19 +277,23 @@ namespace scone
 			for ( auto mi : mg.muscle_indices_ )
 				muscles_[ mi ].group_indices_.insert( mgi );
 			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
-			auto ppat = mg.pn_.try_get<xo::pattern_matcher>( "parents" );
+			auto rpat = mg.pn_.try_get<xo::pattern_matcher>( "related" );
 			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
 			for ( uint32 mgi_other = 0; mgi_other < muscle_groups_.size(); ++mgi_other ) {
-				auto& mg_other = muscle_groups_[ mgi_other ];
-				if ( ( apat && mg.side_ == mg_other.side_ && apat->match( mg_other.name_ ) ) ||
-					( cl_apat && mg.side_ != mg_other.side_ && cl_apat->match( mg_other.name_ ) ) )
-				{
-					mg.ant_group_indices_.emplace_back( mgi_other );
-					for ( auto mi : mg.muscle_indices_ )
-						muscles_[ mi ].ant_group_indices_.insert( mgi_other );
+				if ( mgi != mgi_other ) {
+					auto& mg_other = muscle_groups_[ mgi_other ];
+					bool same_side = mg.side_ == mg_other.side_;
+					bool is_antagonist = ( same_side && apat && apat->match( mg_other.name_ ) ) || ( !same_side && cl_apat && cl_apat->match( mg_other.name_ ) );
+					bool is_related = same_side && rpat && rpat->match( mg_other.name_ );
+
+					if ( is_antagonist ) {
+						mg.ant_group_indices_.emplace_back( mgi_other );
+						for ( auto mi : mg.muscle_indices_ )
+							muscles_[ mi ].ant_group_indices_.insert( mgi_other );
+					}
+					else if ( is_related )
+						mg.related_group_indices_.emplace_back( mgi_other );
 				}
-				if ( ppat && ppat->match( mg_other.name_ ) )
-					mg.parent_group_indices_.emplace_back( mgi_other );
 			}
 		}
 

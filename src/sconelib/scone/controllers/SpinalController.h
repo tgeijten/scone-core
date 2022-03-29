@@ -32,7 +32,7 @@ namespace scone
 		Side side_;
 		index_vec muscle_indices_;
 		index_vec ant_group_indices_;
-		index_vec parent_group_indices_;
+		index_vec related_group_indices_;
 		const PropNode& pn_;
 		string sided_name() const { return GetSidedName( name_, side_ ); }
 	};
