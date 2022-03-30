@@ -29,6 +29,9 @@ namespace scone
 		/// File containing the existing simulation results (.sto).
 		path file;
 
+		TimeInSeconds start_time;
+		TimeInSeconds stop_time;
+
 		virtual void AdvanceSimulationTo( Model& m, TimeInSeconds t ) const override;
 		virtual TimeInSeconds GetDuration() const override;
 		virtual fitness_t GetResult( Model& m ) const override;

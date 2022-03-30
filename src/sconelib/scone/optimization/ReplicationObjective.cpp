@@ -20,13 +20,16 @@
 #include "xo/container/container_tools.h"
 #include "scone/core/Log.h"
 #include "xo/container/container_algorithms.h"
+#include "xo/container/prop_node_tools.h"
 
 #include <functional>
 
 namespace scone
 {
 	ReplicationObjective::ReplicationObjective( const PropNode& pn, const path& find_file_folder ) :
-		ModelObjective( pn, find_file_folder )
+		ModelObjective( pn, find_file_folder ),
+		INIT_MEMBER( pn, start_time, 0.0 ),
+		INIT_MEMBER( pn, stop_time, 0.0 )
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
@@ -94,18 +97,26 @@ namespace scone
 			model.AdvancePlayback( state_values, t );
 
 			// compare excitations
-			for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
-				const auto& mus = *muscles[ idx ];
-				auto error = abs( mus.GetExcitation() - f[ excitation_channels_[ idx ] ] );
-				total_error += error;
-				if ( store_data ) {
-					model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ excitation_channels_[ idx ] ];
-					errors[ idx ] += error;
+			if ( t >= start_time )
+			{
+				for ( index_t idx = 0; idx < muscles.size(); ++idx )
+				{
+					const auto& mus = *muscles[ idx ];
+					auto error = abs( mus.GetExcitation() - f[ excitation_channels_[ idx ] ] );
+					total_error += error;
+					if ( store_data )
+					{
+						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ excitation_channels_[ idx ] ];
+						errors[ idx ] += error;
+					}
 				}
+				++samples;
 			}
 
-			++samples;
 			t += model.fixed_control_step_size;
+
+			if ( stop_time != 0 && t > stop_time )
+				model.RequestTermination();
 		}
 
 		if ( samples > 0 )
