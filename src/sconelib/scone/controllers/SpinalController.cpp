@@ -124,7 +124,7 @@ namespace scone
 					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
 						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 			// Load -> IA
-			if ( load_group_ )
+			if ( load_group_ && pn.has_key( "LD_IA_weight" ) )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
 					Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 			// CPG -> IA
@@ -141,6 +141,9 @@ namespace scone
 				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				if ( pn.has_key( "L_IB_weight" ) )
 					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
+				if ( load_group_ && pn.has_key( "LD_IB_weight" ) )
+					for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
+						Connect( load_group_, vi, ib_group_, mgi, par, pn, &mg.pn_, 1 );
 				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ib_group_, mg.related_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 			}
