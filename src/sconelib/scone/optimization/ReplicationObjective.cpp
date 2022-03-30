@@ -29,7 +29,9 @@ namespace scone
 	ReplicationObjective::ReplicationObjective( const PropNode& pn, const path& find_file_folder ) :
 		ModelObjective( pn, find_file_folder ),
 		INIT_MEMBER( pn, start_time, 0.0 ),
-		INIT_MEMBER( pn, stop_time, 0.0 )
+		INIT_MEMBER( pn, stop_time, 0.0 ),
+		INIT_MEMBER( pn, include_, "*" ),
+		INIT_MEMBER( pn, exclude_, "" )
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
@@ -50,11 +52,17 @@ namespace scone
 		}
 
 		// find excitation channels
-		excitation_channels_.reserve( model_->GetMuscles().size() );
-		for ( auto& mus : model_->GetMuscles() )
+		auto& muscles = model_->GetMuscles();
+		muscle_excitation_map_.reserve( muscles.size() );
+		for ( index_t midx = 0; midx < muscles.size(); ++midx )
 		{
-			excitation_channels_.push_back( storage_.TryGetChannelIndex( mus->GetName() + ".excitation" ) );
-			SCONE_THROW_IF( excitation_channels_.back() == NoIndex, "Could not find excitation for " + mus->GetName() );
+			const auto& name = muscles[ midx ]->GetName();
+			if ( include_( name ) && !exclude_( name ) ) {
+				auto cidx = storage_.TryGetChannelIndex( name + ".excitation" );
+				if ( cidx != NoIndex )
+					muscle_excitation_map_[ midx ] = cidx;
+				else log::warning( "Could not find excitation channel for ", name, " in ", file );
+			}
 		}
 	}
 
@@ -68,7 +76,6 @@ namespace scone
 		const bool store_data = model.GetStoreData() || !model.GetData().IsEmpty();
 		const bool first_frame = !model.GetUserData().has_key( "RPL_err" );
 		const auto& muscles = model.GetMuscles();
-		SCONE_ASSERT( muscles.size() == excitation_channels_.size() );
 
 		// intermediate results are stored in the model
 		auto& mud = model.GetUserData();
@@ -82,7 +89,7 @@ namespace scone
 
 		// intermediate values
 		std::vector<double> state_values( state_channels_.size() );
-		std::vector<double> errors( excitation_channels_.size() );
+		std::vector<double> errors( muscles.size(), 0.0 );
 		double total_error = 0.0;
 		size_t samples = 0;
 
@@ -99,15 +106,15 @@ namespace scone
 			// compare excitations
 			if ( t >= start_time )
 			{
-				for ( index_t idx = 0; idx < muscles.size(); ++idx )
+				for ( const auto& [midx, cidx] : muscle_excitation_map_ )
 				{
-					const auto& mus = *muscles[ idx ];
-					auto error = abs( mus.GetExcitation() - f[ excitation_channels_[ idx ] ] );
+					const auto& mus = *muscles[ midx ];
+					auto error = abs( mus.GetExcitation() - f[ cidx ] );
 					total_error += error;
 					if ( store_data )
 					{
-						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ excitation_channels_[ idx ] ];
-						errors[ idx ] += error;
+						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ cidx ];
+						errors[ midx ] += error;
 					}
 				}
 				++samples;

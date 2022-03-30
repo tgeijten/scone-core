@@ -16,6 +16,7 @@
 #include "ModelObjective.h"
 
 #include <vector>
+#include <utility>
 
 namespace scone
 {
@@ -40,6 +41,7 @@ namespace scone
 	private:
 		Storage<> storage_;
 		std::vector<index_t> state_channels_;
-		std::vector<index_t> excitation_channels_;
+		xo::flat_map< index_t, index_t > muscle_excitation_map_;
+		xo::pattern_matcher include_, exclude_;
 	};
 }
