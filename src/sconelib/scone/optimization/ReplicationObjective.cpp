@@ -113,7 +113,8 @@ namespace scone
 					total_error += error;
 					if ( store_data )
 					{
-						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = mus.GetExcitation() - f[ cidx ];
+						model.GetCurrentFrame()[ mus.GetName() + ".excitation_target" ] = f[ cidx ];
+						model.GetCurrentFrame()[ mus.GetName() + ".excitation_deviation" ] = mus.GetExcitation() - f[ cidx ];
 						errors[ midx ] += error;
 					}
 				}
