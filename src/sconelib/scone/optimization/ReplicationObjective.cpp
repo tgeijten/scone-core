@@ -23,23 +23,28 @@
 #include "xo/container/prop_node_tools.h"
 
 #include <functional>
+
+#if defined( _MSC_VER )
 #include <charconv>
+inline void set_exact( scone::PropNode& pn, double value ) {
+	char buf[ 32 ];
+	auto res = std::to_chars( buf, buf + sizeof( buf ) - 1, value );
+	*res.ptr = '\0';
+	pn.set_value( buf );
+}
+inline double get_exact( scone::PropNode& pn ) {
+	double value;
+	const auto& str = pn.get_str();
+	std::from_chars( str.c_str(), str.c_str() + str.size(), value );
+	return value;
+}
+#else
+inline void set_exact( scone::PropNode& pn, double value ) { pn.set( value ); }
+inline double get_exact( scone::PropNode& pn ) { return pn.get<double>(); }
+#endif
 
 namespace scone
 {
-	inline void set_exact( PropNode& pn, double value ) {
-		char buf[ 32 ];
-		auto res = std::to_chars( buf, buf + sizeof( buf ) - 1, value, std::chars_format::general );
-		res.ptr = '\0';
-		pn.set_value( buf );
-	}
-	inline double get_exact( PropNode& pn ) {
-		double value;
-		const string& str = pn.get_str();
-		std::from_chars( str.c_str(), str.c_str() + str.size(), value, std::chars_format::general );
-		return value;
-	}
-
 	ReplicationObjective::ReplicationObjective( const PropNode& pn, const path& find_file_folder ) :
 		ModelObjective( pn, find_file_folder ),
 		INIT_MEMBER( pn, start_time, 0.0 ),
