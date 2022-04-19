@@ -179,7 +179,7 @@ namespace scone
 
 		auto& muscles = model.GetMuscles();
 		for ( uint32 mi = 0; mi < muscles.size(); ++mi ) {
-			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() - l_bias_ ) );
+			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() + l_bias_ ) );
 			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
 		}
 		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi )
