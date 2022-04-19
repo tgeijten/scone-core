@@ -27,15 +27,16 @@
 
 namespace scone
 {
-	inline void set_exact( PropNode& pn, const double& value ) {
-		char buf[ 40 ];
-		*std::to_chars( buf, buf + sizeof( buf ) - 1, value ).ptr = '\0';
+	inline void set_exact( PropNode& pn, double value ) {
+		char buf[ 32 ];
+		auto res = std::to_chars( buf, buf + sizeof( buf ) - 1, value, std::chars_format::general );
+		res.ptr = '\0';
 		pn.set_value( buf );
 	}
 	inline double get_exact( PropNode& pn ) {
 		double value;
 		const string& str = pn.get_str();
-		std::from_chars( str.c_str(), str.c_str() + str.size(), value );
+		std::from_chars( str.c_str(), str.c_str() + str.size(), value, std::chars_format::general );
 		return value;
 	}
 
