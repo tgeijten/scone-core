@@ -10,6 +10,7 @@
 #include "CmaOptimizerSpot.h"
 #include "spot/file_reporter.h"
 #include "opt_tools.h"
+#include "scone/core/Settings.h"
 
 namespace scone
 {
@@ -49,15 +50,22 @@ namespace scone
 			// create optimizer
 			auto o = std::make_unique< CmaOptimizerSpot >( props_.back(), scenario_pn_copy_, m_Objective->GetExternalResourceDir() );
 			o->PrepareOutputFolder();
-			o->add_reporter( std::make_unique< spot::file_reporter >(
-				o->GetOutputFolder(), o->min_improvement_for_file_output, o->max_generations_without_file_output ) );
+
+			auto fr = std::make_unique< spot::file_reporter >( o->GetOutputFolder(), o->min_improvement_for_file_output, o->max_generations_without_file_output );
+			fr->output_fitness_history_ = GetSconeSetting<bool>( "optimizer.output_fitness_history" );
+			fr->output_par_history_ = GetSconeSetting<bool>( "optimizer.output_par_history" );
+			o->add_reporter( std::move( fr ) );
+
 			o->SetOutputMode( output_mode_ );
 			push_back( std::move( o ) );
 		}
 
 		// add reporters
-		add_reporter( std::make_unique< spot::file_reporter >(
-			GetOutputFolder(), min_improvement_for_file_output, max_generations_without_file_output ) );
+		auto fr = std::make_unique< spot::file_reporter >( GetOutputFolder(), min_improvement_for_file_output, max_generations_without_file_output );
+		fr->output_fitness_history_ = GetSconeSetting<bool>( "optimizer.output_fitness_history" );
+		fr->output_par_history_ = GetSconeSetting<bool>( "optimizer.output_par_history" );
+		add_reporter( std::move( fr ) );
+
 		add_reporter( std::make_unique< CmaPoolOptimizerReporter >() );
 
 		// reset the id, so that the ProgressDock can interpret OutputStatus() as a general message
