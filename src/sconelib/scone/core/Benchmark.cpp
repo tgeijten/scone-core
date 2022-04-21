@@ -47,17 +47,20 @@ namespace scone
 			auto model = mo->CreateModelFromParams( par );
 			model->SetStoreData( false );
 			auto create_model_time = t();
-			model->AdvanceSimulationTo( model->GetSimulationEndTime() );
+			mo->AdvanceSimulationTo( *model, model->GetSimulationEndTime() );
 			auto total_time = t();
 			auto timings = model->GetBenchmarks();
-			for ( const auto& t : timings )
-				bm_components[ t.first ].push_back( t.second.first / t.second.second );
-			bm_components[ "EvalTotal" ].push_back( total_time );
-			bm_components[ "EvalSim" ].push_back( ( total_time - create_model_time ) );
 			if ( !timings.empty() )
-				bm_components[ "EvalSimModel" ].push_back( timings.front().second.first );
-			duration = xo::time_from_seconds( model->GetTime() );
-			log::info( "Benchmarked trial ", idx + 1, " of ", evals, "; simulated ", duration, "s in ", total_time, "s (", duration / total_time, "x real-time)" );
+			{
+				for ( const auto& t : timings )
+					bm_components[ t.first ].push_back( t.second.first / t.second.second );
+				bm_components[ "EvalTotal" ].push_back( total_time );
+				bm_components[ "EvalSim" ].push_back( ( total_time - create_model_time ) );
+				if ( !timings.empty() )
+					bm_components[ "EvalSimModel" ].push_back( timings.front().second.first );
+				duration = xo::time_from_seconds( model->GetTime() );
+				log::info( "Benchmarked trial ", idx + 1, " of ", evals, "; simulated ", duration, "s in ", total_time, "s (", duration / total_time, "x real-time)" );
+			}
 		}
 
 		// read baseline
