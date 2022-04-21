@@ -440,7 +440,7 @@ namespace scone
 		return pn;
 	}
 
-	std::vector<scone::path> Model::WriteResults( const path& file ) const
+	std::vector<path> Model::WriteResults( const path& file ) const
 	{
 		std::vector<path> files;
 		WriteStorageSto( m_Data, file + ".sto", ( file.parent_path().filename() / file.stem() ).str(), m_StoreDataInterval );
