@@ -7,7 +7,7 @@
 #include "scone/model/Muscle.h"
 #include "scone/core/Log.h"
 #include "scone/core/profiler_config.h"
-#include "snel/snel_tools.h"
+#include "snel/update_tools.h"
 
 namespace scone
 {
@@ -19,7 +19,8 @@ namespace scone
 		Controller( pn, par, model, loc ),
 		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
 		INIT_MEMBER_REQUIRED( pn, activation_ ),
-		INIT_MEMBER( pn, planar, model.GetDofs().size() < 14 )
+		INIT_MEMBER( pn, planar, model.GetDofs().size() < 14 ),
+		INIT_MEMBER( pn, neuron_equilibration_steps, 20 )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -188,6 +189,10 @@ namespace scone
 			network_.set_value( load_group_, vi, snel::real( load_sensors_[ vi ].GetValue() ) );
 
 		network_.update();
+
+		if ( timestamp == 0.0 )
+			for ( int i = 0; i < neuron_equilibration_steps; ++i )
+				network_.update();
 
 		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
 			actuators_[ mi ].AddInput( network_.value( mn_group_, mi ) );

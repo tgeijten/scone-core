@@ -47,6 +47,7 @@ namespace scone
 		PropNode GetInfo() const override;
 
 		bool planar;
+		int neuron_equilibration_steps;
 
 	protected:
 		bool ComputeControls( Model& model, double timestamp ) override;
