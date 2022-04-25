@@ -109,6 +109,10 @@ namespace scone
 			AddNeuron( mn_group_, muscles_[ mi ].name_, pn, par );
 		}
 
+		// add Renshaw cells
+		if ( pn.has_key( "RC_bias" ) )
+			rc_group_ = AddMuscleGroupNeurons( "RC", pn, par );
+
 		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
@@ -148,6 +152,11 @@ namespace scone
 				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ib_group_, mg.related_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 			}
+
+			// MN -> RC
+			if ( rc_group_ ) {
+				Connect( mn_group_, mg.muscle_indices_, rc_group_, mgi, par, pn, &mg.pn_ );
+			}
 		}
 
 		// connect motor units
@@ -171,6 +180,11 @@ namespace scone
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
 					if ( GetNeuronSide( cpg_group_, ci ) == muscles_[ mi ].side_ )
 						Connect( cpg_group_, ci, mn_group_, mi, par, pn, nullptr, 1 );
+
+			// RC -> MN
+			if ( rc_group_ ) {
+				Connect( rc_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			}
 		}
 	}
 
