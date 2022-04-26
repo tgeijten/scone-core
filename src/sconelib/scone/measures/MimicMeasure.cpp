@@ -18,7 +18,7 @@
 namespace scone
 {
 	Storage<> read_storage( const xo::path& f ) { Storage<> sto; ReadStorage( sto, f ); return sto; } 
-	static xo::memoize_thread_safe< Storage<>( const xo::path& ) > g_storage_cache( read_storage );
+	static xo::memoize_thread_safe< Storage<>( xo::path ) > g_storage_cache( read_storage );
 
 	MimicMeasure::MimicMeasure( const PropNode& pn, Params& par, const Model& model, const Location& loc ) :
 		Measure( pn, par, model, loc ),
