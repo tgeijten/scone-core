@@ -78,7 +78,8 @@ namespace scone
 		std::vector<MuscleInfo> muscles_;
 
 		snel::network network_;
-		snel::group_id l_group_, f_group_, ves_group_, load_group_, ia_group_, ib_group_, cpg_group_, mn_group_, rc_group_;
+		snel::group_id l_group_, f_group_, ves_group_, load_group_;
+		snel::group_id ia_group_, ib_group_, cpg_group_, pm_group_, mn_group_, rc_group_;
 		Real l_bias_;
 		std::vector<DelayedSensorValue> l_sensors_;
 		std::vector<DelayedSensorValue> f_sensors_;

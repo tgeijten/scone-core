@@ -99,8 +99,13 @@ namespace scone
 		// IA interneurons
 		ia_group_ = AddMuscleGroupNeurons( "IA", pn, par );
 
+		// IB interneurons
 		if ( pn.has_key( "IB_bias" ) )
 			ib_group_ = AddMuscleGroupNeurons( "IB", pn, par );
+
+		// PM neurons (premotor neurons)
+		if ( pn.has_key( "PM_bias" ) )
+			pm_group_ = AddMuscleGroupNeurons( "PM", pn, par );
 
 		// add motor neurons
 		mn_group_ = AddNeuronGroup( "MN", pn );
@@ -110,8 +115,11 @@ namespace scone
 		}
 
 		// add Renshaw cells
-		if ( pn.has_key( "RC_bias" ) )
-			rc_group_ = AddMuscleGroupNeurons( "RC", pn, par );
+		if ( pn.has_key( "RC_bias" ) ) {
+			rc_group_ = AddNeuronGroup( "RC", pn );
+			for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
+				AddNeuron( rc_group_, muscles_[ mi ].name_, pn, par );
+		}
 
 		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
@@ -124,7 +132,7 @@ namespace scone
 			}
 
 			// VES -> IA
-			if ( ves_group_ )
+			if ( ves_group_ && pn.has_key( "VES_IA_weight" ) )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
 						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
@@ -142,23 +150,43 @@ namespace scone
 				Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 			// RC -> IA
 			if ( rc_group_ )
-				Connect( rc_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
+				Connect( rc_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
+			// PM -> IA
+			if ( pm_group_ )
+				Connect( pm_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_, 1 );
 
 			// IB interneurons
 			if ( ib_group_ ) {
+				// F+L -> IB
 				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				if ( pn.has_key( "L_IB_weight" ) )
 					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
+				// LD -> IB
 				if ( load_group_ && pn.has_key( "LD_IB_weight" ) )
 					for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
 						Connect( load_group_, vi, ib_group_, mgi, par, pn, &mg.pn_, 1 );
+				// VES -> IB
+				if ( ves_group_ && pn.has_key( "VES_IB_weight" ) )
+					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
+						if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+							Connect( ves_group_, vi, ib_group_, mgi, par, pn, &mg.pn_, 1 );
+				// IB -> IB
 				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ib_group_, mg.related_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
 			}
 
-			// MN -> RC
-			if ( rc_group_ )
-				Connect( mn_group_, mg.muscle_indices_, rc_group_, mgi, par, pn, &mg.pn_ );
+			if ( pm_group_ ) {
+				// IB -> PM
+				for ( uint32 smgi = 0; smgi < muscle_groups_.size(); ++smgi ) {
+					if ( mg.side_ == muscle_groups_[ smgi ].side_ )
+						Connect( ib_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_, 1 );
+				}
+				// VES -> PM
+				if ( ves_group_ && pn.has_key( "VES_PM_weight" ) )
+					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
+						if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+							Connect( ves_group_, vi, pm_group_, mgi, par, pn, &mg.pn_, 1 );
+			}
 		}
 
 		// connect motor units
@@ -183,9 +211,15 @@ namespace scone
 					if ( GetNeuronSide( cpg_group_, ci ) == muscles_[ mi ].side_ )
 						Connect( cpg_group_, ci, mn_group_, mi, par, pn, nullptr, 1 );
 
+			// PM -> MN
+			if ( pm_group_ )
+				Connect( pm_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+
 			// RC -> MN
-			if ( rc_group_ )
-				Connect( rc_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			if ( rc_group_ ) {
+				Connect( rc_group_, mi, mn_group_, mi, par, pn, mg_pn, 1 );
+				Connect( mn_group_, mi, rc_group_, mi, par, pn, mg_pn, 1 );
+			}
 		}
 	}
 
