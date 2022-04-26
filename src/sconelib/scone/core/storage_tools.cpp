@@ -9,7 +9,7 @@ namespace scone
 		Storage<> new_sto( sto.GetLabels() );
 		for ( Real perc : xo::frange<Real>( 0.0, 100.0, 0.5 ) )
 		{
-			auto inter = sto.GetInterpolatedFrame( begin + perc * ( end - begin ) / 100.0 );
+			auto inter = sto.ComputeInterpolatedFrame( begin + perc * ( end - begin ) / 100.0 );
 			auto& f = new_sto.AddFrame( perc );
 			for ( index_t i = 0; i < sto.GetChannelCount(); ++i )
 				f[ i ] = inter.value( i );

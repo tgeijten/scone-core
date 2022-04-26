@@ -13,9 +13,12 @@
 #include "xo/numerical/math.h"
 #include "scone/core/Log.h"
 #include "scone/core/profiler_config.h"
+#include "xo/utility/memoize.h"
 
 namespace scone
 {
+	static xo::memoize_thread_safe< Storage<>( xo::path ) > g_storage_cache( []( xo::path& f ) { Storage<> sto; ReadStorage( sto, f ); return sto; } );
+
 	MimicMeasure::MimicMeasure( const PropNode& pn, Params& par, const Model& model, const Location& loc ) :
 		Measure( pn, par, model, loc ),
 		file( FindFile( pn.get<path>( "file" ) ) ),
@@ -25,12 +28,11 @@ namespace scone
 		INIT_MEMBER( pn, average_error_limit, 0 ),
 		INIT_MEMBER( pn, peak_error_limit, 2 * average_error_limit ),
 		INIT_MEMBER( pn, time_offset, 0 ),
-		INIT_MEMBER( pn, activation_error_weight, 1.0 )
-
+		INIT_MEMBER( pn, activation_error_weight, 1.0 ),
+		storage_( g_storage_cache( file ) )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		ReadStorage( storage_, file );
 		SCONE_THROW_IF( storage_.IsEmpty(), file.str() + " contains no data" );
 
 		// automatically set stop_time to match data, if not set
@@ -70,9 +72,10 @@ namespace scone
 		auto& state = model.GetState();
 		double error = 0.0;
 		index_t error_idx = 0;
+		auto frame = storage_.ComputeInterpolatedFrame( timestamp + time_offset );
 		for ( auto& m : state_storage_map_ )
 		{
-			auto storage_value = storage_.GetInterpolatedValue( timestamp + time_offset, m.storage_idx_ );
+			auto storage_value = frame.value( m.storage_idx_ );
 			auto e = m.weight_ * xo::squared( state[ m.state_idx_ ] - storage_value );
 			channel_errors_[ error_idx++ ].second = e;
 			error += e;

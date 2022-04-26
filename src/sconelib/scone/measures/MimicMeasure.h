@@ -53,7 +53,7 @@ namespace scone
 
 	protected:
 		virtual String GetClassSignature() const override;
-		Storage<> storage_;
+		const Storage<>& storage_;
 		Statistic<> result_;
 		struct Channel {
 			index_t state_idx_;
@@ -62,8 +62,5 @@ namespace scone
 		};
 		std::vector< Channel > state_storage_map_;
 		std::vector< std::pair< String, double > > channel_errors_;
-
-	protected:
-	private:
 	};
 }

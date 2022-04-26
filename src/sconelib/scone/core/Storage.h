@@ -174,11 +174,6 @@ namespace scone
 		const String& GetLabel( index_t idx ) const { return m_Labels[ idx ]; }
 		const container_t& GetData() const { return m_Data; }
 
-		ValueT GetInterpolatedValue( TimeT time, index_t idx ) const {
-			SCONE_ASSERT( !m_Data.empty() );
-			return GetInterpolatedFrame( time ).value( idx );
-		}
-
 		index_t GetClosestFrameIndex( TimeT time ) const {
 			SCONE_ASSERT( !m_Data.empty() );
 			auto it = upper_bound( time );
@@ -197,12 +192,6 @@ namespace scone
 
 		const Frame& GetClosestFrame( TimeT time ) const { return GetFrame( GetClosestFrameIndex( time ) ); }
 
-	private:
-		std::vector< String > m_Labels;
-		container_t m_Data;
-		std::unordered_map< String, index_t > m_LabelIndexMap;
-
-	public:
 		// interpolation related stuff
 		struct InterpolatedFrame {
 			double upper_weight;
@@ -210,13 +199,14 @@ namespace scone
 			ValueT value( index_t channel_idx ) const { return upper_weight * (**upper_frame)[ channel_idx ] + ( 1.0 - upper_weight ) * (**lower_frame)[ channel_idx ]; }
 		};
 
-		InterpolatedFrame GetInterpolatedFrame( TimeT time ) const {
-			// check the cache
-			auto cacheIt = m_InterpolationCache.find( time );
-			if ( cacheIt != m_InterpolationCache.end() )
-				return cacheIt->second;
+		// Compute interpolated value (always recomputes, slow)
+		ValueT ComputeInterpolatedValue( TimeT time, index_t idx ) const {
+			SCONE_ASSERT( !m_Data.empty() );
+			return ComputeInterpolatedFrame( time ).value( idx );
+		}
 
-			// compute new one
+		// Compute interpolated frame (always recomputes)
+		InterpolatedFrame ComputeInterpolatedFrame( TimeT time ) const {
 			InterpolatedFrame bf;
 			bf.upper_frame = upper_bound( time );
 			if ( bf.upper_frame == m_Data.cend() )
@@ -238,17 +228,36 @@ namespace scone
 				bf.upper_weight = ( time - (*bf.lower_frame)->GetTime() ) / ( (*bf.upper_frame)->GetTime() - (*bf.lower_frame)->GetTime() );
 			}
 
-			// store in cache
+			return bf;
+		}
+
+		// Get interpolated value, check cached results first
+		ValueT GetInterpolatedValue( TimeT time, index_t idx ) {
+			SCONE_ASSERT( !m_Data.empty() );
+			return GetInterpolatedFrame( time ).value( idx );
+		}
+
+		// Get interpolated frame, check cached results first
+		InterpolatedFrame GetInterpolatedFrame( TimeT time ) {
+			auto cacheIt = m_InterpolationCache.find( time );
+			if ( cacheIt != m_InterpolationCache.end() )
+				return cacheIt->second;
+
+			InterpolatedFrame bf = ComputeInterpolatedFrame( time );
 			m_InterpolationCache[ time ] = bf;
 
 			return bf;
 		}
 
 	private:
+		std::vector< String > m_Labels;
+		container_t m_Data;
+		std::unordered_map< String, index_t > m_LabelIndexMap;
+
 		auto upper_bound( TimeT time ) const {
 			return std::upper_bound( m_Data.cbegin(), m_Data.cend(), time, []( TimeT lhs, const FrameUP& rhs ) { return lhs < rhs->GetTime(); } );
 		}
 
-		mutable std::map< TimeT, InterpolatedFrame > m_InterpolationCache;
+		std::map< TimeT, InterpolatedFrame > m_InterpolationCache;
 	};
 }
