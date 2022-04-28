@@ -38,7 +38,7 @@ namespace scone
 		/// Target velocity [m/s] of the body point; default = 0.
 		Real V0;
 
-		/// Target acceleration [m/s^2] of the body point; default = 0.
+		/// Target acceleration [m/s%%^%%2] of the body point; default = 0.
 		Real A0;
 
 		/// Position feedback gain; default = 0.

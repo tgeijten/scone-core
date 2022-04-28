@@ -20,9 +20,9 @@ namespace scone
 		- ''TotalForce'': total muscle force
 		- ''Wang2012'': metabolic energy measure as defined in [Wang et al. 2012]
 		- ''Uchida2016'': metabolic energy measure as defined in [Uchida et al. 2012]
-		- ''SquaredMuscleStress'': summed squared muscle stress: (force / PCSA)^2
-		- ''CubedMuscleStress'': summed squared muscle stress: (force / PCSA)^3
-		- ''SquaredMuscleActivation'': summed squared muscle activation: (activation)^2
+		- ''SquaredMuscleStress'': summed squared muscle stress: (force / PCSA)%%^%%2
+		- ''CubedMuscleStress'': summed squared muscle stress: (force / PCSA)%%^%%3
+		- ''SquaredMuscleActivation'': summed squared muscle activation: (activation)%%^%%2
 		- ''CubedMuscleActivation'': summed cubed muscle activation: (activation)^3
 
 		This can also be used for cost-of-transport, using the ''use_cost_of_transport'' parameter.

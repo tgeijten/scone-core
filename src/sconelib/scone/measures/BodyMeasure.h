@@ -50,7 +50,7 @@ namespace scone
 		/// Penalty for when the angular velocity [rad/s] is out of range.
 		RangePenalty<Real> angular_velocity;
 
-		/// Penalty for when the point acceleration [m/s^2] is out of range.
+		/// Penalty for when the point acceleration [m/s%%^%%2] is out of range.
 		RangePenalty<Real> acceleration;
 
 	protected:
