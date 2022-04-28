@@ -58,8 +58,11 @@ namespace scone
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
-		if ( signature_postfix.empty() )
+		if ( signature_postfix.empty() ) {
 			signature_postfix = "RPL";
+			if ( use_muscle_activation ) signature_postfix += "A";
+			if ( use_squared_error ) signature_postfix += "S";
+		}
 
 		// prepare data
 		ReadStorageSto( storage_, file );
@@ -190,7 +193,8 @@ namespace scone
 
 		if ( samples > 0 )
 		{
-			total_error = 100 * total_error / muscles.size();
+			auto scale_factor = use_squared_error ? 1000 : 100;
+			total_error = scale_factor * total_error / muscles.size();
 			//log::trace( "t=", t, " frames=", frame_count, " start=", frame_start, " result=", result );
 			set_exact( mud[ "RPL_err" ], get_exact( mud[ "RPL_err" ] ) + total_error );
 			set_exact( mud[ "RPL_smp" ], get_exact( mud[ "RPL_smp" ] ) + samples );

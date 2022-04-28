@@ -64,6 +64,7 @@ namespace scone
 
 	// string types
 	using std::string;
+	using std::string_view;
 	using String = std::string;
 
 	// constants

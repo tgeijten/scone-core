@@ -103,6 +103,10 @@ namespace scone
 		// IB interneurons
 		if ( pn.has_key( "IB_bias" ) )
 			ib_group_ = AddMuscleGroupNeurons( "IB", pn, par );
+		if ( pn.has_key( "IBI_bias" ) )
+			ibi_group_ = AddMuscleGroupNeurons( "IBI", pn, par );
+		if ( pn.has_key( "IBE_bias" ) )
+			ibe_group_ = AddMuscleGroupNeurons( "IBE", pn, par );
 
 		// PM neurons (premotor neurons)
 		if ( pn.has_key( "PM_bias" ) )
@@ -149,6 +153,8 @@ namespace scone
 			// IB -> IA
 			if ( pn.has_key( "IB_IA_weight" ) )
 				Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
+			if ( pn.has_key( "IBE_IA_weight" ) )
+				Connect( ibe_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
 			// RC -> IA
 			if ( rc_group_ )
 				Connect( rc_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
@@ -157,30 +163,51 @@ namespace scone
 				Connect( pm_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
 
 			// IB interneurons
-			if ( ib_group_ ) {
-				// F+L -> IB
-				Connect( f_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
-				if ( pn.has_key( "L_IB_weight" ) )
-					Connect( l_group_, mg.muscle_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
-				// LD -> IB
-				if ( load_group_ && pn.has_key( "LD_IB_weight" ) )
-					for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-						Connect( load_group_, vi, ib_group_, mgi, par, pn, &mg.pn_ );
-				// VES -> IB
-				if ( ves_group_ && pn.has_key( "VES_IB_weight" ) )
-					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-						if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
-							Connect( ves_group_, vi, ib_group_, mgi, par, pn, &mg.pn_ );
-				// IB -> IB
-				Connect( ib_group_, mg.ant_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
-				Connect( ib_group_, mg.related_group_indices_, ib_group_, mgi, par, pn, &mg.pn_ );
+			for ( auto ib_group : { ib_group_, ibi_group_, ibe_group_ } ) {
+				if ( ib_group ) {
+					auto group_suffix = "_" + GroupName( ib_group ) + "_weight";
+					// F+L -> IB
+					Connect( f_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+					if ( pn.has_key( "L" + group_suffix ) )
+						Connect( l_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+					// LD -> IB
+					if ( load_group_ && pn.has_key( "LD" + group_suffix ) )
+						for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
+							Connect( load_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
+					// VES -> IB
+					if ( ves_group_ && pn.has_key( "VES" + group_suffix ) )
+						for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
+							if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+								Connect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
+					// IB -> IB
+					if ( pn.has_key( GroupName( ib_group ) + group_suffix ) ) {
+						Connect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
+						Connect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+					}
+					// IBE -> IBI
+					if ( ib_group == ibi_group_ && ibe_group_ ) {
+						Connect( ibe_group_, mg.ant_group_indices_, ibi_group_, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
+						Connect( ibe_group_, mg.related_group_indices_, ibi_group_, mgi, par, pn, &mg.pn_ );
+					}
+					// IBI -> IBE
+					if ( ib_group == ibe_group_ && ibi_group_ ) {
+						Connect( ibi_group_, mg.ant_group_indices_, ibe_group_, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
+						Connect( ibi_group_, mg.related_group_indices_, ibe_group_, mgi, par, pn, &mg.pn_ );
+					}
+				}
 			}
 
 			if ( pm_group_ ) {
 				// IB -> PM
 				for ( uint32 smgi = 0; smgi < muscle_groups_.size(); ++smgi ) {
-					if ( mg.side_ == muscle_groups_[ smgi ].side_ )
-						Connect( ib_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_ );
+					if ( mg.side_ == muscle_groups_[ smgi ].side_ ) {
+						if ( ib_group_ )
+							Connect( ib_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_ );
+						if ( ibi_group_ )
+							Connect( ibi_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_ );
+						if ( ibe_group_ )
+							Connect( ibe_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_ );
+					}
 				}
 				// VES -> PM
 				if ( ves_group_ && pn.has_key( "VES_PM_weight" ) )
@@ -205,6 +232,10 @@ namespace scone
 			// connect IBIN to group members
 			if ( ib_group_ )
 				Connect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			if ( ibi_group_ )
+				Connect( ibi_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			if ( ibe_group_ )
+				Connect( ibe_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// CPG -> MN
 			if ( cpg_group_ )
@@ -302,15 +333,15 @@ namespace scone
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
-	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2 )
+	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffix )
 	{
-		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, "_weight" );
+		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, suffix );
 		return Connect( sgid, sidx, tgid, tidx, par, par_pn, 1 );
 	}
 
-	void SpinalController::Connect( group_id sgid, const index_vec& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2 )
+	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffix )
 	{
-		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, "_weight" );
+		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, suffix );
 		for ( auto sidx : sidxvec )
 			Connect( sgid, sidx, tgid, tidx, par, par_pn, sidxvec.size() );
 	}
@@ -370,13 +401,21 @@ namespace scone
 		return it->second;
 	}
 
-	const PropNode& SpinalController::GetWeightParPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const string& suffix ) const
+	const PropNode& SpinalController::GetWeightParPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffixes ) const
 	{
-		auto par_info_name = GroupName( sgid ) + '_' + GroupName( tgid ) + suffix;
-		if ( pn2 )
-			if ( auto* par_pn = pn2->try_get_child( par_info_name ) )
+		for ( const auto& suffix : suffixes ) {
+			string par_info_name = string( GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix );
+			if ( pn2 )
+				if ( auto* par_pn = pn2->try_get_child( par_info_name ) )
+					return *par_pn;
+			if ( auto* par_pn = pn.try_get_child( par_info_name ) )
 				return *par_pn;
-		return pn.get_child( par_info_name );
+		}
+
+		string error = "Could not find any of these properties:";
+		for ( const auto& suffix : suffixes )
+			error += string( "\n" + GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix );
+		SCONE_ERROR( error );
 	}
 
 	string SpinalController::GetParName( const string& src, const string& trg ) const
