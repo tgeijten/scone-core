@@ -281,7 +281,16 @@ namespace scone
 		return false;
 	}
 
-	String SpinalController::GetClassSignature() const { return stringf( "SN%d", network_.neurons_.size() ); }
+	String SpinalController::GetClassSignature() const {
+		auto str = stringf( "SN%d", network_.neurons_.size() );
+		if ( ia_group_ ) str += 'A';
+		if ( ib_group_ || ibe_group_ || ibi_group_ ) str += 'B';
+		if ( pm_group_ ) str += 'P';
+		if ( rc_group_ ) str += 'R';
+		if ( load_group_ ) str += 'L';
+		if ( ves_group_ ) str += 'V';
+		return str;
+	}
 
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Real bias )
 	{
