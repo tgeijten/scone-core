@@ -37,6 +37,7 @@ namespace scone
 		bool use_muscle_activation;
 		Real muscle_activation_rate_;
 		Real muscle_deactivation_rate_;
+		Real fixed_control_step_size;
 
 		virtual void AdvanceSimulationTo( Model& m, TimeInSeconds t ) const override;
 		virtual TimeInSeconds GetDuration() const override;
@@ -47,5 +48,7 @@ namespace scone
 		Storage<> storage_;
 		std::vector<index_t> state_channels_;
 		xo::flat_map< index_t, index_t > muscle_excitation_map_;
+		std::vector<std::vector<Real>> state_storage_;
+		std::vector<index_t> storage_indices_;
 	};
 }

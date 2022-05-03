@@ -54,7 +54,8 @@ namespace scone
 		INIT_MEMBER( pn, use_squared_error, false ),
 		INIT_MEMBER( pn, use_muscle_activation, false ),
 		INIT_MEMBER( pn, muscle_activation_rate_, 100.0 ),
-		INIT_MEMBER( pn, muscle_deactivation_rate_, 25.0 )
+		INIT_MEMBER( pn, muscle_deactivation_rate_, 25.0 ),
+		INIT_MEMBER( pn, fixed_control_step_size, 0.005 )
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
@@ -90,6 +91,25 @@ namespace scone
 				else log::warning( "Could not find excitation channel for ", name, " in ", file );
 			}
 		}
+
+		// extract channels to state buffer to prevent copying the same data every time
+		// this *should* make AdvanceSimulationTo() faster because it would copy the same data every time
+		// in practice, the speed gain is minimal, unfortunately
+		auto frame_count = xo::round_cast<size_t>( stop_time / fixed_control_step_size ) + 1;
+		state_storage_.reserve( frame_count );
+		storage_indices_.reserve( frame_count );
+		for ( TimeInSeconds t = 0.0; t < stop_time; t += fixed_control_step_size )
+		{
+			auto state_storage_idx = xo::round_cast<index_t>( t / fixed_control_step_size );
+			SCONE_ASSERT( state_storage_idx == state_storage_.size() );
+			auto frame_idx = storage_.GetClosestFrameIndex( t );
+			storage_indices_.emplace_back( frame_idx );
+			const auto& f = storage_.GetFrame( frame_idx );
+
+			auto& state_values = state_storage_.emplace_back( state_channels_.size() );
+			for ( index_t state_idx = 0; state_idx < state_channels_.size(); ++state_idx )
+				state_values[ state_idx ] = f.GetValues()[ state_channels_[ state_idx ] ];
+		}
 	}
 
 	ReplicationObjective::~ReplicationObjective()
@@ -98,6 +118,7 @@ namespace scone
 	void ReplicationObjective::AdvanceSimulationTo( Model& model, TimeInSeconds end_time ) const
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
+		SCONE_ASSERT( model.fixed_control_step_size == fixed_control_step_size );
 
 		const bool store_data = model.GetStoreData() || !model.GetData().IsEmpty();
 		const bool first_frame = !model.GetUserData().has_key( "RPL_err" );
@@ -130,16 +151,19 @@ namespace scone
 		auto t = model.GetTime() == 0.0 ? 0.0 : model.GetTime() + model.fixed_control_step_size;
 		while ( t < end_time && !model.HasSimulationEnded() )
 		{
-			const auto dt = model.fixed_control_step_size;
-
+#if 1 // set to 0 to disable this optimization
+			auto state_storage_idx = xo::round_cast<index_t>( t / fixed_control_step_size );
+			const auto& f = storage_.GetFrame( storage_indices_[ state_storage_idx ] );
+			model.AdvancePlayback( state_storage_[ state_storage_idx ], t );
+#else
 			const auto& f = storage_.GetClosestFrame( t );
 			for ( index_t state_idx = 0; state_idx < state_channels_.size(); ++state_idx )
 				state_values[ state_idx ] = f.GetValues()[ state_channels_[ state_idx ] ];
-
 			model.AdvancePlayback( state_values, t );
+#endif
 
 			// update activations based on computed excitations
-			auto a0 = activations[ 0 ];
+			const auto dt = model.fixed_control_step_size;
 			if ( t > 0.0 )
 			{
 				double cd = muscle_deactivation_rate_;
@@ -186,7 +210,6 @@ namespace scone
 			}
 
 			t += model.fixed_control_step_size;
-
 			if ( stop_time != 0 && t > stop_time )
 				model.RequestTermination();
 		}
