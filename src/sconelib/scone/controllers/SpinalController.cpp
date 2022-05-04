@@ -410,16 +410,21 @@ namespace scone
 		return it->second;
 	}
 
+	const PropNode* SpinalController::TryFindParPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const
+	{
+		if ( pn2 )
+			if ( auto* par_pn = pn2->try_get_child( name ) )
+				return par_pn;
+		if ( auto* par_pn = pn.try_get_child( name ) )
+			return par_pn;
+		return nullptr;
+	}
+
 	const PropNode& SpinalController::GetWeightParPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffixes ) const
 	{
-		for ( const auto& suffix : suffixes ) {
-			string par_info_name = string( GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix );
-			if ( pn2 )
-				if ( auto* par_pn = pn2->try_get_child( par_info_name ) )
-					return *par_pn;
-			if ( auto* par_pn = pn.try_get_child( par_info_name ) )
+		for ( const auto& suffix : suffixes )
+			if ( auto* par_pn = TryFindParPropNode( ( GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix ), pn, pn2 ) )
 				return *par_pn;
-		}
 
 		string error = "Could not find any of these properties:";
 		for ( const auto& suffix : suffixes )

@@ -67,6 +67,7 @@ namespace scone
 		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
 		const string& GetNeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
 		Side GetNeuronSide( snel::group_id gid, xo::uint32 idx ) const { return GetSideFromName( GetNeuronName( gid, idx ) ); }
+		const PropNode* TryFindParPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const;
 		const PropNode& GetWeightParPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffix ) const;
 		string GetParName( const string& src, const string& trg ) const;
 
