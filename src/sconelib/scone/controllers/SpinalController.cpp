@@ -81,17 +81,17 @@ namespace scone
 				Connect( cpg_group_, ext_idx, cpg_group_, flex_idx, par, pn, nullptr );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( muscles_[ mi ].side_ == side ) {
-						if ( flex_pat.match( GetNeuronName( l_group_, mi ) ) )
+						if ( flex_pat.match( NeuronName( l_group_, mi ) ) )
 							Connect( l_group_, mi, cpg_group_, flex_idx, par, pn, nullptr );
-						if ( flex_pat.match( GetNeuronName( f_group_, mi ) ) )
+						if ( flex_pat.match( NeuronName( f_group_, mi ) ) )
 							Connect( f_group_, mi, cpg_group_, flex_idx, par, pn, nullptr );
 					}
 				Connect( cpg_group_, flex_idx, cpg_group_, ext_idx, par, pn, nullptr );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( muscles_[ mi ].side_ == side ) {
-						if ( ext_pat.match( GetNeuronName( l_group_, mi ) ) )
+						if ( ext_pat.match( NeuronName( l_group_, mi ) ) )
 							Connect( l_group_, mi, cpg_group_, ext_idx, par, pn, nullptr );
-						if ( ext_pat.match( GetNeuronName( f_group_, mi ) ) )
+						if ( ext_pat.match( NeuronName( f_group_, mi ) ) )
 							Connect( f_group_, mi, cpg_group_, ext_idx, par, pn, nullptr );
 					}
 			}
@@ -129,6 +129,8 @@ namespace scone
 		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
+			SCONE_ASSERT( mg.contra_group_index_ < muscle_groups_.size() );
+			auto& contra_mg = muscle_groups_[ mg.contra_group_index_ ];
 
 			// IA interneurons
 			if ( ia_group_ ) {
@@ -139,7 +141,7 @@ namespace scone
 			// VES -> IA
 			if ( ves_group_ && pn.has_key( "VES_IA_weight" ) )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-					if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+					if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
 			// Load -> IA
 			if ( load_group_ && pn.has_key( "LD_IA_weight" ) )
@@ -148,7 +150,7 @@ namespace scone
 			// CPG -> IA
 			if ( cpg_group_ )
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
-					if ( GetNeuronSide( cpg_group_, ci ) == mg.side_ )
+					if ( NeuronSide( cpg_group_, ci ) == mg.side_ )
 						Connect( cpg_group_, ci, ia_group_, mgi, par, pn, &mg.pn_ );
 			// IB -> IA
 			if ( pn.has_key( "IB_IA_weight" ) )
@@ -177,22 +179,26 @@ namespace scone
 					// VES -> IB
 					if ( ves_group_ && pn.has_key( "VES" + group_suffix ) )
 						for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-							if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+							if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 								Connect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
-					// IB -> IB
+					// IB -> IB / IBE -> IBE / IBI -> IBI
 					if ( pn.has_key( GroupName( ib_group ) + group_suffix ) ) {
 						Connect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
 						Connect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+						if ( pn.has_key( PropNodeName( ib_group, ib_group, "_com_weight" ) ) ) 
+							Connect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, { "_com_weight" } );
+						if ( pn.has_key( PropNodeName( ib_group, ib_group, "_com_ant_weight" ) ) )
+							Connect( ib_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_com_ant_weight" } );
 					}
-					// IBE -> IBI
-					if ( ib_group == ibi_group_ && ibe_group_ ) {
-						Connect( ibe_group_, mg.ant_group_indices_, ibi_group_, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
-						Connect( ibe_group_, mg.related_group_indices_, ibi_group_, mgi, par, pn, &mg.pn_ );
-					}
-					// IBI -> IBE
-					if ( ib_group == ibe_group_ && ibi_group_ ) {
-						Connect( ibi_group_, mg.ant_group_indices_, ibe_group_, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
-						Connect( ibi_group_, mg.related_group_indices_, ibe_group_, mgi, par, pn, &mg.pn_ );
+					// IBE -> IBI / IBI -> IBE
+					if ( ib_group == ibi_group_ || ib_group == ibe_group_ && ibi_group_ && ibe_group_ ) {
+						auto src_group = ( ib_group == ibi_group_ ) ? ibe_group_ : ibi_group_;
+						Connect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
+						Connect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+						if ( pn.has_key( PropNodeName( src_group, ib_group, "_com_weight" ) ) ) 
+							Connect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, { "_com_weight" } );
+						if ( pn.has_key( PropNodeName( src_group, ib_group, "_com_ant_weight" ) ) )
+							Connect( src_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_com_ant_weight" } );
 					}
 				}
 			}
@@ -212,7 +218,7 @@ namespace scone
 				// VES -> PM
 				if ( ves_group_ && pn.has_key( "VES_PM_weight" ) )
 					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-						if ( GetNeuronSide( ves_group_, vi ) == mg.side_ )
+						if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 							Connect( ves_group_, vi, pm_group_, mgi, par, pn, &mg.pn_ );
 			}
 		}
@@ -240,7 +246,7 @@ namespace scone
 			// CPG -> MN
 			if ( cpg_group_ )
 				for ( uint32 ci = 0; ci < network_.group_size( cpg_group_ ); ++ci )
-					if ( GetNeuronSide( cpg_group_, ci ) == muscles_[ mi ].side_ )
+					if ( NeuronSide( cpg_group_, ci ) == muscles_[ mi ].side_ )
 						Connect( cpg_group_, ci, mn_group_, mi, par, pn, nullptr );
 
 			// PM -> MN
@@ -337,20 +343,20 @@ namespace scone
 	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& par_pn, size_t size )
 	{
 		SCONE_ASSERT( size > 0 );
-		auto pname = GetParName( GetNeuronName( sgid, sidx ), GetNeuronName( tgid, tidx ) );
+		auto pname = ParName( NeuronName( sgid, sidx ), NeuronName( tgid, tidx ) );
 		auto weight = ( 1.0 / Real( size ) ) * par.get( pname, par_pn );
 		return Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
-	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffix )
+	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix )
 	{
-		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, suffix );
+		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
 		return Connect( sgid, sidx, tgid, tidx, par, par_pn, 1 );
 	}
 
-	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffix )
+	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix )
 	{
-		const PropNode& par_pn = GetWeightParPropNode( sgid, tgid, pn, pn2, suffix );
+		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
 		for ( auto sidx : sidxvec )
 			Connect( sgid, sidx, tgid, tidx, par, par_pn, sidxvec.size() );
 	}
@@ -359,8 +365,9 @@ namespace scone
 	{
 		// setup muscle info
 		for ( auto& mus : model.GetMuscles() )
-			muscles_.emplace_back( mus->GetName(), GetNeuralDelay( *mus ) );
+			muscles_.emplace_back( mus->GetName(), NeuralDelay( *mus ) );
 
+		// create initial muscle groups
 		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
 			for ( auto side : both_sides ) {
 				auto& mg = muscle_groups_.emplace_back( mgpn, side );
@@ -373,6 +380,7 @@ namespace scone
 			}
 		}
 
+		// set muscle group indices
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
 			for ( auto mi : mg.muscle_indices_ )
@@ -387,12 +395,15 @@ namespace scone
 					bool is_antagonist = ( same_side && apat && apat->match( mg_other.name_ ) ) || ( !same_side && cl_apat && cl_apat->match( mg_other.name_ ) );
 					bool is_related = same_side && rpat && rpat->match( mg_other.name_ );
 
+					if ( !same_side && mg.name_ == mg_other.name_ )
+						mg.contra_group_index_ = mgi_other;
+
 					if ( is_antagonist ) {
 						mg.ant_group_indices_.emplace_back( mgi_other );
 						for ( auto mi : mg.muscle_indices_ )
 							muscles_[ mi ].ant_group_indices_.insert( mgi_other );
 					}
-					else if ( is_related )
+					if ( is_related )
 						mg.related_group_indices_.emplace_back( mgi_other );
 				}
 			}
@@ -403,14 +414,14 @@ namespace scone
 				log::warning( m.name_, " is not part of any MuscleGroup" );
 	}
 
-	TimeInSeconds SpinalController::GetNeuralDelay( const Muscle& m ) const
+	TimeInSeconds SpinalController::NeuralDelay( const Muscle& m ) const
 	{
 		auto it = neural_delays_.find( MuscleId( m.GetName() ).base_ );
 		SCONE_ERROR_IF( it == neural_delays_.end(), "Could not find neural delay for " + m.GetName() );
 		return it->second;
 	}
 
-	const PropNode* SpinalController::TryFindParPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const
+	const PropNode* SpinalController::TryGetPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const
 	{
 		if ( pn2 )
 			if ( auto* par_pn = pn2->try_get_child( name ) )
@@ -420,10 +431,10 @@ namespace scone
 		return nullptr;
 	}
 
-	const PropNode& SpinalController::GetWeightParPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const StringViewVec& suffixes ) const
+	const PropNode& SpinalController::GetPropNode( group_id sgid, group_id tgid, const PropNode& pn, const PropNode* pn2, const StrVec& suffixes ) const
 	{
 		for ( const auto& suffix : suffixes )
-			if ( auto* par_pn = TryFindParPropNode( ( GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix ), pn, pn2 ) )
+			if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
 				return *par_pn;
 
 		string error = "Could not find any of these properties:";
@@ -432,7 +443,7 @@ namespace scone
 		SCONE_ERROR( error );
 	}
 
-	string SpinalController::GetParName( const string& src, const string& trg ) const
+	string SpinalController::ParName( const string& src, const string& trg ) const
 	{
 		if ( GetSideFromName( src ) == GetSideFromName( trg ) )
 			return GetNameNoSide( trg ) + "-" + GetNameNoSide( src );
