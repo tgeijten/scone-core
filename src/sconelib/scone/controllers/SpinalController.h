@@ -51,17 +51,17 @@ namespace scone
 		String GetClassSignature() const override;
 
 	private:
-		using StrVec = std::vector<const char*>;
 		xo::uint32 AddNeuron( snel::group_id group, const String& name, Real bias );
 		xo::uint32 AddNeuron( snel::group_id group, const String& name, const PropNode& pn, Params& par );
 		snel::group_id AddNeuronGroup( const String& name, const PropNode& pn );
 		snel::group_id AddInputNeuronGroup( const String& name );
 		snel::group_id AddMuscleGroupNeurons( String name, const PropNode& pn, Params& par );
 
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& par_pn, size_t size );
-		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix = { "_weight" } );
-		void Connect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix = { "_weight" } );
+		void Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Real weight );
+		void Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& par_pn, size_t size );
+		void Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
+		void Connect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
+		void TryConnect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
 		void TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
 
 		void InitMuscleInfo( const PropNode& pn, Model& model );
@@ -70,7 +70,7 @@ namespace scone
 		const string& NeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
 		Side NeuronSide( snel::group_id gid, xo::uint32 idx ) const { return GetSideFromName( NeuronName( gid, idx ) ); }
 		const PropNode* TryGetPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const;
-		const PropNode& GetPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const StrVec& suffix ) const;
+		const PropNode& GetPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const char* suffix ) const;
 		string ParName( const string& src, const string& trg ) const;
 		string PropNodeName( snel::group_id sgid, snel::group_id tgid, const char* suffix ) const {
 			return GroupName( sgid ) + "_" + GroupName( tgid ) + suffix;

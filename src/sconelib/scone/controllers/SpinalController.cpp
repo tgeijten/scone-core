@@ -170,8 +170,7 @@ namespace scone
 					auto group_suffix = "_" + GroupName( ib_group ) + "_weight";
 					// F+L -> IB
 					Connect( f_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
-					if ( pn.has_key( "L" + group_suffix ) )
-						Connect( l_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
+					TryConnect( l_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
 					// LD -> IB
 					if ( load_group_ && pn.has_key( "LD" + group_suffix ) )
 						for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
@@ -182,23 +181,18 @@ namespace scone
 							if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 								Connect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
 					// IB -> IB / IBE -> IBE / IBI -> IBI
-					if ( pn.has_key( GroupName( ib_group ) + group_suffix ) ) {
-						Connect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
-						Connect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_ );
-						if ( pn.has_key( PropNodeName( ib_group, ib_group, "_com_weight" ) ) ) 
-							Connect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, { "_com_weight" } );
-						if ( pn.has_key( PropNodeName( ib_group, ib_group, "_com_ant_weight" ) ) )
-							Connect( ib_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_com_ant_weight" } );
-					}
+					TryConnect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
+					TryConnect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
+					TryConnect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
+					TryConnect( ib_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+
 					// IBE -> IBI / IBI -> IBE
 					if ( ib_group == ibi_group_ || ib_group == ibe_group_ && ibi_group_ && ibe_group_ ) {
 						auto src_group = ( ib_group == ibi_group_ ) ? ibe_group_ : ibi_group_;
-						Connect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_ant_weight", "_weight" } );
-						Connect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_ );
-						if ( pn.has_key( PropNodeName( src_group, ib_group, "_com_weight" ) ) ) 
-							Connect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, { "_com_weight" } );
-						if ( pn.has_key( PropNodeName( src_group, ib_group, "_com_ant_weight" ) ) )
-							Connect( src_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, { "_com_ant_weight" } );
+						TryConnect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
+						TryConnect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
+						TryConnect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
+						TryConnect( src_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
 					}
 				}
 			}
@@ -324,30 +318,36 @@ namespace scone
 		return gid;
 	}
 
-	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Real weight )
+	void SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Real weight )
 	{
-		return network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
+		network_.connect( sgid, sidx, tgid, tidx, snel::real( weight ) );
 	}
 
-	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& par_pn, size_t size )
+	void SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& par_pn, size_t size )
 	{
 		SCONE_ASSERT( size > 0 );
 		auto pname = ParName( NeuronName( sgid, sidx ), NeuronName( tgid, tidx ) );
 		auto weight = ( 1.0 / Real( size ) ) * par.get( pname, par_pn );
-		return Connect( sgid, sidx, tgid, tidx, weight );
+		Connect( sgid, sidx, tgid, tidx, weight );
 	}
 
-	link_id SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix )
+	void SpinalController::Connect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
 	{
 		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
-		return Connect( sgid, sidx, tgid, tidx, par, par_pn, 1 );
+		Connect( sgid, sidx, tgid, tidx, par, par_pn, 1 );
 	}
 
-	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix )
+	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
 	{
 		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
 		for ( auto sidx : sidxvec )
 			Connect( sgid, sidx, tgid, tidx, par, par_pn, sidxvec.size() );
+	}
+
+	void SpinalController::TryConnect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
+	{
+		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
+			Connect( sgid, sidx, tgid, tidx, par, *par_pn, 1 );
 	}
 
 	void SpinalController::TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
@@ -427,16 +427,11 @@ namespace scone
 		return nullptr;
 	}
 
-	const PropNode& SpinalController::GetPropNode( group_id sgid, group_id tgid, const PropNode& pn, const PropNode* pn2, const StrVec& suffixes ) const
+	const PropNode& SpinalController::GetPropNode( group_id sgid, group_id tgid, const PropNode& pn, const PropNode* pn2, const char* suffix ) const
 	{
-		for ( const auto& suffix : suffixes )
-			if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
-				return *par_pn;
-
-		string error = "Could not find any of these properties:";
-		for ( const auto& suffix : suffixes )
-			error += string( "\n" + GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix );
-		SCONE_ERROR( error );
+		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
+			return *par_pn;
+		SCONE_ERROR( string( "\n" + GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix ) );
 	}
 
 	string SpinalController::ParName( const string& src, const string& trg ) const
