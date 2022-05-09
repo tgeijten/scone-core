@@ -59,9 +59,11 @@ namespace scone
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
-		signature += "RPL";
-		if ( use_muscle_activation ) signature += "A";
-		if ( use_squared_error ) signature += "S";
+		if ( signature_postfix.empty() ) {
+			signature_postfix = "RPL";
+			if ( use_muscle_activation ) signature_postfix += "A";
+			if ( use_squared_error ) signature_postfix += "S";
+		}
 
 		// prepare data
 		ReadStorageSto( storage_, file );
