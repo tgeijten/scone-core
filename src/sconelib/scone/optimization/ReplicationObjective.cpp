@@ -59,15 +59,18 @@ namespace scone
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 
-		if ( signature_postfix.empty() ) {
-			signature_postfix = "RPL";
-			if ( use_muscle_activation ) signature_postfix += "A";
-			if ( use_squared_error ) signature_postfix += "S";
-		}
+		signature += "RPL";
+		if ( use_muscle_activation ) signature += "A";
+		if ( use_squared_error ) signature += "S";
 
 		// prepare data
 		ReadStorageSto( storage_, file );
 		AddExternalResource( file );
+
+		SCONE_THROW_IF( storage_.IsEmpty(), file.str() + " contains no data" );
+		if ( stop_time == 0 || stop_time > storage_.Back().GetTime() )
+			stop_time = storage_.Back().GetTime();
+		SCONE_THROW_IF( start_time >= stop_time, "start_time must be smaller than stop_time" );
 
 		// map data
 		auto& state = model_->GetState();
@@ -153,6 +156,7 @@ namespace scone
 		{
 #if 1 // set to 0 to disable this optimization
 			auto state_storage_idx = xo::round_cast<index_t>( t / fixed_control_step_size );
+			SCONE_ASSERT( state_storage_idx < storage_indices_.size() );
 			const auto& f = storage_.GetFrame( storage_indices_[ state_storage_idx ] );
 			model.AdvancePlayback( state_storage_[ state_storage_idx ], t );
 #else
