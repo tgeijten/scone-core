@@ -86,10 +86,10 @@ namespace scone
 		return xo::dot_product( body_.GetOrientation() * dir_, xo::rotation_vector_from_quat( xo::normalized_fast( body_.GetOrientation() ) ) );
 	}
 
-	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side ) :
-		body_( body ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedName( body_.GetName() + postfix, side ) + ".BAV" ) {}
+	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :
+		body_( body ), scale_( scale ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedName( body_.GetName() + postfix, side ) + ".BAV" ) {}
 	Real BodyAngularVelocitySensor::GetValue() const {
-		return xo::dot_product( body_.GetOrientation() * dir_, body_.GetAngVel() );
+		return scale_ * xo::dot_product( body_.GetOrientation() * dir_, body_.GetAngVel() );
 	}
 
 	BodyOriVelSensor::BodyOriVelSensor( const Body& body, const Vec3& dir, double kv, const String& postfix, Side side, double target ) :

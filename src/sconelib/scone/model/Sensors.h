@@ -185,10 +185,11 @@ namespace scone
 
 	struct SCONE_API BodyAngularVelocitySensor : public Sensor
 	{
-		BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side );
+		BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale = 1.0 );
 		virtual String GetName() const override { return name_; }
 		virtual Real GetValue() const override;
 		const Body& body_;
+		const double scale_;
 		const Vec3 dir_;
 		const String name_;
 	};

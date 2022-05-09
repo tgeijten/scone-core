@@ -50,11 +50,24 @@ namespace scone
 		if ( auto* ves_pn = pn.try_get_child( "VES" ) ) {
 			ves_group_ = AddInputNeuronGroup( "VES" );
 			const auto& body = *FindByName( model.GetBodies(), ves_pn->get_str( "body" ) );
+			ves_use_orivel_ = ves_pn->get<bool>( "use_orivel", true );
+			ves_vel_gain_ = ves_pn->get<Real>( "vel_gain", 0.2 );
+			auto ves_delay = ves_pn->get<Real>( "delay" );
 			for ( int axis = planar ? 2 : 0; axis < 3; ++axis ) {
 				for ( auto side : both_sides ) {
-					auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( axis ), 0.2, axis_names[ axis ], side, 0.0 );
-					ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_pn->get<Real>( "delay" ) ) );
-					AddNeuron( ves_group_, axis_names[ axis ] + GetSideName( side ), 0.0 );
+					if ( ves_use_orivel_ ) {
+						auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( axis ), ves_vel_gain_, axis_names[ axis ], side, 0.0 );
+						ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_delay ) );
+						AddNeuron( ves_group_, axis_names[ axis ] + GetSideName( side ), 0.0 );
+					}
+					else {
+						auto& bp = model.AcquireSensor<BodyOrientationSensor>( body, Vec3::axis( axis ), axis_names[ axis ], side );
+						ves_sensors_.push_back( model.GetDelayedSensor( bp, ves_delay ) );
+						AddNeuron( ves_group_, string( "p" ) + axis_names[ axis ] + GetSideName( side ), 0.0 );
+						auto& bv = model.AcquireSensor<BodyAngularVelocitySensor>( body, Vec3::axis( axis ), axis_names[ axis ], side, ves_vel_gain_ );
+						ves_sensors_.push_back( model.GetDelayedSensor( bv, ves_delay ) );
+						AddNeuron( ves_group_, string( "v" ) + axis_names[ axis ] + GetSideName( side ), 0.0 );
+					}
 				}
 			}
 		}

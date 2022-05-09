@@ -85,6 +85,8 @@ namespace scone
 		snel::network network_;
 		snel::group_id l_group_, f_group_, ves_group_, load_group_;
 		snel::group_id ia_group_, ib_group_, ibi_group_, ibe_group_, cpg_group_, pm_group_, mn_group_, rc_group_;
+		bool ves_use_orivel_;
+		Real ves_vel_gain_;
 		Real l_bias_;
 		std::vector<DelayedSensorValue> l_sensors_;
 		std::vector<DelayedSensorValue> f_sensors_;
