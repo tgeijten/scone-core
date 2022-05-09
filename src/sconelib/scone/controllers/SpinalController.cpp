@@ -287,17 +287,6 @@ namespace scone
 		return false;
 	}
 
-	String SpinalController::GetClassSignature() const {
-		auto str = stringf( "SN%d", network_.neurons_.size() );
-		if ( ia_group_ ) str += 'A';
-		if ( ib_group_ || ibe_group_ || ibi_group_ ) str += 'B';
-		if ( pm_group_ ) str += 'P';
-		if ( rc_group_ ) str += 'R';
-		if ( load_group_ ) str += 'L';
-		if ( ves_group_ ) str += 'V';
-		return str;
-	}
-
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Real bias )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
@@ -359,6 +348,13 @@ namespace scone
 		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
 		for ( auto sidx : sidxvec )
 			Connect( sgid, sidx, tgid, tidx, par, par_pn, sidxvec.size() );
+	}
+
+	void SpinalController::TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
+	{
+		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
+			for ( auto sidx : sidxvec )
+				Connect( sgid, sidx, tgid, tidx, par, *par_pn, sidxvec.size() );
 	}
 
 	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model )
@@ -464,8 +460,22 @@ namespace scone
 		}
 	}
 
+	String SpinalController::GetClassSignature() const {
+		String str;
+		if ( ia_group_ ) str += 'A';
+		if ( ib_group_ || ibe_group_ || ibi_group_ ) str += 'B';
+		if ( pm_group_ ) str += 'P';
+		if ( rc_group_ ) str += 'R';
+		if ( load_group_ ) str += 'L';
+		if ( ves_group_ ) str += 'V';
+		str += stringf( "-%d-%d", network_.neuron_count(), network_.link_count() );
+		return str;
+	}
+
 	PropNode SpinalController::GetInfo() const {
 		PropNode pn;
+		pn[ "neurons" ] = network_.neuron_count();
+		pn[ "links" ] = network_.link_count();
 		auto& muscles_pn = pn.add_child( "Muscles" );
 		for ( auto& m : muscles_ ) {
 			auto& mpn = muscles_pn.add_child( m.name_ );

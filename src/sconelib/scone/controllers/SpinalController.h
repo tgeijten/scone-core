@@ -62,6 +62,7 @@ namespace scone
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& par_pn, size_t size );
 		snel::link_id Connect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix = { "_weight" } );
 		void Connect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const StrVec& suffix = { "_weight" } );
+		void TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
 
 		void InitMuscleInfo( const PropNode& pn, Model& model );
 		TimeInSeconds NeuralDelay( const Muscle& m ) const;
