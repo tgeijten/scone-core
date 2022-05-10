@@ -28,6 +28,8 @@ namespace scone
 		Vec3 axis;
 		/// Name of the axis, should be provided when using multiple; default = ""
 		String axis_name;
+		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
+		bool mirror_left;
 
 		/// Target orientation [rad]; default = 0.
 		Real P0;
@@ -51,6 +53,7 @@ namespace scone
 	private:
 		Real u_p;
 		Real u_v;
+		bool m_Mirror;
 		Body& m_SourceBody;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;
