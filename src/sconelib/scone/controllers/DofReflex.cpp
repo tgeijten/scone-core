@@ -20,8 +20,10 @@ namespace scone
 		Reflex( props, par, model, loc ),
 		INIT_MEMBER_REQUIRED( props, source ),
 		INIT_MEMBER( props, source_parent, "" ),
+		INIT_MEMBER( props, mirror_left, false ),
 		m_SourceDof( *FindByNameTrySided( model.GetDofs(), source, loc.side_ ) ),
 		m_SourceParentDof( !source_parent.empty() ? &*FindByNameTrySided( model.GetDofs(), source_parent, loc.side_ ) : nullptr ),
+		m_Mirror( mirror_left && loc.GetSide() == Side::Left ),
 		m_pTargetPosSource( nullptr ),
 		m_DelayedPos( model.AcquireDelayedSensor< DofPositionSensor >( m_SourceDof, m_SourceParentDof ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< DofVelocitySensor >( m_SourceDof, m_SourceParentDof ) )
@@ -56,8 +58,12 @@ namespace scone
 		Real pos = m_DelayedPos.GetValue( delay );
 		Real vel = m_DelayedVel.GetValue( delay );
 
-		if ( filter_cutoff_frequency != 0.0 )
-		{
+		if ( m_Mirror ) {
+			pos = -pos;
+			vel = -vel;
+		}
+
+		if ( filter_cutoff_frequency != 0.0 ) {
 			pos = m_Filter( pos );
 			vel = m_Filter.velocity();
 		}

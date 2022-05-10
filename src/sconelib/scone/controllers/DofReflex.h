@@ -29,6 +29,9 @@ namespace scone
 		/// Optional name of the parent of the source DOF, which when defined will be added to source; default = "".
 		String source_parent;
 
+		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
+		bool mirror_left;
+
 		/// Target position [rad or m] for sensor DOF; default = 0.
 		Real P0; 
 		/// Position feedback gain; default = 0.
@@ -59,6 +62,7 @@ namespace scone
 		Real u_v;
 		Dof& m_SourceDof;
 		Dof* m_SourceParentDof;
+		Real m_Mirror;
 		SensorDelayAdapter* m_pTargetPosSource;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;
