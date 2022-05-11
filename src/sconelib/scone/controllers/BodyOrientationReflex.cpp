@@ -23,7 +23,7 @@ namespace scone
 		INIT_MEMBER( pn, axis_name, "" ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		m_Mirror( mirror_left && loc.side_ == Side::Left ),
-		m_SourceBody( *FindByNameTrySided( model.GetBodies(), source, loc.side_ ) ),
+		m_SourceBody( *FindByLocation( model.GetBodies(), source, loc ) ),
 		m_DelayedPos( model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyAngularVelocitySensor >( m_SourceBody, axis, axis_name, loc.side_ ) )
 	{
