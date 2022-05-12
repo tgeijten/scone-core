@@ -68,6 +68,9 @@ namespace scone
 		/// Bool indicating if control parameters should be the same for left and right; default = true.
 		bool symmetric;
 
+		/// Use omnidirectional control, not restricted to movent along the x-axis; default = 0.
+		bool omnidirectional;
+
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;

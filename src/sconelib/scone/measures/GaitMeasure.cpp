@@ -15,6 +15,7 @@
 #include "scone/core/Range.h"
 #include "xo/container/sorted_vector.h"
 #include "xo/container/container_algorithms.h"
+#include "xo/geometry/dynvec.h"
 
 namespace scone
 {
@@ -28,6 +29,12 @@ namespace scone
 		INIT_PROP( props, min_step_duration, 0.1 );
 		INIT_PROP( props, initiation_steps, 2 );
 		INIT_PROP( props, base_bodies, "" );
+		INIT_PROP( props, direction, Vec3::unit_x() );
+		INIT_PROP( props, use_initial_heading, false );
+
+		if ( use_initial_heading && model.GetRootBody() )
+			direction = xo::projected_xz( model.GetRootBody()->GetOrientation() * Vec3::unit_x() );
+		xo::normalize( direction );
 
 		if ( !base_bodies.empty() )
 		{
@@ -139,9 +146,9 @@ namespace scone
 		SCONE_ASSERT( m_BaseBodies.size() >= 2 );
 		xo::sorted_vector< double > distances;
 		distances.reserve( 3 );
-		distances.insert( model.GetComPos().x );
-		distances.insert( m_BaseBodies[ 0 ]->GetComPos().x );
-		distances.insert( m_BaseBodies[ 1 ]->GetComPos().x );
+		distances.insert( xo::dot_product( direction, model.GetComPos() ) );
+		distances.insert( xo::dot_product( direction, m_BaseBodies[ 0 ]->GetComPos() ) );
+		distances.insert( xo::dot_product( direction, m_BaseBodies[ 1 ]->GetComPos() ) );
 		return ( distances[ 0 ] + distances[ 1 ] ) / 2;
 	}
 

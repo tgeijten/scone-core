@@ -17,6 +17,7 @@
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/core/Factories.h"
 #include "scone/model/Sensors.h"
+#include "xo/geometry/dynvec.h"
 
 namespace scone
 {
@@ -56,7 +57,8 @@ namespace scone
 		INIT_MEMBER( props, leg_load_sensor_delay, 0.0 ),
 		stance_load_threshold( 0 ), // not used internally, only for documentation purpose
 		swing_load_threshold( 0 ), // not used internally, only for documentation purpose
-		INIT_MEMBER( props, symmetric, true )
+		INIT_MEMBER( props, symmetric, true ),
+		INIT_MEMBER( props, omnidirectional, false )
 	{
 		// show a helpful error message when no legs are defined
 		if ( model.GetLegs().empty() )
@@ -122,7 +124,6 @@ namespace scone
 				}
 			}
 		}
-		//log::trace( "Controller created" );
 	}
 
 	GaitStateController::~GaitStateController()
@@ -163,8 +164,16 @@ namespace scone
 			ls.leg_load = ls.load_sensor.GetValue( leg_load_sensor_delay );
 			ls.allow_stance_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) > ls.stance_load_threshold;
 			ls.allow_swing_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) <= ls.swing_load_threshold;
-			ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - ls.leg.GetBaseBody().GetComPos().x;
-			ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - ls.leg.GetBaseBody().GetComPos().z;
+			if ( omnidirectional && model.GetRootBody() ) {
+				auto& root_ori = model.GetRootBody()->GetOrientation();
+				Vec3 sag_dir = root_ori * Vec3::unit_x(), cor_dir = root_ori * Vec3::unit_z();
+				ls.sagittal_pos = xo::dot_product( sag_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
+				ls.coronal_pos = xo::dot_product( cor_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
+			}
+			else {
+				ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - ls.leg.GetBaseBody().GetComPos().x;
+				ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - ls.leg.GetBaseBody().GetComPos().z;
+			}
 			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length * ls.late_stance_threshold;
 			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length * ls.liftoff_threshold;
 			ls.allow_landing_transition = ls.sagittal_pos > ls.leg_length * ls.landing_threshold;

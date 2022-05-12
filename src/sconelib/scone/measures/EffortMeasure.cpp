@@ -39,6 +39,7 @@ namespace scone
 		INIT_PROP( props, use_symmetric_fiber_ratios, true );
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
+		INIT_PROP( props, omnidirectional, false );
 		if ( name.empty() )
 			name = m_MeasureNames.GetString( measure_type );
 
@@ -77,7 +78,8 @@ namespace scone
 		if ( use_cost_of_transport )
 		{
 			auto tot_effort = m_Effort.GetTotal();
-			double distance = std::max( min_distance, model.GetComPos().x - m_InitComPos.x );
+			auto delta_com = model.GetComPos() - m_InitComPos;
+			double distance = std::max( min_distance, omnidirectional ? xo::length( delta_com ) : delta_com.x );
 			GetReport().set( "effort", tot_effort );
 			GetReport().set( "distance", distance );
 			result = tot_effort / ( model.GetMass() * distance );

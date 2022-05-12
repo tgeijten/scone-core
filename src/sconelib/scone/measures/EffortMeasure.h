@@ -69,6 +69,9 @@ namespace scone
 		/// Divide result by number of muscles, useful for muscle activation measures; default = false.
 		bool use_average_per_muscle;
 
+		/// Use omnidirectional distance measure instead of distance along the x-axis; default = 0.
+		bool omnidirectional;
+
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 

@@ -53,6 +53,12 @@ namespace scone
 		/// Name of the base bodies (i.e. feet), used for gait detection; default = "toes_l toes_r"
 		String base_bodies;
 
+		/// Gait direction vector; default = [ 1 0 0 ]
+		Vec3 direction;
+
+		/// Use initial heading for target direction; default = 0
+		bool use_initial_heading;
+
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		void AddStep( const Model &model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
