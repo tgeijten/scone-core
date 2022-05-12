@@ -80,6 +80,14 @@ namespace scone
 		return GetNameNoSide( str ) + GetSideName( side );
 	}
 
+	inline String GetSidedNameIfUnsided( const String& str, const Side& side )
+	{
+		auto current_side = GetSideFromName( str );
+		if ( current_side == Side::None ) return GetSidedName( str, side );
+		else if ( current_side == Side::Opposite ) return GetSidedName( str, GetOppositeSide( side ) );
+		else return str;
+	}
+
 	inline String GetMirroredName( const String& str )
 	{
 		return GetNameNoSide( str ) + GetSideName( GetOppositeSide( GetSideFromName( str ) ) );

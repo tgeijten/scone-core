@@ -173,6 +173,7 @@ namespace scone
 		virtual Real GetValue() const override;
 	};
 
+	// this sensor does not work in all directions
 	struct SCONE_API BodyOrientationSensor : public Sensor
 	{
 		BodyOrientationSensor( const Body& body, const Vec3& dir, const String& postfix, Side side );
@@ -181,6 +182,17 @@ namespace scone
 		const Body& body_;
 		const Vec3 dir_;
 		const String name_;
+	};
+
+	struct SCONE_API BodyEulerOriSensor : public Sensor
+	{
+		BodyEulerOriSensor( const Body& body, index_t axis, Side side );
+		virtual String GetName() const override { return name_; }
+		virtual Real GetValue() const override;
+		const Body& body_;
+		index_t axis_;
+		Real scale_;
+		String name_;
 	};
 
 	struct SCONE_API BodyAngularVelocitySensor : public Sensor

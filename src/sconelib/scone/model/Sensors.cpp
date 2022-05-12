@@ -14,10 +14,14 @@
 #include "xo/geometry/vec3.h"
 #include "xo/geometry/quat.h"
 #include "xo/container/container_algorithms.h"
+#include "scone/core/string_tools.h"
 #include <numeric>
 
 namespace scone
 {
+	/// Get axis name (X, Y or Z)
+	inline char GetAxisName( index_t axis ) { return 'X' + char( axis ); }
+
 	String MuscleForceSensor::GetName() const { return muscle_.GetName() + ".F"; }
 	Real MuscleForceSensor::GetValue() const { return muscle_.GetNormalizedForce(); }
 
@@ -84,6 +88,17 @@ namespace scone
 		body_( body ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedName( body_.GetName() + postfix, side ) + ".BO" ) {}
 	Real BodyOrientationSensor::GetValue() const {
 		return xo::dot_product( body_.GetOrientation() * dir_, xo::rotation_vector_from_quat( xo::normalized_fast( body_.GetOrientation() ) ) );
+	}
+
+	BodyEulerOriSensor::BodyEulerOriSensor( const Body& body, index_t axis, Side side ) :
+		body_( body ), axis_( axis ),
+		name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BO" + GetAxisName( axis ) ),
+		scale_( axis != 3 && side == Side::Left ? -1.0 : 1.0 )
+	{
+		SCONE_ERROR_IF( axis >= 3, "Invalid axis: " + to_str( axis ) );
+	}
+	Real BodyEulerOriSensor::GetValue() const {
+		return scale_ * xo::euler_yzx_from_quat( body_.GetOrientation() )[ axis_ ].value;
 	}
 
 	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :

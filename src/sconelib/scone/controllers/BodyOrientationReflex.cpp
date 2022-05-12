@@ -16,15 +16,25 @@
 
 namespace scone
 {
+	index_t GetAxis( const Vec3& v ) {
+		if ( v == Vec3::unit_x() ) return 0;
+		else if ( v == Vec3::unit_y() ) return 1;
+		else if ( v == Vec3::unit_z() ) return 2;
+		else return no_index;
+	}
+
 	BodyOrientationReflex::BodyOrientationReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Reflex( pn, par, model, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		INIT_MEMBER( pn, axis, Vec3::unit_z() ),
 		INIT_MEMBER( pn, axis_name, "" ),
 		INIT_MEMBER( pn, mirror_left, false ),
+		u_p(), u_v(),
 		m_Mirror( mirror_left && loc.side_ == Side::Left ),
 		m_SourceBody( *FindByLocation( model.GetBodies(), source, loc ) ),
-		m_DelayedPos( model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) ),
+		m_DelayedPos( model.scone_version < xo::version( 2, 0, 4, 2348 ) ?
+			model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) :
+			model.AcquireDelayedSensor< BodyEulerOriSensor >( m_SourceBody, GetAxis( axis ), loc.side_ ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyAngularVelocitySensor >( m_SourceBody, axis, axis_name, loc.side_ ) )
 	{
 		String par_name = GetParName( pn, loc );
