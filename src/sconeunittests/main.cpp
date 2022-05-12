@@ -13,6 +13,7 @@
 #include "xo/serialization/prop_node_serializer_zml.h"
 #include "scenario_test.h"
 #include "xo/utility/arg_parser.h"
+#include "scone/core/version.h"
 
 int main( int argc, const char* argv[] )
 {
@@ -23,6 +24,7 @@ int main( int argc, const char* argv[] )
 		sink.set_log_level( xo::log::level( args.get<int>( "l", int( xo::log::level::info ) ) ) );
 
 		scone::Initialize();
+		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 
 		if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) ) {
 			scone::add_scenario_tests( "scenarios/Tutorials" );
