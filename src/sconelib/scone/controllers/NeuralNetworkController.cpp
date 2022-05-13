@@ -343,7 +343,7 @@ namespace scone::NN
 	{
 		if ( auto it = neural_delays_.find( m.base_line_name() ); it != neural_delays_.end() )
 			return it->second;
-		else if ( auto it = neural_delays_.find( m.base_ ); it != neural_delays_.end() )
+		if ( auto it = neural_delays_.find( m.base_ ); it != neural_delays_.end() )
 			return it->second;
 		SCONE_ERROR( "Could not find neural delay for " + m.base_line_side_name() );
 	}

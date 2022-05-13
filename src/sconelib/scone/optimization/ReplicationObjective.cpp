@@ -76,7 +76,6 @@ namespace scone
 
 		// map data
 		auto& state = model_->GetState();
-		int missing_states = 0;
 		state_channels_.reserve( state.GetSize() );
 		for ( index_t state_idx = 0; state_idx < state.GetSize(); ++state_idx ) {
 			state_channels_.push_back( storage_.TryGetChannelIndex( state.GetName( state_idx ) ) );

@@ -21,8 +21,8 @@ namespace scone
 		INIT_PROP( props, length, RangePenalty<Real>() );
 		INIT_PROP( props, velocity, RangePenalty<Real>() );
 
-		if ( name.empty() )
-			name = muscle.GetName();
+		if ( name_.empty() )
+			name_ = muscle.GetName();
 	}
 
 	double MuscleMeasure::ComputeResult( const Model& model )
@@ -33,25 +33,25 @@ namespace scone
 		{
 			penalty += input.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name + ".input_penalty", stringf( "%g", input.GetResult() ) );
+				GetReport().set( name_ + ".input_penalty", stringf( "%g", input.GetResult() ) );
 		}
 		if ( !activation.IsNull() )
 		{
 			penalty += activation.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name + ".activation_penalty", stringf( "%g", activation.GetResult() ) );
+				GetReport().set( name_ + ".activation_penalty", stringf( "%g", activation.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
+				GetReport().set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
 		if ( !length.IsNull() )
 		{
 			penalty += length.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name + ".length_penalty", stringf( "%g", length.GetResult() ) );
+				GetReport().set( name_ + ".length_penalty", stringf( "%g", length.GetResult() ) );
 		}
 
 		return  penalty;

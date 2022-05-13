@@ -40,8 +40,8 @@ namespace scone
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
 		INIT_PROP( props, omnidirectional, false );
-		if ( name.empty() )
-			name = m_MeasureNames.GetString( measure_type );
+		if ( name_.empty() )
+			name_ = m_MeasureNames.GetString( measure_type );
 
 		// precompute some stuff
 		m_Wang2012BasalEnergy = 1.51 * model.GetMass();
@@ -325,6 +325,6 @@ namespace scone
 
 	void EffortMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ name + ".penalty" ] = m_Effort.GetLatest();
+		frame[ name_ + ".penalty" ] = m_Effort.GetLatest();
 	}
 }

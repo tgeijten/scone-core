@@ -27,8 +27,8 @@ namespace scone
 		INIT_PROP( props, force, RangePenalty<Real>() );
 
 		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() ) + int( !force.IsNull() );
-		if ( name.empty() )
-			name = dof.GetName();
+		if ( name_.empty() )
+			name_ = dof.GetName();
 	}
 
 	double DofMeasure::ComputeResult( const Model& model )
@@ -38,25 +38,25 @@ namespace scone
 		{
 			penalty += position.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name + ".position_penalty" , stringf( "%g", position.GetResult() ) );
+				GetReport().set( name_ + ".position_penalty" , stringf( "%g", position.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
+				GetReport().set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
 		if ( !acceleration.IsNull() )
 		{
 			penalty += acceleration.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name + ".acceleration_penalty", stringf( "%g", acceleration.GetResult() ) );
+				GetReport().set( name_ + ".acceleration_penalty", stringf( "%g", acceleration.GetResult() ) );
 		}
 		if ( !force.IsNull() )
 		{
 			penalty += force.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name + ".force_penalty", stringf( "%g", force.GetResult() ) );
+				GetReport().set( name_ + ".force_penalty", stringf( "%g", force.GetResult() ) );
 		}
 
 		return penalty;

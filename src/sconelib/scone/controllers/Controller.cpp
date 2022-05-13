@@ -13,7 +13,7 @@ namespace scone
 {
 	Controller::Controller( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
 		HasSignature( props ),
-		INIT_MEMBER( props, name, "" ),
+		INIT_MEMBER( props, name_, "" ),
 		INIT_PAR_MEMBER( props, par, start_time, 0.0 ),
 		INIT_PAR_MEMBER( props, par, stop_time, 0.0 ),
 		INIT_MEMBER( props, disabled_, false )

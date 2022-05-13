@@ -94,14 +94,14 @@ namespace scone
 		index_t frame_count = 0;
 
 		{
-			for ( index_t idx = frame_start * frame_delta; idx < m_Storage.GetFrameCount() && m_Storage.GetFrame( idx ).GetTime() <= t; idx += frame_delta )
+			for ( index_t fidx = frame_start * frame_delta; fidx < m_Storage.GetFrameCount() && m_Storage.GetFrame( fidx ).GetTime() <= t; fidx += frame_delta )
 			{
-				auto f = m_Storage.GetFrame( idx );
+				auto f = m_Storage.GetFrame( fidx );
 
 				// set state and compare output
 				model.SetStateValues( f.GetValues(), f.GetTime() );
-				for ( index_t idx = 0; idx < m_ExcitationChannels.size(); ++idx )
-					result += abs( model.GetMuscles()[ idx ]->GetExcitation() - f[ m_ExcitationChannels[ idx ] ] );
+				for ( index_t cidx = 0; cidx < m_ExcitationChannels.size(); ++cidx )
+					result += abs( model.GetMuscles()[ cidx ]->GetExcitation() - f[ m_ExcitationChannels[ cidx ] ] );
 				++frame_count;
 			}
 		}

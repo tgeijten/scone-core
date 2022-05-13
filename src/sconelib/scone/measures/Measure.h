@@ -21,7 +21,7 @@ namespace scone
 		virtual ~Measure() = default;
 
 		/// Name of the Measure, to be used in reporting; defaults to measure type
-		mutable String name;
+		mutable String name_;
 
 		/// Weighting factor applied to the result of the measure; default = 1.
 		Real weight;
@@ -41,8 +41,8 @@ namespace scone
 		double GetResult( const Model& model );
 		double GetWeightedResult( const Model& model );
 
-		PropNode& GetReport() { return report; }
-		const PropNode& GetReport() const { return report; }
+		PropNode& GetReport() { return report_; }
+		const PropNode& GetReport() const { return report_; }
 	
 		virtual const String& GetName() const override;
 		Real GetWeight() { return weight; }
@@ -57,7 +57,7 @@ namespace scone
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) = 0;
 		double WorstResult() const;
 
-		PropNode report;
-		xo::optional< double > result; // caches result so it's only computed once
+		PropNode report_;
+		xo::optional< double > result_; // caches result so it's only computed once
 	};
 }

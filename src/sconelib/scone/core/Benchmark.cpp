@@ -52,8 +52,8 @@ namespace scone
 			auto timings = model->GetBenchmarks();
 			if ( !timings.empty() )
 			{
-				for ( const auto& t : timings )
-					bm_components[ t.first ].push_back( t.second.first / t.second.second );
+				for ( const auto& timing : timings )
+					bm_components[ timing.first ].push_back( timing.second.first / timing.second.second );
 				bm_components[ "EvalTotal" ].push_back( total_time );
 				bm_components[ "EvalSim" ].push_back( ( total_time - create_model_time ) );
 				if ( !timings.empty() )

@@ -26,7 +26,7 @@ namespace scone
 		virtual ~Controller();
 
 		/// Name of the controller, uses as a prefix for the control parameters; empty by default
-		String name;
+		String name_;
 
 		/// Time [s] at which Controller becomes active; default = 0.
 		TimeInSeconds start_time;
@@ -49,7 +49,7 @@ namespace scone
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override {}
 		virtual std::vector<xo::path> WriteResults( const xo::path& file ) const { return std::vector<xo::path>(); }
 
-		virtual const String& GetName() const override { return name; }
+		virtual const String& GetName() const override { return name_; }
 		virtual PropNode GetInfo() const { return PropNode(); }
 
 	protected:

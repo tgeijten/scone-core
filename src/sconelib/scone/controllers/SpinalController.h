@@ -22,7 +22,7 @@ namespace scone
 	};
 
 	struct MuscleGroup {
-		MuscleGroup( const PropNode& pn, Side side ) : pn_( pn ), name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( -1 ) {}
+		MuscleGroup( const PropNode& pn, Side side ) : pn_( pn ), name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( ~xo::uint32( 0 ) ) {}
 
 		string name_;
 		Side side_;

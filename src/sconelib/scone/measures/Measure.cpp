@@ -14,7 +14,6 @@ namespace scone
 	Measure::Measure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Controller( props, par, const_cast<Model&>( model ), loc ) // model is no longer const in Controller parent class
 	{
-		INIT_PROP( props, name, "" );
 		INIT_PROP( props, weight, 1.0 );
 		INIT_PROP( props, threshold, 0.0 );
 		INIT_PROP( props, threshold_transition, 0.0 );
@@ -24,17 +23,17 @@ namespace scone
 
 	double Measure::GetResult( const Model& model )
 	{
-		if ( !result )
-			result = ComputeResult( model );
-		return *result;
+		if ( !result_ )
+			result_ = ComputeResult( model );
+		return *result_;
 	}
 
 	double Measure::GetWeightedResult( const Model& model )
 	{
-		if ( !result )
-			result = ComputeResult( model );
+		if ( !result_ )
+			result_ = ComputeResult( model );
 
-		Real m = *result + GetOffset();
+		Real m = *result_ + GetOffset();
 		if ( minimize && GetThreshold() != 0 )
 		{
 			if ( m < GetThreshold() )
@@ -47,9 +46,9 @@ namespace scone
 
 	const String& Measure::GetName() const
 	{
-		if ( name.empty() )
-			name = xo::get_clean_type_name( *this );
-		return name;
+		if ( name_.empty() )
+			name_ = xo::get_clean_type_name( *this );
+		return name_;
 	}
 
 	bool Measure::PerformAnalysis( const Model& model, double timestamp )
