@@ -13,6 +13,7 @@
 #include "scone/model/Sensors.h"
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/model/Actuator.h"
+#include "scone/core/string_tools.h"
 
 namespace scone
 {
@@ -27,7 +28,7 @@ namespace scone
 		Reflex( pn, par, model, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		INIT_MEMBER( pn, axis, Vec3::unit_z() ),
-		INIT_MEMBER( pn, axis_name, "" ),
+		INIT_MEMBER( pn, axis_name, GetAxisName( GetAxis( axis ) ) ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		u_p(), u_v(),
 		m_Mirror( mirror_left && loc.side_ == Side::Left ),

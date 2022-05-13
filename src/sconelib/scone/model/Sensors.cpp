@@ -19,9 +19,6 @@
 
 namespace scone
 {
-	/// Get axis name (X, Y or Z)
-	inline char GetAxisName( index_t axis ) { return 'X' + char( axis ); }
-
 	String MuscleForceSensor::GetName() const { return muscle_.GetName() + ".F"; }
 	Real MuscleForceSensor::GetValue() const { return muscle_.GetNormalizedForce(); }
 
@@ -102,7 +99,7 @@ namespace scone
 	}
 
 	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :
-		body_( body ), scale_( scale ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedName( body_.GetName() + postfix, side ) + ".BAV" ) {}
+		body_( body ), scale_( scale ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BAV" + postfix ) {}
 	Real BodyAngularVelocitySensor::GetValue() const {
 		return scale_ * xo::dot_product( body_.GetOrientation() * dir_, body_.GetAngVel() );
 	}

@@ -49,24 +49,9 @@ namespace scone
 		return stringf( "%02d%02d.%02d%02d%02d.%06d", tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, frac_secs );
 	}
 
-	// #todo: Could use regex to remove platform dependencies
-	// Currently assumes one delimiter char.
-	bool SCONE_API MatchesPattern( const String& str, const String& pattern, bool multiple_patterns, char delim )
+	const char* GetAxisName( index_t axis )
 	{
-#ifdef WIN32
-		return PathMatchSpecEx( str.c_str(), pattern.c_str(), multiple_patterns ? PMSF_MULTIPLE : PMSF_NORMAL ) == S_OK;
-#else
-		std::vector<std::string> tokens;
-		std::stringstream ss(pattern);
-		std::string token;
-		while ( std::getline(ss, token, delim) ) {
-			tokens.push_back(token);
-		}
-		for ( auto thisPattern : tokens ) {
-			bool isMatch = fnmatch(thisPattern.c_str(), str.c_str(), FNM_NOESCAPE) == 0;
-			if ( isMatch ) return isMatch;
-		}
-		return false;	
-#endif
+		static const char* axis_names[] = { "X", "Y", "Z" };
+		return axis < 3 ? axis_names[ axis ] : "";
 	}
 }

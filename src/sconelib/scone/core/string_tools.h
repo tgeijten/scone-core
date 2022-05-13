@@ -29,4 +29,7 @@ namespace scone
 
     /// Get formatted date/time with exact fractional seconds as string
     String SCONE_API GetDateTimeExactAsString();
+
+	/// Get axis name (X, Y or Z)
+	const char* GetAxisName( index_t axis );
 }
