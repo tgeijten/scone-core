@@ -164,7 +164,7 @@ namespace scone
 			ls.allow_stance_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) > ls.stance_load_threshold;
 			ls.allow_swing_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) <= ls.swing_load_threshold;
 			if ( omnidirectional && model.GetRootBody() ) {
-				auto& root_ori = model.GetRootBody()->GetOrientation();
+				auto root_ori = model.GetRootBody()->GetOrientation();
 				Vec3 sag_dir = root_ori * Vec3::unit_x(), cor_dir = root_ori * Vec3::unit_z();
 				ls.sagittal_pos = xo::dot_product( sag_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
 				ls.coronal_pos = xo::dot_product( cor_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
