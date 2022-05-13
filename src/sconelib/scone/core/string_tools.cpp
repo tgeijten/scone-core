@@ -38,7 +38,7 @@ namespace scone
 
 	std::string GetDateTimeExactAsString()
 	{
-		// #todo: depeicate
+		// #todo: deprecate
 		// users that run multiple simulations in quick succession
 		// should differentiate them through the .R 'random_seed' tag
 		std::time_t today = std::chrono::system_clock::to_time_t( std::chrono::system_clock::now() );
