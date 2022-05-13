@@ -380,7 +380,7 @@ namespace scone
 		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
 			for ( auto side : both_sides ) {
 				auto& mg = muscle_groups_.emplace_back( mgpn, side );
-				auto& muscle_pat = mgpn.get<xo::pattern_matcher>( "muscles" );
+				auto muscle_pat = mgpn.get<xo::pattern_matcher>( "muscles" );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 					if ( mg.side_ == muscles_[ mi ].side_ && muscle_pat.match( muscles_[ mi ].name_ ) )
 						mg.muscle_indices_.emplace_back( mi );
