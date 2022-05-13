@@ -17,7 +17,6 @@
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/core/Factories.h"
 #include "scone/model/Sensors.h"
-#include "xo/geometry/dynvec.h"
 
 namespace scone
 {
