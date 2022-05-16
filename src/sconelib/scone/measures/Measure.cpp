@@ -14,6 +14,7 @@ namespace scone
 	Measure::Measure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Controller( props, par, const_cast<Model&>( model ), loc ) // model is no longer const in Controller parent class
 	{
+		INIT_PROP( props, name_, "" );
 		INIT_PROP( props, weight, 1.0 );
 		INIT_PROP( props, threshold, 0.0 );
 		INIT_PROP( props, threshold_transition, 0.0 );
