@@ -147,8 +147,9 @@ namespace scone
 			Real effort_s = xo::max( 0.0, 0.25 * mus->GetForce() * -v_ce );
 			Real effort_w = xo::max( 0.0, mus->GetActiveFiberForce() * -v_ce );
 			Real effort = effort_a + effort_m + effort_s + effort_w;
-
 			e += effort;
+
+			SCONE_ERROR_IF( fa != fa, "Error computing fa for " + mus->GetName() + "; excitation=" + to_str( mus->GetExcitation() ) );
 		}
 
 		return e;
