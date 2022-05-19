@@ -115,7 +115,7 @@ namespace scone
 	ComBosSensor::ComBosSensor( const Model& mod, const Vec3& dir, double kv, const String& name, Side side ) :
 		model_( mod ), dir_( GetSidedDirection( dir, side ) ), kv_( kv ), name_( GetSidedName( name, side ) + ".CB" ) {
 		SCONE_ERROR_IF( model_.GetLegCount() <= 0, "Could not find legs in model" );
-		SCONE_ERROR_IF( model_.GetRootBody() == nullptr, "Model has no root body" );
+		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	Real ComBosSensor::GetValue() const {
 		const auto com = model_.GetProjectedOntoGround( model_.GetComPos() + kv_ * model_.GetComVel() );
@@ -124,7 +124,31 @@ namespace scone
 		const auto bosv = xo::average( model_.GetLegs(), Vec3(),
 			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComVel(); } );
 		const auto bos = model_.GetProjectedOntoGround( bosp + kv_ * bosv );
-		return xo::dot_product( model_.GetRootBody()->GetOrientation() * dir_, com - bos );
+		return xo::dot_product( model_.GetRootBody().GetOrientation() * dir_, com - bos );
+	}
+
+	ComPivotPosSensor::ComPivotPosSensor( const Model& mod, const Body& pivot_body, const Vec3& dir, Side side ) :
+		model_( mod ), pivot_body_( pivot_body ), dir_( GetSidedDirection( dir, side ) ) {
+			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+	}
+	String ComPivotPosSensor::GetName() const {
+		return "com-" + pivot_body_.GetName() + ".CP" + GetAxisName( dir_ );
+	}
+	Real ComPivotPosSensor::GetValue() const {
+		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
+		return xo::dot_product( dir, model_.GetComPos() - pivot_body_.GetComPos() );
+	}
+
+	ComPivotVelSensor::ComPivotVelSensor( const Model& mod, const Body& pivot_body, const Vec3& dir, Side side ) :
+		model_( mod ), pivot_body_( pivot_body ), dir_( GetSidedDirection( dir, side ) ) {
+			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+	}
+	String ComPivotVelSensor::GetName() const {
+		return "com-" + pivot_body_.GetName() + ".CV" + GetAxisName( dir_ );
+	}
+	Real ComPivotVelSensor::GetValue() const {
+		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
+		return xo::dot_product( dir, model_.GetComVel() - pivot_body_.GetComVel() );
 	}
 
 	ModulatedSensor::ModulatedSensor( const Sensor& sensor, const Sensor& modulator, double gain, double ofs, const String& name, xo::boundsd mod_range ) :

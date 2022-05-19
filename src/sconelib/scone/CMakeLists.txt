@@ -112,6 +112,8 @@ set(CS_CONTROLLERS_NC_FILES
 	controllers/activation_functions.h
 	)
 set(CS_CONTROLLERS_REFLEX_FILES
+	controllers/ComPivotReflex.cpp
+	controllers/ComPivotReflex.h
 	controllers/ConditionalMuscleReflex.cpp
 	controllers/ConditionalMuscleReflex.h
 	controllers/DofReflex.cpp

@@ -13,6 +13,7 @@
 
 #include "xo/string/string_tools.h"
 #include "xo/string/string_cast.h"
+#include "Vec3.h"
 
 namespace scone
 {
@@ -32,4 +33,6 @@ namespace scone
 
 	/// Get axis name (X, Y or Z)
 	const char* GetAxisName( index_t axis );
+	index_t GetAxisIndex( const Vec3& dir );
+	const char* GetAxisName( const Vec3& dir );
 }

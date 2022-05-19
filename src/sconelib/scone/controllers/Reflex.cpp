@@ -38,14 +38,14 @@ namespace scone
 		SCONE_THROW_NOT_IMPLEMENTED;
 	}
 
-	scone::Real Reflex::AddTargetControlValue( Real u )
+	Real Reflex::AddTargetControlValue( Real u )
 	{
 		xo::clamp( u, min_control_value, max_control_value );
 		actuator_.AddInput( u );
 		return u;
 	}
 
-	scone::String Reflex::GetReflexName( const String& target, const String& source )
+	String Reflex::GetReflexName( const String& target, const String& source )
 	{
 		return ( target == source ) ? target : target + "-" + source;
 	}

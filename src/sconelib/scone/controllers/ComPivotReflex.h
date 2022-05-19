@@ -1,5 +1,5 @@
 /*
-** BodyOrientationReflex.h
+** ComPivotReflex.h
 **
 ** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
@@ -14,31 +14,29 @@ namespace scone
 {
 	/// Reflex based on the global orientation of a specific Body.
 	/// Must be part of ReflexController.
-	class BodyOrientationReflex : public Reflex
+	class ComPivotReflex : public Reflex
 	{
 	public:
-		BodyOrientationReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
-		virtual ~BodyOrientationReflex();
+		ComPivotReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		virtual ~ComPivotReflex();
 
 		virtual void ComputeControls( double timestamp ) override;
 
-		/// Name of the Body that is the source of this Reflex, append with _o for Body on opposite side.
-		String source;
-		/// Orientation axis; default = [ 0 0 1 ]
-		Vec3 axis;
-		/// Name of the axis, should be provided when using multiple; default = [ 0 0 1 ]
-		String axis_name;
+		/// Name of the pivot Body, append with _o for Body on opposite side.
+		String pivot_body;
+		/// Direction; default = [ 0 0 1 ]
+		Vec3 dir;
 		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
 		bool mirror_left;
 
-		/// Target orientation [rad]; default = 0.
+		/// Target position; default = 0.
 		Real P0;
-		/// Orientation feedback gain; default = 0.
+		/// Position feedback gain; default = 0.
 		Real KP;
 		/// Allow this reflex to be negative; default = 1.
 		bool allow_neg_P;
 
-		/// Target angular velocity [rad or m]; default = 0.
+		/// Target velocity; default = 0.
 		Real V0;
 		/// Velocity feedback gain; default = 0.
 		Real KV;

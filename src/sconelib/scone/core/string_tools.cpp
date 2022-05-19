@@ -23,6 +23,7 @@
 #include <chrono>
 #include <iostream>
 #include <ctime>
+#include <cmath>
 
 using std::cout;
 using std::endl;
@@ -53,5 +54,20 @@ namespace scone
 	{
 		static const char* axis_names[] = { "X", "Y", "Z" };
 		return axis < 3 ? axis_names[ axis ] : "";
+	}
+
+	const char* GetAxisName( const Vec3& dir )
+	{
+		return GetAxisName( GetAxisIndex( dir ) );
+	}
+
+	index_t GetAxisIndex( const Vec3& dir )
+	{
+		auto x = std::abs( dir.x ), y = std::abs( dir.y ), z = std::abs( dir.z );
+		if ( x > y && x > z )
+			return 0;
+		else if ( y > z )
+			return 1;
+		else return 2;
 	}
 }

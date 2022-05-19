@@ -63,6 +63,7 @@
 #	include "scone/controllers/NeuralNetworkController.h"
 #	include "scone/controllers/SpinalController.h"
 #endif
+#include "scone/controllers/ComPivotReflex.h"
 
 namespace scone
 {
@@ -143,6 +144,7 @@ namespace scone
 			.register_type< DofReflex >()
 			.register_type< BodyPointReflex >()
 			.register_type< BodyOrientationReflex >()
+			.register_type< ComPivotReflex >()
 			.register_type< ConditionalMuscleReflex >();
 
 		return g_ReflexFactory;
