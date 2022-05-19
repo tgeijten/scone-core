@@ -210,7 +210,7 @@ namespace scone
 		SCONE_ASSERT( m_Joints.empty() && m_Dofs.empty() );
 		const Body* const orgBody = &GetOriginBody();
 		const Body* const insBody = &GetInsertionBody();
-		const Body* const rootBody = GetModel().GetRootBody();
+		const Body* const rootBody = GetModel().HasRootBody() ? &GetModel().GetRootBody() : nullptr;
 		const Body* b = nullptr;
 
 		// add joints, traversing from insertion to origin

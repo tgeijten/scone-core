@@ -16,6 +16,7 @@
 #include "DisplayGeometry.h"
 #include "scone/core/PropNode.h"
 #include "ForceValue.h"
+#include "Side.h"
 
 namespace scone
 {
@@ -77,6 +78,8 @@ namespace scone
 		const Joint* GetJoint() const { return m_Joint; }
 		const Body* GetParentBody() const;
 		bool IsChildOf( const Body& parent ) const;
+
+		Side GetSide() const { return GetSideFromName( GetName() ); }
 
 		virtual std::vector< DisplayGeometry > GetDisplayGeometries() const { return std::vector< DisplayGeometry >(); }
 

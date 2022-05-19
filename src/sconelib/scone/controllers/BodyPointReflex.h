@@ -9,7 +9,6 @@
 #pragma once
 
 #include "Reflex.h"
-#include "xo/numerical/filter.h"
 
 namespace scone
 {

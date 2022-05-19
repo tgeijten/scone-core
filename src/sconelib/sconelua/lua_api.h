@@ -293,7 +293,7 @@ namespace scone
 		/// number of bodies
 		int body_count() { return static_cast<int>( mod_.GetBodies().size() ); }
 		/// get the ground (static) body
-		LuaBody ground_body() { return *mod_.GetGroundBody(); }
+		LuaBody ground_body() { return mod_.GetGroundBody(); }
 
 		/// get the joint at index (starting at 1)
 		LuaJoint joint( int index ) { return *GetByLuaIndex( mod_.GetJoints(), index ); }

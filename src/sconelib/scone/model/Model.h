@@ -51,9 +51,9 @@ namespace scone
 		// body access
 		std::vector< BodyUP >& GetBodies() { return m_Bodies; }
 		const std::vector< BodyUP >& GetBodies() const { return m_Bodies; }
-		const Body* GetRootBody() const { return m_RootBody; }
-		const Body* GetGroundBody() const { return m_GroundBody; }
-		Body* GetGroundBody() { return m_GroundBody; }
+		bool HasRootBody() const { return m_RootBody != nullptr; }
+		const Body& GetRootBody() const { SCONE_ASSERT( m_RootBody );  return *m_RootBody; }
+		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 
 		// joint access
 		std::vector< JointUP >& GetJoints() { return m_Joints; }

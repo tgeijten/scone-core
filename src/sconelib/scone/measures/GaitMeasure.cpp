@@ -32,8 +32,8 @@ namespace scone
 		INIT_PROP( props, direction, Vec3::unit_x() );
 		INIT_PROP( props, use_initial_heading, false );
 
-		if ( use_initial_heading && model.GetRootBody() )
-			direction = xo::projected_xz( model.GetRootBody()->GetOrientation() * Vec3::unit_x() );
+		if ( use_initial_heading && model.HasRootBody() )
+			direction = xo::projected_xz( model.GetRootBody().GetOrientation() * Vec3::unit_x() );
 		xo::normalize( direction );
 
 		if ( !base_bodies.empty() )
