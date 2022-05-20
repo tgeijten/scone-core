@@ -52,7 +52,7 @@ namespace scone
 		Real u_p;
 		Real u_v;
 		bool m_Mirror;
-		Body& m_SourceBody;
+		Body* m_SourceBody;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;
 	};

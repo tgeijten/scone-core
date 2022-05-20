@@ -151,6 +151,34 @@ namespace scone
 		return xo::dot_product( dir, model_.GetComVel() - pivot_body_.GetComVel() );
 	}
 
+	ComSupportPosSensor::ComSupportPosSensor( const Model& mod, const Vec3& dir, Side side ) :
+		model_( mod ), dir_( GetSidedDirection( dir, side ) ), side_( side ) {
+			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+	}
+	String ComSupportPosSensor::GetName() const {
+		return GetSidedName( "com_support", side_ ) + ".CSP" + GetAxisName( dir_ );
+	}
+	Real ComSupportPosSensor::GetValue() const {
+		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
+		auto support_pos = xo::average( model_.GetLegs(), Vec3(),
+			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComPos(); } );
+		return xo::dot_product( dir, model_.GetComPos() - support_pos );
+	}
+
+	ComSupportVelSensor::ComSupportVelSensor( const Model& mod, const Vec3& dir, Side side ) :
+		model_( mod ), dir_( GetSidedDirection( dir, side ) ), side_( side ) {
+			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+	}
+	String ComSupportVelSensor::GetName() const {
+		return GetSidedName( "com_support", side_ ) + ".CSV" + GetAxisName( dir_ );
+	}
+	Real ComSupportVelSensor::GetValue() const {
+		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
+		auto support_vel = xo::average( model_.GetLegs(), Vec3(),
+			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComVel(); } );
+		return xo::dot_product( dir, model_.GetComVel() - support_vel );
+	}
+
 	ModulatedSensor::ModulatedSensor( const Sensor& sensor, const Sensor& modulator, double gain, double ofs, const String& name, xo::boundsd mod_range ) :
 		sensor_( sensor ), modulator_( modulator ), gain_( gain ), ofs_( ofs ), name_( name ), mod_range_( mod_range ) {}
 	Real ModulatedSensor::GetValue() const {

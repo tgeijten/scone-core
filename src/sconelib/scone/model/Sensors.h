@@ -250,6 +250,26 @@ namespace scone
 		const Vec3 dir_;
 	};
 
+	// sensor of the center of mass wrt pivot point
+	struct SCONE_API ComSupportPosSensor : public Sensor
+	{
+		ComSupportPosSensor( const Model& mod, const Vec3& dir, Side side );
+		virtual String GetName() const override;
+		virtual Real GetValue() const override;
+		const Model& model_;
+		const Vec3 dir_;
+		const Side side_;
+	};
+	struct SCONE_API ComSupportVelSensor : public Sensor
+	{
+		ComSupportVelSensor( const Model& mod, const Vec3& dir, Side side );
+		virtual String GetName() const override;
+		virtual Real GetValue() const override;
+		const Model& model_;
+		const Vec3 dir_;
+		const Side side_;
+	};
+
 	struct SCONE_API ModulatedSensor : public Sensor
 	{
 		ModulatedSensor( const Sensor& sensor, const Sensor& modulator, double gain, double ofs, const String& name, xo::boundsd mod_range = { 0.0, 1.0 } );

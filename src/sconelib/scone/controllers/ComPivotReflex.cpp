@@ -19,14 +19,18 @@ namespace scone
 {
 	ComPivotReflex::ComPivotReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Reflex( pn, par, model, loc ),
-		INIT_MEMBER_REQUIRED( pn, pivot_body ),
+		INIT_MEMBER( pn, pivot_body, "" ),
 		INIT_MEMBER( pn, dir, Vec3::unit_z() ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		u_p(), u_v(),
 		m_Mirror( mirror_left&& loc.side_ == Side::Left ),
-		m_SourceBody( *FindByLocation( model.GetBodies(), pivot_body, loc ) ),
-		m_DelayedPos( model.AcquireDelayedSensor< ComPivotPosSensor >( model, m_SourceBody, dir, loc.side_ ) ),
-		m_DelayedVel( model.AcquireDelayedSensor< ComPivotVelSensor >( model, m_SourceBody, dir, loc.side_ ) )
+		m_SourceBody( !pivot_body.empty() ? &*FindByLocation( model.GetBodies(), pivot_body, loc ) : nullptr ),
+		m_DelayedPos( m_SourceBody ?
+			model.AcquireDelayedSensor< ComPivotPosSensor >( model, *m_SourceBody, dir, loc.side_ ) :
+			model.AcquireDelayedSensor< ComSupportPosSensor >( model, dir, loc.side_ ) ),
+		m_DelayedVel( m_SourceBody ?
+			model.AcquireDelayedSensor< ComPivotVelSensor >( model, *m_SourceBody, dir, loc.side_ ) :
+			model.AcquireDelayedSensor< ComSupportVelSensor >( model, dir, loc.side_ ) )
 	{
 		String par_name = loc.GetParName( actuator_.GetName() ) + '-' + loc.GetParName( pivot_body );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
