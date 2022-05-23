@@ -2007,7 +2007,7 @@
 									<body>pelvis</body>
 								</PathPoint>
 								<PathPoint name="rect_fem_r-P2">
-									<location> 0.038 -0.34 0.004</location>
+									<location> 0.04 -0.32 0.004</location>
 									<body>femur_r</body>
 								</PathPoint>
 								<PathPoint name="rect_fem_r-P3">
@@ -2099,7 +2099,7 @@
 									<body>femur_r</body>
 								</PathPoint>
 								<PathPoint name="vas_int_r-P2">
-									<location> 0.038 -0.34 0.007</location>
+									<location> 0.04 -0.32 0.01</location>
 									<body>femur_r</body>
 								</PathPoint>
 								<PathPoint name="vas_int_r-P3">
@@ -3019,7 +3019,7 @@
 									<body>pelvis</body>
 								</PathPoint>
 								<PathPoint name="rect_fem_r-P2">
-									<location> 0.038 -0.34 -0.004</location>
+									<location> 0.04 -0.32 -0.004</location>
 									<body>femur_l</body>
 								</PathPoint>
 								<PathPoint name="rect_fem_l-P3">
@@ -3111,7 +3111,7 @@
 									<body>femur_l</body>
 								</PathPoint>
 								<PathPoint name="vas_int_r-P2">
-									<location> 0.038 -0.34 -0.007</location>
+									<location> 0.04 -0.32 -0.01</location>
 									<body>femur_l</body>
 								</PathPoint>
 								<PathPoint name="vas_int_r-P3">
