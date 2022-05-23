@@ -52,6 +52,8 @@ namespace scone
 
 	String Reflex::GetParName( const PropNode& props, const Location& loc )
 	{
+		if ( auto par_name = props.try_get< String >( "par_name" ) )
+			return loc.GetParName( *par_name );
 		auto trg_name = loc.GetParName( props.get< String >( "target" ) );
 		auto src_name = loc.GetParName( props.get< String >( "source", trg_name ) );
 		return ( trg_name == src_name ) ? trg_name : trg_name + "-" + src_name;
