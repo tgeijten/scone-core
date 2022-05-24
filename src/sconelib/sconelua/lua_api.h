@@ -156,6 +156,12 @@ namespace scone
 		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
 		/// get the optimal fiber length [m]
 		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
+		/// get the fiber length [m] of the contractile element
+		LuaNumber tendon_length() { return mus_.GetTendonLength(); }
+		/// get the normalized fiber length of the contractile element
+		LuaNumber normalized_tendon_length() { return mus_.GetNormalizedTendonLength(); }
+		/// get the optimal fiber length [m]
+		LuaNumber tendon_slack_length() { return mus_.GetTendonSlackLength(); }
 		/// get the current muscle force [N]
 		LuaNumber force() { return mus_.GetForce(); }
 		/// get the normalized muscle force [0..1]
