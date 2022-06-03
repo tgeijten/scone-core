@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="30000">
 	<Model name="H1922">
-		<credits>Model with 19 degrees-of-freedom and 22 muscles. Adapted for SCONE from Gait2392 by Thomas Geijtenbeek.</credits>
+		<credits>Model with 19 degrees-of-freedom and 22 muscles. Adapted for SCONE from Delp1992 by Thomas Geijtenbeek. Hamstrings parameters adapted from Arnold2010.</credits>
 		<publications>Geijtenbeek, T.: SCONE: Open Source Software for Biological Motion, Journal of Open Source Software 4(38), 2019. Delp, S.L., Loan, J.P., Hoy, M.G., Zajac, F.E., Topp E.L., Rosen, J.M.: An interactive graphics-based model of the lower extremity to study orthopaedic surgical procedures, IEEE Transactions on Biomedical Engineering, vol. 37, pp. 757-767, 1990. Yamaguchi G.T., Zajac F.E.: A planar model of the knee joint to characterize the knee extensor mechanism." J . Biomech. vol. 22. pp. 1-10. 1989. Anderson F.C., Pandy M.G.: A dynamic optimization solution for vertical jumping in three dimensions. Computer Methods in Biomechanics and Biomedical Engineering 2:201-231, 1999. Anderson F.C., Pandy M.G.: Dynamic optimization of human walking. Journal of Biomechanical Engineering 123:381-390, 2001.</publications>
 		<length_units>meters</length_units>
 		<force_units>N</force_units>
@@ -1668,11 +1668,11 @@
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>2594</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.109</optimal_fiber_length>
+					<optimal_fiber_length>0.0976</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.31</tendon_slack_length>
+					<tendon_slack_length>0.325</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
-					<pennation_angle_at_optimal>0</pennation_angle_at_optimal>
+					<pennation_angle_at_optimal>0.20245819</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
 					<max_contraction_velocity>10</max_contraction_velocity>
 					<!--Activation lower bound.-->
@@ -1760,11 +1760,11 @@
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>804</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.173</optimal_fiber_length>
+					<optimal_fiber_length>0.1103</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.071</tendon_slack_length>
+					<tendon_slack_length>0.1</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
-					<pennation_angle_at_optimal>0.40142573</pennation_angle_at_optimal>
+					<pennation_angle_at_optimal>0.2146755</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
 					<max_contraction_velocity>10</max_contraction_velocity>
 					<!--Activation lower bound.-->
@@ -2680,11 +2680,11 @@
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>2594</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.109</optimal_fiber_length>
+					<optimal_fiber_length>0.0976</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.31</tendon_slack_length>
+					<tendon_slack_length>0.325</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
-					<pennation_angle_at_optimal>0</pennation_angle_at_optimal>
+					<pennation_angle_at_optimal>0.20245819</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
 					<max_contraction_velocity>10</max_contraction_velocity>
 					<!--Activation lower bound.-->
@@ -2772,11 +2772,11 @@
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>804</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.173</optimal_fiber_length>
+					<optimal_fiber_length>0.1103</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.071</tendon_slack_length>
+					<tendon_slack_length>0.1</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
-					<pennation_angle_at_optimal>0.40142573</pennation_angle_at_optimal>
+					<pennation_angle_at_optimal>0.2146755</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
 					<max_contraction_velocity>10</max_contraction_velocity>
 					<!--Activation lower bound.-->
@@ -3018,7 +3018,7 @@
 									<location> -0.0295 -0.0311 -0.0968</location>
 									<body>pelvis</body>
 								</PathPoint>
-								<PathPoint name="rect_fem_r-P2">
+								<PathPoint name="rect_fem_l-P2">
 									<location> 0.035 -0.32 -0.004</location>
 									<body>femur_l</body>
 								</PathPoint>
@@ -3110,11 +3110,11 @@
 									<location> 0.029 -0.1924 -0.031</location>
 									<body>femur_l</body>
 								</PathPoint>
-								<PathPoint name="vas_int_r-P2">
+								<PathPoint name="vas_int_l-P2">
 									<location> 0.035 -0.32 -0.01</location>
 									<body>femur_l</body>
 								</PathPoint>
-								<PathPoint name="vas_int_r-P3">
+								<PathPoint name="vas_int_l-P3">
 									<location> 0.035 0.02 -0.002</location>
 									<body>tibia_l</body>
 								</PathPoint>
