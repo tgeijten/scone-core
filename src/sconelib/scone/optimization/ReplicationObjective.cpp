@@ -102,7 +102,7 @@ namespace scone
 		auto frame_count = xo::round_cast<size_t>( stop_time / fixed_control_step_size ) + 1;
 		state_storage_.reserve( frame_count );
 		storage_indices_.reserve( frame_count );
-		for ( TimeInSeconds t = 0.0; t < stop_time; t += fixed_control_step_size )
+		for ( TimeInSeconds t = 0.0; t < stop_time + fixed_control_step_size; t += fixed_control_step_size )
 		{
 			auto state_storage_idx = xo::round_cast<index_t>( t / fixed_control_step_size );
 			SCONE_ASSERT( state_storage_idx == state_storage_.size() );
@@ -125,6 +125,7 @@ namespace scone
 		SCONE_ASSERT( model.fixed_control_step_size == fixed_control_step_size );
 
 		const bool store_data = model.GetStoreData() || !model.GetData().IsEmpty();
+		const bool store_muscle_results = store_data;
 		const bool first_frame = !model.GetUserData().has_key( "RPL_err" );
 		const auto& muscles = model.GetMuscles();
 
@@ -133,10 +134,10 @@ namespace scone
 		if ( first_frame ) {
 			mud[ "RPL_err" ] = 0;
 			mud[ "RPL_smp" ] = 0;
-			if ( store_data )
+			mud[ "RPL_act" ].add_children( muscles.size(), "", "0" );
+			if ( store_muscle_results )
 				for ( index_t idx = 0; idx < muscles.size(); ++idx )
 					mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ] = 0;
-			mud[ "RPL_act" ].add_children( muscles.size(), "", "0" );
 		}
 
 		// intermediate values
@@ -195,22 +196,25 @@ namespace scone
 			// compare excitations
 			if ( t >= start_time )
 			{
+				double frame_error = 0.0;
 				for ( const auto& [midx, cidx] : muscle_excitation_map_ )
 				{
-					const auto& mus = *muscles[ midx ];
+					const Muscle& mus = *muscles[ midx ];
 					auto excitation_diff = mus.GetExcitation() - f[ cidx ];
 					auto activation_diff = activations[ midx ] - mus.GetActivation();
 					auto diff = use_muscle_activation ? activation_diff : excitation_diff;
 					auto error = use_squared_error ? xo::squared( diff ) : std::abs( diff );
-					total_error += error;
+					frame_error += error;
 					if ( store_data )
 					{
 						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = excitation_diff;
 						model.GetCurrentFrame()[ mus.GetName() + ".activation_diff" ] = activation_diff;
 						model.GetCurrentFrame()[ mus.GetName() + ".error" ] = error;
-						errors[ midx ] += error;
 					}
+					if ( store_muscle_results )
+						errors[ midx ] += error;
 				}
+				total_error += frame_error;
 				++samples;
 			}
 
@@ -226,10 +230,10 @@ namespace scone
 			//log::trace( "t=", t, " frames=", frame_count, " start=", frame_start, " result=", result );
 			set_exact( mud[ "RPL_err" ], get_exact( mud[ "RPL_err" ] ) + total_error );
 			set_exact( mud[ "RPL_smp" ], get_exact( mud[ "RPL_smp" ] ) + samples );
-			if ( store_data )
+			if ( store_muscle_results )
 				for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
 					auto& rpl_mus_pn = mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ];
-					set_exact( rpl_mus_pn, get_exact( rpl_mus_pn ) + 100 * errors[ idx ] );
+					set_exact( rpl_mus_pn, get_exact( rpl_mus_pn ) + scale_factor * errors[ idx ] );
 				}
 		}
 
@@ -248,7 +252,8 @@ namespace scone
 	fitness_t ReplicationObjective::GetResult( Model& m ) const
 	{
 		auto& mud = m.GetUserData();
-		return mud.get< fitness_t >( "RPL_err" ) / mud.get< index_t >( "RPL_smp" );
+		auto result = mud.get< fitness_t >( "RPL_err" ) / mud.get< index_t >( "RPL_smp" );
+		return result;
 	}
 
 	PropNode ReplicationObjective::GetReport( Model& m ) const
