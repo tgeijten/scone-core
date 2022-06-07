@@ -12,17 +12,22 @@
 namespace scone
 {
 	struct MuscleInfo {
-		MuscleInfo( const string& name, TimeInSeconds delay ) : name_( name ), side_( GetSideFromName( name ) ), delay_( delay ) {}
+		MuscleInfo( const string& name, index_t idx, TimeInSeconds delay ) :
+			name_( name ), index_( idx ), side_( GetSideFromName( name ) ), delay_( delay )
+		{}
 
 		string name_;
 		Side side_;
+		index_t index_;
 		TimeInSeconds delay_;
 		xo::flat_set<xo::uint32> group_indices_;
 		xo::flat_set<xo::uint32> ant_group_indices_;
 	};
 
 	struct MuscleGroup {
-		MuscleGroup( const PropNode& pn, Side side ) : pn_( pn ), name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( ~xo::uint32( 0 ) ) {}
+		MuscleGroup( const PropNode& pn, Side side ) :
+			name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( ~xo::uint32( 0 ) ), pn_( pn ), muscle_pat_( pn.get<xo::pattern_matcher>( "muscles" ) )
+		{}
 
 		string name_;
 		Side side_;
@@ -31,6 +36,7 @@ namespace scone
 		std::vector<xo::uint32> related_group_indices_;
 		xo::uint32 contra_group_index_;
 		const PropNode& pn_;
+		xo::pattern_matcher muscle_pat_;
 		string sided_name() const { return GetSidedName( name_, side_ ); }
 	};
 
@@ -64,7 +70,7 @@ namespace scone
 		void TryConnect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
 		void TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix = "_weight" );
 
-		void InitMuscleInfo( const PropNode& pn, Model& model );
+		void InitMuscleInfo( const PropNode& pn, Model& model, const Location& loc );
 		TimeInSeconds NeuralDelay( const Muscle& m ) const;
 		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
 		const string& NeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }

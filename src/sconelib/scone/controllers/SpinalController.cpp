@@ -15,6 +15,7 @@ namespace scone
 	using snel::group_id, snel::link_id;
 	constexpr auto both_sides = { Side::Right, Side::Left };
 	static const char* axis_names[] = { "x", "y", "z" };
+	std::vector<Side> get_sides( const Location& loc ) { if ( loc.GetSide() == Side::None ) return both_sides; else return { loc.GetSide() }; }
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
@@ -25,24 +26,25 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		InitMuscleInfo( pn, model );
+		auto sides = get_sides( loc );
+		InitMuscleInfo( pn, model, loc );
 
 		// create L neurons
 		l_group_ = AddInputNeuronGroup( "L" );
 		l_bias_ = pn.get<Real>( "L_bias", 0.0 );
-		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			auto& mus = *model.GetMuscles()[ mi ];
+		for ( auto& musinf : muscles_ ) {
+			auto& mus = *model.GetMuscles()[ musinf.index_ ];
 			auto& sp = model.AcquireSensor<MuscleLengthSensor>( mus );
-			l_sensors_.push_back( model.GetDelayedSensor( sp, muscles_[ mi ].delay_ ) );
+			l_sensors_.push_back( model.GetDelayedSensor( sp, musinf.delay_ ) );
 			AddNeuron( l_group_, mus.GetName(), 0.0 );
 		}
 
 		// create F neurons
 		f_group_ = AddInputNeuronGroup( "F" );
-		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			auto& mus = *model.GetMuscles()[ mi ];
+		for ( auto& musinf : muscles_ ) {
+			auto& mus = *model.GetMuscles()[ musinf.index_ ];
 			auto& sp = model.AcquireSensor<MuscleForceSensor>( mus );
-			f_sensors_.push_back( model.GetDelayedSensor( sp, muscles_[ mi ].delay_ ) );
+			f_sensors_.push_back( model.GetDelayedSensor( sp, musinf.delay_ ) );
 			AddNeuron( f_group_, mus.GetName(), 0.0 );
 		}
 
@@ -54,7 +56,7 @@ namespace scone
 			ves_vel_gain_ = ves_pn->get<Real>( "vel_gain", 0.2 );
 			auto ves_delay = ves_pn->get<Real>( "delay" );
 			for ( int axis = planar ? 2 : 0; axis < 3; ++axis ) {
-				for ( auto side : both_sides ) {
+				for ( auto side : sides ) {
 					if ( ves_use_orivel_ ) {
 						auto& sensor = model.AcquireSensor<BodyOriVelSensor>( body, Vec3::axis( axis ), ves_vel_gain_, axis_names[ axis ], side, 0.0 );
 						ves_sensors_.push_back( model.GetDelayedSensor( sensor, ves_delay ) );
@@ -75,7 +77,7 @@ namespace scone
 		// create LD neurons
 		if ( auto* ld_pn = pn.try_get_child( "LD" ) ) {
 			load_group_ = AddInputNeuronGroup( "LD" );
-			for ( auto side : both_sides ) {
+			for ( auto side : sides ) {
 				auto& leg = model.GetLeg( Location( side ) );
 				auto& sensor = model.AcquireSensor<LegLoadSensor>( leg );
 				load_sensors_.push_back( model.GetDelayedSensor( sensor, ld_pn->get<Real>( "delay" ) ) );
@@ -86,7 +88,7 @@ namespace scone
 		// CPG neurons
 		if ( auto* cpg_pn = pn.try_get_child( "CPG" ) ) {
 			cpg_group_ = AddNeuronGroup( "CPG", pn );
-			for ( auto side : both_sides ) {
+			for ( auto side : sides ) {
 				auto flex_idx = AddNeuron( cpg_group_, GetSidedName( "flex", side ), pn, par );
 				auto flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
 				auto ext_idx = AddNeuron( cpg_group_, GetSidedName( "ext", side ), pn, par );
@@ -127,23 +129,22 @@ namespace scone
 
 		// add motor neurons
 		mn_group_ = AddNeuronGroup( "MN", pn );
-		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[ mi ], muscles_[ mi ].delay_ ) );
-			AddNeuron( mn_group_, muscles_[ mi ].name_, pn, par );
+		for ( auto& musinf : muscles_ ) {
+			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[ musinf.index_ ], musinf.delay_ ) );
+			AddNeuron( mn_group_, musinf.name_, pn, par );
 		}
 
 		// add Renshaw cells
 		if ( pn.has_key( "RC_bias" ) ) {
 			rc_group_ = AddNeuronGroup( "RC", pn );
-			for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-				AddNeuron( rc_group_, muscles_[ mi ].name_, pn, par );
+			for ( auto& musinf : muscles_ ) 
+				AddNeuron( rc_group_, musinf.name_, pn, par );
 		}
 
 		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
-			SCONE_ASSERT( mg.contra_group_index_ < muscle_groups_.size() );
-			auto& contra_mg = muscle_groups_[ mg.contra_group_index_ ];
+			auto* contra_mg = mg.contra_group_index_ < muscle_groups_.size() ? &muscle_groups_[ mg.contra_group_index_ ] : nullptr;
 
 			// IA interneurons
 			if ( ia_group_ ) {
@@ -196,16 +197,20 @@ namespace scone
 					// IB -> IB / IBE -> IBE / IBI -> IBI
 					TryConnect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
 					TryConnect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
-					TryConnect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
-					TryConnect( ib_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+					if ( contra_mg ) {
+						TryConnect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
+						TryConnect( ib_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+					}
 
 					// IBE -> IBI / IBI -> IBE
 					if ( ib_group == ibi_group_ || ib_group == ibe_group_ && ibi_group_ && ibe_group_ ) {
 						auto src_group = ( ib_group == ibi_group_ ) ? ibe_group_ : ibi_group_;
 						TryConnect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
 						TryConnect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
-						TryConnect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
-						TryConnect( src_group, contra_mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+						if ( contra_mg ) {
+							TryConnect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
+							TryConnect( src_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+						}
 					}
 				}
 			}
@@ -272,8 +277,7 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		auto& muscles = model.GetMuscles();
-		for ( uint32 mi = 0; mi < muscles.size(); ++mi ) {
+		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
 			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() + l_bias_ ) );
 			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
 		}
@@ -288,7 +292,7 @@ namespace scone
 			for ( int i = 0; i < neuron_equilibration_steps; ++i )
 				network_.update();
 
-		for ( uint32 mi = 0; mi < muscles.size(); ++mi )
+		for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
 			actuators_[ mi ].AddInput( network_.value( mn_group_, mi ) );
 
 		return false;
@@ -370,30 +374,38 @@ namespace scone
 				Connect( sgid, sidx, tgid, tidx, par, *par_pn, sidxvec.size() );
 	}
 
-	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model )
+	void SpinalController::InitMuscleInfo( const PropNode& pn, Model& model, const Location& loc )
 	{
-		// setup muscle info
-		for ( auto& mus : model.GetMuscles() )
-			muscles_.emplace_back( mus->GetName(), NeuralDelay( *mus ) );
-
-		// create initial muscle groups
-		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) ) {
-			for ( auto side : both_sides ) {
+		// setup muscle group list
+		for ( auto& [key, mgpn] : pn.select( "MuscleGroup" ) )
+			for ( auto side : get_sides( loc ) )
 				auto& mg = muscle_groups_.emplace_back( mgpn, side );
-				auto muscle_pat = mgpn.get<xo::pattern_matcher>( "muscles" );
-				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-					if ( mg.side_ == muscles_[ mi ].side_ && muscle_pat.match( muscles_[ mi ].name_ ) )
-						mg.muscle_indices_.emplace_back( mi );
-				if ( mg.muscle_indices_.empty() )
-					muscle_groups_.pop_back();
+
+		// setup muscle info list
+		for ( auto& mus : model.GetMuscles() ) {
+			if ( loc.GetSide() == Side::None || loc.GetSide() == mus->GetSide() ) {
+				auto& musinf = muscles_.emplace_back( mus->GetName(), xo::index_of( mus, model.GetMuscles() ), NeuralDelay( *mus ) );
+
+				// add to muscle groups
+				for ( auto& mg : muscle_groups_ ) {
+					if ( mg.side_ == musinf.side_ && mg.muscle_pat_.match( musinf.name_ ) ) {
+						mg.muscle_indices_.emplace_back( uint32( muscles_.size() - 1 ) );
+						musinf.group_indices_.insert( uint32( xo::index_of( mg, muscle_groups_ ) ) );
+					}
+				}
+				// remove if muscle does not belong to any group
+				if ( muscles_.back().group_indices_.empty() )
+					muscles_.pop_back();
 			}
 		}
+
+		for ( auto& mg : muscle_groups_ )
+			if ( mg.muscle_indices_.empty() )
+				log::warning( mg.name_, " does not contain any muscles" );
 
 		// set muscle group indices
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
 			auto& mg = muscle_groups_[ mgi ];
-			for ( auto mi : mg.muscle_indices_ )
-				muscles_[ mi ].group_indices_.insert( mgi );
 			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
 			auto rpat = mg.pn_.try_get<xo::pattern_matcher>( "related" );
 			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
@@ -444,7 +456,7 @@ namespace scone
 	{
 		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
 			return *par_pn;
-		SCONE_ERROR( string( "\n" + GroupName( sgid ) + '_' + GroupName( tgid ) ).append( suffix ) );
+		SCONE_ERROR( "Could not find " + PropNodeName( sgid, tgid, suffix ) );
 	}
 
 	string SpinalController::ParName( const string& src, const string& trg ) const
