@@ -127,14 +127,14 @@ namespace scone
 		if ( pn.has_key( "PM_bias" ) )
 			pm_group_ = AddMuscleGroupNeurons( "PM", pn, par );
 
-		// add motor neurons
+		// MN neurons (motor neurons)
 		mn_group_ = AddNeuronGroup( "MN", pn );
 		for ( auto& musinf : muscles_ ) {
 			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[ musinf.index_ ], musinf.delay_ ) );
 			AddNeuron( mn_group_, musinf.name_, pn, par );
 		}
 
-		// add Renshaw cells
+		// RC neurons (Renshaw cells)
 		if ( pn.has_key( "RC_bias" ) ) {
 			rc_group_ = AddNeuronGroup( "RC", pn );
 			for ( auto& musinf : muscles_ ) 
