@@ -7,7 +7,7 @@
 
 namespace scone
 {
-	/// Settings for input files, used in Optimizer init_files
+	/// Settings for parameter initialization files (.par), used by Optimizer.
 	struct ParInitSettings
 	{
 		ParInitSettings() = default;
@@ -21,12 +21,25 @@ namespace scone
 			INIT_MEMBER( pn, locked, false )
 		{}
 
+		/// Parameter file (.par) to be used for initial parameter values.
 		path file;
+
+		/// Use the standard deviations from the init_file; default = 1.
 		bool use_std = true;
+
+		/// Factor by which to multiply the standard deviations from the init_file; default = 1.0.
 		double std_factor = 1.0;
+
+		/// Offset added to the standard deviations from init_file; default = 0.
 		double std_offset = 0.0;
+
+		/// Pattern matching the init_file parameters to include (semicolon seperated); default = "" (all).
 		String include;
+
+		/// Pattern matching the init_file parameters to exclude (semicolon seperated); default = "" (none).
 		String exclude;
+
+		/// Lock the parameters from this file, preventing them to be optimized; default = 0.
 		bool locked = false;
 	};
 }

@@ -51,8 +51,8 @@ namespace scone
 		/// Pattern matching the init_file parameters to exclude (semicolon seperated); default = "" (none).
 		String init_file_exclude;
 
-		/// List of input files (.par) used for initial parameter values.
-		std::vector<ParInitSettings> init_files;
+		/// Section with parameter initialization settings (.par), multiple allowed; see ParInitSettings for details.
+		ParInitSettings init;
 
 		/// Maximum number of threads to use for this optimization (deprecated, use global settings instead); default = 32.
 		size_t max_threads;
