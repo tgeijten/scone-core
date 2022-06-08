@@ -15,6 +15,7 @@
 #include "xo/system/log_sink.h"
 #include <deque>
 #include <mutex>
+#include "ParInitSettings.h"
 
 namespace scone
 {
@@ -50,7 +51,10 @@ namespace scone
 		/// Pattern matching the init_file parameters to exclude (semicolon seperated); default = "" (none).
 		String init_file_exclude;
 
-		/// Maximum number of threads to use for this optimization; default = 32.
+		/// List of input files (.par) used for initial parameter values.
+		std::vector<ParInitSettings> init_files;
+
+		/// Maximum number of threads to use for this optimization (deprecated, use global settings instead); default = 32.
 		size_t max_threads;
 
 		/// Thread priority of the optimization; 0 = lowest, 7 = highest, default = 1.

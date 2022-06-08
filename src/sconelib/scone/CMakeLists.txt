@@ -194,6 +194,7 @@ set(OPT_API_FILES
 	optimization/Optimizer.cpp
 	optimization/Optimizer.h
 	optimization/Params.h
+	optimization/ParInitSettings.h
 	optimization/ModelObjective.cpp
 	optimization/ModelObjective.h
 	optimization/SimulationObjective.cpp

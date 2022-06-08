@@ -57,6 +57,7 @@ namespace scone
 		INIT_PROP( props, use_init_file_std, true );
 		INIT_PROP( props, init_file_include, {} );
 		INIT_PROP( props, init_file_exclude, {} );
+		INIT_PROP( props, init_files, {} );
 
 		INIT_PROP( props, output_objective_result_files, false );
 		INIT_PROP( props, min_improvement_for_file_output, 0.05 );
@@ -70,14 +71,26 @@ namespace scone
 
 		INIT_PROP( props, target_fitness_, std::numeric_limits<double>::quiet_NaN() );
 
-		// initialize parameters from file
+		// initialize parameters from init_file
+		auto& info = GetObjective().info();
 		if ( use_init_file && !init_file.empty() )
 		{
 			init_file = FindFile( init_file );
-			auto result = GetObjective().info().import_mean_std( init_file,
+			auto result = info.import_mean_std( init_file,
 				use_init_file_std, init_file_std_factor, init_file_std_offset,
 				init_file_include, init_file_exclude );
-			log::debug( "Imported ", result.first, " of ", GetObjective().info().dim(), ", skipped ", result.second, " parameters from ", init_file );
+			log::debug( "Imported ", result.first, " of ", info.dim(), ", skipped ", result.second, " parameters from ", init_file );
+		}
+
+		// initialize parameters from init_files (plural)
+		for ( auto& ifs : init_files ) {
+			auto file = FindFile( ifs.file );
+			GetObjective().AddExternalResource( file );
+			std::pair< size_t, size_t > r;
+			if ( !ifs.locked )
+				r = info.import_mean_std( file, ifs.use_std, ifs.std_factor, ifs.std_offset, ifs.include, ifs.exclude );
+			else r = info.import_locked( ifs.file );
+			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init_file );
 		}
 
 		// inject model build version if this is a model objective
