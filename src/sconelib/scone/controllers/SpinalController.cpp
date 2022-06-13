@@ -19,7 +19,7 @@ namespace scone
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
-		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
+		INIT_MEMBER( pn, neural_delays_, {} ),
 		INIT_MEMBER_REQUIRED( pn, activation_ ),
 		INIT_MEMBER( pn, planar, model.GetDofs().size() < 14 ),
 		INIT_MEMBER( pn, neuron_equilibration_steps, 20 )
@@ -89,9 +89,9 @@ namespace scone
 		if ( auto* cpg_pn = pn.try_get_child( "CPG" ) ) {
 			cpg_group_ = AddNeuronGroup( "CPG", pn );
 			for ( auto side : sides ) {
-				auto flex_idx = AddNeuron( cpg_group_, GetSidedName( "flex", side ), pn, par );
+				auto flex_idx = AddNeuron( cpg_group_, GetSidedName( "flex", side ), par, pn );
 				auto flex_pat = cpg_pn->get<xo::pattern_matcher>( "flex_inputs" );
-				auto ext_idx = AddNeuron( cpg_group_, GetSidedName( "ext", side ), pn, par );
+				auto ext_idx = AddNeuron( cpg_group_, GetSidedName( "ext", side ), par, pn );
 				auto ext_pat = cpg_pn->get<xo::pattern_matcher>( "ext_inputs" );
 				Connect( cpg_group_, ext_idx, cpg_group_, flex_idx, par, pn, nullptr );
 				for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
@@ -130,15 +130,16 @@ namespace scone
 		// MN neurons (motor neurons)
 		mn_group_ = AddNeuronGroup( "MN", pn );
 		for ( auto& musinf : muscles_ ) {
+			auto* mgpn = !musinf.group_indices_.empty() ? &muscle_groups_[ musinf.group_indices_.front() ].pn_ : nullptr;
 			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[ musinf.index_ ], musinf.delay_ ) );
-			AddNeuron( mn_group_, musinf.name_, pn, par );
+			AddNeuron( mn_group_, musinf.name_, par, pn, mgpn );
 		}
 
 		// RC neurons (Renshaw cells)
 		if ( pn.has_key( "RC_bias" ) ) {
 			rc_group_ = AddNeuronGroup( "RC", pn );
 			for ( auto& musinf : muscles_ ) 
-				AddNeuron( rc_group_, musinf.name_, pn, par );
+				AddNeuron( rc_group_, musinf.name_, par, pn );
 		}
 
 		// connect muscle group interneurons
@@ -306,11 +307,12 @@ namespace scone
 		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
 	}
 
-	uint32 SpinalController::AddNeuron( group_id gid, const String& name, const PropNode& pn, Params& par )
+	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Params& par, const PropNode& pn, const PropNode* pn2 )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
 		neuron_names_.emplace_back( neuron_group_names_[ gid.value() ] + '.' + name );
-		auto bias = par.try_get( GetNameNoSide( neuron_names_.back() ), pn, neuron_group_names_[ gid.value() ] + "_bias", 0.0 );
+		auto* par_pn = TryGetPropNode( neuron_group_names_[ gid.value() ] + "_bias", pn, pn2 );
+		auto bias = par_pn ? par.get( GetNameNoSide( neuron_names_.back() ), *par_pn ) : 0.0;
 		auto nid = network_.add_neuron( gid, snel::real( bias ) );
 		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
 	}
@@ -331,7 +333,7 @@ namespace scone
 	{
 		auto gid = AddNeuronGroup( name, pn );
 		for ( auto& mg : muscle_groups_ )
-			AddNeuron( gid, mg.sided_name(), pn, par );
+			AddNeuron( gid, mg.sided_name(), par, pn );
 		return gid;
 	}
 
@@ -437,9 +439,12 @@ namespace scone
 
 	TimeInSeconds SpinalController::NeuralDelay( const Muscle& m ) const
 	{
-		auto it = neural_delays_.find( MuscleId( m.GetName() ).base_ );
-		SCONE_ERROR_IF( it == neural_delays_.end(), "Could not find neural delay for " + m.GetName() );
-		return it->second;
+		auto mid = MuscleId( m.GetName() );
+		if ( auto it = neural_delays_.find( mid.base_ ); it != neural_delays_.end() )
+			return it->second;
+		if ( auto it = m.GetModel().neural_delays.find( mid.base_ ); it != m.GetModel().neural_delays.end() )
+			return it->second;
+		SCONE_ERROR( "Could not find neural delay for " + m.GetName() );
 	}
 
 	const PropNode* SpinalController::TryGetPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const

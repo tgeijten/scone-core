@@ -58,7 +58,7 @@ namespace scone
 
 	private:
 		xo::uint32 AddNeuron( snel::group_id group, const String& name, Real bias );
-		xo::uint32 AddNeuron( snel::group_id group, const String& name, const PropNode& pn, Params& par );
+		xo::uint32 AddNeuron( snel::group_id group, const String& name, Params& par, const PropNode& pn, const PropNode* pn2 = nullptr );
 		snel::group_id AddNeuronGroup( const String& name, const PropNode& pn );
 		snel::group_id AddInputNeuronGroup( const String& name );
 		snel::group_id AddMuscleGroupNeurons( String name, const PropNode& pn, Params& par );
