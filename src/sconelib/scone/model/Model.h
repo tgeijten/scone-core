@@ -231,8 +231,11 @@ namespace scone
 		/// Activation used to equilibrate muscles before control inputs are known; default = 0.05
 		Real initial_equilibration_activation;
 
-		/// Initrialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
+		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;
+
+		/// Optional list of two-way neural delays, used by SpinalController.
+		xo::flat_map<String, TimeInSeconds> neural_delays;
 
 		/// File containing user input values, only for model with user inputs; default = "".
 		path user_input_file;

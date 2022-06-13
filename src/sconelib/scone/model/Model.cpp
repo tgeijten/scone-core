@@ -48,6 +48,7 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, sensor_delay_scaling_factor, 1.0 ),
 		INIT_PAR_MEMBER( props, par, initial_equilibration_activation, 0.05 ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
+		INIT_MEMBER( props, neural_delays, {} ),
 		INIT_MEMBER( props, user_input_file, "" ),
 		INIT_MEMBER( props, scone_version, GetSconeVersion() ),
 		m_Profiler( GetProfilerEnabled() ),
