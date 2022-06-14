@@ -46,6 +46,9 @@ namespace scone
 		/// Penalty for when the normalized muscle contraction velocity [L_opt/s] is out of range.
 		RangePenalty<Real> velocity;
 
+		/// Penalty for when the normalized muscle force [N/max_isometric_force] is out of range.
+		RangePenalty<Real> force;
+
 	protected:
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;

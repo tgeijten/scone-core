@@ -20,6 +20,7 @@ namespace scone
 		INIT_PROP( props, activation, RangePenalty<Real>() );
 		INIT_PROP( props, length, RangePenalty<Real>() );
 		INIT_PROP( props, velocity, RangePenalty<Real>() );
+		INIT_PROP( props, force, RangePenalty<Real>() );
 
 		if ( name_.empty() )
 			name_ = muscle.GetName();
@@ -41,17 +42,23 @@ namespace scone
 			if ( range_count > 1 )
 				GetReport().set( name_ + ".activation_penalty", stringf( "%g", activation.GetResult() ) );
 		}
+		if ( !length.IsNull() )
+		{
+			penalty += length.GetResult();
+			if ( range_count > 1 )
+				GetReport().set( name_ + ".length_penalty", stringf( "%g", length.GetResult() ) );
+		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult();
 			if ( range_count > 1 )
 				GetReport().set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
-		if ( !length.IsNull() )
+		if ( !force.IsNull() )
 		{
-			penalty += length.GetResult();
+			penalty += force.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".length_penalty", stringf( "%g", length.GetResult() ) );
+				GetReport().set( name_ + ".force_penalty", stringf( "%g", force.GetResult() ) );
 		}
 
 		return  penalty;
@@ -61,8 +68,9 @@ namespace scone
 	{
 		input.AddSample( timestamp, muscle.GetInput() );
 		activation.AddSample( timestamp, muscle.GetActivation() );
-		velocity.AddSample( timestamp, muscle.GetNormalizedFiberVelocity() );
 		length.AddSample( timestamp, muscle.GetNormalizedFiberLength() );
+		velocity.AddSample( timestamp, muscle.GetNormalizedFiberVelocity() );
+		force.AddSample( timestamp, muscle.GetNormalizedForce() );
 		return false;
 	}
 
@@ -77,9 +85,11 @@ namespace scone
 			frame[ muscle.GetName() + ".input_penalty" ] = input.GetLatest();
 		if ( !activation.IsNull() )
 			frame[ muscle.GetName() + ".activation_penalty" ] = activation.GetLatest();
-		if ( !velocity.IsNull() )
-			frame[ muscle.GetName() + ".velocity_penalty" ] = velocity.GetLatest();
 		if ( !length.IsNull() )
 			frame[ muscle.GetName() + ".length_penalty" ] = length.GetLatest();
+		if ( !velocity.IsNull() )
+			frame[ muscle.GetName() + ".velocity_penalty" ] = velocity.GetLatest();
+		if ( !force.IsNull() )
+			frame[ muscle.GetName() + ".force_penalty" ] = force.GetLatest();
 	}
 }
