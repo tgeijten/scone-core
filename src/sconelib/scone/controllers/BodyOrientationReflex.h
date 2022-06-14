@@ -31,7 +31,7 @@ namespace scone
 		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
 		bool mirror_left;
 
-		/// Target orientation [rad]; default = 0.
+		/// Target orientation [rad] around axis, derived as YZX Euler angle; default = 0.
 		Real P0;
 		/// Orientation feedback gain; default = 0.
 		Real KP;

@@ -12,7 +12,7 @@
 
 namespace scone
 {
-	/// Reflex based on the global orientation of a specific Body.
+	/// EXPERIMENTAL reflex that is subject to change; please don't use.
 	/// Must be part of ReflexController.
 	class ComPivotReflex : public Reflex
 	{
