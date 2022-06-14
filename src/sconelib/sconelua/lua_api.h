@@ -156,22 +156,26 @@ namespace scone
 		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
 		/// get the optimal fiber length [m]
 		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
-		/// get the fiber length [m] of the contractile element
+		/// get the tendon length [m]
 		LuaNumber tendon_length() { return mus_.GetTendonLength(); }
 		/// get the normalized fiber length of the contractile element
 		LuaNumber normalized_tendon_length() { return mus_.GetNormalizedTendonLength(); }
 		/// get the optimal fiber length [m]
 		LuaNumber tendon_slack_length() { return mus_.GetTendonSlackLength(); }
+		/// get the muscle-tendon-unit length [m]
+		LuaNumber muscle_tendon_length() { return mus_.GetLength(); }
+		/// get the muscle-tendon-unit lengthening velocity [m/s]
+		LuaNumber muscle_tendon_velocity() { return mus_.GetVelocity(); }
 		/// get the current muscle force [N]
 		LuaNumber force() { return mus_.GetForce(); }
 		/// get the normalized muscle force [0..1]
 		LuaNumber normalized_force() { return mus_.GetNormalizedForce(); }
 		/// get the maximum isometric force [N]
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
-		/// get the contraction velocity [m/s]
-		LuaNumber contraction_velocity() { return mus_.GetFiberVelocity(); }
-		/// get the contraction velocity [m/s]
-		LuaNumber normalized_contraction_velocity() { return mus_.GetNormalizedFiberVelocity(); }
+		/// get the fiber lengthening velocity [m/s]
+		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
+		/// get the normalized fiber lengthening velocity [m/s]
+		LuaNumber normalized_fiber_velocity() { return mus_.GetNormalizedFiberVelocity(); }
 
 		Muscle& mus_;
 	};

@@ -84,11 +84,13 @@ namespace scone
 			"tendon_length", &LuaMuscle::tendon_length,
 			"normalized_tendon_length", &LuaMuscle::normalized_tendon_length,
 			"tendon_slack_length", &LuaMuscle::tendon_slack_length,
+			"muscle_tendon_length", &LuaMuscle::muscle_tendon_length,
+			"muscle_tendon_velocity", &LuaMuscle::muscle_tendon_velocity,
 			"force", &LuaMuscle::force,
 			"normalized_force", &LuaMuscle::normalized_force,
 			"max_isometric_force", &LuaMuscle::max_isometric_force,
-			"contraction_velocity", &LuaMuscle::contraction_velocity,
-			"normalized_contraction_velocity", &LuaMuscle::normalized_contraction_velocity
+			"fiber_velocity", &LuaMuscle::fiber_velocity,
+			"normalized_fiber_velocity", &LuaMuscle::normalized_fiber_velocity
 			);
 
 		lua.new_usertype<LuaModel>( "LuaModel", sol::constructors<>(),
