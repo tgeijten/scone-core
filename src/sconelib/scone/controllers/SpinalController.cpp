@@ -333,7 +333,7 @@ namespace scone
 	{
 		auto gid = AddNeuronGroup( name, pn );
 		for ( auto& mg : muscle_groups_ )
-			AddNeuron( gid, mg.sided_name(), par, pn );
+			AddNeuron( gid, mg.sided_name(), par, pn, &mg.pn_ );
 		return gid;
 	}
 
