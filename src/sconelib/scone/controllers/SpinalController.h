@@ -72,8 +72,8 @@ namespace scone
 
 		void InitMuscleInfo( const PropNode& pn, Model& model, const Location& loc );
 		TimeInSeconds NeuralDelay( const Muscle& m ) const;
-		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.value() ]; }
-		const string& NeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).value() ]; }
+		const string& GroupName( snel::group_id gid ) const { return neuron_group_names_[ gid.idx ]; }
+		const string& NeuronName( snel::group_id gid, xo::uint32 idx ) const { return neuron_names_[ network_.get_id( gid, idx ).idx ]; }
 		Side NeuronSide( snel::group_id gid, xo::uint32 idx ) const { return GetSideFromName( NeuronName( gid, idx ) ); }
 		const PropNode* TryGetPropNode( const string& name, const PropNode& pn, const PropNode* pn2 ) const;
 		const PropNode& GetPropNode( snel::group_id sgid, snel::group_id tgid, const PropNode& pn, const PropNode* pn2, const char* suffix ) const;

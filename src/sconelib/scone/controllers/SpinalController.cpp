@@ -261,19 +261,19 @@ namespace scone
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Real bias )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		neuron_names_.emplace_back( neuron_group_names_[ gid.value() ] + '.' + name );
+		neuron_names_.emplace_back( neuron_group_names_[ gid.idx ] + '.' + name );
 		auto nid = network_.add_neuron( gid, snel::real( bias ) );
-		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
+		return nid.idx - network_.groups_[ gid.idx ].neuron_begin_.idx;
 	}
 
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Params& par, const PropNode& pn, const PropNode* pn2 )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		neuron_names_.emplace_back( neuron_group_names_[ gid.value() ] + '.' + name );
-		auto* par_pn = TryGetPropNode( neuron_group_names_[ gid.value() ] + "_bias", pn, pn2 );
+		neuron_names_.emplace_back( neuron_group_names_[ gid.idx ] + '.' + name );
+		auto* par_pn = TryGetPropNode( neuron_group_names_[ gid.idx ] + "_bias", pn, pn2 );
 		auto bias = par_pn ? par.get( GetNameNoSide( neuron_names_.back() ), *par_pn ) : 0.0;
 		auto nid = network_.add_neuron( gid, snel::real( bias ) );
-		return nid.value() - network_.groups_[ gid.value() ].neuron_begin_.value();
+		return nid.idx - network_.groups_[ gid.idx ].neuron_begin_.idx;
 	}
 
 	group_id SpinalController::AddNeuronGroup( const String& name, const PropNode& pn )
@@ -437,9 +437,9 @@ namespace scone
 			frame[ neuron_names_[ i ] ] = network_.values_[ i ];
 			const auto& n = network_.neurons_[ i ];
 			for ( auto lid = n.input_begin_; lid != n.input_end_; ++lid ) {
-				const auto& l = network_.links_[ lid.value() ];
+				const auto& l = network_.links_[ lid.idx ];
 				auto v = network_.value( l.input_ ) * l.weight_;
-				frame[ neuron_names_[ i ] + '-' + neuron_names_[ l.input_.value() ] ] = v;
+				frame[ neuron_names_[ i ] + '-' + neuron_names_[ l.input_.idx ] ] = v;
 			}
 		}
 	}
@@ -474,15 +474,15 @@ namespace scone
 			mgpn[ "antagonists" ] = mg.ant_group_indices_;
 		}
 		auto& nspn = pn.add_child( "Neurons" );
-		for ( auto gid = group_id( 0 ); gid.value() < network_.groups_.size(); ++( gid.value() ) ) {
-			auto& gpn = nspn.add_child( neuron_group_names_[ gid.value() ] );
+		for ( auto gid = group_id( 0 ); gid.idx < network_.groups_.size(); ++( gid.idx ) ) {
+			auto& gpn = nspn.add_child( neuron_group_names_[ gid.idx ] );
 			for ( uint32 nidx = 0; nidx < network_.group_size( group_id( gid ) ); ++nidx ) {
 				auto nid = network_.get_id( gid, nidx );
-				auto& n = network_.neurons_[ nid.value() ];
-				auto& npn = gpn.add_child( neuron_names_[ nid.value() ] );
+				auto& n = network_.neurons_[ nid.idx ];
+				auto& npn = gpn.add_child( neuron_names_[ nid.idx ] );
 				npn[ "bias" ] = n.bias_;
 				for ( auto lit = n.input_begin_.iter( network_.links_ ); lit != n.input_end_.iter( network_.links_ ); ++lit )
-					npn[ neuron_names_[ lit->input_.value() ] ] = lit->weight_;
+					npn[ neuron_names_[ lit->input_.idx ] ] = lit->weight_;
 			}
 		}
 		return pn;
