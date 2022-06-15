@@ -84,11 +84,11 @@ namespace scone
 		// initialize parameters from init sections (possibly multiple)
 		for ( auto& [key, init_pn] : props.select( "init" ) ) {
 			auto init = ParInitSettings( init_pn );
-			auto file = FindFile( init.file );
-			GetObjective().AddExternalResource( file );
+			init.file = FindFile( init.file );
+			GetObjective().AddExternalResource( init.file );
 			std::pair< size_t, size_t > r;
 			if ( !init.locked )
-				r = info.import_mean_std( file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude );
+				r = info.import_mean_std( init.file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude );
 			else r = info.import_locked( init.file );
 			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init_file );
 		}
