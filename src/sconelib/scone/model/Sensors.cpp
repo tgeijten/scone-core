@@ -51,7 +51,7 @@ namespace scone
 	Real MuscleActivationSensor::GetValue() const { return muscle_.GetActivation(); }
 
 	String LegLoadSensor::GetName() const { return leg_.GetName() + ".LD"; }
-	Real LegLoadSensor::GetValue() const { return leg_.GetLoad(); }
+	Real LegLoadSensor::GetValue() const { return range_.clamped( gain_ * leg_.GetLoad() + ofs_ ); }
 
 	String DofPositionSensor::GetName() const { return dof_.GetName() + ".DP"; }
 	Real DofPositionSensor::GetValue() const { return root_dof_ ? root_dof_->GetPos() + dof_.GetPos() : dof_.GetPos(); }

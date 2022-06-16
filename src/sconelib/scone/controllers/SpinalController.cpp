@@ -73,9 +73,12 @@ namespace scone
 			load_group_ = AddInputNeuronGroup( "LD" );
 			for ( auto side : sides ) {
 				auto& leg = model.GetLeg( Location( side ) );
-				auto& sensor = model.AcquireSensor<LegLoadSensor>( leg );
+				auto gain = ld_pn->get<Real>( "gain", 1.0 );
+				auto offset = ld_pn->get<Real>( "bias", 0.0 );
+				auto range = ld_pn->get<xo::boundsd>( "bounds", xo::boundsd::infinite() );
+				auto& sensor = model.AcquireSensor<LegLoadSensor>( leg, gain, offset, range );
 				load_sensors_.push_back( model.GetDelayedSensor( sensor, ld_pn->get<Real>( "delay" ) ) );
-				AddNeuron( load_group_, GetSidedName( "LD", side ), 0.0 );
+				AddNeuron( load_group_, GetSidedName( stringf( "leg%d", leg.GetRank() ), leg.GetSide() ), 0.0 );
 			}
 		}
 
@@ -125,10 +128,11 @@ namespace scone
 					if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
 			// Load -> IA
-			if ( load_group_ && pn.has_key( "LD_IA_weight" ) )
+			if ( load_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-					//if ( NeuronSide( load_group_, vi ) == mg.side_ )
-						Connect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
+					TryConnect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_,
+						NeuronSide( load_group_, vi ) == mg.side_ ? "_weight" : "_com_weight" );
+
 			// IB -> IA
 			if ( pn.has_key( "IB_IA_weight" ) )
 				Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
@@ -149,9 +153,10 @@ namespace scone
 					Connect( f_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
 					TryConnect( l_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
 					// LD -> IB
-					if ( load_group_ && pn.has_key( "LD" + group_suffix ) )
+					if ( load_group_ )
 						for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-							Connect( load_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
+							TryConnect( load_group_, vi, ib_group, mgi, par, pn, &mg.pn_,
+								NeuronSide( load_group_, vi ) == mg.side_ ? "_weight" : "_com_weight" );
 					// VES -> IB
 					if ( ves_group_ && pn.has_key( "VES" + group_suffix ) )
 						for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )

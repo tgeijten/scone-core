@@ -136,11 +136,16 @@ namespace scone
 	// Sensor for normalized leg load, based on target_area
 	struct SCONE_API LegLoadSensor : public Sensor
 	{
-		LegLoadSensor( const Leg& leg ) : leg_( leg ) {}
+		LegLoadSensor( const Leg& leg, Real gain = 1, Real ofs = 0, xo::boundsd range = xo::boundsd::infinite() ) :
+			leg_( leg ), gain_( gain ), ofs_( ofs ), range_( range )
+		{}
 
 		virtual String GetName() const override;
 		virtual Real GetValue() const override;
 		const Leg& leg_;
+		Real gain_;
+		Real ofs_;
+		xo::boundsd range_;
 	};
 
 	// Base struct for body sensors
@@ -201,7 +206,7 @@ namespace scone
 		virtual String GetName() const override { return name_; }
 		virtual Real GetValue() const override;
 		const Body& body_;
-		const double scale_;
+		const Real scale_;
 		const Vec3 dir_;
 		const String name_;
 	};
@@ -212,7 +217,7 @@ namespace scone
 		virtual String GetName() const override { return name_; }
 		virtual Real GetValue() const override;
 		const Body& body_;
-		const double kv_;
+		const Real kv_;
 		const Vec3 dir_;
 		const String name_;
 		const double target_;
@@ -225,7 +230,7 @@ namespace scone
 		virtual String GetName() const override { return name_; }
 		virtual Real GetValue() const override;
 		const Model& model_;
-		const double kv_;
+		const Real kv_;
 		const Vec3 dir_;
 		const String name_;
 	};
