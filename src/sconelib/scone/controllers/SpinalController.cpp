@@ -123,10 +123,10 @@ namespace scone
 				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
 			}
 			// VES -> IA
-			if ( ves_group_ && pn.has_key( "VES_IA_weight" ) )
+			if ( ves_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 					if ( NeuronSide( ves_group_, vi ) == mg.side_ )
-						Connect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
+						TryConnect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
 			// Load -> IA
 			if ( load_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
@@ -158,10 +158,10 @@ namespace scone
 							TryConnect( load_group_, vi, ib_group, mgi, par, pn, &mg.pn_,
 								NeuronSide( load_group_, vi ) == mg.side_ ? "_weight" : "_com_weight" );
 					// VES -> IB
-					if ( ves_group_ && pn.has_key( "VES" + group_suffix ) )
+					if ( ves_group_ )
 						for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 							if ( NeuronSide( ves_group_, vi ) == mg.side_ )
-								Connect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
+								TryConnect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
 					// IB -> IB / IBE -> IBE / IBI -> IBI
 					TryConnect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
 					TryConnect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
@@ -199,7 +199,7 @@ namespace scone
 				if ( ves_group_ && pn.has_key( "VES_PM_weight" ) )
 					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 						if ( NeuronSide( ves_group_, vi ) == mg.side_ )
-							Connect( ves_group_, vi, pm_group_, mgi, par, pn, &mg.pn_ );
+							TryConnect( ves_group_, vi, pm_group_, mgi, par, pn, &mg.pn_ );
 			}
 		}
 
