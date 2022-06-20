@@ -14,6 +14,7 @@
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/model/Actuator.h"
 #include "scone/core/string_tools.h"
+#include "xo/system/version.h"
 
 namespace scone
 {
@@ -38,7 +39,7 @@ namespace scone
 			model.AcquireDelayedSensor< BodyEulerOriSensor >( m_SourceBody, GetAxis( axis ), loc.side_ ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyAngularVelocitySensor >( m_SourceBody, axis, axis_name, loc.side_ ) )
 	{
-		String par_name = GetParName( pn, loc );
+		String par_name = model.scone_version >= xo::version( 2, 0, 6 ) ? GetParName( pn, loc ) : target + '-' + GetNameNoSide( source );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
 
 		INIT_PAR_NAMED( pn, par, P0, "P0", 0.0 );

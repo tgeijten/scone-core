@@ -22,7 +22,7 @@ namespace scone
 		bool symmetric_;
 
 		String GetSidedName( const String& name ) const;
-		String GetParName( const String& name ) const { return symmetric_ ? GetNameNoSide( name ) : GetSidedName( name ); }
+		String GetParName( const String& name ) const;
 		Side GetSide() const { return side_; }
 		Location GetOpposite() const { return Location( GetOppositeSide( side_ ), symmetric_ ); }
 	};

@@ -21,6 +21,7 @@ namespace scone
 		INIT_MEMBER_REQUIRED( props, source ),
 		INIT_MEMBER( props, source_parent, "" ),
 		INIT_MEMBER( props, mirror_left, false ),
+		u_p(), u_v(),
 		m_SourceDof( *FindByNameTrySided( model.GetDofs(), source, loc.side_ ) ),
 		m_SourceParentDof( !source_parent.empty() ? &*FindByNameTrySided( model.GetDofs(), source_parent, loc.side_ ) : nullptr ),
 		m_Mirror( mirror_left && loc.GetSide() == Side::Left ),
