@@ -93,7 +93,7 @@ namespace scone
 		return GetNameNoSide( str ) + GetSideName( GetOppositeSide( GetSideFromName( str ) ) );
 	}
 
-	// get direction vector that is mirrored in the XY plane for Side::Left, used in e.g. BodyOrientationSensor
+	// get axis that is mirrored in the XY plane for Side::Left, used in e.g. BodyOrientationSensor
 	inline Vec3 GetSidedAxis( Vec3 axis, Side side ) {
 		if ( side == Side::Left ) { axis.x = -axis.x; axis.y = -axis.y; }
 		return axis;
@@ -105,16 +105,23 @@ namespace scone
 		return dir;
 	}
 
+	inline Side GetSideOr( Side s1, Side s2 ) {
+		return s1 == Side::None ? s2 : s1;
+	}
+	inline Real GetSidedAxisScale( index_t axis, Side s ) {
+		return axis != 2 && s == Side::Left ? -1.0 : 1.0;
+	}
+
 	template< typename T >
 	const T& FindByNameTrySided( const std::vector< T >& cont, const String& name, const Side& side )
 	{
-		auto it = xo::find_if( cont, [&]( const T& item ) { return item->GetName() == name; } );
+		auto it = std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == name; } );
 		if ( it != cont.end() )
 			return *it;
 
 		auto sided_name = GetSidedNameIfUnsided( name, side );
 		if ( name != sided_name ) {
-			it = xo::find_if( cont, [&]( const T& item ) { return item->GetName() == sided_name; } );
+			it = std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == sided_name; } );
 			if ( it != cont.end() )
 				return *it;
 		}

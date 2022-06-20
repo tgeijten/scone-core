@@ -206,9 +206,9 @@ namespace scone
 		virtual String GetName() const override { return name_; }
 		virtual Real GetValue() const override;
 		const Body& body_;
-		const Real scale_;
-		const Vec3 dir_;
-		const String name_;
+		Vec3 dir_;
+		Real scale_;
+		String name_;
 	};
 
 	struct SCONE_API BodyOriVelSensor : public Sensor

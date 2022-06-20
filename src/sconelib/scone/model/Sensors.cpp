@@ -87,25 +87,41 @@ namespace scone
 		return xo::dot_product( body_.GetOrientation() * dir_, xo::rotation_vector_from_quat( xo::normalized_fast( body_.GetOrientation() ) ) );
 	}
 
+	inline Side GetSensorSide( const Body& b, Side s ) {
+		if ( b.GetModel().scone_version >= xo::version( 2, 0, 6 ) )
+			return GetSideOr( b.GetSide(), s ); // only return side if body has no side
+		else return s; // legacy behavior: always return side, leads to issues with contralateral bodies
+	}
+
 	BodyEulerOriSensor::BodyEulerOriSensor( const Body& body, index_t axis, Side side ) :
-		body_( body ), axis_( axis ),
-		name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BO" + GetAxisName( axis ) ),
-		scale_( axis != 3 && side == Side::Left ? -1.0 : 1.0 )
+		body_( body ),
+		axis_( axis ),
+		scale_( GetSidedAxisScale( axis, GetSensorSide( body, side ) ) ),
+		name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BO" + GetAxisName( axis ) )
 	{
-		SCONE_ERROR_IF( axis >= 3, "Invalid axis: " + to_str( axis ) );
+		SCONE_ERROR_IF( axis_ >= 3, "Invalid axis: " + to_str( axis_ ) );
 	}
 	Real BodyEulerOriSensor::GetValue() const {
 		return scale_ * xo::euler_yzx_from_quat( body_.GetOrientation() )[ axis_ ].value;
 	}
 
 	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :
-		body_( body ), scale_( scale ), dir_( GetSidedAxis( dir, side ) ), name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BAV" + postfix ) {}
+		body_( body ),
+		dir_( GetSidedAxis( dir, GetSensorSide( body, side ) ) ),
+		scale_( scale ),
+		name_( GetSidedNameIfUnsided( body_.GetName(), side ) + ".BAV" + postfix )
+	{}
 	Real BodyAngularVelocitySensor::GetValue() const {
 		return scale_ * xo::dot_product( body_.GetOrientation() * dir_, body_.GetAngVel() );
 	}
 
 	BodyOriVelSensor::BodyOriVelSensor( const Body& body, const Vec3& dir, double kv, const String& postfix, Side side, double target ) :
-		body_( body ), dir_( GetSidedAxis( dir, side ) ), kv_( kv ), name_( GetSidedName( body_.GetName() + postfix, side ) + ".BOV" ), target_( target ) {}
+		body_( body ),
+		dir_( GetSidedAxis( dir, side ) ),
+		kv_( kv ),
+		name_( GetSidedName( body_.GetName() + postfix, side ) + ".BOV" ),
+		target_( target )
+	{}
 	Real BodyOriVelSensor::GetValue() const {
 		auto ori_rv = xo::rotation_vector_from_quat( xo::normalized( body_.GetOrientation() ) );
 		auto dir = body_.GetOrientation() * dir_;
