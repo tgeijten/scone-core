@@ -18,6 +18,7 @@ option(SCONE_LUA "Support for lua scripting" OFF)
 option(SCONE_HYFYDY "Support Hyfydy - EXPERIMENTAL" OFF)
 option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
+option(SCONE_PYTHON "Build sconepy Python API" OFF)
 
 # Find TCLAP
 find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/tclap-1.2.1/include" )
@@ -30,6 +31,8 @@ find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/
 #get_filename_component(CONFIG_NAME "${CMAKE_BINARY_DIR}" NAME)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CONFIG_NAME}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
 
 # Silence CMake warning on OSX.
 set(CMAKE_MACOSX_RPATH ON)
@@ -57,6 +60,11 @@ add_subdirectory(src/sconeunittests)
 if (SCONE_HYFYDY)
 	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "${CMAKE_SOURCE_DIR}/../sconehfd" )
 	add_subdirectory("${SCONE_HYFYDY_DIR}" "${CMAKE_BINARY_DIR}/sconehfd")
+endif()
+
+if (SCONE_PYTHON)
+	add_subdirectory(submodules/pybind11)
+	add_subdirectory(src/sconepy)
 endif()
 
 # Create .sconeroot in build folder
