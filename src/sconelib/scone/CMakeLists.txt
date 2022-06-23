@@ -265,7 +265,6 @@ set (SCONELIB_FILES
 	${SCONE_CONFIG_FILES}
 	${CORE_BASE_FILES}
 	${CORE_MATH_FILES}
-	${CORE_PROPNODE_FILES}
 	${CORE_SYSTEM_FILES}
 	${CORE_STORAGE_FILES}
 	${CORE_TOOL_FILES}
@@ -323,12 +322,11 @@ if (MSVC)
 endif()
 
 # To create folders in Visual Studio.
-source_group("core\\base" FILES ${CORE_BASE_FILES})
-source_group("core\\math" FILES ${CORE_MATH_FILES})
-source_group("core\\system" FILES ${CORE_SYSTEM_FILES})
-source_group("core\\tools" FILES ${CORE_TOOL_FILES})
-source_group("core\\properties" FILES ${CORE_PROPNODE_FILES})
-source_group("core\\storage" FILES ${CORE_STORAGE_FILES})
+source_group("tools" FILES ${CORE_BASE_FILES})
+source_group("math" FILES ${CORE_MATH_FILES})
+source_group("system" FILES ${CORE_SYSTEM_FILES})
+source_group("tools" FILES ${CORE_TOOL_FILES})
+source_group("tools" FILES ${CORE_STORAGE_FILES})
 
 source_group("controllers" FILES ${CS_CONTROLLERS_FILES})
 source_group("controllers" FILES ${CS_SYSTEM_FILES})
