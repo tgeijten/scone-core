@@ -12,6 +12,7 @@
 /install/
 /build/
 /.version
+/src/repository_revision.h
 /doc/upload.bat
 /doc/html/
 /doc/xml/
