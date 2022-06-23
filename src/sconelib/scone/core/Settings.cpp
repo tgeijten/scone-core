@@ -7,14 +7,16 @@
 */
 
 #include "Settings.h"
-#include "system_tools.h"
-#include "xo/filesystem/filesystem.h"
-#include "Log.h"
-#include "version.h"
-#include "xo/serialization/serialize.h"
-#include "Exception.h"
 #include <mutex>
 #include <atomic>
+#include "xo/filesystem/filesystem.h"
+#include "xo/serialization/serialize.h"
+#include "xo/serialization/prop_node_serializer_zml.h"
+#include "system_tools.h"
+#include "Log.h"
+#include "version.h"
+#include "Exception.h"
+#include "scone_settings_schema.h"
 
 namespace scone
 {
@@ -24,9 +26,9 @@ namespace scone
 
 	void LoadSconeSettings()
 	{
-		auto schema_path = GetInstallFolder() / "resources/scone-settings-schema.zml";
+		//auto schema_path = GetInstallFolder() / "resources/scone-settings-schema.zml";
 		auto settings_path = GetSettingsFolder() / "scone-settings.zml";
-		scone_settings = std::make_unique< xo::settings >( load_file( schema_path ), settings_path, GetSconeVersion() );
+		scone_settings = std::make_unique< xo::settings >( xo::parse_zml( scone_settings_schema ), settings_path, GetSconeVersion() );
 		log::debug( "Loaded settings from ", settings_path );
 
 		// set default paths if they don't exist
