@@ -15,7 +15,7 @@ void evaluate_par_file( const std::string& file ) {
 	auto scenario_pn = scone::LoadScenario( scenario_file, true ); // for compatibility of versions < 2.0.0
 	auto out_path = scenario_file.parent_path();
 	scone::log::info( "Evaluating ", file );
-	auto results = scone::EvaluateScenario( scenario_pn, file, out_path );
+	auto results = scone::EvaluateScenario( scenario_pn, file, file );
 	scone::log::info( results );
 }
 
