@@ -20,41 +20,29 @@
 
 namespace scone
 {
-	u_ptr< xo::settings > scone_settings;
-	std::mutex load_mutex;
-	std::atomic_bool is_loaded = ATOMIC_VAR_INIT( false );
-
-	void LoadSconeSettings()
+	xo::settings LoadSconeSettings()
 	{
 		//auto schema_path = GetInstallFolder() / "resources/scone-settings-schema.zml";
 		auto settings_path = GetSettingsFolder() / "scone-settings.zml";
-		scone_settings = std::make_unique< xo::settings >( xo::parse_zml( scone_settings_schema ), settings_path, GetSconeVersion() );
+		xo::settings scone_settings( xo::parse_zml( scone_settings_schema ), settings_path, GetSconeVersion() );
 		log::debug( "Loaded settings from ", settings_path );
 
 		// set default paths if they don't exist
-		if ( scone_settings->get< path >( "folders.scenarios" ).empty() )
-			scone_settings->set( "folders.scenarios", GetDataFolder() );
-		if ( scone_settings->get< path >( "folders.results" ).empty() )
-			scone_settings->set( "folders.results", GetDataFolder() / "results" );
-		if ( scone_settings->get< path >( "folders.geometry" ).empty() )
-			scone_settings->set( "folders.geometry", GetInstallFolder().parent_path() / "resources/geometry" );
+		if ( scone_settings.get< path >( "folders.scenarios" ).empty() )
+			scone_settings.set( "folders.scenarios", GetDataFolder() );
+		if ( scone_settings.get< path >( "folders.results" ).empty() )
+			scone_settings.set( "folders.results", GetDataFolder() / "results" );
+		if ( scone_settings.get< path >( "folders.geometry" ).empty() )
+			scone_settings.set( "folders.geometry", GetInstallFolder().parent_path() / "resources/geometry" );
+
+		return scone_settings;
 	}
 
 	xo::settings& GetSconeSettings()
 	{
-		// #todo: make scone_settings a local static
-		if ( !is_loaded )
-		{
-			// try to load settings
-			std::scoped_lock lock( load_mutex );
-			if ( !is_loaded ) // make sure no one beat us to it
-			{
-				LoadSconeSettings();
-				is_loaded = true;
-			}
-		}
+		static xo::settings scone_settings = LoadSconeSettings();
 
-		return *scone_settings;
+		return scone_settings;
 	}
 
 	void SaveSconeSettings()
