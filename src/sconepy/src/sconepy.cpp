@@ -11,6 +11,7 @@
 #include "scone/model/Model.h"
 #include "spot/par_io.h"
 #include "scone/model/Muscle.h"
+#include "scone/model/Actuator.h"
 
 namespace py = pybind11;
 
@@ -54,28 +55,33 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "evaluate_par_file", &evaluate_par_file );
 	m.def( "load_model", &load_model );
 
+	py::class_<scone::Actuator>( m, "Actuator" )
+		.def( "name", &scone::Actuator::GetName )
+		;
+
 	py::class_<scone::Muscle>( m, "Muscle" )
-		.def( "get_name", &scone::Muscle::GetName )
-		.def( "get_activation", &scone::Muscle::GetActivation )
+		.def( "name", &scone::Muscle::GetName )
+		.def( "activation", &scone::Muscle::GetActivation )
 		.def( "init_activation", &scone::Muscle::InitializeActivation )
-		.def( "get_excitation", &scone::Muscle::GetExcitation )
+		.def( "excitation", &scone::Muscle::GetExcitation )
 		.def( "set_excitation", &scone::Muscle::SetExcitation )
-		.def( "get_force", &scone::Muscle::GetForce )
-		.def( "get_normalized_force", &scone::Muscle::GetNormalizedForce )
-		.def( "get_fiber_length", &scone::Muscle::GetFiberLength )
-		.def( "get_normalized_fiber_length", &scone::Muscle::GetNormalizedFiberLength )
-		.def( "get_fiber_velocity", &scone::Muscle::GetFiberVelocity )
-		.def( "get_normalized_fiber_velocity", &scone::Muscle::GetNormalizedFiberVelocity )
+		.def( "force", &scone::Muscle::GetForce )
+		.def( "normalized_force", &scone::Muscle::GetNormalizedForce )
+		.def( "fiber_length", &scone::Muscle::GetFiberLength )
+		.def( "normalized_fiber_length", &scone::Muscle::GetNormalizedFiberLength )
+		.def( "fiber_velocity", &scone::Muscle::GetFiberVelocity )
+		.def( "normalized_fiber_velocity", &scone::Muscle::GetNormalizedFiberVelocity )
 		;
 
 	py::class_<scone::Model>( m, "Model" )
-		.def( "get_name", &scone::Model::GetName )
+		.def( "name", &scone::Model::GetName )
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
-		.def( "get_state", &get_state )
+		.def( "state", &get_state )
 		.def( "set_state", &set_state )
 		.def( "muscle_count", []( const scone::Model& m ) { return m.GetMuscles().size(); } )
-		.def( "get_muscle", &get_muscle, py::return_value_policy::reference )
-		.def( "get_time", &scone::Model::GetTime )
+		.def( "muscle", &get_muscle, py::return_value_policy::reference )
+		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
+		.def( "time", &scone::Model::GetTime )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", []( const scone::Model& m, const std::string& f ) { m.WriteResults( f ); } )
 		;
