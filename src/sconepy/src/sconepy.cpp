@@ -26,7 +26,8 @@ scone::ModelUP load_model( const std::string& file ) {
 	auto file_path = xo::path( file );
 	auto model_pn = load_zml( file_path );
 	auto model_props = scone::FindFactoryProps( scone::GetModelFactory(), model_pn, "Model" );
-	return scone::CreateModel( model_props, spot::null_objective_info(), file_path.parent_path() );
+	spot::null_objective_info par;
+	return scone::CreateModel( model_props, par, file_path.parent_path() );
 }
 std::map< std::string, double > get_state( const scone::Model& m ) {
 	std::map< std::string, double > dict;
