@@ -7,3 +7,6 @@
 [submodule "submodules/sol2"]
 	path = submodules/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "submodules/pybind11"]
+	path = submodules/pybind11
+	url = https://github.com/pybind/pybind11.git

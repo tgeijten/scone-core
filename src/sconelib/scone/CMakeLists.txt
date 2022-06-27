@@ -1,9 +1,6 @@
 set(SCONE_CONFIG_FILES
 	sconelib_config.h
 	)
-set(SCONE_RESOURCE_FILES
-	../../../resources/scone-settings-schema.zml
-	)
 set(CORE_BASE_FILES
 	core/HasData.h
 	core/HasName.h
@@ -60,6 +57,7 @@ set(CORE_SYSTEM_FILES
 	core/system_tools.h
 	core/Settings.cpp
 	core/Settings.h
+	core/scone_settings_schema.h
 	)
 set(CORE_STORAGE_FILES
 	core/Storage.h
@@ -267,7 +265,6 @@ set (SCONELIB_FILES
 	${SCONE_CONFIG_FILES}
 	${CORE_BASE_FILES}
 	${CORE_MATH_FILES}
-	${CORE_PROPNODE_FILES}
 	${CORE_SYSTEM_FILES}
 	${CORE_STORAGE_FILES}
 	${CORE_TOOL_FILES}
@@ -297,7 +294,7 @@ if (SCONE_EXPERIMENTAL_FEATURES)
 endif()
 
 # add sources to single lib
-add_library(sconelib SHARED ${SCONELIB_FILES} ${SCONE_RESOURCE_FILES} )
+add_library(sconelib SHARED ${SCONELIB_FILES} )
 
 # Require C++17 standard
 set_target_properties(sconelib PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
@@ -325,12 +322,11 @@ if (MSVC)
 endif()
 
 # To create folders in Visual Studio.
-source_group("core\\base" FILES ${CORE_BASE_FILES})
-source_group("core\\math" FILES ${CORE_MATH_FILES})
-source_group("core\\system" FILES ${CORE_SYSTEM_FILES})
-source_group("core\\tools" FILES ${CORE_TOOL_FILES})
-source_group("core\\properties" FILES ${CORE_PROPNODE_FILES})
-source_group("core\\storage" FILES ${CORE_STORAGE_FILES})
+source_group("tools" FILES ${CORE_BASE_FILES})
+source_group("math" FILES ${CORE_MATH_FILES})
+source_group("system" FILES ${CORE_SYSTEM_FILES})
+source_group("tools" FILES ${CORE_TOOL_FILES})
+source_group("tools" FILES ${CORE_STORAGE_FILES})
 
 source_group("controllers" FILES ${CS_CONTROLLERS_FILES})
 source_group("controllers" FILES ${CS_SYSTEM_FILES})
@@ -353,4 +349,3 @@ source_group("model" FILES ${SIM_SYSTEM_FILES})
 source_group("model" FILES ${SIM_TOPOLOGY_FILES})
 
 source_group("" FILES ${SCONE_CONFIG_FILES})
-source_group("" FILES ${SCONE_RESOURCE_FILES})
