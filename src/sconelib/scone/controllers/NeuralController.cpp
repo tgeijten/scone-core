@@ -325,7 +325,7 @@ namespace scone
 		for ( auto& m : GetModel().GetMuscles() )
 		{
 			str << m->GetName();
-			auto mp = GetVirtualMuscles( m.get(), GetSideFromName( m->GetName() ) == Side::Right );
+			auto mp = GetVirtualMuscles( m, GetSideFromName( m->GetName() ) == Side::Right );
 			for ( auto& par : mp )
 				str << "\t" << par.name << "\t" << par.correlation;
 			str << std::endl;

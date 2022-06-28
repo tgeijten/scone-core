@@ -33,7 +33,7 @@ namespace scone
 		jump_dir = quat_from_z_angle( -jump_angle ) * Vec3::unit_y();
 
 		if ( auto body = props.try_get_any< String >( { "body", "target_body" } ) )
-			target_body = FindByName( model.GetBodies(), *body ).get();
+			target_body = FindByName( model.GetBodies(), *body );
 
 		prepare_com = init_com = model.GetComPos();
 		peak_dist = dot_dir( GetTargetPos( model ) );

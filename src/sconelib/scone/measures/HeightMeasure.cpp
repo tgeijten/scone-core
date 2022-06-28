@@ -33,7 +33,7 @@ namespace scone
 
 		// find target body
 		if ( !target_body.empty() )
-			m_pTargetBody = FindByName( model.GetBodies(), target_body ).get();
+			m_pTargetBody = FindByName( model.GetBodies(), target_body );
 		else m_pTargetBody = nullptr;
 
 		// init start height and initial height

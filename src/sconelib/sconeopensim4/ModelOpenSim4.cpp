@@ -301,7 +301,7 @@ namespace scone
 
 	void ModelOpenSim4::CreateModelWrappers( const PropNode& pn, Params& par )
 	{
-		SCONE_ASSERT( m_pOsimModel && m_Bodies.empty() && m_Joints.empty() && m_Dofs.empty() && m_Actuators.empty() && m_Muscles.empty() );
+		SCONE_ASSERT( m_pOsimModel && m_Bodies.empty() && m_Joints.empty() && m_Dofs.empty() && m_ActuatorPtrs.empty() && m_Muscles.empty() );
 
 		// Create wrappers for bodies
 		// #todo #osim4 OpenSim 4 has no ground body, create fake scone::Body?
@@ -311,6 +311,9 @@ namespace scone
 		for ( int idx = 0; idx < m_pOsimModel->getBodySet().getSize(); ++idx )
 			m_Bodies.emplace_back( std::make_unique<BodyOpenSim4>( *this, m_pOsimModel->getBodySet().get( idx ) ) );
 		m_RootBody = m_Bodies.empty() ? nullptr : &*m_Bodies.front();
+		m_BodyPtrs.reserve( m_Bodies.size() );
+		for ( auto& b : m_Bodies )
+			m_BodyPtrs.emplace_back( b.get() );
 
 		// Create wrappers for joints
 		m_Joints.reserve( m_pOsimModel->getJointSet().getSize() );
@@ -368,6 +371,7 @@ namespace scone
 
 		// Create wrappers for actuators
 		m_Muscles.reserve( m_pOsimModel->getMuscles().getSize() );
+		m_MusclePtrs.reserve( m_pOsimModel->getMuscles().getSize() );
 		for ( int idx = 0; idx < m_pOsimModel->getActuators().getSize(); ++idx )
 		{
 			// OpenSim: Set<T>::get( idx ) is const but returns non-const reference, is this a bug?
@@ -375,14 +379,15 @@ namespace scone
 			if ( OpenSim::Muscle* osMus = dynamic_cast<OpenSim::Muscle*>( &osAct ) )
 			{
 				m_Muscles.emplace_back( std::make_unique<MuscleOpenSim4>( *this, *osMus ) );
-				m_Actuators.push_back( m_Muscles.back().get() );
+				m_MusclePtrs.push_back( m_Muscles.back().get() );
+				m_ActuatorPtrs.push_back( m_Muscles.back().get() );
 			}
 			else if ( auto* osCo = dynamic_cast<OpenSim::CoordinateActuator*>( &osAct ) )
 			{
 				// add corresponding dof to list of actuators
 				auto& dof = dynamic_cast<DofOpenSim4&>( *FindByName( m_Dofs, osCo->getCoordinate()->getName() ) );
 				dof.SetCoordinateActuator( osCo );
-				m_Actuators.push_back( &dof );
+				m_ActuatorPtrs.push_back( &dof );
 			}
 			else
 			{
@@ -407,13 +412,13 @@ namespace scone
 			Body* lower_body = nullptr;
 			if ( auto upper_it = TryFindByName( GetBodies(), GetSidedName( leg_upper_body, side ) ); upper_it != GetBodies().end() )
 			{
-				upper_body = upper_it->get();
+				upper_body = *upper_it;
 				if ( auto lower_it = TryFindByName( GetBodies(), GetSidedName( leg_lower_body, side ) ); lower_it != GetBodies().end() )
-					lower_body = lower_it->get();
+					lower_body = *lower_it;
 				else // try finding a body whose grandparent is upper_body (backwards compatibility)
 					for ( auto& b : GetBodies() )
 						if ( b->GetParentBody() && b->GetParentBody()->GetParentBody() == upper_body )
-							lower_body = b.get(); // bingo!
+							lower_body = b; // bingo!
 			}
 			auto cf_it = TryFindByName( GetContactForces(), GetSidedName( leg_contact_force, side ) );
 
@@ -929,7 +934,7 @@ namespace scone
 	{
 		for ( auto iter = GetMuscles().begin(); iter != GetMuscles().end(); ++iter )
 		{
-			OpenSim::Muscle& osmus = dynamic_cast<MuscleOpenSim4*>( iter->get() )->GetOsMuscle();
+			OpenSim::Muscle& osmus = dynamic_cast<MuscleOpenSim4*>( *iter )->GetOsMuscle();
 			auto a = override_activation != 0.0 ? override_activation : ( *iter )->GetInput();
 			osmus.setActivation( GetOsimModel().updWorkingState(), a );
 		}

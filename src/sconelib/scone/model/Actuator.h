@@ -23,7 +23,6 @@ namespace scone
 		virtual ~Actuator();
 
 		virtual double AddInput( double v ) { return m_ActuatorControlValue += v; }
-		virtual void ClearInput();
 		virtual double GetInput() const { return m_ActuatorControlValue; }
 		virtual double GetClampedInput() const { return xo::clamped( GetInput(), GetMinInput(), GetMaxInput() ); }
 		virtual Real GetMinInput() const = 0;
@@ -31,6 +30,8 @@ namespace scone
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const;
+
+		virtual void ClearInput() { m_ActuatorControlValue = 0.0; }
 
 	protected:
 		double m_ActuatorControlValue;

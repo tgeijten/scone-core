@@ -40,20 +40,20 @@ namespace scone
 		switch( xo::hash( type_ ) )
 		{
 		case "F"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleForceSensor >( *muscle_ );
 			break;
 		case "L"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleLengthSensor >( *muscle_ );
 			break;
 		case "S"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleSpindleSensor >( *muscle_ );
 			use_sample_delay_ = true;
 			break;
 		case "U"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleExcitationSensor >( *muscle_ );
 			break;
 		case "DP"_hash:

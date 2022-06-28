@@ -18,11 +18,6 @@ namespace scone
 	Actuator::~Actuator()
 	{}
 
-	void Actuator::ClearInput()
-	{
-		m_ActuatorControlValue = 0.0;
-	}
-
 	void Actuator::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( flags( StoreDataTypes::ActuatorInput ) )

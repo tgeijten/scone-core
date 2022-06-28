@@ -117,7 +117,7 @@ namespace scone
 	double EffortMeasure::GetTotalForce( const Model& model ) const
 	{
 		double f = 1.0; // base muscle force
-		for ( const MuscleUP& mus : model.GetMuscles() )
+		for ( const auto& mus : model.GetMuscles() )
 			f += mus->GetForce();
 		return f;
 	}
@@ -127,7 +127,7 @@ namespace scone
 		double e = m_Wang2012BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 			Real l = m_SlowTwitchFiberRatios[ i ];
 			Real fa = 40 * l * sin( REAL_HALF_PI * mus->GetExcitation() ) + 133 * ( 1 - l ) * ( 1 - cos( REAL_HALF_PI * mus->GetExcitation() ) );
@@ -162,7 +162,7 @@ namespace scone
 		double e = m_Uchida2016BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 
 			// calculate A parameter
@@ -257,7 +257,7 @@ namespace scone
 		// update muscle if its name is in the map
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 
 			bool foundMuscle = false;
 			for ( auto it = muscPropsInput.begin(); it != muscPropsInput.end(); ++it )

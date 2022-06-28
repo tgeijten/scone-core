@@ -352,8 +352,9 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
 		// reset actuator values
-		for ( Actuator* a : GetActuators() )
-			a->ClearInput();
+		if ( GetController() )
+			for ( Actuator* a : GetActuators() )
+				a->ClearInput();
 
 		if ( GetTime() > 0 )
 		{
@@ -561,7 +562,7 @@ namespace scone
 		m_ContactGeometries.clear();
 		m_ContactForces.clear();
 
-		m_Actuators.clear();
+		m_ActuatorPtrs.clear();
 		m_RootBody = m_GroundBody = nullptr;
 
 		m_Controller.reset();

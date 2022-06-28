@@ -45,12 +45,12 @@ namespace scone
 		virtual ~Model();
 
 		// muscle access
-		std::vector< MuscleUP >& GetMuscles() { return m_Muscles; }
-		const std::vector< MuscleUP >& GetMuscles() const { return m_Muscles; }
+		std::vector< Muscle* >& GetMuscles() { return m_MusclePtrs; }
+		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
 
 		// body access
-		std::vector< BodyUP >& GetBodies() { return m_Bodies; }
-		const std::vector< BodyUP >& GetBodies() const { return m_Bodies; }
+		std::vector< Body* >& GetBodies() { return m_BodyPtrs; }
+		const std::vector< Body* >& GetBodies() const { return m_BodyPtrs; }
 		bool HasRootBody() const { return m_RootBody != nullptr; }
 		const Body& GetRootBody() const { SCONE_ASSERT( m_RootBody );  return *m_RootBody; }
 		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
@@ -64,8 +64,8 @@ namespace scone
 		const std::vector< DofUP >& GetDofs() const { return m_Dofs; }
 
 		// Actuator access
-		std::vector< Actuator* >& GetActuators() { return m_Actuators; }
-		const std::vector< Actuator* >& GetActuators() const { return m_Actuators; }
+		std::vector< Actuator* >& GetActuators() { return m_ActuatorPtrs; }
+		const std::vector< Actuator* >& GetActuators() const { return m_ActuatorPtrs; }
 
 		// Contact geometries
 		const std::vector< ContactGeometryUP >& GetContactGeometries() const { return m_ContactGeometries; }
@@ -278,7 +278,9 @@ namespace scone
 		std::vector< ContactForceUP > m_ContactForces;
 
 		// non-owning model components
-		std::vector< Actuator* > m_Actuators;
+		std::vector< Muscle* > m_MusclePtrs;
+		std::vector< Actuator* > m_ActuatorPtrs;
+		std::vector< Body* > m_BodyPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;
 
