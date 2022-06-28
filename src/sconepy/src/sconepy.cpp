@@ -60,6 +60,16 @@ PYBIND11_MODULE( sconepy, m ) {
 
 	py::class_<scone::Dof>( m, "Dof" )
 		.def( "name", &scone::Dof::GetName )
+		.def( "pos", &scone::Dof::GetPos )
+		.def( "vel", &scone::Dof::GetVel )
+		;
+
+	py::class_<scone::Body>( m, "Body" )
+		.def( "name", &scone::Body::GetName )
+		.def( "com_pos", &scone::Body::GetComPos )
+		.def( "com_vel", &scone::Body::GetComVel )
+		.def( "orientation", &scone::Body::GetOrientation )
+		.def( "ang_vel", &scone::Body::GetAngVel )
 		;
 
 	py::class_<scone::Model>( m, "Model" )
@@ -82,6 +92,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "dofs", []( scone::Model& m ) { return &m.GetDofs(); }, py::return_value_policy::reference )
 		.def( "dof_values", []( scone::Model& m ) { return py::array( py::cast( scone::get_dof_values( m ) ) ); } )
 		.def( "set_dof_values", &scone::set_dof_values )
+		.def( "bodies", []( scone::Model& m ) { return &m.GetBodies(); }, py::return_value_policy::reference )
 		.def( "time", &scone::Model::GetTime )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", &scone::write_results )
