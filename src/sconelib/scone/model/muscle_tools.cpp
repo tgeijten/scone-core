@@ -73,7 +73,7 @@ namespace scone
 					model.SetNullState();
 					auto name = dof->GetName() + '.' + mus->GetName();
 					auto mus_dofs = mus->GetDofs();
-					mus_dofs.erase( std::remove( mus_dofs.begin(), mus_dofs.end(), dof.get() ) );
+					mus_dofs.erase( std::remove( mus_dofs.begin(), mus_dofs.end(), dof ) );
 
 					if ( !mus_dofs.empty() )
 					{

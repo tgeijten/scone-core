@@ -47,7 +47,7 @@ namespace scone
 		{
 			for ( auto& dof : m_Body.GetModel().GetDofs() )
 				if ( this == dof->GetJoint() )
-					m_Dofs.push_back( dof.get() );
+					m_Dofs.push_back( dof );
 		}
 		return m_Dofs;
 	}

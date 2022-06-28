@@ -307,6 +307,9 @@ namespace scone
 		m_Dofs.reserve( m_pOsimModel->getCoordinateSet().getSize() );
 		for ( int idx = 0; idx < m_pOsimModel->getCoordinateSet().getSize(); ++idx )
 			m_Dofs.emplace_back( std::make_unique<DofOpenSim3>( *this, m_pOsimModel->getCoordinateSet().get( idx ) ) );
+		m_DofPtrs.reserve( m_Dofs.size() );
+		for ( auto& d : m_Dofs )
+			m_DofPtrs.emplace_back( d.get() );
 
 		// create contact geometries
 		m_ContactGeometries.reserve( m_pOsimModel->getContactGeometrySet().getSize() );

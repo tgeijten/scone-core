@@ -243,7 +243,7 @@ namespace scone
 			if ( mus->HasMomentArm( *dof ) )
 			{
 				auto mom = mus->GetNormalizedMomentArm( *dof );
-				result.push_back( { GetNameNoSide( dof->GetName() ) + GetSignChar( mom ), abs( mom ),{ dof.get() } } );
+				result.push_back( { GetNameNoSide( dof->GetName() ) + GetSignChar( mom ), abs( mom ),{ dof } } );
 			}
 		}
 		return result;
