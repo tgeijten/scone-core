@@ -9,6 +9,7 @@
 #include "scone/core/Factories.h"
 #include "spot/par_io.h"
 #include "scone/model/Muscle.h"
+#include "scone/model/Dof.h"
 
 namespace fs = std::filesystem;
 
@@ -45,14 +46,34 @@ namespace scone
 		m.SetState( s, 0.0 );
 	};
 
+	void check_array_length( size_t expected, size_t received ) {
+		SCONE_ERROR_IF( expected != received, stringf( "Invalid array length; expected %d, received %d", expected, received ) );
+	}
+
 	void set_actuator_values( scone::Model& m, const std::vector<double>& values ) {
-		SCONE_ERROR_IF( m.GetActuators().size() != values.size(), "Invalid array length" );
+		check_array_length( m.GetActuators().size(), values.size() );
 		auto value_it = values.begin();
-		for ( auto& act : m.GetActuators() )
-		{
+		for ( auto& act : m.GetActuators() ) {
 			act->ClearInput();
 			act->AddInput( *value_it++ );
 		}
+	};
+
+	void set_dof_values( scone::Model& m, const std::vector<double>& values ) {
+		check_array_length( m.GetDofs().size() * 2, values.size() );
+		auto value_it = values.begin();
+		for ( auto& dof : m.GetDofs() )
+			dof->SetPos( *value_it++ );
+		for ( auto& dof : m.GetDofs() )
+			dof->SetVel( *value_it++ );
+		m.UpdateStateFromDofs();
+	};
+
+	void init_muscle_activations( scone::Model& m, const std::vector<double>& values ) {
+		check_array_length( m.GetMuscles().size(), values.size() );
+		auto value_it = values.begin();
+		for ( auto& act : m.GetMuscles() ) 
+			act->InitializeActivation( *value_it++ );
 	};
 
 	template< typename C, typename F > std::vector<double> extract_vec( const C& cont, F fn ) {
@@ -80,6 +101,10 @@ namespace scone
 	};
 	std::vector<double> get_actuator_values( const scone::Model& model ) {
 		return extract_vec( model.GetActuators(), []( const Actuator* m ) { return m->GetInput(); } );
+	};
+	std::vector<double> get_dof_values( const scone::Model& model ) {
+		auto dof_pos = extract_vec( model.GetDofs(), []( const Dof* d ) { return d->GetPos(); } );
+		return xo::append( dof_pos, extract_vec( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); } ) );
 	};
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
