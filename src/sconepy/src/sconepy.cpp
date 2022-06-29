@@ -18,8 +18,10 @@ PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
 	scone::Initialize();
 
+	m.attr( "__version__" ) = "0.1.0";
+
 	m.def( "scone_version", []() { return xo::to_str( scone::GetSconeVersion() ); } );
-	m.def( "data_dir", []() { return scone::GetDataFolder().str(); } );
+	m.def( "scone_dir", []() { return scone::GetDataFolder().str(); } );
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
@@ -28,6 +30,8 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def_readwrite( "x", &scone::Vec3::x )
 		.def_readwrite( "y", &scone::Vec3::y )
 		.def_readwrite( "z", &scone::Vec3::z )
+		.def( "__repr__", []( const scone::Vec3& v ) { return xo::stringf( "<sconepy.Vec3( %f, %f, %f)>", v.x, v.y, v.z ); } )
+		.def( "__str__", []( const scone::Vec3& v ) { return xo::stringf( "[ %f %f %f ]", v.x, v.y, v.z ); } )
 		;
 
 	py::class_<scone::Quat>( m, "Quat" )
@@ -39,6 +43,11 @@ PYBIND11_MODULE( sconepy, m ) {
 
 	py::class_<scone::Actuator>( m, "Actuator" )
 		.def( "name", &scone::Actuator::GetName )
+		.def( "input", &scone::Actuator::GetInput )
+		.def( "min_input", &scone::Actuator::GetMinInput )
+		.def( "max_input", &scone::Actuator::GetMaxInput )
+		.def( "add_input", &scone::Actuator::AddInput )
+		.def( "clear_input", &scone::Actuator::ClearInput )
 		;
 
 	py::class_<scone::Muscle>( m, "Muscle" )
@@ -46,10 +55,13 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "max_isometric_force", &scone::Muscle::GetMaxIsometricForce )
 		.def( "optimal_fiber_length", &scone::Muscle::GetOptimalFiberLength )
 		.def( "tendon_slack_length", &scone::Muscle::GetTendonSlackLength )
-		.def( "activation", &scone::Muscle::GetActivation )
-		.def( "init_activation", &scone::Muscle::InitializeActivation )
+		.def( "origin_body", &scone::Muscle::GetOriginBody, py::return_value_policy::reference )
+		.def( "insertion_body", &scone::Muscle::GetInsertionBody, py::return_value_policy::reference )
+		.def( "tendon_slack_length", &scone::Muscle::GetTendonSlackLength )
 		.def( "excitation", &scone::Muscle::GetExcitation )
+		.def( "activation", &scone::Muscle::GetActivation )
 		.def( "set_excitation", &scone::Muscle::SetExcitation )
+		.def( "init_activation", &scone::Muscle::InitializeActivation )
 		.def( "force", &scone::Muscle::GetForce )
 		.def( "force_norm", &scone::Muscle::GetNormalizedForce )
 		.def( "fiber_length", &scone::Muscle::GetFiberLength )
@@ -62,23 +74,50 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "name", &scone::Dof::GetName )
 		.def( "pos", &scone::Dof::GetPos )
 		.def( "vel", &scone::Dof::GetVel )
+		.def( "is_rotational", &scone::Dof::IsRotational )
+		.def( "rotation_axis", &scone::Dof::GetRotationAxis )
+		.def( "is_actuated", &scone::Dof::IsActuated )
 		;
 
 	py::class_<scone::Body>( m, "Body" )
 		.def( "name", &scone::Body::GetName )
+		.def( "mass", &scone::Body::GetMass )
+		.def( "inertia_diag", &scone::Body::GetInertiaTensorDiagonal )
 		.def( "com_pos", &scone::Body::GetComPos )
 		.def( "com_vel", &scone::Body::GetComVel )
 		.def( "orientation", &scone::Body::GetOrientation )
 		.def( "ang_vel", &scone::Body::GetAngVel )
+		.def( "set_pos", &scone::Body::SetPos )
+		.def( "set_lin_vel", &scone::Body::SetLinVel )
+		.def( "set_orientation", &scone::Body::SetOrientation )
+		.def( "set_ang_vel", &scone::Body::SetAngVel )
+		.def( "contact_force", &scone::Body::GetContactForce )
+		.def( "contact_moment", &scone::Body::GetContactMoment )
+		.def( "contact_point", &scone::Body::GetContactPoint )
+		.def( "set_external_force", &scone::Body::SetExternalForce )
+		.def( "set_external_force_at", &scone::Body::SetExternalForceAtPoint )
+		.def( "set_external_moment", &scone::Body::SetExternalMoment )
+		.def( "add_external_force", &scone::Body::AddExternalForce )
+		.def( "add_external_moment", &scone::Body::AddExternalMoment )
+		.def( "clear_external_force_moment", &scone::Body::ClearExternalForceAndMoment )
+		.def( "external_force", &scone::Body::GetExternalForce )
+		.def( "external_moment", &scone::Body::GetExternalMoment )
+		.def( "external_force_at", &scone::Body::GetExternalForcePoint )
 		;
 
 	py::class_<scone::Model>( m, "Model" )
 		.def( "name", &scone::Model::GetName )
-		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
-		.def( "state", &scone::get_state )
-		.def( "set_state", &scone::set_state )
 		.def( "com_pos", &scone::Model::GetComPos )
 		.def( "com_vel", &scone::Model::GetComVel )
+		.def( "state", &scone::get_state )
+		.def( "set_state", &scone::set_state )
+		.def( "bodies", []( scone::Model& m ) { return &m.GetBodies(); }, py::return_value_policy::reference )
+		.def( "dofs", []( scone::Model& m ) { return &m.GetDofs(); }, py::return_value_policy::reference )
+		.def( "dof_values", []( scone::Model& m ) { return py::array( py::cast( scone::get_dof_values( m ) ) ); } )
+		.def( "set_dof_values", &scone::set_dof_values )
+		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
+		.def( "actuator_inputs", []( scone::Model& m ) { return py::array( py::cast( scone::get_actuator_values( m ) ) ); } )
+		.def( "set_actuator_inputs", &scone::set_actuator_values )
 		.def( "muscles", []( scone::Model& m ) { return &m.GetMuscles(); }, py::return_value_policy::reference )
 		.def( "muscle_fiber_lengths", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_lengths( m ) ) ); } )
 		.def( "muscle_fiber_velocities", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_velocities( m ) ) ); } )
@@ -86,13 +125,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "muscle_activations", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_activations( m ) ) ); } )
 		.def( "muscle_excitations", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_excitations( m ) ) ); } )
 		.def( "init_muscle_activations", &scone::init_muscle_activations )
-		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
-		.def( "actuator_inputs", []( scone::Model& m ) { return py::array( py::cast( scone::get_actuator_values( m ) ) ); } )
-		.def( "set_actuator_inputs", &scone::set_actuator_values )
-		.def( "dofs", []( scone::Model& m ) { return &m.GetDofs(); }, py::return_value_policy::reference )
-		.def( "dof_values", []( scone::Model& m ) { return py::array( py::cast( scone::get_dof_values( m ) ) ); } )
-		.def( "set_dof_values", &scone::set_dof_values )
-		.def( "bodies", []( scone::Model& m ) { return &m.GetBodies(); }, py::return_value_policy::reference )
+		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
 		.def( "time", &scone::Model::GetTime )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", &scone::write_results )
