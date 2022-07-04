@@ -188,6 +188,12 @@ namespace scone
 		}
 	}
 
+	void Model::SetStoreData( bool store )
+	{
+		SCONE_ERROR_IF( store && GetTime() > 0.0, "Model SetStoreData() can only be set at before starting the simulation" );
+		m_StoreData = store;
+	}
+
 	bool Model::GetStoreData() const
 	{
 		return m_StoreData &&

@@ -243,7 +243,7 @@ namespace scone
 		/// scone version; this is set automatically when running an optimization.
 		xo::version scone_version;
 
-		virtual void SetStoreData( bool store ) { m_StoreData = store; }
+		virtual void SetStoreData( bool store );
 		bool GetStoreData() const;
 		StoreDataFlags& GetStoreDataFlags() { return m_StoreDataFlags; }
 		const StoreDataFlags& GetStoreDataFlags() const { return m_StoreDataFlags; }
