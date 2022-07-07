@@ -14,6 +14,20 @@
 
 namespace scone
 {
+	/// Model for measuring effort
+	enum class EffortMeasureType {
+		UnknownMeasure,
+		Constant, ///< Constant energy.
+		TotalForce, ///< Total muscle force.
+		Wang2012, ///< Use metabolic energy measure as defined in [Wang et al. 2012].
+		Uchida2016, ///< Use metabolic energy measure as defined in [Uchida et al. 2016].
+		SquaredMuscleStress, ///< Use the summed squared muscle stress as a measure
+		CubedMuscleStress, ///< Use the summed squared muscle stress as a measure
+		SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
+		CubedMuscleActivation ///< Use the summed cubed muscle muscle activation
+	};
+
+
 	/// Measures the energy consumption of a model during simulation, according to various models.
 	/** Supported effort models:
 		- ''Constant'': constant energy measure
@@ -25,28 +39,15 @@ namespace scone
 		- ''SquaredMuscleActivation'': summed squared muscle activation: (activation)%%^%%2
 		- ''CubedMuscleActivation'': summed cubed muscle activation: (activation)^3
 
-		This can also be used for cost-of-transport, using the ''use_cost_of_transport'' parameter.
+		All effort models can be used to compute cost-of-transport, by setting ''use_cost_of_transport = 1''.
 	*/
 	class EffortMeasure : public Measure
 	{
 	public:
 		EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 
-		/// Model for measuring energy
-		enum EnergyMeasureType {
-			UnknownMeasure,
-			Constant, ///< Constant energy.
-			TotalForce, ///< Total muscle force.
-			Wang2012, ///< Use metabolic energy measure as defined in [Wang et al. 2012].
-			Uchida2016, ///< Use metabolic energy measure as defined in [Uchida et al. 2016].
-			SquaredMuscleStress, ///< Use the summed squared muscle stress as a measure
-			CubedMuscleStress, ///< Use the summed squared muscle stress as a measure
-			SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
-			CubedMuscleActivation ///< Use the summed cubed muscle muscle activation
-		};
-
-		/// Energy model to be used, can be: ''TotalForce'', ''Wang2012'', ''Uchida2016'', or ''Constant''; default = ''UnknownMeasure''.
-		EnergyMeasureType measure_type;
+		/// Energy model to be used, can be: ''Constant'', ''TotalForce'', ''Wang2012'', ''Uchida2016'', ''SquaredMuscleStress'', ''CubedMuscleStress'', ''SquaredMuscleActivation'', ''CubedMuscleActivation''
+		EffortMeasureType measure_type;
 
 		/// Flag indicating to use (energy / distance) as a result; default = 0.
 		bool use_cost_of_transport;
@@ -84,7 +85,7 @@ namespace scone
 		Real m_Uchida2016BasalEnergy;
 		Real m_AerobicFactor;
 		Statistic< double > m_Effort;
-		static StringMap< EnergyMeasureType > m_MeasureNames;
+		static StringMap< EffortMeasureType > m_MeasureNames;
 		Vec3 m_InitComPos;
 		PropNode m_Report;
 		std::vector< Real > m_SlowTwitchFiberRatios;

@@ -16,11 +16,11 @@
 
 namespace scone
 {
-	DofReflex::DofReflex( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-		Reflex( props, par, model, loc ),
-		INIT_MEMBER_REQUIRED( props, source ),
-		INIT_MEMBER( props, source_parent, "" ),
-		INIT_MEMBER( props, mirror_left, false ),
+	DofReflex::DofReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
+		Reflex( pn, par, model, loc ),
+		INIT_MEMBER_REQUIRED( pn, source ),
+		INIT_MEMBER( pn, source_parent, "" ),
+		INIT_MEMBER( pn, mirror_left, false ),
 		u_p(), u_v(),
 		m_SourceDof( *FindByNameTrySided( model.GetDofs(), source, loc.side_ ) ),
 		m_SourceParentDof( !source_parent.empty() ? &*FindByNameTrySided( model.GetDofs(), source_parent, loc.side_ ) : nullptr ),
@@ -29,25 +29,27 @@ namespace scone
 		m_DelayedPos( model.AcquireDelayedSensor< DofPositionSensor >( m_SourceDof, m_SourceParentDof ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< DofVelocitySensor >( m_SourceDof, m_SourceParentDof ) )
 	{
-		String par_name = GetParName( props, loc );
+		String par_name = GetParName( pn, loc );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
 
-		INIT_PAR_NAMED( props, par, P0, "P0", 0.0 );
-		INIT_PAR_NAMED( props, par, KP, "KP", 0.0 );
-		INIT_PROP( props, allow_neg_P, true );
+		INIT_PAR( pn, par, delay, 0.0 );
 
-		INIT_PAR_NAMED( props, par, V0, "V0", 0.0 );
-		INIT_PAR_NAMED( props, par, KV, "KV", 0.0 );
-		INIT_PROP( props, allow_neg_V, true );
+		INIT_PAR_NAMED( pn, par, P0, "P0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KP, "KP", 0.0 );
+		INIT_PROP( pn, allow_neg_P, true );
 
-		INIT_PAR_NAMED( props, par, C0, "C0", 0.0 );
-		INIT_PROP( props, condition, 0 );
-		INIT_PROP( props, filter_cutoff_frequency, 0.0 );
+		INIT_PAR_NAMED( pn, par, V0, "V0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KV, "KV", 0.0 );
+		INIT_PROP( pn, allow_neg_V, true );
+
+		INIT_PAR_NAMED( pn, par, C0, "C0", 0.0 );
+		INIT_PROP( pn, condition, 0 );
+		INIT_PROP( pn, filter_cutoff_frequency, 0.0 );
 
 		if ( filter_cutoff_frequency != 0.0 )
 			m_Filter = xo::make_lowpass_butterworth_2nd_order( model.GetSimulationStepSize() * filter_cutoff_frequency );
 
-		if ( auto p0pn = props.try_get< String >( "P0_source" ) )
+		if ( auto p0pn = pn.try_get< String >( "P0_source" ) )
 			m_pTargetPosSource = &model.AcquireDelayedSensor< DofPositionSensor >( *FindByNameTrySided( model.GetDofs(), *p0pn, loc.side_ ) );
 	}
 

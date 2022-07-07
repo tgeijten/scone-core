@@ -16,15 +16,15 @@
 
 namespace scone
 {
-	StringMap< EffortMeasure::EnergyMeasureType > EffortMeasure::m_MeasureNames = StringMap< EffortMeasure::EnergyMeasureType >(
-		EffortMeasure::Constant, "Constant",
-		EffortMeasure::TotalForce, "TotalForce",
-		EffortMeasure::Wang2012, "Wang2012",
-		EffortMeasure::Uchida2016, "Uchida2016",
-		EffortMeasure::SquaredMuscleStress, "SquaredMuscleStress",
-		EffortMeasure::CubedMuscleStress, "CubedMuscleStress",
-		EffortMeasure::SquaredMuscleActivation, "SquaredMuscleActivation",
-		EffortMeasure::CubedMuscleActivation, "CubedMuscleActivation"
+	StringMap< EffortMeasureType > EffortMeasure::m_MeasureNames = StringMap< EffortMeasureType >(
+		EffortMeasureType::Constant, "Constant",
+		EffortMeasureType::TotalForce, "TotalForce",
+		EffortMeasureType::Wang2012, "Wang2012",
+		EffortMeasureType::Uchida2016, "Uchida2016",
+		EffortMeasureType::SquaredMuscleStress, "SquaredMuscleStress",
+		EffortMeasureType::CubedMuscleStress, "CubedMuscleStress",
+		EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation",
+		EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation"
 		);
 
 	EffortMeasure::EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
@@ -102,14 +102,14 @@ namespace scone
 	{
 		switch ( measure_type )
 		{
-		case TotalForce: return GetTotalForce( model );
-		case Wang2012: return GetWang2012( model );
-		case Constant: return model.GetMass();
-		case Uchida2016: return GetUchida2016( model );
-		case SquaredMuscleStress: return GetSquaredMuscleStress( model );
-		case CubedMuscleStress: return GetCubedMuscleStress( model );
-		case SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
-		case CubedMuscleActivation: return GetCubedMuscleActivation( model );
+		case EffortMeasureType::TotalForce: return GetTotalForce( model );
+		case EffortMeasureType::Wang2012: return GetWang2012( model );
+		case EffortMeasureType::Constant: return model.GetMass();
+		case EffortMeasureType::Uchida2016: return GetUchida2016( model );
+		case EffortMeasureType::SquaredMuscleStress: return GetSquaredMuscleStress( model );
+		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
+		case EffortMeasureType::SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
+		case EffortMeasureType::CubedMuscleActivation: return GetCubedMuscleActivation( model );
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 	}
@@ -117,7 +117,7 @@ namespace scone
 	double EffortMeasure::GetTotalForce( const Model& model ) const
 	{
 		double f = 1.0; // base muscle force
-		for ( const MuscleUP& mus : model.GetMuscles() )
+		for ( const auto& mus : model.GetMuscles() )
 			f += mus->GetForce();
 		return f;
 	}
@@ -127,7 +127,7 @@ namespace scone
 		double e = m_Wang2012BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 			Real l = m_SlowTwitchFiberRatios[ i ];
 			Real fa = 40 * l * sin( REAL_HALF_PI * mus->GetExcitation() ) + 133 * ( 1 - l ) * ( 1 - cos( REAL_HALF_PI * mus->GetExcitation() ) );
@@ -162,7 +162,7 @@ namespace scone
 		double e = m_Uchida2016BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 
 			// calculate A parameter
@@ -257,7 +257,7 @@ namespace scone
 		// update muscle if its name is in the map
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const MuscleUP& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[ i ];
 
 			bool foundMuscle = false;
 			for ( auto it = muscPropsInput.begin(); it != muscPropsInput.end(); ++it )
@@ -310,14 +310,14 @@ namespace scone
 
 		switch ( measure_type )
 		{
-		case TotalForce: s += "F"; break;
-		case Wang2012: s += "W"; break;
-		case Constant: s += "C"; break;
-		case Uchida2016: s += "U"; break;
-		case SquaredMuscleStress: s += "S2"; break;
-		case CubedMuscleStress: s += "S3"; break;
-		case SquaredMuscleActivation: s += "A2"; break;
-		case CubedMuscleActivation: s += "A3"; break;
+		case EffortMeasureType::TotalForce: s += "F"; break;
+		case EffortMeasureType::Wang2012: s += "W"; break;
+		case EffortMeasureType::Constant: s += "C"; break;
+		case EffortMeasureType::Uchida2016: s += "U"; break;
+		case EffortMeasureType::SquaredMuscleStress: s += "S2"; break;
+		case EffortMeasureType::CubedMuscleStress: s += "S3"; break;
+		case EffortMeasureType::SquaredMuscleActivation: s += "A2"; break;
+		case EffortMeasureType::CubedMuscleActivation: s += "A3"; break;
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 

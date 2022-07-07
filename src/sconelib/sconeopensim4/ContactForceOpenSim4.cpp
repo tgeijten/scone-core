@@ -71,7 +71,7 @@ namespace scone
 		for ( auto& b : model.GetBodies() )
 		{
 			for ( auto& cg : m_Geometries )
-				if ( &cg->GetBody() == b.get() )
+				if ( &cg->GetBody() == b )
 					dynamic_cast<BodyOpenSim4&>( *b ).AttachContactForce( this );
 		}
 	}

@@ -42,6 +42,8 @@ namespace scone
 		String par_name = model.scone_version >= xo::version( 2, 0, 6 ) ? GetParName( pn, loc ) : target + '-' + GetNameNoSide( source );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
 
+		INIT_PAR( pn, par, delay, 0.0 );
+
 		INIT_PAR_NAMED( pn, par, P0, "P0", 0.0 );
 		INIT_PAR_NAMED( pn, par, KP, "KP", 0.0 );
 		INIT_PROP( pn, allow_neg_P, true );

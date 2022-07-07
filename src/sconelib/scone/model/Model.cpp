@@ -188,6 +188,12 @@ namespace scone
 		}
 	}
 
+	void Model::SetStoreData( bool store )
+	{
+		SCONE_ERROR_IF( store && GetTime() > 0.0, "Model SetStoreData() can only be set at before starting the simulation" );
+		m_StoreData = store;
+	}
+
 	bool Model::GetStoreData() const
 	{
 		return m_StoreData &&
@@ -352,8 +358,9 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
 		// reset actuator values
-		for ( Actuator* a : GetActuators() )
-			a->ClearInput();
+		if ( GetController() )
+			for ( Actuator* a : GetActuators() )
+				a->ClearInput();
 
 		if ( GetTime() > 0 )
 		{
@@ -561,7 +568,7 @@ namespace scone
 		m_ContactGeometries.clear();
 		m_ContactForces.clear();
 
-		m_Actuators.clear();
+		m_ActuatorPtrs.clear();
 		m_RootBody = m_GroundBody = nullptr;
 
 		m_Controller.reset();

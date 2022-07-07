@@ -15,28 +15,30 @@
 
 namespace scone
 {
-	BodyPointReflex::BodyPointReflex( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-		Reflex( props, par, model, loc ),
-		INIT_MEMBER_REQUIRED( props, source ),
-		INIT_MEMBER( props, offset, Vec3::zero() ),
-		INIT_MEMBER( props, direction, Vec3::zero() ),
+	BodyPointReflex::BodyPointReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
+		Reflex( pn, par, model, loc ),
+		INIT_MEMBER_REQUIRED( pn, source ),
+		INIT_MEMBER( pn, offset, Vec3::zero() ),
+		INIT_MEMBER( pn, direction, Vec3::zero() ),
 		body_( *FindByNameTrySided( model.GetBodies(), source, loc.side_ ) ),
 		m_DelayedPos( model.AcquireDelayedSensor< BodyPointPositionSensor >( body_, offset, direction ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyPointVelocitySensor >( body_, offset, direction ) ),
 		m_DelayedAcc( model.AcquireDelayedSensor< BodyPointAccelerationSensor >( body_, offset, direction ) )
 	{
-		ScopedParamSetPrefixer prefixer( par, GetParName( props, loc ) + "." );
+		ScopedParamSetPrefixer prefixer( par, GetParName( pn, loc ) + "." );
 
-		INIT_PAR_NAMED( props, par, P0, "P0", 0.0 );
-		INIT_PAR_NAMED( props, par, KP, "KP", 0.0 );
+		INIT_PAR( pn, par, delay, 0.0 );
 
-		INIT_PAR_NAMED( props, par, V0, "V0", 0.0 );
-		INIT_PAR_NAMED( props, par, KV, "KV", 0.0 );
+		INIT_PAR_NAMED( pn, par, P0, "P0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KP, "KP", 0.0 );
 
-		INIT_PAR_NAMED( props, par, A0, "A0", 0.0 );
-		INIT_PAR_NAMED( props, par, KA, "KA", 0.0 );
+		INIT_PAR_NAMED( pn, par, V0, "V0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KV, "KV", 0.0 );
 
-		INIT_PAR_NAMED( props, par, C0, "C0", 0.0 );
+		INIT_PAR_NAMED( pn, par, A0, "A0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KA, "KA", 0.0 );
+
+		INIT_PAR_NAMED( pn, par, C0, "C0", 0.0 );
 
 		u_p = u_v = u_a = 0;
 	}

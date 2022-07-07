@@ -21,14 +21,8 @@ namespace scone
 		INIT_PROP( pn, signature, String("") );
 
 		// replace DATE_TIME tag with (yes, indeed) DATE and TIME
-		xo::replace_str( signature_prefix, "DATE_TIME_EXACT", GetDateTimeExactAsString() );
-		xo::replace_str( signature_postfix, "DATE_TIME_EXACT", GetDateTimeExactAsString() );
-		xo::replace_str( signature_prefix, "DATE_TIME", GetDateTimeAsString() );
-		xo::replace_str( signature_postfix, "DATE_TIME", GetDateTimeAsString() );
-		xo::replace_str( signature_prefix, "SCONE_BUILD", to_str( GetSconeVersion().build_ ) );
-		xo::replace_str( signature_postfix, "SCONE_BUILD", to_str( GetSconeVersion().build_ ) );
-		xo::replace_str( signature_prefix, "SCONE_VERSION", to_str( GetSconeVersion().build_ ) );
-		xo::replace_str( signature_postfix, "SCONE_VERSION", to_str( GetSconeVersion().build_ ) );
+		ReplaceStringTags( signature_prefix );
+		ReplaceStringTags( signature_postfix );
 	}
 
 	String HasSignature::GetSignature() const

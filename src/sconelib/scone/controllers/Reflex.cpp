@@ -17,18 +17,10 @@ namespace scone
 {
 	Reflex::Reflex( const PropNode& props, Params& par, Model& model, const Location& loc ) :
 	target( props.get< String >( "target" ) ),
-	actuator_( *FindByLocation( model.GetActuators(), target, loc ) )
-	{
-		INIT_PAR( props, par, delay, 0 );
-		INIT_PROP( props, min_control_value, xo::constants<Real>::lowest() );
-		INIT_PROP( props, max_control_value, xo::constants<Real>::max() );
-	}
-
-	Reflex::Reflex( Actuator& target, TimeInSeconds d, Real min_val, Real max_val ) :
-	min_control_value( min_val ),
-	max_control_value( max_val ),
-	delay( d ),
-	actuator_( target )
+	actuator_( *FindByLocation( model.GetActuators(), target, loc ) ),
+		INIT_MEMBER( props, min_control_value, xo::constants<Real>::lowest() ),
+		INIT_MEMBER( props, max_control_value, xo::constants<Real>::max() ),
+		delay() // must be initialized in child class for proper parameter name
 	{}
 
 	Reflex::~Reflex() {}

@@ -35,6 +35,8 @@ namespace scone
 		String par_name = loc.GetParName( actuator_.GetName() ) + '-' + loc.GetParName( pivot_body );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
 
+		INIT_PAR( pn, par, delay, 0.0 );
+
 		INIT_PAR_NAMED( pn, par, P0, "P0", 0.0 );
 		INIT_PAR_NAMED( pn, par, KP, "KP", 0.0 );
 		INIT_PROP( pn, allow_neg_P, true );
