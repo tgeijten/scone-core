@@ -15,6 +15,7 @@ namespace scone
 	Storage<> read_storage_tmp(const xo::path& f) { Storage<> sto; ReadStorage(sto, f); return sto; }
 	static xo::memoize_thread_safe< Storage<>(const xo::path&) > g_storage_cache(read_storage_tmp);
 
+	// some code was copied from MimicMeasure
 	FeedForwardTrackingController::FeedForwardTrackingController( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
 		Controller( props, par, model, target_area ),
 		INIT_MEMBER( props, symmetric, target_area.symmetric_ ),

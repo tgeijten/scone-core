@@ -23,12 +23,13 @@ namespace scone
     /** Example:
 	\verbatim
 		FeedForwardTrackingController{
-			include = "move_platform"
+			include = "actuator_name"
 			pid = [160000., 0.0, 1600.0]
 			scale = 0.5
 			min_control_value = -1000.0
 			max_control_value = 1000.0
-			file = "data/move_platform.sto"
+			file = "data/tracking_states.sto"
+			include_states = "state_name"
 		}
 	\endverbatim
 	*/
@@ -46,12 +47,6 @@ namespace scone
 
 		/// Actuator names to exclude (semicolon separated); default = ""
 		String exclude;
-
-		/// Name of the DOF that is the source of this tracking, append with _o for DOF on opposite side.
-		/// String source;
-
-		/// Name of the target actuator; use _o for actuators on the opposite side.
-		String target;
 
 		/// Minimum output for this controller; default = -infinity.
 		Real min_control_value;
