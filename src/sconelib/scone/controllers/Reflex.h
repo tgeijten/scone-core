@@ -22,7 +22,6 @@ namespace scone
 	{
 	public:
 		Reflex( const PropNode& props, Params& par, Model& model, const Location& loc );
-		Reflex( Actuator& target, TimeInSeconds d, Real min_val = REAL_LOWEST, Real max_val = REAL_MAX );
 		virtual ~Reflex();
 
 		/// Name of the target actuator; use _o for actuators on the opposite side.

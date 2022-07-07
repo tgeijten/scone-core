@@ -48,7 +48,7 @@ namespace scone
 
 		const String& GetString( T e ) const {
 			auto iter = m_Map.find( e );
-			SCONE_ERROR_IF( iter == m_Map.end(), "Invalid value: " + to_str( e ) );
+			SCONE_ERROR_IF( iter == m_Map.end(), "Invalid value: " + to_str( static_cast<int>( e ) ) );
 			return iter->second;
 		}
 

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
+#include "version.h"
 
 using std::cout;
 using std::endl;
@@ -48,6 +49,14 @@ namespace scone
 		auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>( p.time_since_epoch() );
 		auto frac_secs = nsec.count() % 1000000;
 		return stringf( "%02d%02d.%02d%02d%02d.%06d", tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, frac_secs );
+	}
+
+	void ReplaceStringTags( String& str )
+	{
+		xo::replace_str( str, "DATE_TIME_EXACT", GetDateTimeExactAsString() );
+		xo::replace_str( str, "DATE_TIME", GetDateTimeAsString() );
+		xo::replace_str( str, "SCONE_BUILD", to_str( GetSconeVersion().build_ ) );
+		xo::replace_str( str, "SCONE_VERSION", to_str( GetSconeVersion().build_ ) );
 	}
 
 	const char* GetAxisName( index_t axis )

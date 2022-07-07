@@ -26,10 +26,13 @@ namespace scone
 	template< typename T > char GetSignChar( const T& v ) { return v < 0 ? '-' : '+'; }
 
 	/// Get formatted date/time string
-	String SCONE_API GetDateTimeAsString();
+	SCONE_API String GetDateTimeAsString();
 
     /// Get formatted date/time with exact fractional seconds as string
-    String SCONE_API GetDateTimeExactAsString();
+	SCONE_API String GetDateTimeExactAsString();
+
+	/// Replace DATE_TIME, SCONE_VERSION, etc. with actual values
+	SCONE_API void ReplaceStringTags( String& str );
 
 	/// Get axis name (X, Y or Z)
 	const char* GetAxisName( index_t axis );

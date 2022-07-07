@@ -14,9 +14,9 @@
 #include <fstream>
 
 constexpr int SCONE_VERSION_MAJOR = 2;
-constexpr int SCONE_VERSION_MINOR = 0;
-constexpr int SCONE_VERSION_PATCH = 6;
-constexpr const char* SCONE_VERSION_POSTFIX = "";
+constexpr int SCONE_VERSION_MINOR = 1;
+constexpr int SCONE_VERSION_PATCH = 0;
+constexpr const char* SCONE_VERSION_POSTFIX = "BETA 2";
 
 namespace scone
 {

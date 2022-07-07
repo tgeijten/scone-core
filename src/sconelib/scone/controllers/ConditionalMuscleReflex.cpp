@@ -15,18 +15,20 @@
 
 namespace scone
 {
-	ConditionalMuscleReflex::ConditionalMuscleReflex( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-	MuscleReflex( props, par, model, loc ),
-	dof( *FindByLocation( model.GetDofs(), props.get< String >( "dof" ), loc ) ),
+	ConditionalMuscleReflex::ConditionalMuscleReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
+	MuscleReflex( pn, par, model, loc ),
+	dof( *FindByLocation( model.GetDofs(), pn.get< String >( "dof" ), loc ) ),
 	m_pConditionalDofPos( nullptr ),
 	m_pConditionalDofVel( nullptr )
 	{
 		m_pConditionalDofPos = &model.AcquireDelayedSensor< DofPositionSensor >( dof );
 		m_pConditionalDofVel = &model.AcquireDelayedSensor< DofVelocitySensor >( dof );
 
-		ScopedParamSetPrefixer prefixer( par, GetParName( props, loc ) + "-" + props.get< String >( "dof" ) + "." );
-		INIT_PAR( props, par, pos_max, 1e12 );
-		INIT_PAR( props, par, pos_min, -1e12 );
+		ScopedParamSetPrefixer prefixer( par, GetParName( pn, loc ) + "-" + pn.get< String >( "dof" ) + "." );
+
+		INIT_PAR( pn, par, delay, 0.0 );
+		INIT_PAR( pn, par, pos_max, 1e12 );
+		INIT_PAR( pn, par, pos_min, -1e12 );
 		m_ConditionalPosRange.max = pos_max;
 		m_ConditionalPosRange.min = pos_min;
 	}

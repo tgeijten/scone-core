@@ -15,9 +15,9 @@
 
 namespace scone
 {
-	MuscleReflex::MuscleReflex( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-	Reflex( props, par, model, loc ),
-	source( *FindByLocation( model.GetMuscles(), props.get<string>( "source", target ), loc ) ),
+	MuscleReflex::MuscleReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
+	Reflex( pn, par, model, loc ),
+	source( *FindByLocation( model.GetMuscles(), pn.get<string>( "source", target ), loc ) ),
 	m_pForceSensor( nullptr ),
 	m_pLengthSensor( nullptr ),
 	m_pVelocitySensor( nullptr ),
@@ -25,30 +25,32 @@ namespace scone
 	m_pActivationSensor( nullptr )
 	{
 		// init names
-		String par_name = GetParName( props, loc );
+		String par_name = GetParName( pn, loc );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
 
-		INIT_PAR( props, par, KL, 0.0 );
-		INIT_PAR( props, par, L0, 1.0 );
-		INIT_PROP( props, allow_neg_L, true );
+		INIT_PAR( pn, par, delay, 0.0 );
 
-		INIT_PAR( props, par, KV, 0.0 );
-		INIT_PAR( props, par, V0, 0.0 );
-		INIT_PROP( props, allow_neg_V, false );
+		INIT_PAR( pn, par, KL, 0.0 );
+		INIT_PAR( pn, par, L0, 1.0 );
+		INIT_PROP( pn, allow_neg_L, true );
 
-		INIT_PAR( props, par, KF, 0.0 );
-		INIT_PAR( props, par, F0, 0.0 );
-		INIT_PROP( props, allow_neg_F, true );
+		INIT_PAR( pn, par, KV, 0.0 );
+		INIT_PAR( pn, par, V0, 0.0 );
+		INIT_PROP( pn, allow_neg_V, false );
 
-		INIT_PAR( props, par, KS, 0.0 );
-		INIT_PAR( props, par, S0, 0.0 );
-		INIT_PROP( props, allow_neg_S, false );
+		INIT_PAR( pn, par, KF, 0.0 );
+		INIT_PAR( pn, par, F0, 0.0 );
+		INIT_PROP( pn, allow_neg_F, true );
 
-		INIT_PAR( props, par, KA, 0.0 );
-		INIT_PAR( props, par, A0, 0.0 );
-		INIT_PROP( props, allow_neg_A, false );
+		INIT_PAR( pn, par, KS, 0.0 );
+		INIT_PAR( pn, par, S0, 0.0 );
+		INIT_PROP( pn, allow_neg_S, false );
 
-		INIT_PAR( props, par, C0, 0.0 );
+		INIT_PAR( pn, par, KA, 0.0 );
+		INIT_PAR( pn, par, A0, 0.0 );
+		INIT_PROP( pn, allow_neg_A, false );
+
+		INIT_PAR( pn, par, C0, 0.0 );
 
 		// create delayed sensors
 		if ( KF != 0.0 )

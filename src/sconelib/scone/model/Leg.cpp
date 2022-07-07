@@ -33,7 +33,7 @@ namespace scone
 
 		for ( const auto& b : m_Upper.GetModel().GetBodies() )
 			if ( b->IsChildOf( m_Upper ) && b->HasContactGeometry() )
-				m_ContactBodies.emplace_back( b.get() );
+				m_ContactBodies.emplace_back( b );
 		if ( m_ContactBodies.empty() )
 			log::warning( "Leg with upper body " + m_Upper.GetName() + " has no contact geometry" );
 	}

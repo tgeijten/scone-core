@@ -40,37 +40,37 @@ namespace scone
 		switch( xo::hash( type_ ) )
 		{
 		case "F"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleForceSensor >( *muscle_ );
 			break;
 		case "L"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleLengthSensor >( *muscle_ );
 			break;
 		case "S"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleSpindleSensor >( *muscle_ );
 			use_sample_delay_ = true;
 			break;
 		case "U"_hash:
-			muscle_ = FindByName( model.GetMuscles(), name ).get();
+			muscle_ = FindByName( model.GetMuscles(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< MuscleExcitationSensor >( *muscle_ );
 			break;
 		case "DP"_hash:
-			dof = FindByName( model.GetDofs(), name ).get();
+			dof = FindByName( model.GetDofs(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< DofPositionSensor >( *dof );
 			break;
 		case "DV"_hash:
-			dof = FindByName( model.GetDofs(), name ).get();
+			dof = FindByName( model.GetDofs(), name );
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< DofVelocitySensor >( *dof );
 			break;
 		case "DPV"_hash:
-			dof = FindByName( model.GetDofs(), name ).get();
+			dof = FindByName( model.GetDofs(), name );
 			auto kv = pn.has_key( "velocity_gain" ) ?
 				par.try_get( ".DV", pn, "velocity_gain", 0.1 ) :
 				par.get( ".DV", 0.1, 0.01, 0, 1 ); // this is for backwards compatibility (<1845)
 			auto parent_name = pn.try_get_any< string >( { "parent", "source_parent" } );
-			Dof* root_dof = parent_name ? FindByName( model.GetDofs(), *parent_name ).get() : nullptr;
+			Dof* root_dof = parent_name ? FindByName( model.GetDofs(), *parent_name ) : nullptr;
 			input_sensor_ = &nc.GetModel().AcquireDelayedSensor< DofPosVelSensor >( *dof, kv, root_dof );
 			break;
 		}

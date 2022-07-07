@@ -86,7 +86,7 @@ namespace scone
 	path FindFile( const path& p )
 	{
 		if ( xo::current_find_file_path().empty() )
-			log::warning( "No current find file path set, resorting to global current path" );
+			log::debug( "No find file path set, using current path" );
 		
 		return xo::find_file( {
 			p,
