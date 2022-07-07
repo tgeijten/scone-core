@@ -34,7 +34,8 @@ namespace scone
 			"min_input", &LuaDof::min_input,
 			"max_input", &LuaDof::max_input,
 			"min_torque", &LuaDof::min_torque,
-			"max_torque", &LuaDof::max_torque
+			"max_torque", &LuaDof::max_torque,
+			"muscle_moment", &LuaDof::muscle_moment
 			);
 
 		lua.new_usertype<LuaBody>( "LuaBody", sol::constructors<>(),
