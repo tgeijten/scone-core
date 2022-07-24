@@ -94,7 +94,8 @@ namespace scone
 			"active_fiber_force", &LuaMuscle::active_fiber_force,
 			"active_force_length_multiplier", &LuaMuscle::active_force_length_multiplier,
 			"passive_fiber_force", &LuaMuscle::passive_fiber_force,
-			"max_isometric_force", &LuaMuscle::max_isometric_force
+			"max_isometric_force", &LuaMuscle::max_isometric_force,
+			"mass", &LuaMuscle::mass
 			);
 
 		lua.new_usertype<LuaModel>( "LuaModel", sol::constructors<>(),
