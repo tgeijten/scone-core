@@ -184,6 +184,8 @@ namespace scone
 		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
 		/// get the maximum isometric force [N]
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
+		/// get the muscle mass [kg], based on a specific tension of 250000
+		LuaNumber mass() { return mus_.GetMass(); }
 
 		Muscle& mus_;
 	};
