@@ -158,6 +158,12 @@ namespace scone
 		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
 		/// get the optimal fiber length [m]
 		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
+		/// get the fiber lengthening velocity [m/s]
+		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
+		/// get the normalized fiber lengthening velocity [m/s]
+		LuaNumber normalized_fiber_velocity() { return mus_.GetNormalizedFiberVelocity(); }
+		/// get the maximum fiber contraction velocity [m/s]
+		LuaNumber max_contraction_velocity() { return mus_.GetMaxContractionVelocity(); }
 		/// get the tendon length [m]
 		LuaNumber tendon_length() { return mus_.GetTendonLength(); }
 		/// get the normalized fiber length of the contractile element
@@ -172,12 +178,16 @@ namespace scone
 		LuaNumber force() { return mus_.GetForce(); }
 		/// get the normalized muscle force [0..1]
 		LuaNumber normalized_force() { return mus_.GetNormalizedForce(); }
+		/// get the active fiber force [N]
+		LuaNumber active_fiber_force() { return mus_.GetActiveFiberForce(); }
+		/// get the active fiber force [N]
+		LuaNumber active_force_length_multiplier() { return mus_.GetActiveForceLengthMultipler(); }
+		/// get the active fiber force [N]
+		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
 		/// get the maximum isometric force [N]
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
-		/// get the fiber lengthening velocity [m/s]
-		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
-		/// get the normalized fiber lengthening velocity [m/s]
-		LuaNumber normalized_fiber_velocity() { return mus_.GetNormalizedFiberVelocity(); }
+		/// get the muscle mass [kg], based on a specific tension of 250000
+		LuaNumber mass() { return mus_.GetMass(); }
 
 		Muscle& mus_;
 	};
@@ -276,6 +286,10 @@ namespace scone
 		LuaVec3 com_pos() { return mod_.GetComPos(); }
 		/// get the current com velocity [m/s]
 		LuaVec3 com_vel() { return mod_.GetComVel(); }
+		/// get the model mass [kg]
+		LuaNumber mass() { return mod_.GetMass(); }
+		/// get the gravitational pull [m/s^2]
+		LuaVec3 gravity() { return mod_.GetGravity(); }
 
 		/// get the actuator at index (starting at 1)
 		LuaActuator actuator( int index ) { return *GetByLuaIndex( mod_.GetActuators(), index ); }

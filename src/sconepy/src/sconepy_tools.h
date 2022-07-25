@@ -1,5 +1,7 @@
 #pragma once
 
+#include "sconepy.h"
+
 #include <string>
 #include <filesystem>
 #include "xo/filesystem/path.h"
@@ -76,35 +78,46 @@ namespace scone
 			act->InitializeActivation( *value_it++ );
 	};
 
-	template< typename C, typename F > std::vector<double> extract_vec( const C& cont, F fn ) {
-		std::vector<double> v;
+	template< typename T, typename C, typename F > std::vector<T> extract_vec( const C& cont, F fn ) {
+		std::vector<T> v;
 		v.reserve( std::size( cont ) );
 		for ( auto& e : cont )
-			v.emplace_back( fn( e ) );
+			v.emplace_back( static_cast<T>( fn( e ) ) );
 		return v;
 	};
 
-	std::vector<double> get_muscle_lengths( const scone::Model& model ) {
-		return extract_vec( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberLength(); } );
+	template< typename T >
+	std::vector<T> get_muscle_lengths( const scone::Model& model ) {
+		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberLength(); } );
 	};
-	std::vector<double> get_muscle_velocities( const scone::Model& model ) {
-		return extract_vec( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberVelocity(); } );
+	template< typename T >
+	std::vector<T> get_muscle_velocities( const scone::Model& model ) {
+		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberVelocity(); } );
 	};
-	std::vector<double> get_muscle_forces( const scone::Model& model ) {
-		return extract_vec( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedForce(); } );
+	template< typename T >
+	std::vector<T> get_muscle_forces( const scone::Model& model ) {
+		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedForce(); } );
 	};
-	std::vector<double> get_muscle_activations( const scone::Model& model ) {
-		return extract_vec( model.GetMuscles(), []( const Muscle* m ) { return m->GetActivation(); } );
+	template< typename T >
+	std::vector<T> get_muscle_activations( const scone::Model& model ) {
+		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetActivation(); } );
 	};
-	std::vector<double> get_muscle_excitations( const scone::Model& model ) {
-		return extract_vec( model.GetMuscles(), []( const Muscle* m ) { return m->GetExcitation(); } );
+	template< typename T >
+	std::vector<T> get_muscle_excitations( const scone::Model& model ) {
+		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetExcitation(); } );
 	};
-	std::vector<double> get_actuator_values( const scone::Model& model ) {
-		return extract_vec( model.GetActuators(), []( const Actuator* m ) { return m->GetInput(); } );
+	template< typename T >
+	std::vector<T> get_actuator_values( const scone::Model& model ) {
+		return extract_vec<T>( model.GetActuators(), []( const Actuator* m ) { return m->GetInput(); } );
 	};
-	std::vector<double> get_dof_values( const scone::Model& model ) {
-		auto dof_pos = extract_vec( model.GetDofs(), []( const Dof* d ) { return d->GetPos(); } );
-		return xo::append( dof_pos, extract_vec( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); } ) );
+	template< typename T >
+	std::vector<T> get_dof_values( const scone::Model& model ) {
+		auto dof_pos = extract_vec<T>( model.GetDofs(), []( const Dof* d ) { return d->GetPos(); } );
+		return xo::append( dof_pos, extract_vec<T>( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); } ) );
+	};
+
+	py::array get_muscle_lengths( const scone::Model& model, bool dbl ) {
+		return py::array( py::cast( dbl ? get_muscle_lengths<double>( model ) : get_muscle_lengths<double>( model ) ) );
 	};
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
