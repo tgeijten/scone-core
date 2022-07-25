@@ -1,7 +1,7 @@
 #include "FeedForwardTrackingController.h"
 
 #include "scone/controllers/Controller.h"
-#include "scone/model/Muscle.h"
+#include "scone/model/Actuator.h"
 #include "scone/model/Location.h"
 
 #include "scone/core/Factories.h"

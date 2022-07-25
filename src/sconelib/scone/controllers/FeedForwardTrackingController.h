@@ -12,16 +12,12 @@
 #include "scone/core/Function.h"
 #include "scone/model/Leg.h"
 
-namespace OpenSim
-{
-	class PiecewiseLinearFunction;
-}
 
 namespace scone
 {
-	/// Controller that produces a feed-forward control signal for any actuator, based on a pid tracking of a model state.
+    /// Controller that produces a feed-forward control signal for any actuator, based on a pid tracking of a model state.
     /** Example:
-	\verbatim
+    \verbatim
 		FeedForwardTrackingController{
 			include = "actuator_name"
 			pid = [160000., 0.0, 1600.0]
@@ -31,8 +27,8 @@ namespace scone
 			file = "data/tracking_states.sto"
 			include_states = "state_name"
 		}
-	\endverbatim
-	*/
+    \endverbatim
+    */
 	class FeedForwardTrackingController : public Controller
 	{
 	public:
