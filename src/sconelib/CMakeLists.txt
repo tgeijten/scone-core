@@ -11,3 +11,7 @@ endif()
 if (SCONE_LUA)
 	add_subdirectory(sconelua)
 endif()
+
+if (SCONE_USER)
+	add_subdirectory(sconeuser)
+endif()
