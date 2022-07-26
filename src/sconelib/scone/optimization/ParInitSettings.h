@@ -8,6 +8,16 @@
 namespace scone
 {
 	/// Settings for parameter initialization files (.par), used by Optimizer.
+	/** Multiple init statements can be used, for example:
+	\verbatim
+	CmaOptimizer {
+		init { file = par_file1.par std_offset = 0.1 }
+		init { file = par_file2.par exclude = "*.offset" }
+
+		...
+	}
+	\endverbatim
+	*/
 	struct ParInitSettings
 	{
 		ParInitSettings() = default;
