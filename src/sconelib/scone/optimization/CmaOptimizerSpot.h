@@ -1,5 +1,5 @@
 /*
-** CmaOptimizerSpot.h
+** CmaOptimizer.h
 **
 ** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
 **
@@ -14,12 +14,12 @@
 namespace scone
 {
 	/// Optimizer based on the CMA-ES algorithm by [Hansen].
-	class SCONE_API CmaOptimizerSpot : public EsOptimizer, public spot::cma_optimizer
+	class SCONE_API CmaOptimizer : public EsOptimizer, public spot::cma_optimizer
 	{
 	public:
-		CmaOptimizerSpot( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir );
+		CmaOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir );
 		virtual void SetOutputMode( OutputMode m ) override;
-		virtual ~CmaOptimizerSpot() = default;
+		virtual ~CmaOptimizer() = default;
 		virtual void Run() override;
 		virtual double GetBestFitness() const override { return best_fitness(); }
 

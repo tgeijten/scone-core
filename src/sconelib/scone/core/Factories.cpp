@@ -180,8 +180,8 @@ namespace scone
 	OptimizerFactory& GetOptimizerFactory()
 	{
 		static OptimizerFactory g_OptimizerFactory = OptimizerFactory()
-			.register_type< CmaOptimizerSpot >( "CmaOptimizer" )
-			.register_type< CmaOptimizerSpot >()
+			.register_type< CmaOptimizer >( "CmaOptimizer" )
+			.register_type< CmaOptimizer >( "CmaOptimizerSpot" )
 #ifdef SCONE_EXPERIMENTAL_FEATURES
 			.register_type< MesOptimizer >()
 			.register_type< EvaOptimizer >()

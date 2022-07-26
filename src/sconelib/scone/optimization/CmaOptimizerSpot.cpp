@@ -1,5 +1,5 @@
 /*
-** CmaOptimizerSpot.cpp
+** CmaOptimizer.cpp
 **
 ** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
 **
@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	CmaOptimizerSpot::CmaOptimizerSpot( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir ) :
+	CmaOptimizer::CmaOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir ) :
 		EsOptimizer( pn, scenario_pn, scenario_dir ),
 		cma_optimizer( *m_Objective, GetSpotEvaluator(),
 			spot::cma_options{
@@ -46,7 +46,7 @@ namespace scone
 			add_stop_condition( std::make_unique< spot::target_fitness_condition>( target_fitness_ ) );
 	}
 
-	void CmaOptimizerSpot::SetOutputMode( OutputMode m )
+	void CmaOptimizer::SetOutputMode( OutputMode m )
 	{
 		xo_assert( output_mode_ == no_output ); // output mode can only be set once
 		output_mode_ = m;
@@ -54,7 +54,7 @@ namespace scone
 			add_reporter( std::move( p ) );
 	}
 
-	void CmaOptimizerSpot::Run()
+	void CmaOptimizer::Run()
 	{
 		// create output folder
 		PrepareOutputFolder();

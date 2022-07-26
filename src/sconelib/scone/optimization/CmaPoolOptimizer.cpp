@@ -29,7 +29,7 @@ namespace scone
 		INIT_PROP( pn, concurrent_optimizations_, 2 );
 		INIT_PROP( pn, random_seed_, 1 );
 
-		auto flag_parameters = CmaOptimizerSpot( pn, scenario_pn, scenario_dir );
+		auto flag_parameters = CmaOptimizer( pn, scenario_pn, scenario_dir );
 	}
 
 	void CmaPoolOptimizer::Run()
@@ -48,7 +48,7 @@ namespace scone
 			props_.back().set( "log_level", (int)xo::log::level::never ); // children don't log?
 
 			// create optimizer
-			auto o = std::make_unique< CmaOptimizerSpot >( props_.back(), scenario_pn_copy_, m_Objective->GetExternalResourceDir() );
+			auto o = std::make_unique< CmaOptimizer >( props_.back(), scenario_pn_copy_, m_Objective->GetExternalResourceDir() );
 			o->PrepareOutputFolder();
 
 			auto fr = std::make_unique< spot::file_reporter >( o->GetOutputFolder(), o->min_improvement_for_file_output, o->max_generations_without_file_output );
