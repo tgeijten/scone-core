@@ -64,7 +64,7 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
 		LuaModel lm( model );
-		return update_( &lm );
+		return update_( &lm, timestamp );
 	}
 
 	String ScriptController::GetClassSignature() const

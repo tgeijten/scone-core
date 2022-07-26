@@ -53,7 +53,7 @@ namespace scone
 		if ( update_ )
 		{
 			LuaModel lm( const_cast<Model&>( model ) );
-			return update_( &lm );
+			return update_( &lm, timestamp );
 		}
 		else return false;
 	}

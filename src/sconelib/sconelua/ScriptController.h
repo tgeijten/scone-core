@@ -52,7 +52,7 @@ namespace scone
 
 		u_ptr< class lua_script > script_;
 		std::function<void( struct LuaModel*, struct LuaParams*, double )> init_;
-		std::function<bool( struct LuaModel* )> update_;
+		std::function<bool( struct LuaModel*, double )> update_;
 		std::function<double( struct LuaFrame* )> store_;
 	};
 }
