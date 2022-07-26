@@ -19,7 +19,7 @@ option(SCONE_HYFYDY "Support Hyfydy - EXPERIMENTAL" OFF)
 option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 option(SCONE_PYTHON "Build SconePy Python API" OFF)
-option(SCONE_USER "Build sconeuser extension library" OFF)
+option(SCONE_USER_EXTENSIONS "Build sconeuser extension library" OFF)
 
 # Find TCLAP
 find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/tclap-1.2.1/include" )

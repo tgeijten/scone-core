@@ -2,14 +2,15 @@
 
 #include "scone/core/Factories.h"
 #include "xo/system/log.h"
+#include "ExampleController.h"
 
 namespace scone
 {
-	SCONE_USER_API void RegisterSconeUser()
+	SCONE_USER_API void RegisterSconeUserExtensions()
 	{
-		// register custom Controllers and Measures here
-		
-		// GetControllerFactory().register_type< UserController >();
-		// GetMeasureFactory().register_type< UserController >();
+		// register Controllers and Measures here
+
+		// Uncomment the following line to enable ExampleController:
+		// GetControllerFactory().register_type< ExampleController >();
 	}
 }

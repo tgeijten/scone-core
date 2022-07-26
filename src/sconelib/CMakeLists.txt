@@ -12,6 +12,6 @@ if (SCONE_LUA)
 	add_subdirectory(sconelua)
 endif()
 
-if (SCONE_USER)
+if (SCONE_USER_EXTENSIONS)
 	add_subdirectory(sconeuser)
 endif()

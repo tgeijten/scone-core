@@ -32,3 +32,8 @@ if (SCONE_LUA)
 	target_link_libraries(sconecmd sconelua)
 	target_compile_definitions(sconecmd PRIVATE SCONE_LUA)
 endif()
+
+if (SCONE_USER_EXTENSIONS)
+	target_link_libraries(sconecmd sconeuser)
+	target_compile_definitions(sconecmd PRIVATE SCONE_USER_EXTENSIONS)
+endif()

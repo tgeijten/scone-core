@@ -1,7 +1,9 @@
 set(SCONE_USER_FILES
 	sconeuser.h
 	sconeuser.cpp
-	# add additional files here
+	# add user Controllers and Measures here
+	ExampleController.h
+	ExampleController.cpp
 )
 
 add_library( sconeuser SHARED ${SCONE_USER_FILES} )

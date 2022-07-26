@@ -12,5 +12,5 @@
 
 namespace scone
 {
-	SCONE_USER_API void RegisterSconeUser();
+	SCONE_USER_API void RegisterSconeUserExtensions();
 }

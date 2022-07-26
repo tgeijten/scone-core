@@ -70,7 +70,7 @@ namespace scone
 #endif
 
 #if SCONE_USER_EXTENSIONS_ENABLED
-		RegisterSconeUser();
+		RegisterSconeUserExtensions();
 #endif
 	}
 }
