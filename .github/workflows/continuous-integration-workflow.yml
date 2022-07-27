@@ -8,8 +8,8 @@ env:
 
 jobs:
   osx:
-    name: Build on MacOS 10.15
-    runs-on: macos-10.15
+    name: Build on MacOS 11
+    runs-on: macos-11
 
     steps:
     - uses: actions/checkout@v1
