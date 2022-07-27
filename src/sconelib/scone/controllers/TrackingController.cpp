@@ -1,4 +1,4 @@
-#include "FeedForwardTrackingController.h"
+#include "TrackingController.h"
 
 #include "scone/controllers/Controller.h"
 #include "scone/model/Actuator.h"
@@ -16,7 +16,7 @@ namespace scone
 	static xo::memoize_thread_safe< Storage<>(const xo::path&) > g_storage_cache(read_storage_tmp);
 
 	// some code was copied from MimicMeasure
-	FeedForwardTrackingController::FeedForwardTrackingController( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
+	TrackingController::TrackingController( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
 		Controller( props, par, model, target_area ),
 		INIT_MEMBER( props, symmetric, target_area.symmetric_ ),
 		INIT_MEMBER( props, include, "*" ),
@@ -51,7 +51,7 @@ namespace scone
 				// see if this actuator is on the right side
 				if (target_area.side_ == Side::None || target_area.side_ == ai.side) {
 					m_ActInfos.push_back(ai);
-					log::info("FeedForwardTrackingController include actuators: " + ai.full_name);
+					log::info("TrackingController include actuators: " + ai.full_name);
 				}
 			}
 		}
@@ -76,12 +76,12 @@ namespace scone
 					auto w = 1.0;
 					state_storage_map_.emplace_back(Channel{ state_idx, sto_idx, w });
 					channel_errors_.emplace_back(name, 0.0);
-					log::info("FeedForwardTrackingController include state channels : " + name);
+					log::info("TrackingController include state channels : " + name);
 				}
 			}
 		}
 
-		log::debug("FeedForwardTrackingController found ", state_storage_map_.size(), " of ", storage_.GetChannelCount(), " channels from ", file);
+		log::debug("TrackingController found ", state_storage_map_.size(), " of ", storage_.GetChannelCount(), " channels from ", file);
 
 		SCONE_THROW_IF(state_storage_map_.empty(), "No matching states found in " + file.str());
 
@@ -92,7 +92,7 @@ namespace scone
 
 	}
 
-	bool FeedForwardTrackingController::ComputeControls( Model& model, double time )
+	bool TrackingController::ComputeControls( Model& model, double time )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -133,7 +133,7 @@ namespace scone
 		return false;
 	}
 
-	scone::String FeedForwardTrackingController::GetClassSignature() const
+	scone::String TrackingController::GetClassSignature() const
 	{
 		return String("FT");
 	}

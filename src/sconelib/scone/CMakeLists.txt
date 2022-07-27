@@ -84,8 +84,8 @@ set(CS_CONTROLLERS_FILES
 	controllers/Controller.h
 	controllers/FeedForwardController.cpp
 	controllers/FeedForwardController.h
-	controllers/FeedForwardTrackingController.cpp
-	controllers/FeedForwardTrackingController.h
+	controllers/TrackingController.cpp
+	controllers/TrackingController.h
 	controllers/PerturbationController.cpp
 	controllers/PerturbationController.h
 	controllers/MirrorController.h

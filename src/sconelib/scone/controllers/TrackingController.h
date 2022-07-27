@@ -1,5 +1,5 @@
 /*
-** FeedForwardTrackingController.h
+** TrackingController.h
 ** Author(s): Alex Zhou
 */
 
@@ -15,10 +15,10 @@
 
 namespace scone
 {
-    /// Controller that produces a feed-forward control signal for any actuator, based on a pid tracking of a model state.
+    /// Controller that produces a feedback control signal for any actuator, based on a pid tracking of a model state.
     /** Example:
     \verbatim
-		FeedForwardTrackingController{
+		TrackingController{
 			include = "actuator_name"
 			pid = [160000., 0.0, 1600.0]
 			scale = 0.5
@@ -29,11 +29,11 @@ namespace scone
 		}
     \endverbatim
     */
-	class FeedForwardTrackingController : public Controller
+	class TrackingController : public Controller
 	{
 	public:
-		FeedForwardTrackingController( const PropNode& props, Params& par, Model& model, const Location& target_area );
-		virtual ~FeedForwardTrackingController() { };
+		TrackingController( const PropNode& props, Params& par, Model& model, const Location& target_area );
+		virtual ~TrackingController() { };
 
 		/// Bool indicating if function should be the same for left and right; default = true.
 		bool symmetric;
