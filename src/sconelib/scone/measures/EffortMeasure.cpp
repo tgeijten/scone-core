@@ -9,6 +9,7 @@
 #include "EffortMeasure.h"
 #include "scone/model/Model.h"
 #include "scone/model/Muscle.h"
+#include "scone/model/Dof.h"
 #include "scone/core/profiler_config.h"
 #include "scone/core/math.h"
 #include "xo/string/pattern_matcher.h"
@@ -24,7 +25,8 @@ namespace scone
 		EffortMeasureType::SquaredMuscleStress, "SquaredMuscleStress",
 		EffortMeasureType::CubedMuscleStress, "CubedMuscleStress",
 		EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation",
-		EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation"
+		EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation",
+		EffortMeasureType::MechnicalWork, "MechnicalWork"
 		);
 
 	EffortMeasure::EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
@@ -40,6 +42,8 @@ namespace scone
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
 		INIT_PROP( props, omnidirectional, false );
+		INIT_PROP( props, mechanical_work_order, 1.0);
+
 		if ( name_.empty() )
 			name_ = m_MeasureNames.GetString( measure_type );
 
@@ -110,6 +114,7 @@ namespace scone
 		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
 		case EffortMeasureType::SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
 		case EffortMeasureType::CubedMuscleActivation: return GetCubedMuscleActivation( model );
+		case EffortMeasureType::MechnicalWork: return GetMechnicalWork(model);
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 	}
@@ -304,6 +309,18 @@ namespace scone
 		return sum;
 	}
 
+	// Implementation of mechanical work, Afschrift et al. 2016, "Mechanical effort predicts the selection of ankle ..." 
+	double EffortMeasure::GetMechnicalWork(const Model& model) const
+	{
+		double sum = 0.0;
+		for (auto& d : model.GetDofs())
+		{
+			auto mom = d->GetMuscleMoment();// +d->GetLimitMoment();
+			sum += std::pow(fabs(mom * d->GetVel()), mechanical_work_order); // only positive power
+		}
+		return sum;
+	}
+
 	String EffortMeasure::GetClassSignature() const
 	{
 		String s;
@@ -318,6 +335,7 @@ namespace scone
 		case EffortMeasureType::CubedMuscleStress: s += "S3"; break;
 		case EffortMeasureType::SquaredMuscleActivation: s += "A2"; break;
 		case EffortMeasureType::CubedMuscleActivation: s += "A3"; break;
+		case EffortMeasureType::MechnicalWork: s += "MW"; break;
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 

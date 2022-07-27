@@ -24,7 +24,8 @@ namespace scone
 		SquaredMuscleStress, ///< Use the summed squared muscle stress as a measure
 		CubedMuscleStress, ///< Use the summed squared muscle stress as a measure
 		SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
-		CubedMuscleActivation ///< Use the summed cubed muscle muscle activation
+		CubedMuscleActivation, ///< Use the summed cubed muscle muscle activation
+		MechnicalWork ///< mechanical work of muscles = sum of muscle moment * dof velocity
 	};
 
 
@@ -38,6 +39,7 @@ namespace scone
 		- ''CubedMuscleStress'': summed squared muscle stress: (force / PCSA)%%^%%3
 		- ''SquaredMuscleActivation'': summed squared muscle activation: (activation)%%^%%2
 		- ''CubedMuscleActivation'': summed cubed muscle activation: (activation)^3
+		- ''MechnicalWork'': mechanical work of muscles = sum of muscle moment * dof velocity
 
 		All effort models can be used to compute cost-of-transport, by setting ''use_cost_of_transport = 1''.
 	*/
@@ -46,7 +48,7 @@ namespace scone
 	public:
 		EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 
-		/// Energy model to be used, can be: ''Constant'', ''TotalForce'', ''Wang2012'', ''Uchida2016'', ''SquaredMuscleStress'', ''CubedMuscleStress'', ''SquaredMuscleActivation'', ''CubedMuscleActivation''
+		/// Energy model to be used, can be: ''Constant'', ''TotalForce'', ''Wang2012'', ''Uchida2016'', ''SquaredMuscleStress'', ''CubedMuscleStress'', ''SquaredMuscleActivation'', ''CubedMuscleActivation'', ''MechanicalWork''
 		EffortMeasureType measure_type;
 
 		/// Flag indicating to use (energy / distance) as a result; default = 0.
@@ -72,6 +74,9 @@ namespace scone
 
 		/// Use omnidirectional distance measure instead of distance along the x-axis; default = 0.
 		bool omnidirectional;
+
+		/// Value for mechanical work power
+		Real mechanical_work_order;
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
@@ -104,5 +109,6 @@ namespace scone
 		double GetCubedMuscleStress( const Model& model ) const;
 		double GetSquaredMuscleActivation( const Model& model ) const;
 		double GetCubedMuscleActivation( const Model& model ) const;
+		double GetMechnicalWork(const Model& model) const;
 	};
 }

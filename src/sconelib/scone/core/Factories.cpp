@@ -12,6 +12,7 @@
 #include "scone/controllers/ConditionalMuscleReflex.h"
 #include "scone/controllers/DofReflex.h"
 #include "scone/controllers/FeedForwardController.h"
+#include "scone/controllers/TrackingController.h"
 #include "scone/controllers/GaitStateController.h"
 #include "scone/controllers/MirrorController.h"
 #include "scone/controllers/MuscleReflex.h"
@@ -75,6 +76,7 @@ namespace scone
 			.register_type< SpinalController >()
 #endif
 			.register_type< FeedForwardController >()
+			.register_type< TrackingController >()
 			.register_type< GaitStateController >()
 			.register_type< ReflexController >()
 			.register_type< PerturbationController >()

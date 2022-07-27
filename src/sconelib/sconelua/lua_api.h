@@ -130,6 +130,8 @@ namespace scone
 		LuaNumber min_torque() { return dof_.GetMinTorque(); }
 		/// get highest possible actuator torque [Nm] for this dof
 		LuaNumber max_torque() { return dof_.GetMaxTorque(); }
+		/// get sum of muscle moments for this dof 
+		LuaNumber muscle_moment() { return dof_.GetMuscleMoment(); }
 
 		Dof& dof_;
 	};
