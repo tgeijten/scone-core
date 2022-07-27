@@ -56,11 +56,11 @@ jobs:
 
     # note: this step is specifically because ubuntu-18.04 does not
     # provide a C++17 compiler. It can be skipped in newer distros
-    - name: Install gcc-8 and g++8
-      run: |
-        sudo apt-get install gcc-8 g++-8
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+    # - name: Install gcc-8 and g++8
+    #   run: |
+    #     sudo apt-get install gcc-8 g++-8
+    #     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+    #     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
 
     # simbody: only build it if its source files have changed
