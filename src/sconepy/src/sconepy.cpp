@@ -35,7 +35,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def_readwrite( "x", &scone::Quat::x )
 		.def_readwrite( "y", &scone::Quat::y )
 		.def_readwrite( "z", &scone::Quat::z )
-		.def( "array", []( scone::Quat& v ) { return py::array( py::cast( std::vector{ v.x, v.y, v.z } ) ); } )
+		.def( "array", []( scone::Quat& q ) { return py::array( py::cast( std::vector{ q.w, q.x, q.y, q.z } ) ); } )
 		;
 
 	py::class_<scone::Actuator>( m, "Actuator" )
