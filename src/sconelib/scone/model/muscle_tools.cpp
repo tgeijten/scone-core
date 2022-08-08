@@ -39,7 +39,7 @@ namespace scone
 		std::vector<Real> vec;
 		vec.reserve( range.size() );
 		for ( auto d : range ) {
-			dof.SetPos( Degree( d ).rad_value(), false );
+			dof.SetPos( Degree( d ).rad_value() );
 			vec.push_back( func() );
 		}
 		return vec;
@@ -53,7 +53,7 @@ namespace scone
 
 		for ( index_t i = 0; i < range.size(); ++i )
 		{
-			dof.SetPos( Degree( range[ i ] ).rad_value(), false );
+			dof.SetPos( Degree( range[ i ] ).rad_value() );
 			sto[ i ][ name + ".CE" ] = mus.GetLength() - mus.GetTendonSlackLength();
 		}
 	}

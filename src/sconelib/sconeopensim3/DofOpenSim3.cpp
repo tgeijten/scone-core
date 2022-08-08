@@ -70,10 +70,10 @@ namespace scone
 		else return 0.0;
 	}
 
-	void DofOpenSim3::SetPos( Real pos, bool enforce_constraints )
+	void DofOpenSim3::SetPos( Real pos )
 	{
 		if ( !m_osCoord.getLocked( m_Model.GetTkState() ) )
-			m_osCoord.setValue( m_Model.GetTkState(), pos, enforce_constraints );
+			m_osCoord.setValue( m_Model.GetTkState(), pos, false );
 	}
 
 	void DofOpenSim3::SetVel( Real vel )

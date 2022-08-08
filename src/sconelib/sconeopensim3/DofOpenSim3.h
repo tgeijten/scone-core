@@ -37,7 +37,7 @@ namespace scone
 
 		void SetCoordinateActuator( OpenSim::CoordinateActuator* ca ) { m_OsCoordAct = ca; }
 
-		virtual void SetPos( Real pos, bool enforce_constraints = true ) override;
+		virtual void SetPos( Real pos ) override;
 		virtual void SetVel( Real vel ) override;
 
 		bool IsRotational() const override;

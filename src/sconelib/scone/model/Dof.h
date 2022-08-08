@@ -30,7 +30,7 @@ namespace scone
 		virtual Real GetLimitMoment() const = 0;
 		virtual Real GetMuscleMoment() const;
 
-		virtual void SetPos( Real pos, bool enforce_constraints = true ) = 0;
+		virtual void SetPos( Real pos ) = 0;
 		virtual void SetVel( Real vel ) = 0;
 
 		virtual bool IsRotational() const = 0;
