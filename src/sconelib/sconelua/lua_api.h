@@ -180,9 +180,9 @@ namespace scone
 		LuaNumber normalized_force() { return mus_.GetNormalizedForce(); }
 		/// get the active fiber force [N]
 		LuaNumber active_fiber_force() { return mus_.GetActiveFiberForce(); }
-		/// get the active fiber force [N]
+		/// get the active fiber force-length multiplier
 		LuaNumber active_force_length_multiplier() { return mus_.GetActiveForceLengthMultipler(); }
-		/// get the active fiber force [N]
+		/// get the passive fiber force [N]
 		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
 		/// get the maximum isometric force [N]
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
