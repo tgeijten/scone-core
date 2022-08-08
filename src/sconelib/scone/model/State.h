@@ -20,10 +20,11 @@ namespace scone
 	{
 	public:
 		State() = default;
+		State( std::vector<String>&& names );
 
 		size_t GetSize() const { return names_.size(); }
 
-		const std::vector< String >& GetNames() const { return names_; }
+		const std::vector<String>& GetNames() const { return names_; }
 
 		const Real& GetValue( index_t i ) const { return values_[ i ]; }
 		const Real& operator[]( index_t i ) const { return values_[ i ]; }

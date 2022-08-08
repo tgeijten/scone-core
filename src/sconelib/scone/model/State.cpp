@@ -14,6 +14,12 @@
 
 namespace scone
 {
+	State::State( std::vector<String>&& names ) :
+		names_( std::move( names ) )
+	{
+		values_.resize( names_.size() );
+	}
+
 	index_t State::AddVariable( const String& name, Real value )
 	{
 		names_.push_back( name );
