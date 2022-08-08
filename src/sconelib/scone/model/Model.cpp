@@ -438,6 +438,12 @@ namespace scone
 		}
 	}
 
+	void Model::ResetState()
+	{
+		SCONE_ASSERT( !m_InitialStateValues.empty() );
+		SetStateValues( m_InitialStateValues, 0.0 );
+	}
+
 	PropNode Model::GetSimulationReport() const
 	{
 		PropNode pn;

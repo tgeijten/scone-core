@@ -271,6 +271,11 @@ namespace scone
 
 		// create and initialize controllers
 		CreateControllers( props, par );
+
+		// keep initial state
+		CopyStateFromTk();
+		m_InitialStateValues = m_State.GetValues();
+
 		log::debug( "Created model ", GetName(), "; dofs=", GetDofs().size(), " muscles=", GetMuscles().size(), " mass=", GetMass() );
 	}
 

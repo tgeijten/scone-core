@@ -115,6 +115,7 @@ namespace scone
 		virtual void UpdateStateFromDofs() {}
 		virtual void SetNullState();
 		virtual void SetNeutralState();
+		virtual void ResetState();
 
 		// Simulate model
 		virtual void AdvanceSimulationTo( double time ) = 0;
@@ -301,6 +302,7 @@ namespace scone
 		TimeInSeconds m_PrevStoreDataTime;
 		int m_PrevStoreDataStep;
 		xo::timer m_SimulationTimer;
+		std::vector< Real > m_InitialStateValues;
 
 		// model properties
 		std::vector< UserInputUP > m_UserInputs;

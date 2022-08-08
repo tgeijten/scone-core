@@ -132,6 +132,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "muscle_excitation_array", []( scone::Model& m ) { return scone::get_muscle_excitations( m, use_float32 ); } )
 		.def( "init_muscle_activations", &scone::init_muscle_activations )
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
+		.def( "reset", &scone::Model::ResetState )
 		.def( "time", &scone::Model::GetTime )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", &scone::write_results )
