@@ -52,30 +52,42 @@ namespace scone
 		SCONE_ERROR_IF( expected != received, stringf( "Invalid array length; expected %d, received %d", expected, received ) );
 	}
 
-	void set_actuator_values( scone::Model& m, const std::vector<double>& values ) {
-		check_array_length( m.GetActuators().size(), values.size() );
-		auto value_it = values.begin();
-		for ( auto& act : m.GetActuators() ) {
-			act->ClearInput();
-			act->AddInput( *value_it++ );
+	void set_actuator_values( scone::Model& m, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto& act = m.GetActuators();
+		check_array_length( act.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < act.size(); ++i ) {
+			act[ i ]->ClearInput();
+			act[ i ]->AddInput( v( i ) );
 		}
 	};
 
-	void set_dof_values( scone::Model& m, const std::vector<double>& values ) {
-		check_array_length( m.GetDofs().size() * 2, values.size() );
-		auto value_it = values.begin();
-		for ( auto& dof : m.GetDofs() )
-			dof->SetPos( *value_it++ );
-		for ( auto& dof : m.GetDofs() )
-			dof->SetVel( *value_it++ );
+	void set_dof_positions( scone::Model& m, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto& dofs = m.GetDofs();
+		check_array_length( dofs.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < dofs.size(); ++i )
+			dofs[ i ]->SetPos( v( i ) );
+	};
+
+	void set_dof_velocities( scone::Model& m, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto& dofs = m.GetDofs();
+		check_array_length( dofs.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < dofs.size(); ++i )
+			dofs[ i ]->SetVel( v( i ) );
+	};
+
+	void init_state_from_dofs( scone::Model& m ) {
 		m.UpdateStateFromDofs();
 	};
 
-	void init_muscle_activations( scone::Model& m, const std::vector<double>& values ) {
-		check_array_length( m.GetMuscles().size(), values.size() );
-		auto value_it = values.begin();
-		for ( auto& act : m.GetMuscles() ) 
-			act->InitializeActivation( *value_it++ );
+	void init_muscle_activations( scone::Model& m, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto mus = m.GetMuscles();
+		check_array_length( mus.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < mus.size(); ++i )
+			mus[ i ]->InitializeActivation( v( i ) );
 	};
 
 	template< typename T, typename C, typename F > std::vector<T> extract_vec( const C& cont, F fn ) {
@@ -86,38 +98,36 @@ namespace scone
 		return v;
 	};
 
-	template< typename T >
-	std::vector<T> get_muscle_lengths( const scone::Model& model ) {
-		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberLength(); } );
-	};
-	template< typename T >
-	std::vector<T> get_muscle_velocities( const scone::Model& model ) {
-		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberVelocity(); } );
-	};
-	template< typename T >
-	std::vector<T> get_muscle_forces( const scone::Model& model ) {
-		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedForce(); } );
-	};
-	template< typename T >
-	std::vector<T> get_muscle_activations( const scone::Model& model ) {
-		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetActivation(); } );
-	};
-	template< typename T >
-	std::vector<T> get_muscle_excitations( const scone::Model& model ) {
-		return extract_vec<T>( model.GetMuscles(), []( const Muscle* m ) { return m->GetExcitation(); } );
-	};
-	template< typename T >
-	std::vector<T> get_actuator_values( const scone::Model& model ) {
-		return extract_vec<T>( model.GetActuators(), []( const Actuator* m ) { return m->GetInput(); } );
-	};
-	template< typename T >
-	std::vector<T> get_dof_values( const scone::Model& model ) {
-		auto dof_pos = extract_vec<T>( model.GetDofs(), []( const Dof* d ) { return d->GetPos(); } );
-		return xo::append( dof_pos, extract_vec<T>( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); } ) );
+	template< typename C, typename F > py::array extract_array( const C& cont, F fn, bool use_f32 ) {
+		if ( use_f32 )
+			return py::array_t<float>( py::cast( extract_vec<float>( cont, fn ) ) );
+		else
+			return py::array_t<double>( py::cast( extract_vec<double>( cont, fn ) ) );
 	};
 
-	py::array get_muscle_lengths( const scone::Model& model, bool dbl ) {
-		return py::array( py::cast( dbl ? get_muscle_lengths<double>( model ) : get_muscle_lengths<double>( model ) ) );
+	py::array get_muscle_lengths( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberLength(); }, use_f32 );
+	};
+	py::array get_muscle_velocities( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedFiberVelocity(); }, use_f32 );
+	};
+	py::array get_muscle_forces( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetMuscles(), []( const Muscle* m ) { return m->GetNormalizedForce(); }, use_f32 );
+	};
+	py::array get_muscle_activations( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetMuscles(), []( const Muscle* m ) { return m->GetActivation(); }, use_f32 );
+	};
+	py::array get_muscle_excitations( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetMuscles(), []( const Muscle* m ) { return m->GetExcitation(); }, use_f32 );
+	};
+	py::array get_actuator_inputs( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetActuators(), []( const Actuator* m ) { return m->GetInput(); }, use_f32 );
+	};
+	py::array get_dof_positions( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetDofs(), []( const Dof* d ) { return d->GetPos(); }, use_f32 );
+	};
+	py::array get_dof_velocities( const scone::Model& model, bool use_f32 ) {
+		return extract_array( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); }, use_f32 );
 	};
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }

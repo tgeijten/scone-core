@@ -11,6 +11,7 @@
 
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
+	static bool use_float32 = false;
 	scone::Initialize();
 
 	m.attr( "__version__" ) = "0.1.0";
@@ -20,6 +21,9 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
+
+	m.def( "set_precision_float32", []() { use_float32 = true; } );
+	m.def( "set_precision_float64", []() { use_float32 = false; } );
 
 	py::class_<scone::Vec3>( m, "Vec3" )
 		.def_readwrite( "x", &scone::Vec3::x )
@@ -71,6 +75,8 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "name", &scone::Dof::GetName )
 		.def( "pos", &scone::Dof::GetPos )
 		.def( "vel", &scone::Dof::GetVel )
+		.def( "set_pos", &scone::Dof::SetPos )
+		.def( "set_vel", &scone::Dof::SetVel )
 		.def( "is_rotational", &scone::Dof::IsRotational )
 		.def( "rotation_axis", &scone::Dof::GetRotationAxis )
 		.def( "is_actuated", &scone::Dof::IsActuated )
@@ -110,17 +116,20 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "set_state", &scone::set_state )
 		.def( "bodies", []( scone::Model& m ) { return &m.GetBodies(); }, py::return_value_policy::reference )
 		.def( "dofs", []( scone::Model& m ) { return &m.GetDofs(); }, py::return_value_policy::reference )
-		.def( "set_dof_values", &scone::set_dof_values )
+		.def( "set_dof_positions", &scone::set_dof_positions )
+		.def( "set_dof_velocities", &scone::set_dof_velocities )
+		.def( "init_state_from_dofs", []( scone::Model& m ) { m.UpdateStateFromDofs(); })
 		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
 		.def( "set_actuator_inputs", &scone::set_actuator_values )
+		.def( "actuator_input_array", []( scone::Model& m ) { return scone::get_actuator_inputs( m, use_float32 ); } )
 		.def( "muscles", []( scone::Model& m ) { return &m.GetMuscles(); }, py::return_value_policy::reference )
-		.def( "dof_value_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_dof_values<double>( m ) ) ); } )
-		.def( "actuator_input_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_actuator_values<double>( m ) ) ); } )
-		.def( "muscle_fiber_length_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_lengths<double>( m ) ) ); } )
-		.def( "muscle_fiber_velocity_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_velocities<double>( m ) ) ); } )
-		.def( "muscle_force_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_forces<double>( m ) ) ); } )
-		.def( "muscle_activation_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_activations<double>( m ) ) ); } )
-		.def( "muscle_excitation_array", []( scone::Model& m ) { return py::array( py::cast( scone::get_muscle_excitations<double>( m ) ) ); } )
+		.def( "dof_position_array", []( scone::Model& m ) { return scone::get_dof_positions( m, use_float32 ); } )
+		.def( "dof_velocity_array", []( scone::Model& m ) { return scone::get_dof_velocities( m, use_float32 ); } )
+		.def( "muscle_fiber_length_array", []( scone::Model& m ) { return scone::get_muscle_lengths( m, use_float32 ); } )
+		.def( "muscle_fiber_velocity_array", []( scone::Model& m ) { return scone::get_muscle_velocities( m, use_float32 ); } )
+		.def( "muscle_force_array", []( scone::Model& m ) { return scone::get_muscle_forces( m, use_float32 ); } )
+		.def( "muscle_activation_array", []( scone::Model& m ) { return scone::get_muscle_activations( m, use_float32 ); } )
+		.def( "muscle_excitation_array", []( scone::Model& m ) { return scone::get_muscle_excitations( m, use_float32 ); } )
 		.def( "init_muscle_activations", &scone::init_muscle_activations )
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
 		.def( "time", &scone::Model::GetTime )
