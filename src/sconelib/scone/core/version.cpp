@@ -11,12 +11,20 @@
 #include "xo/filesystem/filesystem.h"
 #include "system_tools.h"
 #include "xo/string/string_cast.h"
+#include "platform.h"
 #include <fstream>
 
-constexpr int SCONE_VERSION_MAJOR = 2;
-constexpr int SCONE_VERSION_MINOR = 0;
-constexpr int SCONE_VERSION_PATCH = 6;
-constexpr const char* SCONE_VERSION_POSTFIX = "";
+#if SCONE_EXPERIMENTAL_FEATURES_ENABLED
+	constexpr int SCONE_VERSION_MAJOR = 2;
+	constexpr int SCONE_VERSION_MINOR = 1;
+	constexpr int SCONE_VERSION_PATCH = 0;
+	constexpr const char* SCONE_VERSION_POSTFIX = "BETA 3";
+#else
+	constexpr int SCONE_VERSION_MAJOR = 2;
+	constexpr int SCONE_VERSION_MINOR = 0;
+	constexpr int SCONE_VERSION_PATCH = 6;
+	constexpr const char* SCONE_VERSION_POSTFIX = "";
+#endif
 
 namespace scone
 {
