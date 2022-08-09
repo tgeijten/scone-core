@@ -47,4 +47,11 @@ namespace scone
 		std::vector<String> names_;
 		std::vector<Real> values_;
 	};
+
+	inline bool operator==( const State& s1, const State& s2 ) {
+		return s1.GetValues() == s2.GetValues() && s1.GetNames() == s2.GetNames();
+	}
+	inline bool operator!=( const State& s1, const State& s2 ) {
+		return !( s1 == s2 );
+	}
 }
