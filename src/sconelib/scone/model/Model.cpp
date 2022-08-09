@@ -194,7 +194,7 @@ namespace scone
 		m_StoreData = store;
 	}
 
-	bool Model::GetStoreData() const
+	bool Model::MustStoreCurrentFrame() const
 	{
 		return m_StoreData &&
 			( m_Data.IsEmpty()

@@ -245,7 +245,7 @@ namespace scone
 		xo::version scone_version;
 
 		virtual void SetStoreData( bool store );
-		bool GetStoreData() const;
+		bool MustStoreCurrentFrame() const;
 		StoreDataFlags& GetStoreDataFlags() { return m_StoreDataFlags; }
 		const StoreDataFlags& GetStoreDataFlags() const { return m_StoreDataFlags; }
 

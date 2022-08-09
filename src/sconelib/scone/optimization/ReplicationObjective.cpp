@@ -124,7 +124,7 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 		SCONE_ASSERT( model.fixed_control_step_size == fixed_control_step_size );
 
-		const bool store_data = model.GetStoreData() || !model.GetData().IsEmpty();
+		const bool store_data = model.MustStoreCurrentFrame() || !model.GetData().IsEmpty();
 		const bool store_muscle_results = store_data;
 		const bool first_frame = !model.GetUserData().has_key( "RPL_err" );
 		const auto& muscles = model.GetMuscles();

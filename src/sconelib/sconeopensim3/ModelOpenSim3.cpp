@@ -596,7 +596,7 @@ namespace scone
 			{
 				m_pTkTimeStepper = std::make_unique< SimTK::TimeStepper >( m_pOsimModel->getMultibodySystem(), *m_pTkIntegrator );
 				m_pTkTimeStepper->initialize( GetTkState() );
-				if ( GetStoreData() )
+				if ( MustStoreCurrentFrame() )
 				{
 					// store initial frame
 					m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
@@ -640,7 +640,7 @@ namespace scone
 				UpdateSensorDelayAdapters();
 				UpdateAnalyses();
 
-				if ( GetStoreData() )
+				if ( MustStoreCurrentFrame() )
 					StoreCurrentFrame();
 
 				// terminate when simulation has ended
@@ -844,7 +844,7 @@ namespace scone
 		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
 		if ( GetController() )
 			UpdateControlValues();
-		if ( GetStoreData() )
+		if ( MustStoreCurrentFrame() )
 			StoreCurrentFrame();
 	}
 
