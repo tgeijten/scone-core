@@ -15,6 +15,14 @@
 
 namespace fs = std::filesystem;
 
+template< typename C >
+py::array make_array( C&& cont, bool use_f32 ) {
+	if ( use_f32 )
+		return py::array_t<float>( py::cast( std::move( cont ) ) );
+	else
+		return py::array_t<double>( py::cast( std::move( cont ) ) );
+};
+
 namespace scone
 {
 	void evaluate_par_file( const std::string& file ) {

@@ -12,6 +12,7 @@
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
 	static bool use_float32 = false;
+
 	scone::Initialize();
 
 	m.attr( "__version__" ) = "0.1.0";
@@ -22,14 +23,14 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
 
-	m.def( "set_precision_float32", []() { use_float32 = true; } );
-	m.def( "set_precision_float64", []() { use_float32 = false; } );
+	m.def( "set_array_dtype_float32", []() { use_float32 = true; } );
+	m.def( "set_array_dtype_float64", []() { use_float32 = false; } );
 
 	py::class_<scone::Vec3>( m, "Vec3" )
 		.def_readwrite( "x", &scone::Vec3::x )
 		.def_readwrite( "y", &scone::Vec3::y )
 		.def_readwrite( "z", &scone::Vec3::z )
-		.def( "array", []( scone::Vec3& v ) { return py::array( py::cast( std::vector{ v.x, v.y, v.z } ) ); } )
+		.def( "array", []( scone::Vec3& v ) { return make_array( std::vector{ v.x, v.y, v.z }, use_float32 ); } )
 		.def( "__repr__", []( const scone::Vec3& v ) { return xo::stringf( "<sconepy.Vec3( %f, %f, %f)>", v.x, v.y, v.z ); } )
 		.def( "__str__", []( const scone::Vec3& v ) { return xo::stringf( "[ %f %f %f ]", v.x, v.y, v.z ); } )
 		;
@@ -39,7 +40,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def_readwrite( "x", &scone::Quat::x )
 		.def_readwrite( "y", &scone::Quat::y )
 		.def_readwrite( "z", &scone::Quat::z )
-		.def( "array", []( scone::Quat& q ) { return py::array( py::cast( std::vector{ q.w, q.x, q.y, q.z } ) ); } )
+		.def( "array", []( scone::Quat& q ) { return make_array( std::vector{ q.w, q.x, q.y, q.z }, use_float32 ); } )
 		;
 
 	py::class_<scone::Actuator>( m, "Actuator" )
