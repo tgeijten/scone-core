@@ -40,6 +40,8 @@ namespace scone
 		else if ( auto mus = dynamic_cast<OpenSim::Thelen2003Muscle*>( &m_osMus ) )
 			m_MinActivation = mus->getMinimumActivation();
 		else m_MinActivation = m_osMus.getMinControl();
+
+		InitializeActivation( model.initial_equilibration_activation );
 	}
 
 	MuscleOpenSim4::~MuscleOpenSim4()
