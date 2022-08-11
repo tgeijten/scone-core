@@ -18,33 +18,33 @@
 #include "Log.h"
 #include "Exception.h"
 
-namespace {
-	using scone::path;
-
+namespace scone
+{
 	path FindInstallFolder()
 	{
 		path p = xo::get_application_dir();
-		for ( ; !p.empty(); p = p.parent_path() )
+		path install_folder;
+		for ( ; install_folder.empty() && !p.empty(); p = p.parent_path() )
 		{
 			if ( path config = p / ".sconeroot"; xo::exists( config ) )
 			{
 				// binary files are stored in a CMake build folder
-				return xo::load_string( config );
+				install_folder = xo::load_string( config );
 			}
 			else if ( xo::exists( p / "scone" ) )
 			{
 				// binary files are part of a scone studio installation
-				return p / "scone";
+				install_folder = p / "scone";
 			}
 		}
-		SCONE_THROW_IF( p.empty(), "Could not detect installation root folder, please run .updateversion.bat or .updateversion.sh" );
-		scone::log::debug( "SCONE root folder: ", p );
-		return p;
-	}
-}
 
-namespace scone
-{
+		if ( install_folder.empty() )
+			log::error( "Could not detect SCONE installation folder" );
+		else log::debug( "SCONE installation root folder: ", install_folder );
+
+		return install_folder;
+	}
+
 	const path& GetInstallFolder()
 	{
 		static const path g_RootFolder = FindInstallFolder();
