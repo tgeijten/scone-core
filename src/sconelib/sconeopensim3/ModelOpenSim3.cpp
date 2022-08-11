@@ -263,8 +263,8 @@ namespace scone
 			m_pOsimManager = std::make_unique<OpenSim::Manager>( *m_pOsimModel, *m_pTkIntegrator );
 			m_pOsimManager->setWriteToStorage( false );
 			m_pOsimManager->setPerformAnalyses( false );
-			m_pOsimManager->setInitialTime( 0.0 );
-			m_pOsimManager->setFinalTime( 0.0 );
+			m_pOsimManager->setInitialTime( xo::constants<TimeInSeconds>::max() );
+			m_pOsimManager->setFinalTime( xo::constants<TimeInSeconds>::max() );
 
 			m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
 		}
