@@ -6,13 +6,13 @@
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
 
+#include "platform.h"
 #include "version.h"
+#include "system_tools.h"
+#include "Log.h"
 #include "xo/filesystem/path.h"
 #include "xo/filesystem/filesystem.h"
-#include "system_tools.h"
 #include "xo/string/string_cast.h"
-#include "platform.h"
-#include <fstream>
 
 #if SCONE_EXPERIMENTAL_FEATURES_ENABLED
 	constexpr int SCONE_VERSION_MAJOR = 2;
@@ -26,8 +26,19 @@
 	constexpr const char* SCONE_VERSION_POSTFIX = "";
 #endif
 
+#if __has_include( "scone/../../repository_revision.h" )
+#	include "scone/../../repository_revision.h"
+#endif
+
+#if defined( SCONE_REPOSITORY_REVISION )
+	constexpr int SCONE_VERSION_BUILD = SCONE_REPOSITORY_REVISION;
+#else
+	constexpr int SCONE_VERSION_BUILD = 0;
+#endif
+
 namespace scone
 {
+	// DEPRECATED: read build number from .version file
 	int GetSconeBuildNumber()
 	{
 		xo::path versionpath( GetInstallFolder() / ".version" );
@@ -39,7 +50,7 @@ namespace scone
 
 	const version& GetSconeVersion()
 	{
-		static version scone_version = version( SCONE_VERSION_MAJOR, SCONE_VERSION_MINOR, SCONE_VERSION_PATCH, GetSconeBuildNumber(), SCONE_VERSION_POSTFIX );
+		static version scone_version = version( SCONE_VERSION_MAJOR, SCONE_VERSION_MINOR, SCONE_VERSION_PATCH, SCONE_VERSION_BUILD, SCONE_VERSION_POSTFIX );
 		return scone_version;
 	}
 }
