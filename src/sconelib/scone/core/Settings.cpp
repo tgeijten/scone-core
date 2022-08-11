@@ -22,18 +22,23 @@ namespace scone
 {
 	xo::settings LoadSconeSettings()
 	{
-		//auto schema_path = GetInstallFolder() / "resources/scone-settings-schema.zml";
 		auto settings_path = GetSettingsFolder() / "scone-settings.zml";
 		xo::settings scone_settings( xo::parse_zml( scone_settings_schema ), settings_path, GetSconeVersion() );
 		log::debug( "Loaded settings from ", settings_path );
 
 		// set default paths if they don't exist
-		if ( scone_settings.get< path >( "folders.scenarios" ).empty() )
+		if ( scone_settings.get< path >( "folders.scenarios" ).empty() ) {
+			log::info( "Setting scenarios folder to ", GetDataFolder() );
 			scone_settings.set( "folders.scenarios", GetDataFolder() );
-		if ( scone_settings.get< path >( "folders.results" ).empty() )
+		}
+		if ( scone_settings.get< path >( "folders.results" ).empty() ) {
+			log::info( "Setting results folder to ", GetDataFolder() / "results" );
 			scone_settings.set( "folders.results", GetDataFolder() / "results" );
-		if ( scone_settings.get< path >( "folders.geometry" ).empty() )
+		}
+		if ( scone_settings.get< path >( "folders.geometry" ).empty() ) {
+			log::info( "Setting geometry folder to ", GetInstallFolder().parent_path() / "resources/geometry" );
 			scone_settings.set( "folders.geometry", GetInstallFolder().parent_path() / "resources/geometry" );
+		}
 
 		return scone_settings;
 	}
