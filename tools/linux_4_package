@@ -16,10 +16,11 @@ dependencies=(
 
     # scone
     freeglut3
-    qt5-default
-    libqt5printsupport5
-    libqt5opengl5
-    libqt5widgets5
+    qtbase5-dev    
+    # qt5-default
+    # libqt5printsupport5
+    # libqt5opengl5
+    # libqt5widgets5
     libpng16-16
 )
 
