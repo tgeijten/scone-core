@@ -254,6 +254,14 @@ namespace scone
 		LuaString name() { return joint_.GetName().c_str(); }
 		/// get the current com position [m]
 		LuaVec3 pos() { return joint_.GetPos(); }
+		/// get the joint reaction force vector [N]
+		LuaVec3 reaction_force() { return joint_.GetReactionForce(); }
+		/// get the joint limit torque vector [Nm]
+		LuaVec3 limit_torque() { return joint_.GetLimitTorque(); }
+		/// get the joint limit power [W]
+		Real limit_power() { return joint_.GetLimitPower(); }
+		/// get the joint load [BW]
+		Real load() { return joint_.GetLoad(); }
 		/// check if this joint has a motor
 		bool has_motor() { return joint_.HasMotor(); }
 		/// set target orientation of the joint motor
