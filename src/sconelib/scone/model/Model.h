@@ -56,8 +56,8 @@ namespace scone
 		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 
 		// joint access
-		std::vector< JointUP >& GetJoints() { return m_Joints; }
-		const std::vector< JointUP >& GetJoints() const { return m_Joints; }
+		std::vector< Joint* >& GetJoints() { return m_JointPtrs; }
+		const std::vector< Joint* >& GetJoints() const { return m_JointPtrs; }
 
 		// dof access
 		std::vector< Dof* >& GetDofs() { return m_DofPtrs; }
@@ -282,6 +282,7 @@ namespace scone
 		std::vector< Muscle* > m_MusclePtrs;
 		std::vector< Actuator* > m_ActuatorPtrs;
 		std::vector< Body* > m_BodyPtrs;
+		std::vector< Joint* > m_JointPtrs;
 		std::vector< Dof* > m_DofPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;

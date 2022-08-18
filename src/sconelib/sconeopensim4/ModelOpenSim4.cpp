@@ -337,6 +337,9 @@ namespace scone
 				m_Joints.emplace_back( std::make_unique<JointOpenSim4>( **body_it, **parent_it, *this, joint_osim ) );
 			else log::warning( "Could not find bodies for joint: ", joint_osim.getName() );
 		}
+		m_JointPtrs.reserve( m_Joints.size() );
+		for ( auto& j : m_Joints )
+			m_JointPtrs.emplace_back( j.get() );
 
 		// create wrappers for dofs
 		m_Dofs.reserve( m_pOsimModel->getCoordinateSet().getSize() );

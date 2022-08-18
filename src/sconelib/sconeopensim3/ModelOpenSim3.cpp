@@ -307,6 +307,9 @@ namespace scone
 			SCONE_ASSERT( body_it != m_Bodies.end() && parent_it != m_Bodies.end() );
 			m_Joints.emplace_back( std::make_unique<JointOpenSim3>( **body_it, **parent_it, *this, joint_osim ) );
 		}
+		m_JointPtrs.reserve( m_Joints.size() );
+		for ( auto& j : m_Joints )
+			m_JointPtrs.emplace_back( j.get() );
 
 		// create wrappers for dofs
 		m_Dofs.reserve( m_pOsimModel->getCoordinateSet().getSize() );

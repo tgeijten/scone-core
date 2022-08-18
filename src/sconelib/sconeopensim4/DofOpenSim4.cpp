@@ -20,7 +20,7 @@ namespace scone
 {
 	Joint* try_find_joint( ModelOpenSim4& model, OpenSim::Coordinate& coord ) {
 		if ( auto it = TryFindByName( model.GetJoints(), coord.getJoint().getName() ); it != model.GetJoints().end() )
-			return it->get();
+			return *it;
 		else return nullptr;
 	}
 

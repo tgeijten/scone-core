@@ -19,7 +19,7 @@
 namespace scone
 {
 	DofOpenSim3::DofOpenSim3( ModelOpenSim3& model, OpenSim::Coordinate& coord ) :
-		Dof( FindByName( model.GetJoints(), coord.getJoint().getName() ).get() ),
+		Dof( FindByName( model.GetJoints(), coord.getJoint().getName() ) ),
 		m_Model( model ),
 		m_osCoord( coord ),
 		m_pOsLimitForce( nullptr ),
