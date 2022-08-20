@@ -17,6 +17,7 @@
 #include "scone/optimization/Optimizer.h"
 #include "spot/evaluator.h"
 #include "spot/reporter.h"
+#include "spot/file_reporter.h"
 
 namespace scone
 {
@@ -41,6 +42,9 @@ namespace scone
 	// Gets spot::evaluator based on SCONE settings
 	SCONE_API spot::evaluator& GetSpotEvaluator();
 
-	// Gets spot::evaluator based on SCONE settings
+	// Make spot::reporter for internal reporting
 	SCONE_API std::unique_ptr<spot::reporter> MakeSpotReporter( Optimizer::OutputMode m );
+
+	// Make spot::file_reporter based on scone settings
+	SCONE_API std::unique_ptr<spot::file_reporter> MakeSpotFileReporter( const Optimizer& opt );
 }

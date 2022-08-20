@@ -159,4 +159,13 @@ namespace scone
 		default: SCONE_THROW( "Unknown output mode" );
 		}
 	}
+
+	std::unique_ptr<spot::file_reporter> MakeSpotFileReporter( const Optimizer& opt )
+	{
+		auto fr = std::make_unique< spot::file_reporter >( opt.GetOutputFolder(), opt.min_improvement_for_file_output, opt.max_generations_without_file_output );
+		fr->output_fitness_history_ = GetSconeSetting<bool>( "optimizer.output_fitness_history" );
+		fr->output_par_history_ = GetSconeSetting<bool>( "optimizer.output_par_history" );
+		fr->output_individual_search_points = GetSconeSetting<bool>( "optimizer.output_individual_search_points" );
+		return fr;
+	}
 }

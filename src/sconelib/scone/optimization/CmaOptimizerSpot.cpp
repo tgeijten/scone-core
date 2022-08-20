@@ -60,11 +60,7 @@ namespace scone
 		PrepareOutputFolder();
 
 		// create file reporter
-		auto fr = std::make_unique< spot::file_reporter >( GetOutputFolder(), min_improvement_for_file_output, max_generations_without_file_output );
-		fr->output_fitness_history_ = GetSconeSetting<bool>( "optimizer.output_fitness_history" );
-		fr->output_par_history_ = GetSconeSetting<bool>( "optimizer.output_par_history" );
-
-		add_reporter( std::move( fr ) );
+		add_reporter( MakeSpotFileReporter( *this ) );
 
 		run();
 	}

@@ -33,8 +33,9 @@ optimizer {
 	evaluator { type = number label = "Evaluate sync=0, batch=1, async=2, pool=3" default = 2 }
 	max_threads { type = number label = "Max optimization threads (0=hardware)" default = 0 }
 	thread_priority{ type = number label = "thread priority: 0-6 (default=2)" default = 2 }
-		output_fitness_history{ type = bool default = 1 label = "Output fitness history to history.txt" }
-		output_par_history{ type = bool default = 0 label = "Output parameter history to history_par.txt" }
+	output_fitness_history { type = bool default = 1 label = "Output fitness history to history.txt" }
+	output_par_history { type = bool default = 0 label = "Output parameter history to history_par.txt" }
+	output_individual_search_points { type = bool default = 0 label = "Output .par files for all search points (use for debugging only)" }
 }
 
 hyfydy{
