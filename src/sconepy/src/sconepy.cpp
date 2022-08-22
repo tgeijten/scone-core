@@ -42,6 +42,12 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def_readwrite( "y", &scone::Quat::y )
 		.def_readwrite( "z", &scone::Quat::z )
 		.def( "array", []( scone::Quat& q ) { return make_array( std::vector{ q.w, q.x, q.y, q.z }, use_float32 ); } )
+		.def( "to_euler_xyz", []( scone::Quat& q ) { return euler_xyz_from_quat( q ); } )
+		.def( "to_euler_xzy", []( scone::Quat& q ) { return euler_xzy_from_quat( q ); } )
+		.def( "to_euler_yxz", []( scone::Quat& q ) { return euler_yxz_from_quat( q ); } )
+		.def( "to_euler_yzx", []( scone::Quat& q ) { return euler_yzx_from_quat( q ); } )
+		.def( "to_euler_zxy", []( scone::Quat& q ) { return euler_zxy_from_quat( q ); } )
+		.def( "to_euler_zyx", []( scone::Quat& q ) { return euler_zyx_from_quat( q ); } )
 		;
 
 	py::class_<scone::Body>( m, "Body" )
