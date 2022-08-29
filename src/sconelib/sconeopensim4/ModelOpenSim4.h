@@ -127,6 +127,7 @@ namespace scone
 		void InitializeOpenSimMuscleActivations( double override_activation = 0.0 );
 		void InitializeController();
 		virtual void UpdateStateFromDofs() override;
+		virtual void AdjustStateForInitialLoad() override;
 
 		static String GetOpenSimBuildVersion();
 

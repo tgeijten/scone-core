@@ -262,9 +262,7 @@ namespace scone
 			// apply and fix state
 			if ( !initial_load_dof.empty() && initial_load > 0 && !GetContactGeometries().empty() )
 			{
-				CopyStateToTk();
-				FixTkState( initial_load * GetBW() );
-				CopyStateFromTk();
+				AdjustStateForInitialLoad();
 			}
 		}
 
@@ -907,6 +905,13 @@ namespace scone
 		CopyStateFromTk();
 		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
 		InitializeController();
+	}
+
+	void ModelOpenSim4::AdjustStateForInitialLoad()
+	{
+		CopyStateToTk();
+		FixTkState( initial_load * GetBW() );
+		CopyStateFromTk();
 	}
 
 	String ModelOpenSim4::GetOpenSimBuildVersion() { return OpenSim::GetVersion(); }

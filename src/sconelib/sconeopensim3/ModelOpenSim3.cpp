@@ -250,9 +250,7 @@ namespace scone
 			// apply and fix state
 			if ( !initial_load_dof.empty() && initial_load > 0 && !GetContactGeometries().empty() )
 			{
-				CopyStateToTk();
-				FixTkState( initial_load * GetBW() );
-				CopyStateFromTk();
+				AdjustStateForInitialLoad();
 			}
 		}
 
@@ -856,6 +854,13 @@ namespace scone
 		CopyStateFromTk();
 		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );
 		InitializeController();
+	}
+
+	void ModelOpenSim3::AdjustStateForInitialLoad()
+	{
+		CopyStateToTk();
+		FixTkState( initial_load * GetBW() );
+		CopyStateFromTk();
 	}
 
 	String ModelOpenSim3::GetOpenSimBuildVersion() { return "3.3-2021-01-28"; } // API doesn't provide a version :-(
