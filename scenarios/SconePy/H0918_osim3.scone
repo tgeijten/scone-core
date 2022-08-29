@@ -1,0 +1,9 @@
+# Model used in simulation
+ModelOpenSim3 {
+	model_file = data/H0918M_osim3.osim
+
+	# Set initial state
+	state_init_file = data/InitStateJump.zml
+	fixed_control_step_size = 0.001
+	initial_equilibration_activation = 0.05
+}

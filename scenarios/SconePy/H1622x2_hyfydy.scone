@@ -1,0 +1,24 @@
+# Model used in simulation
+ModelHyfydy {
+	model_file = H1622v7b3x2.hfd
+
+	# Set initial state
+	state_init_file = InitStateJump.zml
+	fixed_control_step_size = 0.005
+	initial_equilibration_activation = 0.05
+	
+	# Hyfydy force and integrator configuration
+	composite_force {
+		joint_force_pnld {}
+		simple_collision_detection {}
+		contact_force_hunt_crossley_sb { transition_velocity = 0.15 }
+		muscle_force_m2012fast { xi = 0.1 use_pennation_during_equilibration = 1 }
+		joint_motor_force {}
+	}
+	error_control_integrator_sem {
+		activation_rate = 100
+		deactivation_rate = 25
+		angular_error_weight = 0.25
+		accuracy = 0.01
+	}
+}
