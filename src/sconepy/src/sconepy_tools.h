@@ -142,15 +142,19 @@ namespace scone
 	};
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
+	xo::path from_fs( const fs::path& p ) { return xo::path( p.string() ); }
 
-	void write_results( const Model& m, std::string f ) {
+	void write_results( const Model& m, std::string dir, std::string filename ) {
 		SCONE_ASSERT( !m.GetExternalResources().empty() );
-		ReplaceStringTags( f );
-		auto target_dir = GetFolder( SCONE_RESULTS_FOLDER ) / f;
-		fs::create_directories( to_fs( target_dir ) );
-		xo::save_file( m.GetUserData().get_child( g_scenario_user_data_key ), xo::path( target_dir ) / "config.scone" );
-		for ( auto& p : m.GetExternalResources() )
-			fs::copy( to_fs( p ), to_fs( target_dir ), fs::copy_options::overwrite_existing );
-		m.WriteResults( target_dir / m.GetName() );
+		auto target_dir = to_fs( GetFolder( SCONE_RESULTS_FOLDER ) / dir );
+		if ( !fs::exists( target_dir ) )
+		{
+			// setup output folder
+			fs::create_directories( target_dir );
+			xo::save_file( m.GetUserData().get_child( g_scenario_user_data_key ), from_fs( target_dir ) / "config.scone" );
+			for ( auto& p : m.GetExternalResources() )
+				fs::copy( to_fs( p ), target_dir, fs::copy_options::overwrite_existing );
+		}
+		m.WriteResults( from_fs( target_dir / filename ) );
 	};
 }

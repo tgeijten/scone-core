@@ -32,7 +32,7 @@ namespace scone
 	SCONE_API String GetDateTimeExactAsString();
 
 	/// Replace DATE_TIME, SCONE_VERSION, etc. with actual values
-	SCONE_API void ReplaceStringTags( String& str );
+	SCONE_API String& ReplaceStringTags( String& str );
 
 	/// Get axis name (X, Y or Z)
 	const char* GetAxisName( index_t axis );

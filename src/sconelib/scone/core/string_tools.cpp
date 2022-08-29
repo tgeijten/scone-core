@@ -51,12 +51,13 @@ namespace scone
 		return stringf( "%02d%02d.%02d%02d%02d.%06d", tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, frac_secs );
 	}
 
-	void ReplaceStringTags( String& str )
+	String& ReplaceStringTags( String& str )
 	{
 		xo::replace_str( str, "DATE_TIME_EXACT", GetDateTimeExactAsString() );
 		xo::replace_str( str, "DATE_TIME", GetDateTimeAsString() );
 		xo::replace_str( str, "SCONE_BUILD", to_str( GetSconeVersion().build_ ) );
 		xo::replace_str( str, "SCONE_VERSION", to_str( GetSconeVersion().build_ ) );
+		return str;
 	}
 
 	const char* GetAxisName( index_t axis )
