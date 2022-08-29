@@ -5,15 +5,17 @@
 #include <string>
 #include <filesystem>
 #include "xo/filesystem/path.h"
+#include "xo/serialization/serialize.h"
+#include "xo/serialization/prop_node_serializer_zml.h"
 #include "scone/optimization/opt_tools.h"
 #include "scone/model/Actuator.h"
-#include "xo/serialization/prop_node_serializer_zml.h"
 #include "scone/core/Factories.h"
 #include "spot/par_io.h"
 #include "scone/model/Muscle.h"
 #include "scone/model/Dof.h"
 
 namespace fs = std::filesystem;
+const std::string g_scenario_user_data_key = "SconePy";
 
 template< typename C >
 py::array make_array( C&& cont, bool use_f32 ) {
@@ -39,7 +41,8 @@ namespace scone
 		auto model_props = FindFactoryProps( GetModelFactory(), model_pn, "Model" );
 		spot::null_objective_info par;
 		auto model = CreateModel( model_props, par, file_path.parent_path() );
-		model->AddExternalResource( file_path ); // add .scone file so that it can be copied to results
+		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn to save config.scone
+		//model->AddExternalResource( file_path ); // add .scone file so that it can be copied to results
 		return model;
 	}
 	std::map< std::string, double > get_state( const Model& m ) {
@@ -145,8 +148,9 @@ namespace scone
 		ReplaceStringTags( f );
 		auto target_dir = GetFolder( SCONE_RESULTS_FOLDER ) / f;
 		fs::create_directories( to_fs( target_dir ) );
+		xo::save_file( m.GetUserData().get_child( g_scenario_user_data_key ), xo::path( target_dir ) / "config.scone" );
 		for ( auto& p : m.GetExternalResources() )
 			fs::copy( to_fs( p ), to_fs( target_dir ), fs::copy_options::overwrite_existing );
-		m.WriteResults( target_dir / m.GetExternalResources().back().stem() );
+		m.WriteResults( target_dir / m.GetName() );
 	};
 }
