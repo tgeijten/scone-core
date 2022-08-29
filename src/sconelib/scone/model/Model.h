@@ -307,8 +307,6 @@ namespace scone
 
 		// model properties
 		std::vector< UserInputUP > m_UserInputs;
-		const PropNode* m_pModelProps;
-		const PropNode* m_pCustomProps;
 		ModelFeatures m_Features;
 
 		// simulation settings

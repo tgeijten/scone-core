@@ -60,8 +60,6 @@ namespace scone
 		m_PrevStoreDataTime( 0 ),
 		m_PrevStoreDataStep( 0 ),
 		m_SimulationTimer( false ),
-		m_pModelProps( nullptr ),
-		m_pCustomProps( nullptr ),
 		m_StoreData( false ),
 		m_StoreDataInterval( 1.0 / GetSconeSetting<double>( "data.frequency" ) ),
 		m_StoreDataFlags( { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::ContactForce } ),
