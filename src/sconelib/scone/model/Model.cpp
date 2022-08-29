@@ -443,7 +443,7 @@ namespace scone
 		m_ShouldTerminate = false;
 		m_SensorDelayStorage.Clear();
 		m_Data.Clear();
-		m_UserData.clear();
+		// m_UserData is not cleared because SconePy uses it to store the scenario
 		m_PrevStoreDataTime = 0;
 		m_PrevStoreDataStep = 0;
 	}

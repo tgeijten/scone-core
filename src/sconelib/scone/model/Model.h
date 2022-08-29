@@ -155,6 +155,7 @@ namespace scone
 
 		// custom model properties
 		PropNode& GetUserData() { return m_UserData; }
+		const PropNode& GetUserData() const { return m_UserData; }
 		virtual PropNode GetInfo() const;
 
 		// features supported by this model
