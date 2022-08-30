@@ -12,7 +12,7 @@
 
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
-	static bool use_float32 = false;
+	static bool use_float32 = true;
 
 	scone::Initialize();
 
@@ -27,6 +27,8 @@ PYBIND11_MODULE( sconepy, m ) {
 
 	m.def( "set_array_dtype_float32", []() { use_float32 = true; } );
 	m.def( "set_array_dtype_float64", []() { use_float32 = false; } );
+	m.def( "is_array_dtype_float32", []() -> bool { return use_float32; } );
+	m.def( "is_array_dtype_float64", []() -> bool { return !use_float32; } );
 
 	py::class_<scone::Vec3>( m, "Vec3" )
 		.def_readwrite( "x", &scone::Vec3::x )
