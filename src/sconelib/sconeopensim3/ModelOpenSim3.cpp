@@ -250,7 +250,7 @@ namespace scone
 			// apply and fix state
 			if ( !initial_load_dof.empty() && initial_load > 0 && !GetContactGeometries().empty() )
 			{
-				AdjustStateForInitialLoad();
+				AdjustStateForLoad( initial_load );
 			}
 		}
 
@@ -856,10 +856,11 @@ namespace scone
 		InitializeController();
 	}
 
-	void ModelOpenSim3::AdjustStateForInitialLoad()
+	void ModelOpenSim3::AdjustStateForLoad( Real load )
 	{
+		SCONE_ERROR_IF( load <= 0, "Load must be > 0" );
 		CopyStateToTk();
-		FixTkState( initial_load * GetBW() );
+		FixTkState( load * GetBW() );
 		CopyStateFromTk();
 	}
 

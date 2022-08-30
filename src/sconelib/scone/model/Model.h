@@ -116,7 +116,7 @@ namespace scone
 		virtual void SetNullState();
 		virtual void SetNeutralState();
 		virtual void ResetState();
-		virtual void AdjustStateForInitialLoad() = 0;
+		virtual void AdjustStateForLoad( Real load ) = 0;
 
 		// Simulate model
 		virtual void AdvanceSimulationTo( double time ) = 0;
