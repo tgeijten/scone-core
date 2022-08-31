@@ -102,7 +102,7 @@ namespace scone
 		SCONE_ERROR_IF( axis_ >= 3, "Invalid axis: " + to_str( axis_ ) );
 	}
 	Real BodyEulerOriSensor::GetValue() const {
-		return scale_ * xo::euler_yzx_from_quat( body_.GetOrientation() )[ axis_ ].value;
+		return scale_ * xo::euler_yzx_from_quat( xo::normalized_fast( body_.GetOrientation() ) )[ axis_ ].value;
 	}
 
 	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :
