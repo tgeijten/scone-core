@@ -123,6 +123,11 @@ namespace scone
 		return m_OsCoordAct ? m_OsCoordAct->getMaxControl() * m_OsCoordAct->getOptimalForce() : 0.0;
 	}
 
+	Real DofOpenSim4::GetActuatorTorque() const
+	{
+		return GetInput() * m_OsCoordAct->getOptimalForce();
+	}
+
 	const Model& DofOpenSim4::GetModel() const
 	{
 		return m_Model;

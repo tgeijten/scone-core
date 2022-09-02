@@ -43,6 +43,7 @@ namespace scone
 		virtual Real GetMaxInput() const override { return 1.0; }
 		virtual Real GetMinTorque() const { return 0.0; }
 		virtual Real GetMaxTorque() const { return 0.0; }
+		virtual Real GetActuatorTorque() const { return 0.0; }
 
 		virtual const Model& GetModel() const = 0;
 

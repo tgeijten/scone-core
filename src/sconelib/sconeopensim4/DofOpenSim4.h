@@ -45,10 +45,11 @@ namespace scone
 		virtual Range< Real > GetRange() const override;
 
 		virtual bool IsActuated() const override { return m_OsCoordAct != nullptr; }
-		Real GetMinInput() const override;
-		Real GetMaxInput() const override;
-		Real GetMinTorque() const override;
-		Real GetMaxTorque() const override;
+		virtual Real GetMinInput() const override;
+		virtual Real GetMaxInput() const override;
+		virtual Real GetMinTorque() const override;
+		virtual Real GetMaxTorque() const override;
+		virtual Real GetActuatorTorque() const override;
 
 		const Model& GetModel() const override;
 
