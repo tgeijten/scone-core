@@ -172,11 +172,11 @@ namespace scone
 			const auto dt = model.fixed_control_step_size;
 			if ( t > 0.0 )
 			{
-				double cd = muscle_deactivation_rate_;
-				double c1 = muscle_activation_rate_ - cd;
+				double c2 = muscle_deactivation_rate_;
+				double c1 = muscle_activation_rate_ - c2;
 				for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
 					auto u = muscles[ idx ]->GetExcitation();
-					activations[ idx ] = u - ( u - activations[ idx ] ) * std::exp( -c1 * u * dt - cd * dt );
+					activations[ idx ] = u - ( u - activations[ idx ] ) * std::exp( -c1 * u * dt - c2 * dt );
 				}
 			}
 			else for ( index_t idx = 0; idx < muscles.size(); ++idx )

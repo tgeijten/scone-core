@@ -11,6 +11,7 @@
 #include "scone/core/StringMap.h"
 #include "scone/core/Statistic.h"
 #include "scone/core/Vec3.h"
+#include "xo/string/dictionary.h"
 
 namespace scone
 {
@@ -90,7 +91,6 @@ namespace scone
 		Real m_Uchida2016BasalEnergy;
 		Real m_AerobicFactor;
 		Statistic< double > m_Effort;
-		static StringMap< EffortMeasureType > m_MeasureNames;
 		Vec3 m_InitComPos;
 		PropNode m_Report;
 		std::vector< Real > m_SlowTwitchFiberRatios;

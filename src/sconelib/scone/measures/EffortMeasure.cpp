@@ -17,24 +17,24 @@
 
 namespace scone
 {
-	StringMap< EffortMeasureType > EffortMeasure::m_MeasureNames = StringMap< EffortMeasureType >(
-		EffortMeasureType::Constant, "Constant",
-		EffortMeasureType::TotalForce, "TotalForce",
-		EffortMeasureType::Wang2012, "Wang2012",
-		EffortMeasureType::Uchida2016, "Uchida2016",
-		EffortMeasureType::SquaredMuscleStress, "SquaredMuscleStress",
-		EffortMeasureType::CubedMuscleStress, "CubedMuscleStress",
-		EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation",
-		EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation",
-		EffortMeasureType::MechnicalWork, "MechnicalWork",
-		EffortMeasureType::ActuatorTorque, "MechnicalWork"
-		);
+	xo::dictionary< EffortMeasureType > g_MeasureNames {
+		{ EffortMeasureType::Constant, "Constant" },
+		{ EffortMeasureType::TotalForce, "TotalForce" },
+		{ EffortMeasureType::Wang2012, "Wang2012" },
+		{ EffortMeasureType::Uchida2016, "Uchida2016" },
+		{ EffortMeasureType::SquaredMuscleStress, "SquaredMuscleStress" },
+		{ EffortMeasureType::CubedMuscleStress, "CubedMuscleStress" },
+		{ EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation" },
+		{ EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation" },
+		{ EffortMeasureType::MechnicalWork, "MechnicalWork" },
+		{ EffortMeasureType::ActuatorTorque, "MechnicalWork" }
+	};
 
 	EffortMeasure::EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Measure( props, par, model, loc ),
 		m_Effort( Statistic<>::LinearInterpolation )
 	{
-		measure_type = m_MeasureNames.GetValue( props.get<String>( "measure_type" ) );
+		measure_type = g_MeasureNames( props.get<String>( "measure_type" ) );
 		INIT_PROP( props, use_cost_of_transport, false );
 		INIT_PROP( props, specific_tension, 0.25e6 );
 		INIT_PROP( props, muscle_density, 1059.7 );
@@ -46,7 +46,7 @@ namespace scone
 		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
 		if ( name_.empty() )
-			name_ = m_MeasureNames.GetString( measure_type );
+			name_ = g_MeasureNames( measure_type );
 
 		// precompute some stuff
 		m_Wang2012BasalEnergy = 1.51 * model.GetMass();
@@ -312,10 +312,10 @@ namespace scone
 	}
 
 	// Implementation of mechanical work, Afschrift et al. 2016, "Mechanical effort predicts the selection of ankle ..." 
-	double EffortMeasure::GetMechnicalWork(const Model& model) const
+	double EffortMeasure::GetMechnicalWork( const Model& model ) const
 	{
 		double sum = 0.0;
-		for (auto& d : model.GetDofs())
+		for ( auto& d : model.GetDofs() )
 		{
 			auto mom = d->GetMuscleMoment();
 			sum += std::pow( fabs( mom * d->GetVel() ), order ); // only positive power
