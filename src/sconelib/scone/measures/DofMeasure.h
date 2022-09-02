@@ -46,8 +46,11 @@ namespace scone
 		/// Penalty for when the DOF acceleration [deg/s%%^%%2] is out of range.
 		RangePenalty<Degree> acceleration;
 
-		/// Penalty for when the DOF limit force [N] is out of range (this value is signed!).
-		RangePenalty<Real> force;
+		/// Penalty for when the DOF limit torque [Nm] is out of range (this value is signed!).
+		RangePenalty<Real> limit_torque;
+
+		/// Penalty for the DOF actuator torque (this value is signed!).
+		RangePenalty<Real> actuator_torque;
 
 	protected:
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;

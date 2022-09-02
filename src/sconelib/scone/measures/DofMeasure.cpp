@@ -24,9 +24,10 @@ namespace scone
 		INIT_PROP( props, position, RangePenalty<Degree>() );
 		INIT_PROP( props, velocity, RangePenalty<Degree>() );
 		INIT_PROP( props, acceleration, RangePenalty<Degree>() );
-		INIT_PROP( props, force, RangePenalty<Real>() );
+		limit_torque = props.get_any<RangePenalty<Real>>( { "force", "limit_torque" }, RangePenalty<Real>() );
+		INIT_PROP( props, actuator_torque, RangePenalty<Real>() );
 
-		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() ) + int( !force.IsNull() );
+		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() ) + int( !limit_torque.IsNull() );
 		if ( name_.empty() )
 			name_ = dof.GetName();
 	}
@@ -52,11 +53,17 @@ namespace scone
 			if ( range_count > 1 )
 				GetReport().set( name_ + ".acceleration_penalty", stringf( "%g", acceleration.GetResult() ) );
 		}
-		if ( !force.IsNull() )
+		if ( !limit_torque.IsNull() )
 		{
-			penalty += force.GetResult();
+			penalty += limit_torque.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".force_penalty", stringf( "%g", force.GetResult() ) );
+				GetReport().set( name_ + ".limit_torque_penalty", stringf( "%g", limit_torque.GetResult() ) );
+		}
+		if ( !actuator_torque.IsNull() )
+		{
+			penalty += actuator_torque.GetResult();
+			if ( range_count > 1 )
+				GetReport().set( name_ + ".actuator_torque_penalty", stringf( "%g", actuator_torque.GetResult() ) );
 		}
 
 		return penalty;
@@ -70,8 +77,10 @@ namespace scone
 			velocity.AddSample( timestamp, Degree( Radian( dof.GetVel() + ( parent ? parent->GetVel() : 0 ) ) ) );
 		if ( !acceleration.IsNull() )
 			acceleration.AddSample( timestamp, Degree( Radian( dof.GetAcc() + ( parent ? parent->GetAcc() : 0 ) ) ) );
-		if ( !force.IsNull() )
-			force.AddSample( timestamp, dof.GetLimitMoment() );
+		if ( !limit_torque.IsNull() )
+			limit_torque.AddSample( timestamp, dof.GetLimitMoment() );
+		if ( !actuator_torque.IsNull() )
+			actuator_torque.AddSample( timestamp, dof.GetActuatorTorque() );
 		return false;
 	}
 
@@ -88,7 +97,9 @@ namespace scone
 			frame[ dof.GetName() + ".velocity_penalty" ] = velocity.GetLatest().value;
 		if ( !acceleration.IsNull() )
 			frame[ dof.GetName() + ".acceleration_penalty" ] = acceleration.GetLatest().value;
-		if ( !force.IsNull() )
-			frame[ dof.GetName() + ".force_penalty" ] = force.GetLatest();
+		if ( !limit_torque.IsNull() )
+			frame[ dof.GetName() + ".limit_torque_penalty" ] = limit_torque.GetLatest();
+		if ( !actuator_torque.IsNull() )
+			frame[ dof.GetName() + ".actuator_torque_penalty" ] = actuator_torque.GetLatest();
 	}
 }
