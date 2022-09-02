@@ -26,7 +26,8 @@ namespace scone
 		EffortMeasureType::CubedMuscleStress, "CubedMuscleStress",
 		EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation",
 		EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation",
-		EffortMeasureType::MechnicalWork, "MechnicalWork"
+		EffortMeasureType::MechnicalWork, "MechnicalWork",
+		EffortMeasureType::ActuatorTorque, "MechnicalWork"
 		);
 
 	EffortMeasure::EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
@@ -42,7 +43,7 @@ namespace scone
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
 		INIT_PROP( props, omnidirectional, false );
-		INIT_PROP( props, mechanical_work_order, 1.0);
+		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
 		if ( name_.empty() )
 			name_ = m_MeasureNames.GetString( measure_type );
@@ -114,7 +115,8 @@ namespace scone
 		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
 		case EffortMeasureType::SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
 		case EffortMeasureType::CubedMuscleActivation: return GetCubedMuscleActivation( model );
-		case EffortMeasureType::MechnicalWork: return GetMechnicalWork(model);
+		case EffortMeasureType::MechnicalWork: return GetMechnicalWork( model );
+		case EffortMeasureType::ActuatorTorque: return GetActuatorTorque( model );
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 	}
@@ -315,9 +317,18 @@ namespace scone
 		double sum = 0.0;
 		for (auto& d : model.GetDofs())
 		{
-			auto mom = d->GetMuscleMoment();// +d->GetLimitMoment();
-			sum += std::pow(fabs(mom * d->GetVel()), mechanical_work_order); // only positive power
+			auto mom = d->GetMuscleMoment();
+			sum += std::pow( fabs( mom * d->GetVel() ), order ); // only positive power
 		}
+		return sum;
+	}
+
+	double EffortMeasure::GetActuatorTorque( const Model& model ) const
+	{
+		double sum = 0.0;
+		for ( auto& d : model.GetDofs() )
+			if ( d->IsActuated() )
+				sum += std::pow( fabs( d->GetActuatorTorque() ), order );
 		return sum;
 	}
 
@@ -336,6 +347,7 @@ namespace scone
 		case EffortMeasureType::SquaredMuscleActivation: s += "A2"; break;
 		case EffortMeasureType::CubedMuscleActivation: s += "A3"; break;
 		case EffortMeasureType::MechnicalWork: s += "MW"; break;
+		case EffortMeasureType::ActuatorTorque: s += "T"; break;
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 

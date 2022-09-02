@@ -25,9 +25,9 @@ namespace scone
 		CubedMuscleStress, ///< Use the summed squared muscle stress as a measure
 		SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
 		CubedMuscleActivation, ///< Use the summed cubed muscle muscle activation
-		MechnicalWork ///< mechanical work of muscles = sum of muscle moment * dof velocity
+		MechnicalWork, ///< mechanical work of muscles = sum of muscle moment * dof velocity
+		ActuatorTorque ///< total torque of dof actuators to the order power
 	};
-
 
 	/// Measures the energy consumption of a model during simulation, according to various models.
 	/** Supported effort models:
@@ -76,7 +76,7 @@ namespace scone
 		bool omnidirectional;
 
 		/// Value for mechanical work power
-		Real mechanical_work_order;
+		Real order;
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
@@ -110,5 +110,6 @@ namespace scone
 		double GetSquaredMuscleActivation( const Model& model ) const;
 		double GetCubedMuscleActivation( const Model& model ) const;
 		double GetMechnicalWork(const Model& model) const;
+		double GetActuatorTorque(const Model& model) const;
 	};
 }

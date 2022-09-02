@@ -21,7 +21,9 @@ namespace scone
 	{
 	public:
 		// clumsy constructor because initializer lists aren't supported in VS2010
+		// #todo: refactor to use initializer_list
 		StringMap(
+			T e0 = T(0), const char* s0 = nullptr,
 			T e1 = T(0), const char* s1 = nullptr,
 			T e2 = T(0), const char* s2 = nullptr,
 			T e3 = T(0), const char* s3 = nullptr,
@@ -33,6 +35,7 @@ namespace scone
 			T e9 = T(0), const char* s9 = nullptr
 			)
 		{
+			if ( s0 ) m_Map[ e0 ] = s0;
 			if ( s1 ) m_Map[ e1 ] = s1;
 			if ( s2 ) m_Map[ e2 ] = s2;
 			if ( s3 ) m_Map[ e3 ] = s3;
