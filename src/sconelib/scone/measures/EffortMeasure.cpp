@@ -27,7 +27,7 @@ namespace scone
 		{ EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation" },
 		{ EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation" },
 		{ EffortMeasureType::MechnicalWork, "MechnicalWork" },
-		{ EffortMeasureType::ActuatorTorque, "MechnicalWork" }
+		{ EffortMeasureType::MotorTorque, "MotorTorque" }
 	};
 
 	EffortMeasure::EffortMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
@@ -116,7 +116,7 @@ namespace scone
 		case EffortMeasureType::SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
 		case EffortMeasureType::CubedMuscleActivation: return GetCubedMuscleActivation( model );
 		case EffortMeasureType::MechnicalWork: return GetMechnicalWork( model );
-		case EffortMeasureType::ActuatorTorque: return GetActuatorTorque( model );
+		case EffortMeasureType::MotorTorque: return GetMotorTorque( model );
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 	}
@@ -316,14 +316,11 @@ namespace scone
 	{
 		double sum = 0.0;
 		for ( auto& d : model.GetDofs() )
-		{
-			auto mom = d->GetMuscleMoment();
-			sum += std::pow( fabs( mom * d->GetVel() ), order ); // only positive power
-		}
+			sum += std::pow( fabs( d->GetMuscleMoment() * d->GetVel() ), order ); // only positive power
 		return sum;
 	}
 
-	double EffortMeasure::GetActuatorTorque( const Model& model ) const
+	double EffortMeasure::GetMotorTorque( const Model& model ) const
 	{
 		double sum = 0.0;
 		for ( auto& d : model.GetDofs() )
@@ -347,7 +344,7 @@ namespace scone
 		case EffortMeasureType::SquaredMuscleActivation: s += "A2"; break;
 		case EffortMeasureType::CubedMuscleActivation: s += "A3"; break;
 		case EffortMeasureType::MechnicalWork: s += "MW"; break;
-		case EffortMeasureType::ActuatorTorque: s += "T"; break;
+		case EffortMeasureType::MotorTorque: s += "T"; break;
 		default: SCONE_THROW( "Invalid energy measure" );
 		}
 

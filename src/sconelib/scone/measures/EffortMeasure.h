@@ -27,7 +27,7 @@ namespace scone
 		SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
 		CubedMuscleActivation, ///< Use the summed cubed muscle muscle activation
 		MechnicalWork, ///< mechanical work of muscles = sum of muscle moment * dof velocity
-		ActuatorTorque ///< total torque of dof actuators to the order power
+		MotorTorque ///< total torque of dof actuators to the order power
 	};
 
 	/// Measures the energy consumption of a model during simulation, according to various models.
@@ -110,6 +110,6 @@ namespace scone
 		double GetSquaredMuscleActivation( const Model& model ) const;
 		double GetCubedMuscleActivation( const Model& model ) const;
 		double GetMechnicalWork(const Model& model) const;
-		double GetActuatorTorque(const Model& model) const;
+		double GetMotorTorque(const Model& model) const;
 	};
 }
