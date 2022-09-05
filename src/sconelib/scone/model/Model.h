@@ -253,6 +253,9 @@ namespace scone
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }
 
+		const DelayedSensorGroup& GetDelayedSensorGroup() const { return m_DelayedSensors; }
+		DelayedActuatorGroup& GetDelayedActuatorGroup() { return m_DelayedActuators; }
+
 	protected:
 		virtual String GetClassSignature() const override;
 		void UpdateSensorDelayAdapters();
