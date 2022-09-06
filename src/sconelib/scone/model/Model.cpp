@@ -126,14 +126,21 @@ namespace scone
 		else return **it;
 	}
 
-	DelayedSensorValue Model::GetDelayedSensor( Sensor& sensor, TimeInSeconds delay )
+	DelayedSensorValue Model::GetDelayedSensor( Sensor& sensor, TimeInSeconds two_way_delay )
 	{
-		return m_DelayedSensors.GetDelayedSensorValue( sensor, delay, fixed_control_step_size );
+		return m_DelayedSensors.GetDelayedSensorValue( sensor, two_way_delay, fixed_control_step_size );
 	}
 
-	DelayedActuatorValue Model::GetDelayedActuator( Actuator& actuator, TimeInSeconds delay )
+	DelayedActuatorValue Model::GetDelayedActuator( Actuator& actuator, TimeInSeconds two_way_delay )
 	{
-		return m_DelayedActuators.GetDelayedActuatorValue( actuator, delay, fixed_control_step_size );
+		return m_DelayedActuators.GetDelayedActuatorValue( actuator, two_way_delay, fixed_control_step_size );
+	}
+
+	TimeInSeconds Model::GetTwoWayNeuralDelay( const String& name ) const
+	{
+		auto it = neural_delays.find( name );
+		SCONE_ERROR_IF( it == neural_delays.end(), "Could not find neural delay for " + name );
+		return it->second;
 	}
 
 	String Model::GetClassSignature() const
@@ -446,6 +453,8 @@ namespace scone
 		// m_UserData is not cleared because SconePy uses it to store the scenario
 		m_PrevStoreDataTime = 0;
 		m_PrevStoreDataStep = 0;
+		m_DelayedSensors.Reset();
+		m_DelayedActuators.Reset();
 	}
 
 	PropNode Model::GetSimulationReport() const

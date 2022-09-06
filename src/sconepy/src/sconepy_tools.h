@@ -13,16 +13,25 @@
 #include "spot/par_io.h"
 #include "scone/model/Muscle.h"
 #include "scone/model/Dof.h"
+#include "scone/model/Sensors.h"
+#include "scone/model/MuscleId.h"
 
 namespace fs = std::filesystem;
 const std::string g_scenario_user_data_key = "SconePy";
 
 template< typename C >
-py::array make_array( C&& cont, bool use_f32 ) {
+py::array to_array( C&& cont, bool use_f32 ) {
 	if ( use_f32 )
 		return py::array_t<float>( py::cast( std::move( cont ) ) );
 	else
 		return py::array_t<double>( py::cast( std::move( cont ) ) );
+};
+
+template< typename T >
+std::pair<py::array_t<T>, T*> make_array( size_t s ) {
+	std::pair<py::array_t<T>, T*> r{ py::array_t<T>( s ), nullptr };
+	r.second = static_cast<T*>( r.first.request().ptr );
+	return r;
 };
 
 namespace scone
@@ -63,16 +72,6 @@ namespace scone
 		SCONE_ERROR_IF( expected != received, stringf( "Invalid array length; expected %d, received %d", expected, received ) );
 	}
 
-	void set_actuator_values( Model& m, const py::array_t<double>& values ) {
-		auto v = values.unchecked<1>();
-		auto& act = m.GetActuators();
-		check_array_length( act.size(), v.shape( 0 ) );
-		for ( index_t i = 0; i < act.size(); ++i ) {
-			act[ i ]->ClearInput();
-			act[ i ]->AddInput( v( i ) );
-		}
-	};
-
 	void set_dof_positions( Model& m, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
 		auto& dofs = m.GetDofs();
@@ -101,19 +100,18 @@ namespace scone
 			mus[ i ]->InitializeActivation( v( i ) );
 	};
 
-	template< typename T, typename C, typename F > std::vector<T> extract_vec( const C& cont, F fn ) {
-		std::vector<T> v;
-		v.reserve( std::size( cont ) );
-		for ( auto& e : cont )
-			v.emplace_back( static_cast<T>( fn( e ) ) );
+	template< typename T, typename C, typename F > py::array_t<T> extract_array( const C& cont, F fn ) {
+		auto [v, p] = make_array<T>( std::size( cont ) );
+		for ( index_t i = 0; i < std::size( cont ); ++i )
+			p[ i ] = static_cast<T>( fn( cont[ i ] ) );
 		return v;
 	};
 
 	template< typename C, typename F > py::array extract_array( const C& cont, F fn, bool use_f32 ) {
 		if ( use_f32 )
-			return py::array_t<float>( py::cast( extract_vec<float>( cont, fn ) ) );
+			return extract_array<float>( cont, fn );
 		else
-			return py::array_t<double>( py::cast( extract_vec<double>( cont, fn ) ) );
+			return extract_array<double>( cont, fn );
 	};
 
 	py::array get_muscle_lengths( const Model& model, bool use_f32 ) {
@@ -140,6 +138,108 @@ namespace scone
 	py::array get_dof_velocities( const Model& model, bool use_f32 ) {
 		return extract_array( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); }, use_f32 );
 	};
+
+	template< typename S >
+	std::pair<index_t, size_t> create_delayed_muscle_sensors( Model& model ) {
+		auto& dsg = model.GetDelayedSensorGroup();
+		index_t ofs = dsg.sensors_.size();
+		for ( auto mus : model.GetMuscles() ) {
+			auto& s = model.AcquireSensor<S>( *mus );
+			auto two_way_delay = model.GetTwoWayNeuralDelay( MuscleId( mus->GetName() ).base_ );
+			model.GetDelayedSensor( s, two_way_delay );
+		}
+		size_t size = dsg.sensors_.size() - ofs;
+		SCONE_ERROR_IF( size != model.GetMuscles().size(), "Error creating delayed muscle sensors" );
+		return { ofs, size };
+	}
+
+	template< typename T >
+	py::array_t<T> get_delayed_sensor_array( const Model& model, index_t ofs, index_t size ) {
+		auto& dsg = model.GetDelayedSensorGroup();
+		SCONE_ERROR_IF( ofs + size > dsg.sensors_.size(), "Invalid delayed sensor index" );
+		auto [v, p] = make_array<T>( size );
+		for ( index_t i = 0; i < size; ++i )
+			p[ i ] = static_cast<T>( dsg.sensors_[ ofs + i ].second.front() );
+		return v;
+	}
+
+	py::array get_delayed_sensor_array( const Model& model, index_t ofs, size_t size, bool use_f32 ) {
+		if ( use_f32 )
+			return get_delayed_sensor_array<float>( model, ofs, size );
+		else
+			return get_delayed_sensor_array<double>( model, ofs, size );
+	}
+
+	template< typename S >
+	py::array get_delayed_sensor_array( Model& model, const String& name, bool use_f32 ) {
+		auto& user_pn = model.GetUserData()[ g_scenario_user_data_key ];
+		index_t ofs = no_index;
+		size_t size = 0;
+		if ( auto* pn = model.GetUserData()[ g_scenario_user_data_key ].try_get_child( name ) ) {
+			ofs = pn->get<index_t>( 0 );
+			size = pn->get<size_t>( 1 );
+		}
+		else {
+			auto& new_pn = user_pn.add_child( name );
+			auto p = create_delayed_muscle_sensors<S>( model );
+			ofs = p.first;
+			size = p.second;
+			new_pn.add_value( ofs );
+			new_pn.add_value( size );
+		}
+
+		if ( use_f32 )
+			return get_delayed_sensor_array<float>( model, ofs, size );
+		else
+			return get_delayed_sensor_array<double>( model, ofs, size );
+	}
+
+	py::array get_delayed_muscle_lengths( Model& model, bool use_f32 ) {
+		return get_delayed_sensor_array<MuscleLengthSensor>( model, "L", use_f32 );
+	}
+	py::array get_delayed_muscle_velocities( Model& model, bool use_f32 ) {
+		return get_delayed_sensor_array<MuscleVelocitySensor>( model, "V", use_f32 );
+	}
+	py::array get_delayed_muscle_forces( Model& model, bool use_f32 ) {
+		return get_delayed_sensor_array<MuscleForceSensor>( model, "F", use_f32 );
+	}
+
+	void set_actuator_values( Model& m, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto& act = m.GetActuators();
+		check_array_length( act.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < act.size(); ++i ) {
+			act[ i ]->ClearInput();
+			act[ i ]->AddInput( v( i ) );
+		}
+	};
+
+	size_t create_delayed_actuators( Model& model ) {
+		auto& dag = model.GetDelayedActuatorGroup();
+		SCONE_ASSERT( dag.actuators_.empty() );
+		for ( auto act : model.GetActuators() ) {
+			auto two_way_delay = model.GetTwoWayNeuralDelay( MuscleId( act->GetName() ).base_ );
+			model.GetDelayedActuator( *act, two_way_delay );
+		}
+		return dag.actuators_.size();
+	}
+
+	void set_delayed_actuator_values( Model& model, const py::array_t<double>& values ) {
+		auto v = values.unchecked<1>();
+		auto& dag = model.GetDelayedActuatorGroup();
+		if ( dag.actuators_.empty() )
+			create_delayed_actuators( model );
+		auto& act = dag.actuators_;
+		check_array_length( act.size(), v.shape( 0 ) );
+		for ( index_t i = 0; i < act.size(); ++i ) {
+			act[ i ].first->ClearInput();
+			act[ i ].second.back() = v( i );
+		}
+	};
+
+	py::array set_delayed_actuator_inputs( Model& model, bool use_f32 ) {
+		return get_delayed_sensor_array<MuscleForceSensor>( model, "F", use_f32 );
+	}
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
 	xo::path from_fs( const fs::path& p ) { return xo::path( p.string() ); }

@@ -187,10 +187,13 @@ namespace scone
 		{ return AcquireSensorDelayAdapter( AcquireSensor< SensorT >( std::forward< Args >( args )... ) ); }
 
 		// get delayed sensor, recommended approach
-		DelayedSensorValue GetDelayedSensor( Sensor& sensor, TimeInSeconds delay );
+		DelayedSensorValue GetDelayedSensor( Sensor& sensor, TimeInSeconds two_way_delay );
 
 		// get delayed actuator, recommended approach
-		DelayedActuatorValue GetDelayedActuator( Actuator& actuator, TimeInSeconds delay );
+		DelayedActuatorValue GetDelayedActuator( Actuator& actuator, TimeInSeconds two_way_delay );
+
+		// get the two-way neural delay for a specific name, throws if not found
+		TimeInSeconds GetTwoWayNeuralDelay( const String& name ) const;
 
 		/// File containing the initial state (or pose) of the model.
 		path state_init_file;
@@ -254,6 +257,7 @@ namespace scone
 		xo::profiler& GetProfiler() const { return m_Profiler; }
 
 		const DelayedSensorGroup& GetDelayedSensorGroup() const { return m_DelayedSensors; }
+		DelayedSensorGroup& GetDelayedSensorGroup() { return m_DelayedSensors; }
 		DelayedActuatorGroup& GetDelayedActuatorGroup() { return m_DelayedActuators; }
 
 	protected:
