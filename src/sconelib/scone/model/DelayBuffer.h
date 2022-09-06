@@ -35,6 +35,7 @@ namespace scone
 		DelayedSensorValue GetDelayedSensorValue( Sensor& sensor, TimeInSeconds delay, TimeInSeconds step_size );
 		void AdvanceSensorBuffers();
 		void UpdateSensorBufferValues();
+		void Reset();
 
 		std::map< size_t, DelayBuffer > buffers_;
 		std::vector< std::pair<Sensor*, DelayBufferChannel> > sensors_;
@@ -45,6 +46,7 @@ namespace scone
 		void UpdateActuatorInputs();
 		void AdvanceActuatorBuffers();
 		void ClearActuatorBufferValues();
+		void Reset();
 
 		std::map< size_t, DelayBuffer > buffers_;
 		std::vector< std::pair<Actuator*, DelayBufferChannel> > actuators_;

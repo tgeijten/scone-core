@@ -20,6 +20,7 @@ namespace scone
 			auto& buf = buffers_.try_emplace( delay_size, delay_size, 0 ).first->second;
 			auto idx = buf.add_channel();
 			sensors_.emplace_back( &sensor, DelayBufferChannel{ &buf, idx } );
+			sensors_.back().second.back() = sensors_.back().first->GetValue();
 			return DelayedSensorValue{ sensors_.back().second };
 		}
 	}
@@ -32,6 +33,14 @@ namespace scone
 
 	void DelayedSensorGroup::UpdateSensorBufferValues()
 	{
+		for ( auto& s : sensors_ )
+			s.second.back() = s.first->GetValue();
+	}
+
+	void DelayedSensorGroup::Reset()
+	{
+		for ( auto& b : buffers_ )
+			b.second.reset();
 		for ( auto& s : sensors_ )
 			s.second.back() = s.first->GetValue();
 	}
@@ -69,5 +78,11 @@ namespace scone
 	{
 		for ( auto& b : buffers_ )
 			b.second.clear_back();
+	}
+
+	void DelayedActuatorGroup::Reset()
+	{
+		for ( auto& b : buffers_ )
+			b.second.reset();
 	}
 }
