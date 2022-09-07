@@ -15,6 +15,7 @@
 #include "scone/model/Dof.h"
 #include "scone/model/Sensors.h"
 #include "scone/model/MuscleId.h"
+#include "scone/controllers/ExternalController.h"
 
 namespace fs = std::filesystem;
 const std::string g_scenario_user_data_key = "SconePy";
@@ -51,50 +52,55 @@ namespace scone
 		spot::null_objective_info par;
 		auto model = CreateModel( model_props, par, file_path.parent_path() );
 		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn to save config.scone
-		//model->AddExternalResource( file_path ); // add .scone file so that it can be copied to results
+		if ( !model->GetController() ) {
+			PropNode cpn{ { "ExternalController", PropNode() } };
+			auto fp = FindFactoryProps( GetControllerFactory(), cpn, "Controller" );
+			spot::null_objective_info par;
+			model->CreateController( fp, par );
+		}
 		return model;
 	}
-	std::map< std::string, double > get_state( const Model& m ) {
+	std::map< std::string, double > get_state( const Model& model ) {
 		std::map< std::string, double > dict;
-		auto& s = m.GetState();
+		auto& s = model.GetState();
 		for ( size_t i = 0; i < s.GetSize(); ++i )
 			dict[ s.GetName( i ) ] = s.GetValue( i );
 		return dict;
 	};
-	void set_state( Model& m, const std::map< std::string, double >& dict ) {
-		State s = m.GetState();
+	void set_state( Model& model, const std::map< std::string, double >& dict ) {
+		State s = model.GetState();
 		for ( auto& [key, value] : dict )
 			s.SetValue( key, value );
-		m.SetState( s, 0.0 );
+		model.SetState( s, 0.0 );
 	};
 
 	void check_array_length( size_t expected, size_t received ) {
 		SCONE_ERROR_IF( expected != received, stringf( "Invalid array length; expected %d, received %d", expected, received ) );
 	}
 
-	void set_dof_positions( Model& m, const py::array_t<double>& values ) {
+	void set_dof_positions( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto& dofs = m.GetDofs();
+		auto& dofs = model.GetDofs();
 		check_array_length( dofs.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < dofs.size(); ++i )
 			dofs[ i ]->SetPos( v( i ) );
 	};
 
-	void set_dof_velocities( Model& m, const py::array_t<double>& values ) {
+	void set_dof_velocities( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto& dofs = m.GetDofs();
+		auto& dofs = model.GetDofs();
 		check_array_length( dofs.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < dofs.size(); ++i )
 			dofs[ i ]->SetVel( v( i ) );
 	};
 
-	void init_state_from_dofs( Model& m ) {
-		m.UpdateStateFromDofs();
+	void init_state_from_dofs( Model& model ) {
+		model.UpdateStateFromDofs();
 	};
 
-	void init_muscle_activations( Model& m, const py::array_t<double>& values ) {
+	void init_muscle_activations( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto mus = m.GetMuscles();
+		auto mus = model.GetMuscles();
 		check_array_length( mus.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < mus.size(); ++i )
 			mus[ i ]->InitializeActivation( v( i ) );
@@ -204,13 +210,20 @@ namespace scone
 		return get_delayed_sensor_array<MuscleForceSensor>( model, "F", use_f32 );
 	}
 
-	void set_actuator_values( Model& m, const py::array_t<double>& values ) {
+	void set_actuator_inputs( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto& act = m.GetActuators();
-		check_array_length( act.size(), v.shape( 0 ) );
-		for ( index_t i = 0; i < act.size(); ++i ) {
-			act[ i ]->ClearInput();
-			act[ i ]->AddInput( v( i ) );
+		check_array_length( model.GetActuators().size(), v.shape( 0 ) );
+
+		if ( auto* ec = dynamic_cast<ExternalController*>( model.GetController() ) ) {
+			for ( index_t i = 0; i < ec->GetActuatorCount(); ++i )
+				ec->SetInput( i, v( i ) );
+		}
+		else {
+			auto& act = model.GetActuators();
+			for ( index_t i = 0; i < act.size(); ++i ) {
+				act[ i ]->ClearInput();
+				act[ i ]->AddInput( v( i ) );
+			}
 		}
 	};
 
@@ -224,22 +237,25 @@ namespace scone
 		return dag.actuators_.size();
 	}
 
-	void set_delayed_actuator_values( Model& model, const py::array_t<double>& values ) {
+	void set_delayed_actuator_inputs( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto& dag = model.GetDelayedActuatorGroup();
-		if ( dag.actuators_.empty() )
-			create_delayed_actuators( model );
-		auto& act = dag.actuators_;
-		check_array_length( act.size(), v.shape( 0 ) );
-		for ( index_t i = 0; i < act.size(); ++i ) {
-			act[ i ].first->ClearInput();
-			act[ i ].second.back() = v( i );
+		check_array_length( model.GetActuators().size(), v.shape( 0 ) );
+
+		if ( auto* ec = dynamic_cast<ExternalController*>( model.GetController() ) ) {
+			for ( index_t i = 0; i < ec->GetActuatorCount(); ++i )
+				ec->SetDelayedInput( i, v( i ) );
+		}
+		else
+		{
+			auto& dag = model.GetDelayedActuatorGroup();
+			if ( dag.actuators_.empty() )
+				create_delayed_actuators( model );
+			for ( index_t i = 0; i < dag.actuators_.size(); ++i ) {
+				dag.actuators_[ i ].first->ClearInput();
+				dag.actuators_[ i ].second.back() = v( i );
+			}
 		}
 	};
-
-	py::array set_delayed_actuator_inputs( Model& model, bool use_f32 ) {
-		return get_delayed_sensor_array<MuscleForceSensor>( model, "F", use_f32 );
-	}
 
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
 	xo::path from_fs( const fs::path& p ) { return xo::path( p.string() ); }

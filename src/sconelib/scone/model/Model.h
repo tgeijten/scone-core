@@ -194,6 +194,7 @@ namespace scone
 
 		// get the two-way neural delay for a specific name, throws if not found
 		TimeInSeconds GetTwoWayNeuralDelay( const String& name ) const;
+		TimeInSeconds GetTwoWayNeuralDelay( const HasName& component ) const;
 
 		/// File containing the initial state (or pose) of the model.
 		path state_init_file;

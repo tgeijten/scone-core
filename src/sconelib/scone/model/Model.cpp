@@ -14,6 +14,7 @@
 #include "UserInput.h"
 #include "SensorDelayAdapter.h"
 #include "State.h"
+#include "MuscleId.h"
 #include "scone/controllers/CompositeController.h"
 #include "scone/core/Factories.h"
 #include "scone/core/Log.h"
@@ -141,6 +142,11 @@ namespace scone
 		auto it = neural_delays.find( name );
 		SCONE_ERROR_IF( it == neural_delays.end(), "Could not find neural delay for " + name );
 		return it->second;
+	}
+
+	TimeInSeconds Model::GetTwoWayNeuralDelay( const HasName& component ) const
+	{
+		return GetTwoWayNeuralDelay( MuscleId( component.GetName() ).base_ );
 	}
 
 	String Model::GetClassSignature() const
