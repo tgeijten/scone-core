@@ -41,8 +41,7 @@ namespace scone
 	{
 		for ( auto& b : buffers_ )
 			b.second.reset();
-		for ( auto& s : sensors_ )
-			s.second.back() = s.first->GetValue();
+		UpdateSensorBufferValues();
 	}
 
 	DelayedActuatorValue DelayedActuatorGroup::GetDelayedActuatorValue( Actuator& actuator, TimeInSeconds delay, TimeInSeconds step_size )
