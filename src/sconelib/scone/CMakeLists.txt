@@ -94,6 +94,8 @@ set(CS_CONTROLLERS_FILES
 	controllers/NoiseController.cpp
 	controllers/NeuralNetworkController.h
 	controllers/NeuralNetworkController.cpp
+	controllers/ExternalController.h
+	controllers/ExternalController.cpp
 	)
 set(CS_CONTROLLERS_NC_FILES
 	controllers/NeuralController.cpp

@@ -23,6 +23,7 @@
 #include "scone/controllers/SequentialController.h"
 #include "scone/controllers/BodyPointReflex.h"
 #include "scone/controllers/BodyOrientationReflex.h"
+#include "scone/controllers/ExternalController.h"
 
 #include "scone/core/PieceWiseConstantFunction.h"
 #include "scone/core/PieceWiseLinearFunction.h"
@@ -63,8 +64,8 @@
 #	include "scone/optimization/EvaOptimizer.h"
 #	include "scone/controllers/NeuralNetworkController.h"
 #	include "scone/controllers/SpinalController.h"
+#	include "scone/controllers/ComPivotReflex.h"
 #endif
-#include "scone/controllers/ComPivotReflex.h"
 
 namespace scone
 {
@@ -84,7 +85,8 @@ namespace scone
 			.register_type< NeuralController >()
 			.register_type< CompositeController >()
 			.register_type< SequentialController >()
-			.register_type< NoiseController >();
+			.register_type< NoiseController >()
+			.register_type< ExternalController >();
 
 		return g_ControllerFactory;
 	}
