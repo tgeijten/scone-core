@@ -23,6 +23,7 @@
 #include "scone/controllers/SequentialController.h"
 #include "scone/controllers/BodyPointReflex.h"
 #include "scone/controllers/BodyOrientationReflex.h"
+#include "scone/controllers/ComPivotReflex.h"
 #include "scone/controllers/ExternalController.h"
 
 #include "scone/core/PieceWiseConstantFunction.h"
@@ -64,7 +65,6 @@
 #	include "scone/optimization/EvaOptimizer.h"
 #	include "scone/controllers/NeuralNetworkController.h"
 #	include "scone/controllers/SpinalController.h"
-#	include "scone/controllers/ComPivotReflex.h"
 #endif
 
 namespace scone
