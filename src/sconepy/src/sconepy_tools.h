@@ -186,8 +186,11 @@ namespace scone
 			size = pn->get<size_t>( 1 );
 		}
 		else {
+			if ( name == "L" || name == "V" || name == "F" )
+				std::tie( ofs, size ) = create_delayed_muscle_sensors<S>( model );
+
+			SCONE_ERROR_IF( size == 0, "Could not create delayed sensors of type " + name );
 			auto& new_pn = user_pn.add_child( name );
-			std::tie( ofs, size ) = create_delayed_muscle_sensors<S>( model );
 			new_pn.add_value( ofs );
 			new_pn.add_value( size );
 		}
