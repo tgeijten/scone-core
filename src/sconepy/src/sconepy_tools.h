@@ -187,9 +187,7 @@ namespace scone
 		}
 		else {
 			auto& new_pn = user_pn.add_child( name );
-			auto p = create_delayed_muscle_sensors<S>( model );
-			ofs = p.first;
-			size = p.second;
+			std::tie( ofs, size ) = create_delayed_muscle_sensors<S>( model );
 			new_pn.add_value( ofs );
 			new_pn.add_value( size );
 		}
