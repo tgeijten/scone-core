@@ -168,6 +168,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
 		.def( "reset", &scone::Model::ResetState )
 		.def( "time", &scone::Model::GetTime )
+		.def( "integration_step", &scone::Model::GetIntegrationStep )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", &scone::write_results )
