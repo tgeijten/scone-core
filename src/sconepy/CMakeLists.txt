@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.4...3.18)
 set(SCONEPY_FILES
     src/sconepy.cpp
     src/sconepy_tools.h
+    src/sconepy_sensors.h
 	)
 
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

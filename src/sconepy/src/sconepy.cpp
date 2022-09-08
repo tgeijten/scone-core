@@ -1,5 +1,6 @@
 #include "sconepy.h"
 #include "sconepy_tools.h"
+#include "sconepy_sensors.h"
 
 #include "scone/core/version.h"
 #include "xo/system/log_sink.h"
@@ -12,7 +13,7 @@
 
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
-	static bool use_float32 = true;
+	static bool g_f32 = true;
 
 	scone::Initialize();
 
@@ -25,16 +26,16 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "load_model", &scone::load_model );
 	m.def( "replace_string_tags", &scone::ReplaceStringTags );
 
-	m.def( "set_array_dtype_float32", []() { use_float32 = true; } );
-	m.def( "set_array_dtype_float64", []() { use_float32 = false; } );
-	m.def( "is_array_dtype_float32", []() -> bool { return use_float32; } );
-	m.def( "is_array_dtype_float64", []() -> bool { return !use_float32; } );
+	m.def( "set_array_dtype_float32", []() { g_f32 = true; } );
+	m.def( "set_array_dtype_float64", []() { g_f32 = false; } );
+	m.def( "is_array_dtype_float32", []() -> bool { return g_f32; } );
+	m.def( "is_array_dtype_float64", []() -> bool { return !g_f32; } );
 
 	py::class_<scone::Vec3>( m, "Vec3" )
 		.def_readwrite( "x", &scone::Vec3::x )
 		.def_readwrite( "y", &scone::Vec3::y )
 		.def_readwrite( "z", &scone::Vec3::z )
-		.def( "array", []( scone::Vec3& v ) { return to_array( std::vector{ v.x, v.y, v.z }, use_float32 ); } )
+		.def( "array", []( scone::Vec3& v ) { return to_array( std::vector{ v.x, v.y, v.z }, g_f32 ); } )
 		.def( "__repr__", []( const scone::Vec3& v ) { return xo::stringf( "<sconepy.Vec3( %f, %f, %f)>", v.x, v.y, v.z ); } )
 		.def( "__str__", []( const scone::Vec3& v ) { return xo::stringf( "[ %f %f %f ]", v.x, v.y, v.z ); } )
 		;
@@ -44,7 +45,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def_readwrite( "x", &scone::Quat::x )
 		.def_readwrite( "y", &scone::Quat::y )
 		.def_readwrite( "z", &scone::Quat::z )
-		.def( "array", []( scone::Quat& q ) { return to_array( std::vector{ q.w, q.x, q.y, q.z }, use_float32 ); } )
+		.def( "array", []( scone::Quat& q ) { return to_array( std::vector{ q.w, q.x, q.y, q.z }, g_f32 ); } )
 		.def( "to_euler_xyz", []( scone::Quat& q ) { return euler_xyz_from_quat( q ); } )
 		.def( "to_euler_xzy", []( scone::Quat& q ) { return euler_xzy_from_quat( q ); } )
 		.def( "to_euler_yxz", []( scone::Quat& q ) { return euler_yxz_from_quat( q ); } )
@@ -152,17 +153,20 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "init_state_from_dofs", []( scone::Model& m ) { m.UpdateStateFromDofs(); } )
 		.def( "adjust_state_for_load", &scone::Model::AdjustStateForLoad )
 		.def( "set_actuator_inputs", &scone::set_actuator_inputs )
-		.def( "actuator_input_array", []( scone::Model& m ) { return scone::get_actuator_inputs( m, use_float32 ); } )
-		.def( "dof_position_array", []( scone::Model& m ) { return scone::get_dof_positions( m, use_float32 ); } )
-		.def( "dof_velocity_array", []( scone::Model& m ) { return scone::get_dof_velocities( m, use_float32 ); } )
-		.def( "muscle_fiber_length_array", []( scone::Model& m ) { return scone::get_muscle_lengths( m, use_float32 ); } )
-		.def( "muscle_fiber_velocity_array", []( scone::Model& m ) { return scone::get_muscle_velocities( m, use_float32 ); } )
-		.def( "muscle_force_array", []( scone::Model& m ) { return scone::get_muscle_forces( m, use_float32 ); } )
-		.def( "muscle_activation_array", []( scone::Model& m ) { return scone::get_muscle_activations( m, use_float32 ); } )
-		.def( "muscle_excitation_array", []( scone::Model& m ) { return scone::get_muscle_excitations( m, use_float32 ); } )
-		.def( "delayed_muscle_fiber_length_array", []( scone::Model& m ) { return scone::get_delayed_muscle_lengths( m, use_float32 ); } )
-		.def( "delayed_muscle_fiber_velocity_array", []( scone::Model& m ) { return scone::get_delayed_muscle_velocities( m, use_float32 ); } )
-		.def( "delayed_muscle_force_array", []( scone::Model& m ) { return scone::get_delayed_muscle_forces( m, use_float32 ); } )
+		.def( "actuator_input_array", []( scone::Model& m ) { return scone::get_actuator_inputs( m, g_f32 ); } )
+		.def( "dof_position_array", []( scone::Model& m ) { return scone::get_dof_positions( m, g_f32 ); } )
+		.def( "dof_velocity_array", []( scone::Model& m ) { return scone::get_dof_velocities( m, g_f32 ); } )
+		.def( "muscle_fiber_length_array", []( scone::Model& m ) { return scone::get_muscle_lengths( m, g_f32 ); } )
+		.def( "muscle_fiber_velocity_array", []( scone::Model& m ) { return scone::get_muscle_velocities( m, g_f32 ); } )
+		.def( "muscle_force_array", []( scone::Model& m ) { return scone::get_muscle_forces( m, g_f32 ); } )
+		.def( "muscle_activation_array", []( scone::Model& m ) { return scone::get_muscle_activations( m, g_f32 ); } )
+		.def( "muscle_excitation_array", []( scone::Model& m ) { return scone::get_muscle_excitations( m, g_f32 ); } )
+		//.def( "delayed_muscle_fiber_length_array", []( scone::Model& m ) { return get_delayed_muscle_lengths( m, g_f32 ); } )
+		//.def( "delayed_muscle_fiber_velocity_array", []( scone::Model& m ) { return get_delayed_muscle_velocities( m, g_f32 ); } )
+		//.def( "delayed_muscle_force_array", []( scone::Model& m ) { return get_delayed_muscle_forces( m, g_f32 ); } )
+		.def( "delayed_muscle_fiber_length_array", []( scone::Model& m ) { return get_delayed_sensor_array( m, SensorType::Length, g_f32 ); } )
+		.def( "delayed_muscle_fiber_velocity_array", []( scone::Model& m ) { return get_delayed_sensor_array( m, SensorType::Velocity, g_f32 ); } )
+		.def( "delayed_muscle_force_array", []( scone::Model& m ) { return get_delayed_sensor_array( m, SensorType::Force, g_f32 ); } )
 		.def( "set_delayed_actuator_inputs", &scone::set_delayed_actuator_inputs )
 		.def( "init_muscle_activations", &scone::init_muscle_activations )
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )

@@ -18,7 +18,7 @@
 #include "scone/controllers/ExternalController.h"
 
 namespace fs = std::filesystem;
-const std::string g_scenario_user_data_key = "SconePy";
+static const std::string g_scenario_user_data_key = "SPPN";
 
 template< typename C >
 py::array to_array( C&& cont, bool use_f32 ) {
@@ -144,72 +144,6 @@ namespace scone
 	py::array get_dof_velocities( const Model& model, bool use_f32 ) {
 		return extract_array( model.GetDofs(), []( const Dof* d ) { return d->GetVel(); }, use_f32 );
 	};
-
-	template< typename S >
-	std::pair<index_t, size_t> create_delayed_muscle_sensors( Model& model ) {
-		auto& dsg = model.GetDelayedSensorGroup();
-		index_t ofs = dsg.sensors_.size();
-		for ( auto mus : model.GetMuscles() ) {
-			auto& s = model.AcquireSensor<S>( *mus );
-			auto two_way_delay = model.GetTwoWayNeuralDelay( MuscleId( mus->GetName() ).base_ );
-			model.GetDelayedSensor( s, two_way_delay );
-		}
-		size_t size = dsg.sensors_.size() - ofs;
-		SCONE_ERROR_IF( size != model.GetMuscles().size(), "Error creating delayed muscle sensors" );
-		return { ofs, size };
-	}
-
-	template< typename T >
-	py::array_t<T> get_delayed_sensor_array( const Model& model, index_t ofs, index_t size ) {
-		auto& dsg = model.GetDelayedSensorGroup();
-		SCONE_ERROR_IF( ofs + size > dsg.sensors_.size(), "Invalid delayed sensor index" );
-		auto [v, p] = make_array<T>( size );
-		for ( index_t i = 0; i < size; ++i )
-			p[ i ] = static_cast<T>( dsg.sensors_[ ofs + i ].second.front() );
-		return v;
-	}
-
-	py::array get_delayed_sensor_array( const Model& model, index_t ofs, size_t size, bool use_f32 ) {
-		if ( use_f32 )
-			return get_delayed_sensor_array<float>( model, ofs, size );
-		else
-			return get_delayed_sensor_array<double>( model, ofs, size );
-	}
-
-	template< typename S >
-	py::array get_delayed_sensor_array( Model& model, const String& name, bool use_f32 ) {
-		auto& user_pn = model.GetUserData()[ g_scenario_user_data_key ];
-		index_t ofs = no_index;
-		size_t size = 0;
-		if ( auto* pn = model.GetUserData()[ g_scenario_user_data_key ].try_get_child( name ) ) {
-			ofs = pn->get<index_t>( 0 );
-			size = pn->get<size_t>( 1 );
-		}
-		else {
-			if ( name == "L" || name == "V" || name == "F" )
-				std::tie( ofs, size ) = create_delayed_muscle_sensors<S>( model );
-
-			SCONE_ERROR_IF( size == 0, "Could not create delayed sensors of type " + name );
-			auto& new_pn = user_pn.add_child( name );
-			new_pn.add_value( ofs );
-			new_pn.add_value( size );
-		}
-
-		if ( use_f32 )
-			return get_delayed_sensor_array<float>( model, ofs, size );
-		else
-			return get_delayed_sensor_array<double>( model, ofs, size );
-	}
-
-	py::array get_delayed_muscle_lengths( Model& model, bool use_f32 ) {
-		return get_delayed_sensor_array<MuscleLengthSensor>( model, "L", use_f32 );
-	}
-	py::array get_delayed_muscle_velocities( Model& model, bool use_f32 ) {
-		return get_delayed_sensor_array<MuscleVelocitySensor>( model, "V", use_f32 );
-	}
-	py::array get_delayed_muscle_forces( Model& model, bool use_f32 ) {
-		return get_delayed_sensor_array<MuscleForceSensor>( model, "F", use_f32 );
-	}
 
 	void set_actuator_inputs( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
