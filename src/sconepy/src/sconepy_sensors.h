@@ -30,7 +30,7 @@ DelayedSensorValueVector& get_delayed_sensor_value_vector( scone::Model& model, 
 		a = std::vector<DelayedSensorValueVector>();
 	auto& vv = std::any_cast<std::vector<DelayedSensorValueVector>&>( a );
 	auto idx = static_cast<size_t>( t );
-	if ( idx <= vv.size() )
+	if ( idx >= vv.size() )
 		vv.resize( idx + 1 );
 	return vv.at( idx );
 }
