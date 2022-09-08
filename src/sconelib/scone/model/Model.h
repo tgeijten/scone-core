@@ -158,8 +158,8 @@ namespace scone
 		// custom model properties
 		const PropNode& GetUserData() const { return m_UserData; }
 		PropNode& GetUserData() { return m_UserData; }
-		const std::any GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
-		std::any GetUserAnyData( const String& id ) { return m_UserAnyData[ id ]; }
+		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
+		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[ id ]; }
 
 		// Model info
 		virtual PropNode GetInfo() const;

@@ -26,9 +26,21 @@ namespace scone
 	};
 
 	template< typename T >
+	typename std::vector<T>::const_iterator TryFindByName( const std::vector<T>& cont, const String& name )
+	{
+		return std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == name; } );
+	}
+
+	template< typename T >
+	typename std::vector<T>::iterator TryFindByName( std::vector<T>& cont, const String& name )
+	{
+		return std::find_if( cont.begin(), cont.end(), [&]( T& item ) { return item->GetName() == name; } );
+	}
+
+	template< typename T >
 	const T& FindByName( const std::vector<T>& cont, const String& name )
 	{
-		auto it = std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == name; } );
+		auto it = TryFindByName( cont, name );
 		SCONE_THROW_IF( it == cont.end(), "Could not find \"" + name + "\"" );
 		return *it;
 	}
@@ -42,20 +54,9 @@ namespace scone
 	template< typename T >
 	index_t FindIndexByName( const std::vector<T>& cont, const String& name )
 	{
-		auto it = std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == name; } );
-		return it != cont.end() ? it - cont.begin() : NoIndex;
-	}
-
-	template< typename T >
-	typename std::vector<T>::const_iterator TryFindByName( const std::vector<T>& cont, const String& name )
-	{
-		return std::find_if( cont.begin(), cont.end(), [&]( const T& item ) { return item->GetName() == name; } );
-	}
-
-	template< typename T >
-	typename std::vector<T>::iterator TryFindByName( std::vector<T>& cont, const String& name )
-	{
-		return std::find_if( cont.begin(), cont.end(), [&]( T& item ) { return item->GetName() == name; } );
+		if ( auto it = TryFindByName( cont, name ); it != cont.end() )
+			return it - cont.begin();
+		else return NoIndex;
 	}
 
 	template< typename T >
@@ -73,9 +74,9 @@ namespace scone
 	}
 
 	template< typename T >
-	bool HasElementWithName( std::vector<T>& cont, const String& name )
+	bool HasElementWithName( const std::vector<T>& cont, const String& name )
 	{
-		return cont.end() != std::find_if( cont.begin(), cont.end(), [&]( T& item ) { return item->GetName() == name; } );
+		return TryFindByName( cont, name ) != cont.end();
 	}
 
 	// #todo: move to elsewhere

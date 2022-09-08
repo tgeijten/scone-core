@@ -35,7 +35,9 @@ namespace scone
 	SCONE_API String& ReplaceStringTags( String& str );
 
 	/// Get axis name (X, Y or Z)
-	const char* GetAxisName( index_t axis );
-	index_t GetAxisIndex( const Vec3& dir );
-	const char* GetAxisName( const Vec3& dir );
+	SCONE_API const char* GetAxisName( index_t axis );
+	SCONE_API const char* GetAxisName( const Vec3& dir );
+
+	/// Derive axis index (X=0, Y=1, Z=2)
+	SCONE_API index_t GetAxisIndex( const Vec3& dir );
 }
