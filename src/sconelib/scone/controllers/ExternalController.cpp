@@ -25,6 +25,12 @@ namespace scone
 		delayed_inputs_[ idx ] = input;
 	}
 
+	void ExternalController::Reset( Model& model )
+	{
+		inputs_.clear();
+		delayed_inputs_.clear();
+	}
+
 	bool ExternalController::ComputeControls( Model& model, double timestamp )
 	{
 		if ( !inputs_.empty() )

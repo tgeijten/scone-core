@@ -170,7 +170,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "set_delayed_actuator_inputs", &scone::set_delayed_actuator_inputs )
 		.def( "init_muscle_activations", &scone::init_muscle_activations )
 		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo )
-		.def( "reset", &scone::Model::ResetState )
+		.def( "reset", &scone::Model::Reset )
 		.def( "time", &scone::Model::GetTime )
 		.def( "integration_step", &scone::Model::GetIntegrationStep )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )

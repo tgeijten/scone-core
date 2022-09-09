@@ -20,7 +20,8 @@ namespace scone
 		CompositeController( const PropNode& props, Params& par, Model& model, const Location& loc );
 		virtual ~CompositeController() {}
 		
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
+		virtual void Reset( Model& model ) override;
+
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual std::vector<xo::path> WriteResults( const xo::path& file ) const override;
 
@@ -30,6 +31,7 @@ namespace scone
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
+		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
 
 		virtual String GetClassSignature() const override;
 		std::vector< ControllerUP > controllers_;

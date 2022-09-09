@@ -116,8 +116,10 @@ namespace scone
 		virtual void UpdateStateFromDofs() {}
 		virtual void SetNullState();
 		virtual void SetNeutralState();
-		virtual void ResetState();
 		virtual void AdjustStateForLoad( Real load ) = 0;
+
+		// Reset the model and controllers to the initial state
+		virtual void Reset();
 
 		// Simulate model
 		virtual void AdvanceSimulationTo( double time ) = 0;

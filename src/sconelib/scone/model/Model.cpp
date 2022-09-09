@@ -449,18 +449,21 @@ namespace scone
 		}
 	}
 
-	void Model::ResetState()
+	void Model::Reset()
 	{
+		// Reset the model to the initial state
+		// m_UserData is not cleared because SconePy uses it to store the scenario
 		SCONE_ASSERT( !m_InitialStateValues.empty() );
 		SetStateValues( m_InitialStateValues, 0.0 );
 		m_ShouldTerminate = false;
 		m_SensorDelayStorage.Clear();
 		m_Data.Clear();
-		// m_UserData is not cleared because SconePy uses it to store the scenario
 		m_PrevStoreDataTime = 0;
 		m_PrevStoreDataStep = 0;
 		m_DelayedSensors.Reset();
 		m_DelayedActuators.Reset();
+		if ( GetController() )
+			GetController()->Reset( *this );
 	}
 
 	PropNode Model::GetSimulationReport() const

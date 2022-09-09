@@ -27,6 +27,8 @@ namespace scone
 
 		size_t GetActuatorCount() { return actuator_count_; }
 
+		void Reset( Model& model ) override;
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;

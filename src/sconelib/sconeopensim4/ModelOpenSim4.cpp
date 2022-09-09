@@ -965,11 +965,13 @@ namespace scone
 		// equilibrate with initial small actuation so we can update the sensor delay adapters (needed for reflex controllers)
 		InitializeOpenSimMuscleActivations( initial_equilibration_activation );
 		UpdateSensorDelayAdapters();
+		m_DelayedSensors.Reset();
 
 		// Initialize muscle dynamics STEP 2
 		// compute actual initial control values and re-equilibrate muscles
 		UpdateControlValues();
 		InitializeOpenSimMuscleActivations();
+		m_DelayedSensors.Reset();
 	}
 
 	void ModelOpenSim4::SetController( ControllerUP c )

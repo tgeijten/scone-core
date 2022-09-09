@@ -1,9 +1,10 @@
 #pragma once
 
-#include <map>
+#include "scone/core/platform.h"
 #include "scone/core/types.h"
 #include "xo/container/circular_buffer.h"
 #include "xo/numerical/math.h"
+#include <map>
 
 namespace scone
 {
@@ -31,7 +32,7 @@ namespace scone
 		DelayBufferChannel dbc_;
 	};
 
-	struct DelayedSensorGroup {
+	struct SCONE_API DelayedSensorGroup {
 		DelayedSensorValue GetDelayedSensorValue( Sensor& sensor, TimeInSeconds delay, TimeInSeconds step_size );
 		void AdvanceSensorBuffers();
 		void UpdateSensorBufferValues();
@@ -41,7 +42,7 @@ namespace scone
 		std::vector< std::pair<Sensor*, DelayBufferChannel> > sensors_;
 	};
 	
-	struct DelayedActuatorGroup {
+	struct SCONE_API DelayedActuatorGroup {
 		DelayedActuatorValue GetDelayedActuatorValue( Actuator& actuator, TimeInSeconds delay, TimeInSeconds step_size );
 		void UpdateActuatorInputs();
 		void AdvanceActuatorBuffers();

@@ -20,7 +20,7 @@ namespace scone
 			auto& buf = buffers_.try_emplace( delay_size, delay_size, 0 ).first->second;
 			auto idx = buf.add_channel();
 			sensors_.emplace_back( &sensor, DelayBufferChannel{ &buf, idx } );
-			sensors_.back().second.back() = sensors_.back().first->GetValue();
+			sensors_.back().second.back() = sensors_.back().first->GetValue(); // needed when created 'on-the-fly', e.g. sconepy
 			return DelayedSensorValue{ sensors_.back().second };
 		}
 	}

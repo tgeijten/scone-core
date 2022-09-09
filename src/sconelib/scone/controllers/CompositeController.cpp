@@ -57,6 +57,12 @@ namespace scone
 		return terminate;
 	}
 
+	void CompositeController::Reset( Model& model )
+	{
+		for ( auto& c : controllers_ )
+			c->Reset( model );
+	}
+
 	void CompositeController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		for ( auto& c : controllers_ )
