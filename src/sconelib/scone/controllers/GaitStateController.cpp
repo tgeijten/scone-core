@@ -74,10 +74,10 @@ namespace scone
 			SCONE_ERROR( "GaitStateController requires model to have an even number of legs. Number of legs found: " + xo::to_str( model.GetLegCount() ) );
 
 		// create leg states
-		for ( LegUP& leg : model.GetLegs() )
+		for ( auto& leg : model.GetLegs() )
 		{
-			ScopedParamSetPrefixer prefixer( par, symmetric ? "" : leg->GetName() + '.' );
-			m_LegStates.push_back( LegStateUP( new LegState( model, *leg, props, par ) ) );
+			ScopedParamSetPrefixer prefixer( par, symmetric ? "" : leg.GetName() + '.' );
+			m_LegStates.push_back( LegStateUP( new LegState( model, leg, props, par ) ) );
 			//log::TraceF( "leg %d leg_length=%.5f", m_LegStates.back()->leg.GetIndex(), m_LegStates.back()->leg_length );
 		}
 

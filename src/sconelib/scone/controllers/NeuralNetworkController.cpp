@@ -462,7 +462,7 @@ namespace scone::NN
 		case "LegLoadSensors"_hash:
 		{
 			for ( const auto& leg : model.GetLegs() )
-				AddSensor( model, model.AcquireSensor<LegLoadSensor>( *leg ), pn.get<double>( "delay" ), 0 );
+				AddSensor( model, model.AcquireSensor<LegLoadSensor>( leg ), pn.get<double>( "delay" ), 0 );
 			break;
 		}
 		case "InterNeurons"_hash:

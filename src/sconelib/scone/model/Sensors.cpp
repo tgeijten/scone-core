@@ -136,9 +136,9 @@ namespace scone
 	Real ComBosSensor::GetValue() const {
 		const auto com = model_.GetProjectedOntoGround( model_.GetComPos() + kv_ * model_.GetComVel() );
 		const auto bosp = xo::average( model_.GetLegs(), Vec3(),
-			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComPos(); } );
+			[]( const Vec3& v, const Leg& l ) { return v + l.GetFootBody().GetComPos(); } );
 		const auto bosv = xo::average( model_.GetLegs(), Vec3(),
-			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComVel(); } );
+			[]( const Vec3& v, const Leg& l ) { return v + l.GetFootBody().GetComVel(); } );
 		const auto bos = model_.GetProjectedOntoGround( bosp + kv_ * bosv );
 		return xo::dot_product( model_.GetRootBody().GetOrientation() * dir_, com - bos );
 	}
@@ -177,7 +177,7 @@ namespace scone
 	Real ComSupportPosSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
 		auto support_pos = xo::average( model_.GetLegs(), Vec3(),
-			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComPos(); } );
+			[]( const Vec3& v, const Leg& l ) { return v + l.GetFootBody().GetComPos(); } );
 		return xo::dot_product( dir, model_.GetComPos() - support_pos );
 	}
 
@@ -191,7 +191,7 @@ namespace scone
 	Real ComSupportVelSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
 		auto support_vel = xo::average( model_.GetLegs(), Vec3(),
-			[]( const Vec3& v, const LegUP& l ) { return v + l->GetFootBody().GetComVel(); } );
+			[]( const Vec3& v, const Leg& l ) { return v + l.GetFootBody().GetComVel(); } );
 		return xo::dot_product( dir, model_.GetComVel() - support_vel );
 	}
 

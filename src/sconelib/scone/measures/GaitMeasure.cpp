@@ -47,7 +47,7 @@ namespace scone
 		{
 			// use foot_body for base bodies
 			for ( const auto& l : model.GetLegs() )
-				m_BaseBodies.push_back( &l->GetFootBody() );
+				m_BaseBodies.push_back( &l.GetFootBody() );
 		}
 
 		SCONE_ERROR_IF( m_BaseBodies.size() < 2, "Could not find base bodies. Please set the base_bodies parameter, or make sure the Model has properly defined legs." );
@@ -162,8 +162,8 @@ namespace scone
 		if ( m_PrevContactState.empty() )
 		{
 			// initialize
-			for ( const LegUP& leg : model.GetLegs() )
-				m_PrevContactState.push_back( leg->GetLoad() >= load_threshold );
+			for ( const auto& leg : model.GetLegs() )
+				m_PrevContactState.push_back( leg.GetLoad() >= load_threshold );
 			return false;
 		}
 

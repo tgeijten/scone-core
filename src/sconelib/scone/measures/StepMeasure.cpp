@@ -39,10 +39,10 @@ namespace scone
 		for ( const auto& leg : model.GetLegs() )
 		{
 			Vec3 force, moment, cop;
-			leg->GetContactForceMomentCop( force, moment, cop );
+			leg.GetContactForceMomentCop( force, moment, cop );
 			Vec3 grf = force / model.GetBW();
-			frame.SetVec3( leg->GetName() + ".grf_norm", grf );
-			frame.SetVec3( leg->GetName() + ".cop", cop );
+			frame.SetVec3( leg.GetName() + ".grf_norm", grf );
+			frame.SetVec3( leg.GetName() + ".cop", cop );
 		}
 
 		return false;

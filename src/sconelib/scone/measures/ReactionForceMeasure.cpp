@@ -31,11 +31,11 @@ namespace scone
 		if ( use_force_per_leg )
 		{
 			for ( auto& leg : model.GetLegs() )
-				leg_load = xo::max( leg_load, xo::length( leg->GetContactForce() ) / model.GetBW() );
+				leg_load = xo::max( leg_load, xo::length( leg.GetContactForce() ) / model.GetBW() );
 		}
 		else {
 			for ( auto& leg : model.GetLegs() )
-				leg_load += xo::length( leg->GetContactForce() ) / model.GetBW();
+				leg_load += xo::length( leg.GetContactForce() ) / model.GetBW();
 		}
 
 		AddSample( timestamp, leg_load );

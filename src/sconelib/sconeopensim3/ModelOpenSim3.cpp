@@ -398,7 +398,7 @@ namespace scone
 			auto cf_it = TryFindByName( GetContactForces(), GetSidedName( leg_contact_force, side ) );
 
 			if ( upper_body && lower_body && cf_it != GetContactForces().end() )
-				m_Legs.emplace_back( std::make_unique<Leg>( *upper_body, *lower_body, m_Legs.size(), side, 0, &**cf_it ) );
+				m_Legs.emplace_back( *upper_body, *lower_body, m_Legs.size(), side, 0, &**cf_it );
 			//else log::warning( "Could not define leg using ", leg_upper_body, ", ", leg_lower_body, " and ", leg_contact_force );
 		}
 	}

@@ -96,10 +96,10 @@ namespace scone
 
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }
-		const Leg& GetLeg( size_t idx ) const { return *m_Legs[ idx ]; }
-		const Leg& GetLeg( const Location& loc ) const { for ( auto& l : m_Legs ) if ( l->GetSide() == loc.GetSide() ) return *l; xo_error( "Could not find leg" ); }
-		std::vector< LegUP >& GetLegs() { return m_Legs; }
-		const std::vector< LegUP >& GetLegs() const { return m_Legs; }
+		const Leg& GetLeg( size_t idx ) const { return m_Legs[ idx ]; }
+		const Leg& GetLeg( const Location& loc ) const { for ( auto& l : m_Legs ) if ( l.GetSide() == loc.GetSide() ) return l; xo_error( "Could not find leg" ); }
+		std::vector< Leg >& GetLegs() { return m_Legs; }
+		const std::vector< Leg >& GetLegs() const { return m_Legs; }
 
 		// Get simulation info
 		virtual TimeInSeconds GetTime() const = 0;
@@ -291,7 +291,7 @@ namespace scone
 		std::vector< BodyUP > m_Bodies;
 		std::vector< JointUP > m_Joints;
 		std::vector< DofUP > m_Dofs;
-		std::vector< LegUP > m_Legs;
+		std::vector< Leg > m_Legs;
 		std::vector< ContactGeometryUP > m_ContactGeometries;
 		std::vector< ContactForceUP > m_ContactForces;
 
