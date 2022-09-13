@@ -137,6 +137,17 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "fiber_velocity_norm", &scone::Muscle::GetNormalizedFiberVelocity )
 		;
 
+	py::class_<scone::Leg>( m, "Leg" )
+		.def( "name", &scone::Leg::GetName )
+		.def( "contact_force", &scone::Leg::GetContactForce )
+		.def( "contact_load", &scone::Leg::GetLoad )
+		.def( "upper_body", &scone::Leg::GetUpperBody, py::return_value_policy::reference )
+		.def( "foot_body", &scone::Leg::GetFootBody, py::return_value_policy::reference )
+		.def( "base_body", &scone::Leg::GetBaseBody, py::return_value_policy::reference )
+		.def( "relative_foot_position", &scone::Leg::GetRelFootPos )
+		.def( "length", &scone::Leg::GetLength )
+		;
+
 	py::class_<scone::Model>( m, "Model" )
 		.def( "name", &scone::Model::GetName )
 		.def( "com_pos", &scone::Model::GetComPos )
@@ -153,6 +164,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "dofs", []( scone::Model& m ) { return &m.GetDofs(); }, py::return_value_policy::reference )
 		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
 		.def( "muscles", []( scone::Model& m ) { return &m.GetMuscles(); }, py::return_value_policy::reference )
+		.def( "legs", []( scone::Model& m ) { return &m.GetLegs(); }, py::return_value_policy::reference )
 		.def( "set_dof_positions", &scone::set_dof_positions )
 		.def( "set_dof_velocities", &scone::set_dof_velocities )
 		.def( "init_state_from_dofs", []( scone::Model& m ) { m.UpdateStateFromDofs(); } )
