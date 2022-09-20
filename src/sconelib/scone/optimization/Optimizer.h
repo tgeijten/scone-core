@@ -81,6 +81,9 @@ namespace scone
 		/// Target fitness value, stop optimization if better; default = not set.
 		double target_fitness_;
 
+		/// Set the log level [1-7] for the optimization.log file (higher is less logging); default = 3.
+		xo::log::level log_level_;
+
 		Objective& GetObjective() { return *m_Objective; }
 		const Objective& GetObjective() const { return *m_Objective; }
 		virtual void Run() = 0;
@@ -124,7 +127,6 @@ namespace scone
 		mutable path output_folder_;
 		mutable String id_;
 
-		xo::log::level log_level_;
 		u_ptr< xo::log::file_sink > log_sink_;
 
 		PropNode scenario_pn_copy_; // copy for creating props in output folder
