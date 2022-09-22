@@ -33,7 +33,7 @@ namespace scone
 		/// Constant actuation added to reflex output; default = 0.
 		Real C0;
 
-		/// Force feedback gain, based on nomralized muscle force (F / Fmax); default = 0.
+		/// Force feedback gain, based on normalized muscle force (F / Fmax); default = 0.
 		Real KF;
 		/// Force feedback offset; default = 0.
 		Real F0;
