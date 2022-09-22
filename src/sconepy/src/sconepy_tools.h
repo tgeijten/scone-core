@@ -181,7 +181,7 @@ namespace scone
 
 	void write_results( const Model& m, std::string dir, std::string filename ) {
 		SCONE_ASSERT( !m.GetExternalResources().empty() );
-		auto target_dir = to_fs( GetFolder( SCONE_RESULTS_FOLDER ) / dir );
+		auto target_dir = to_fs( GetFolder( SconeFolder::Results ) / dir );
 		if ( !fs::exists( target_dir ) )
 		{
 			// setup output folder

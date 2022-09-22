@@ -43,7 +43,7 @@ namespace scone
 		output_mode_( no_output ),
 		scenario_pn_copy_( scenario_pn )
 	{
-		INIT_PROP( props, output_root, GetFolder( SCONE_RESULTS_FOLDER ) );
+		INIT_PROP( props, output_root, GetFolder( SconeFolder::Results ) );
 		log_level_ = static_cast<xo::log::level>( props.get<int>( "log_level", (int)xo::log::level::info ) );
 
 		INIT_PROP( props, max_threads, size_t( 32 ) );

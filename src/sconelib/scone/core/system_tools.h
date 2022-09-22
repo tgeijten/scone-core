@@ -15,7 +15,7 @@ namespace scone
 {
 	using xo::path;
 
-	enum SconeFolder { SCONE_ROOT_FOLDER, SCONE_RESULTS_FOLDER, SCONE_MODEL_FOLDER, SCONE_SCENARIO_FOLDER, SCONE_GEOMETRY_FOLDER };
+	enum class SconeFolder { Root, Results, Model, Scenarios, Geometry };
 	SCONE_API path GetSettingsFolder();
 	SCONE_API const path& GetInstallFolder();
 	SCONE_API path GetDataFolder();
