@@ -31,7 +31,7 @@ namespace scone
 				// binary files are stored in a CMake build folder
 				install_folder = xo::load_string( config );
 			}
-			else if ( xo::exists( p / "scone" ) )
+			else if ( xo::exists( p / "scone/scenarios" ) )
 			{
 				// binary files are part of a scone studio installation
 				install_folder = p / "scone";
@@ -63,7 +63,12 @@ namespace scone
 
 	path GetDataFolder()
 	{
-		return xo::get_documents_dir() / "SCONE";
+		auto doc = xo::get_documents_dir();
+		if ( doc.empty() ) {
+			log::warning( "Could not get SCONE data folder, using /SCONE instead" );
+			return "/SCONE";
+		}
+		else return doc / "SCONE";
 	}
 
 	path GetApplicationFolder()
