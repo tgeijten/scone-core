@@ -16,7 +16,7 @@
 
 namespace scone
 {
-	class SCONE_API Actuator : public virtual HasName, public virtual HasData
+	class SCONE_API Actuator : public HasName, public HasData
 	{
 	public:
 		Actuator();
