@@ -33,7 +33,7 @@ model {
 			parent = pelvis
 			pos_in_parent { x = 0 y = -0.0661 z = 0.0835 }
 			pos_in_child { x = 0 y = 0.17 z = 0 }
-			limits { x = 0..0 y = 0..0 z = -40..120 }
+			limits { x = 0..0 y = 0..0 z = -60..120 }
 		}
 		mesh { file = femur.vtp pos { x = 0 y = 0.17 z = 0 } }
 	}
@@ -77,7 +77,7 @@ model {
 			parent = pelvis
 			pos_in_parent { x = 0 y = -0.0661 z = -0.0835 }
 			pos_in_child { x = 0 y = 0.17 z = 0 }
-			limits { x = 0..0 y = 0..0 z = -40..120 }
+			limits { x = 0..0 y = 0..0 z = -60..120 }
 		}
 		mesh { file = l_femur.vtp pos { x = 0 y = 0.17 z = 0 } }
 	}
@@ -130,10 +130,10 @@ model {
 	}
 	point_path_muscle {
 		name = hamstrings_r
-		tendon_slack_length = 0.31
-		optimal_fiber_length = 0.109
 		max_isometric_force = 2594
-		pennation_angle = 0
+		optimal_fiber_length = 0.0976
+		tendon_slack_length = 0.325
+		pennation_angle = 0.202458
 		path [
 			{ body = pelvis pos { x = -0.05526 y = -0.10257 z = 0.06944 } }
 			{ body = tibia_r pos { x = -0.028 y = 0.1667 z = 0.02943 } }
@@ -142,10 +142,10 @@ model {
 	}
 	point_path_muscle {
 		name = bifemsh_r
-		tendon_slack_length = 0.071
-		optimal_fiber_length = 0.173
 		max_isometric_force = 804
-		pennation_angle = 0.401426
+		optimal_fiber_length = 0.1103
+		tendon_slack_length = 0.1
+		pennation_angle = 0.214675
 		path [
 			{ body = femur_r pos { x = 0.005 y = -0.0411 z = 0.0234 } }
 			{ body = tibia_r pos { x = -0.028 y = 0.1667 z = 0.02943 } }
@@ -154,9 +154,9 @@ model {
 	}
 	point_path_muscle {
 		name = glut_max_r
-		tendon_slack_length = 0.127
-		optimal_fiber_length = 0.147
 		max_isometric_force = 1944
+		optimal_fiber_length = 0.147
+		tendon_slack_length = 0.127
 		pennation_angle = 0
 		path [
 			{ body = pelvis pos { x = -0.0642 y = 0.0176 z = 0.0563 } }
@@ -167,9 +167,9 @@ model {
 	}
 	point_path_muscle {
 		name = iliopsoas_r
-		tendon_slack_length = 0.163
-		optimal_fiber_length = 0.1
 		max_isometric_force = 2342
+		optimal_fiber_length = 0.1
+		tendon_slack_length = 0.163
 		pennation_angle = 0.139626
 		path [
 			{ body = pelvis pos { x = 0.006 y = 0.0887 z = 0.0289 } }
@@ -180,43 +180,44 @@ model {
 	}
 	point_path_muscle {
 		name = rect_fem_r
-		tendon_slack_length = 0.305
-		optimal_fiber_length = 0.114
 		max_isometric_force = 1169
+		optimal_fiber_length = 0.114
+		tendon_slack_length = 0.305
 		pennation_angle = 0.0872665
 		path [
 			{ body = pelvis pos { x = 0.0412 y = -0.0311 z = 0.0968 } }
+			{ body = femur_r pos { x = 0.038 y = -0.17 z = 0.004 } }
 			{ body = tibia_r pos { x = 0.04 y = 0.2117 z = 0.0018 } }
 		]
 	}
 	point_path_muscle {
 		name = vasti_r
-		tendon_slack_length = 0.136
-		optimal_fiber_length = 0.087
 		max_isometric_force = 4530
+		optimal_fiber_length = 0.087
+		tendon_slack_length = 0.136
 		pennation_angle = 0.0523599
 		path [
 			{ body = femur_r pos { x = 0.029 y = -0.0224 z = 0.031 } }
-			{ body = femur_r pos { x = 0.0335 y = -0.0384 z = 0.0285 } }
+			{ body = femur_r pos { x = 0.038 y = -0.17 z = 0.007 } }
 			{ body = tibia_r pos { x = 0.04 y = 0.2117 z = 0.0018 } }
 		]
 	}
 	point_path_muscle {
 		name = gastroc_r
-		tendon_slack_length = 0.39
-		optimal_fiber_length = 0.06
 		max_isometric_force = 2241
+		optimal_fiber_length = 0.06
+		tendon_slack_length = 0.39
 		pennation_angle = 0.296706
 		path [
-			{ body = femur_r pos { x = -0.02 y = -0.216 z = -0.024 } }
+			{ body = femur_r pos { x = -0.02 y = -0.218 z = -0.024 } }
 			{ body = calcn_r pos { x = -0.1 y = 0.001 z = -0.0053 } }
 		]
 	}
 	point_path_muscle {
 		name = soleus_r
-		tendon_slack_length = 0.25
-		optimal_fiber_length = 0.05
 		max_isometric_force = 3549
+		optimal_fiber_length = 0.05
+		tendon_slack_length = 0.25
 		pennation_angle = 0.436332
 		path [
 			{ body = tibia_r pos { x = -0.0024 y = 0.0334 z = 0.0071 } }
@@ -225,9 +226,9 @@ model {
 	}
 	point_path_muscle {
 		name = tib_ant_r
-		tendon_slack_length = 0.223
-		optimal_fiber_length = 0.098
 		max_isometric_force = 1759
+		optimal_fiber_length = 0.098
+		tendon_slack_length = 0.223
 		pennation_angle = 0.0872665
 		path [
 			{ body = tibia_r pos { x = 0.0179 y = 0.0243 z = 0.0115 } }
@@ -237,10 +238,10 @@ model {
 	}
 	point_path_muscle {
 		name = hamstrings_l
-		tendon_slack_length = 0.31
-		optimal_fiber_length = 0.109
 		max_isometric_force = 2594
-		pennation_angle = 0
+		optimal_fiber_length = 0.0976
+		tendon_slack_length = 0.325
+		pennation_angle = 0.202458
 		path [
 			{ body = pelvis pos { x = -0.05526 y = -0.10257 z = -0.06944 } }
 			{ body = tibia_l pos { x = -0.028 y = 0.1667 z = -0.02943 } }
@@ -249,10 +250,10 @@ model {
 	}
 	point_path_muscle {
 		name = bifemsh_l
-		tendon_slack_length = 0.071
-		optimal_fiber_length = 0.173
 		max_isometric_force = 804
-		pennation_angle = 0.401426
+		optimal_fiber_length = 0.1103
+		tendon_slack_length = 0.1
+		pennation_angle = 0.214675
 		path [
 			{ body = femur_l pos { x = 0.005 y = -0.0411 z = -0.0234 } }
 			{ body = tibia_l pos { x = -0.028 y = 0.1667 z = -0.02943 } }
@@ -261,9 +262,9 @@ model {
 	}
 	point_path_muscle {
 		name = glut_max_l
-		tendon_slack_length = 0.127
-		optimal_fiber_length = 0.147
 		max_isometric_force = 1944
+		optimal_fiber_length = 0.147
+		tendon_slack_length = 0.127
 		pennation_angle = 0
 		path [
 			{ body = pelvis pos { x = -0.0642 y = 0.0176 z = -0.0563 } }
@@ -274,9 +275,9 @@ model {
 	}
 	point_path_muscle {
 		name = iliopsoas_l
-		tendon_slack_length = 0.163
-		optimal_fiber_length = 0.1
 		max_isometric_force = 2342
+		optimal_fiber_length = 0.1
+		tendon_slack_length = 0.163
 		pennation_angle = 0.139626
 		path [
 			{ body = pelvis pos { x = 0.006 y = 0.0887 z = -0.0289 } }
@@ -287,43 +288,44 @@ model {
 	}
 	point_path_muscle {
 		name = rect_fem_l
-		tendon_slack_length = 0.305
-		optimal_fiber_length = 0.114
 		max_isometric_force = 1169
+		optimal_fiber_length = 0.114
+		tendon_slack_length = 0.305
 		pennation_angle = 0.0872665
 		path [
 			{ body = pelvis pos { x = 0.0412 y = -0.0311 z = -0.0968 } }
+			{ body = femur_l pos { x = 0.038 y = -0.17 z = -0.004 } }
 			{ body = tibia_l pos { x = 0.04 y = 0.2117 z = -0.0018 } }
 		]
 	}
 	point_path_muscle {
 		name = vasti_l
-		tendon_slack_length = 0.136
-		optimal_fiber_length = 0.087
 		max_isometric_force = 4530
+		optimal_fiber_length = 0.087
+		tendon_slack_length = 0.136
 		pennation_angle = 0.0523599
 		path [
 			{ body = femur_l pos { x = 0.029 y = -0.0224 z = -0.031 } }
-			{ body = femur_l pos { x = 0.0335 y = -0.0384 z = -0.0285 } }
+			{ body = femur_l pos { x = 0.038 y = -0.17 z = -0.007 } }
 			{ body = tibia_l pos { x = 0.04 y = 0.2117 z = -0.0018 } }
 		]
 	}
 	point_path_muscle {
 		name = gastroc_l
-		tendon_slack_length = 0.39
-		optimal_fiber_length = 0.06
 		max_isometric_force = 2241
+		optimal_fiber_length = 0.06
+		tendon_slack_length = 0.39
 		pennation_angle = 0.296706
 		path [
-			{ body = femur_l pos { x = -0.02 y = -0.216 z = 0.024 } }
+			{ body = femur_l pos { x = -0.02 y = -0.218 z = 0.024 } }
 			{ body = calcn_l pos { x = -0.1 y = 0.001 z = 0.0053 } }
 		]
 	}
 	point_path_muscle {
 		name = soleus_l
-		tendon_slack_length = 0.25
-		optimal_fiber_length = 0.05
 		max_isometric_force = 3549
+		optimal_fiber_length = 0.05
+		tendon_slack_length = 0.25
 		pennation_angle = 0.436332
 		path [
 			{ body = tibia_l pos { x = -0.0024 y = 0.0334 z = -0.0071 } }
@@ -332,9 +334,9 @@ model {
 	}
 	point_path_muscle {
 		name = tib_ant_l
-		tendon_slack_length = 0.223
-		optimal_fiber_length = 0.098
 		max_isometric_force = 1759
+		optimal_fiber_length = 0.098
+		tendon_slack_length = 0.223
 		pennation_angle = 0.0872665
 		path [
 			{ body = tibia_l pos { x = 0.0179 y = 0.0243 z = -0.0115 } }
@@ -384,11 +386,11 @@ model {
 	}
 	dof { name = pelvis_tilt source = pelvis_rz range = -90..90 }
 	dof { name = pelvis_tx source = pelvis_tx range = -5..5 }
-	dof { name = pelvis_ty source = pelvis_ty range = -1..2 }
-	dof { name = hip_flexion_r source = hip_rz_r range = -120..120 }
+	dof { name = pelvis_ty source = pelvis_ty range = -1..2 default = 1 }
+	dof { name = hip_flexion_r source = hip_rz_r range = -60..120 }
 	dof { name = knee_angle_r source = knee_rz_r range = -120..10 }
 	dof { name = ankle_angle_r source = ankle_rz_r range = -60..60 }
-	dof { name = hip_flexion_l source = hip_rz_l range = -120..120 }
+	dof { name = hip_flexion_l source = hip_rz_l range = -60..120 }
 	dof { name = knee_angle_l source = knee_rz_l range = -120..10 }
 	dof { name = ankle_angle_l source = ankle_rz_l range = -60..60 }
 }
