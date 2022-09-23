@@ -6,10 +6,12 @@ source ./tools/build_config
 if [[ "$OSTYPE" == "darwin"* ]]; then
     cmake_extra_args=(
         -DSCONE_LUA=OFF
+        -DSCONE_PYTHON=OFF
     )
 else
     cmake_extra_args=(
         -DSCONE_LUA=ON
+        -DSCONE_PYTHON=ON
    )
 fi
 
