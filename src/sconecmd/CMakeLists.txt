@@ -37,3 +37,10 @@ if (SCONE_USER_EXTENSIONS)
 	target_link_libraries(sconecmd sconeuser)
 	target_compile_definitions(sconecmd PRIVATE SCONE_USER_EXTENSIONS)
 endif()
+
+install(
+	TARGETS sconecmd sconelib xo spot
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	)

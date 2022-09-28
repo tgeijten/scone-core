@@ -16,3 +16,9 @@ if (MSVC)
 endif()
 
 source_group( "" FILES ${SCONE_LUA_FILES} )
+
+install(TARGETS sconelua
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	)

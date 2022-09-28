@@ -35,3 +35,9 @@ if (SCONE_LUA)
 endif()
 
 source_group("" FILES ${SCONEPY_FILES})
+
+install(TARGETS sconepy
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	)
