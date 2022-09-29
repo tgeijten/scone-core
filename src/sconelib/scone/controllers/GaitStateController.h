@@ -21,15 +21,14 @@ namespace scone
 {
 	/// Finite State Machine controller that detects different phases of gait.
 	/**
-	Supported states are: ''EarlyStance'', ''LateStance'', ''LiftOff'', ''Swing'', ''Landing''.
-
-	The current state of a leg is defined through its current relative sagittal foot position (''sagittal_pos'') and the normalized load (''leg_load'').
+	Supported states are: ''EarlyStance'', ''LateStance'', ''LiftOff'', ''Swing'', ''Landing''. 
+	The current state of a leg is defined through its current relative sagittal foot position (''sagittal_pos'') and the normalized load (''leg_load''). 
 	Transitions between states are defined as follows (see also public attributes below):
-	* ''Landing'' -> ''EarlyStance'' occurs if ''leg_load'' is above **stance_load_threshold**.
-	* ''EarlyStance'' -> ''LateStance'' occurs if ''sagittal_pos'' is below **late_stance_threshold**.
-	* ''LateStance'' -> ''LiftOff'' occurs if contralateral ''leg_load'' is above **stance_load_threshold** or ''sagittal_pos'' is below **liftoff_threshold**.
-	* ''LiftOff'' -> ''Swing'' occurs if ''leg_load'' is below **swing_load_threshold**.
-	* ''Swing'' -> ''Landing'' occurs if ''sagittal_pos'' is above **landing_threshold**.
+	\li ''Landing'' -> ''EarlyStance'' occurs if ''leg_load'' is above **stance_load_threshold**.
+	\li ''EarlyStance'' -> ''LateStance'' occurs if ''sagittal_pos'' is below **late_stance_threshold**.
+	\li ''LateStance'' -> ''LiftOff'' occurs if contralateral ''leg_load'' is above **stance_load_threshold** or ''sagittal_pos'' is below **liftoff_threshold**.
+	\li ''LiftOff'' -> ''Swing'' occurs if ''leg_load'' is below **swing_load_threshold**.
+	\li ''Swing'' -> ''Landing'' occurs if ''sagittal_pos'' is above **landing_threshold**.
 
 	See the [[https://scone.software/doku.php?id=tutorials:gait | gait tutorial]] for an example.
 	*/
