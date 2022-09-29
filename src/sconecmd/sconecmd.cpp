@@ -62,13 +62,19 @@ int main(int argc, char* argv[])
 		TCLAP::SwitchArg statusOutput( "s", "status", "Output full status updates", cmd, false );
 		TCLAP::SwitchArg quietOutput( "q", "quiet", "Do not output simulation progress", cmd, false );
 		TCLAP::UnlabeledMultiArg< string > propArg( "property", "Override specific scenario property, using <key>=<value>", false, "<key>=<value>", cmd, true );
-
+#if SCONE_HYFYDY_ENABLED
+		TCLAP::ValueArg< String > licenseArg( "", "license", "Enter a Hyfydy License Key", true, "", "hyfydy" );
+		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg, &licenseArg };
+#else
 		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg };
+#endif
 		cmd.xorAdd( xor_args );
 		cmd.parse( argc, argv );
 
 		try
 		{
+
+
 			// set log level (optimization defaults to info, evaluation defaults to trace)
 			if ( logArg.isSet() )
 				console_sink.set_log_level( xo::log::level( logArg.getValue() ) );
@@ -120,6 +126,11 @@ int main(int argc, char* argv[])
 					scone::BenchmarkScenario( scenario_pn, f, f.parent_path() / "_benchmark_results", bxArg.getValue() );
 				}
 			}
+#if SCONE_HYFYDY_ENABLED
+			else if ( licenseArg.isSet() ) {
+				scone::AddLicenseInteractive();
+			}
+#endif
 		}
 		catch ( std::exception& e )
 		{
