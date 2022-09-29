@@ -18,7 +18,6 @@ endif()
 source_group( "" FILES ${SCONE_LUA_FILES} )
 
 install(TARGETS sconelua
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION bin
 	RUNTIME DESTINATION bin
 	)

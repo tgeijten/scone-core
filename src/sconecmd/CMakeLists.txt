@@ -38,9 +38,10 @@ if (SCONE_USER_EXTENSIONS)
 	target_compile_definitions(sconecmd PRIVATE SCONE_USER_EXTENSIONS)
 endif()
 
+# set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
+
 install(
 	TARGETS sconecmd sconelib xo spot
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION bin
 	RUNTIME DESTINATION bin
 	)
