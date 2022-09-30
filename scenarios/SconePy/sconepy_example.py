@@ -1,14 +1,16 @@
-# This section is required to find the sconepy module and DLLs
-# Change SCONE_BIN_DIR if SCONE was installed to a different folder
-SCONE_BIN_DIR = 'C:/Program Files/SCONE/bin'
-# SCONE_BIN_DIR = 'D:/Build/scone-studio/vc2019-x64/bin/Release'
 import sys
-sys.path.append(SCONE_BIN_DIR)
-
-# Import the sconepy module (should be in the right path)
-import sconepy
 import numpy as np
 import time
+
+# Add sconepy module to system path
+if sys.platform.startswith('win'):
+    sys.path.append('C:/Program Files/SCONE/bin')
+elif sys.platform.startswith('linux'):
+    sys.path.append('/opt/scone-core/lib')
+else:
+    raise Exception('Unsupported platform')
+
+import sconepy
 
 # Helper function that shows various model properties
 def print_model_info(model):
@@ -115,9 +117,8 @@ model = sconepy.load_model('data/H0918_hyfydy.scone')
 # model = sconepy.load_model( 'H0918_osim4.scone' )
 print_model_info(model)
 run_simulation(model, store_data, 1)
-run_simulation(model, store_data, 2)
-run_simulation(model, store_data, 1)
 
-# measure_performance('data/H0918_hyfydy.scone')
+measure_performance('data/H0918_hyfydy.scone')
+measure_performance('data/H1622_hyfydy.scone')
 # measure_performance( 'H0918_osim3.scone' )
 # measure_performance( 'H0918_osim4.scone' )
