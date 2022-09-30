@@ -38,9 +38,9 @@ if (SCONE_USER_EXTENSIONS)
 	target_compile_definitions(sconecmd PRIVATE SCONE_USER_EXTENSIONS)
 endif()
 
-if(LINUX)
-    set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
-elseif(APPLE)
+if (UNIX AND NOT APPLE)
+	set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
+elseif(UNIX AND APPLE)
     set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "@executable_path/lib")
 endif()
 

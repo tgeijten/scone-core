@@ -37,14 +37,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # Set INSTALL directories
 if(WIN32)
-	SET(CMAKE_INSTALL_BINDIR bin)
-	SET(CMAKE_INSTALL_LIBDIR bin)
+	set(CMAKE_INSTALL_BINDIR bin)
+	set(CMAKE_INSTALL_LIBDIR bin)
 endif()
 
-if(LINUX)
-	SET(CMAKE_INSTALL_RPATH "\$ORIGIN")
-	SET(CMAKE_INSTALL_BINDIR bin)
-	SET(CMAKE_INSTALL_LIBDIR lib)
+if (UNIX AND NOT APPLE)
+	set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+	set(CMAKE_INSTALL_BINDIR bin)
+	set(CMAKE_INSTALL_LIBDIR lib)
 endif()
 
 # Silence CMake warning on OSX.
@@ -128,7 +128,7 @@ if (SCONE_CORE_CPACK)
 		set(CPACK_NSIS_CREATE_ICONS "CreateShortCut '\$SMPROGRAMS\\\\scone-core\\\\sconecmd.lnk' '\$INSTDIR\\\\bin\\\\sconecmd.exe'")
 	endif()
 
-	if (LINUX)
+	if (UNIX AND NOT APPLE)
 	    # packaging: package installation as a DEB
 	    set(CPACK_GENERATOR DEB)
 	    # set(CPACK_PACKAGING_INSTALL_PREFIX /opt/scone-core)
