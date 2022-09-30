@@ -23,8 +23,8 @@ int main( int argc, const char* argv[] )
 		auto args = xo::arg_parser( argc, argv );
 		sink.set_log_level( xo::log::level( args.get<int>( "l", int( xo::log::level::info ) ) ) );
 
-		scone::Initialize();
 		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
+		scone::Initialize();
 
 		if ( !args.has_flag( "skip-scenarios" ) ) {
 #if SCONE_OPENSIM_3_ENABLED
@@ -47,7 +47,7 @@ int main( int argc, const char* argv[] )
 #endif
 #if SCONE_HYFYDY_ENABLED
 			if ( !args.has_flag( "skip-hyfydy" ) ) {
-				scone::add_scenario_tests( "scenarios/UnitTests/Hyfydy", "*.par" );
+				//scone::add_scenario_tests( "scenarios/UnitTests/Hyfydy", "*.par" );
 				scone::add_scenario_tests( "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( "scenarios/Examples2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( "scenarios/Tutorials2", "*Hyfydy.scone" );
