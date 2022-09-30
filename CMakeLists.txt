@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-project(scone)
+project(scone VERSION 2.1.0)
 
 # To create a folder hierarchy within Visual Studio.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -20,6 +20,7 @@ option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 option(SCONE_PYTHON "Build SconePy Python API" OFF)
 option(SCONE_USER_EXTENSIONS "Build sconeuser extension library" OFF)
+option(SCONE_CORE_CPACK "Build SCONE installer using CPack" OFF)
 
 # Find TCLAP
 find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/tclap-1.2.1/include" )
@@ -92,3 +93,50 @@ if (XO_TEST_ENABLED)
 	add_test( xo_test "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xo_test")
 endif()
 add_test( sconeunittests "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sconeunittests")
+
+#
+# Installation / packaging (CPack)
+#
+if (SCONE_CORE_CPACK)
+	# package any required system libraries
+	include(InstallRequiredSystemLibraries)
+
+	# set necessary CPack variables
+	set(CPACK_PACKAGE_NAME "scone-core")
+	set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+	set(CPACK_PACKAGE_VENDOR "Goatstream")
+	set(CPACK_PACKAGE_HOMEPAGE_URL "https://goatstream.com")
+	set(CPACK_PACKAGE_DESCRIPTION "A tool for predictive musculoskeletal simulations")
+	set(CPACK_PACKAGE_EXECUTABLES "sconecmd;SCONE Command Line Interface")
+
+	# install scenarios
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples2" DESTINATION "./scenarios")
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Tutorials2" DESTINATION "./scenarios")
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/SconePy" DESTINATION "./scenarios")
+
+	# Windows install/packaging:
+	if (WIN32)
+		# packaging: use NSIS to package everything into a self-extracting installer
+		set(CPACK_PACKAGE_INSTALL_DIRECTORY "scone-core")
+		set(CPACK_GENERATOR NSIS)
+		set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/scone_icon_24.ico")
+
+		# set(CPACK_NSIS_HELP_LINK ${CPACK_PACKAGE_HOMEPAGE_URL})
+		set(CPACK_NSIS_CONTACT "info@goatstream.com")
+		set(CPACK_NSIS_MODIFY_PATH OFF)
+		set(CPACK_NSIS_IGNORE_LICENSE_PAGE ON)
+		set(CPACK_NSIS_CREATE_ICONS "CreateShortCut '\$SMPROGRAMS\\\\scone-core\\\\sconecmd.lnk' '\$INSTDIR\\\\bin\\\\sconecmd.exe'")
+	endif()
+
+	if (LINUX)
+	    # packaging: package installation as a DEB
+	    set(CPACK_GENERATOR DEB)
+	    # set(CPACK_PACKAGING_INSTALL_PREFIX /opt/scone-core)
+	    # set(CPACK_DEBIAN_PACKAGE_DEPENDS "libblas3, liblapack3, libstdc++6")
+	    set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+	endif()
+
+	# CPack vars etc. now fully configured, so include it
+	include(CPack)
+	
+endif()
