@@ -110,7 +110,7 @@ namespace scone
 		// read mean / std from init file
 		if ( opt_props.props().has_key( "init_file" ) && opt_props.props().get< bool >( "use_init_file", true ) )
 		{
-			auto init_file = opt_props.props().get< path >( "init_file" );
+			auto init_file = scone::FindFile( opt_props.props().get< path >( "init_file" ) );
 			auto result = mob->info().import_mean_std( init_file, opt_props.props().get< bool >( "use_init_file_std", true ) );
 			log::debug( "Imported ", result.first, " of ", mob->dim(), ", skipped ", result.second, " parameters from ", init_file );
 		}
