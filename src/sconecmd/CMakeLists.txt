@@ -38,7 +38,11 @@ if (SCONE_USER_EXTENSIONS)
 	target_compile_definitions(sconecmd PRIVATE SCONE_USER_EXTENSIONS)
 endif()
 
-# set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
+if(LINUX)
+    set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
+elseif(APPLE)
+    set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "@executable_path/lib")
+endif()
 
 install(
 	TARGETS sconecmd sconelib xo spot
