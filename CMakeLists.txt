@@ -90,9 +90,9 @@ endif()
 #
 enable_testing()
 if (XO_TEST_ENABLED)
-	add_test( xo_test "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xo_test")
+	add_test( NAME xo_test COMMAND xo_test)
 endif()
-add_test( sconeunittests "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sconeunittests")
+add_test(NAME sconeunittests COMMAND sconeunittests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 #
 # Installation / packaging (CPack)
@@ -105,6 +105,7 @@ if (SCONE_CORE_CPACK)
 	set(CPACK_PACKAGE_NAME "scone-core")
 	set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 	set(CPACK_PACKAGE_VENDOR "Goatstream")
+	set(CPACK_PACKAGE_CONTACT "info@goatstream.com")
 	set(CPACK_PACKAGE_HOMEPAGE_URL "https://goatstream.com")
 	set(CPACK_PACKAGE_DESCRIPTION "A tool for predictive musculoskeletal simulations")
 	set(CPACK_PACKAGE_EXECUTABLES "sconecmd;SCONE Command Line Interface")
@@ -119,7 +120,7 @@ if (SCONE_CORE_CPACK)
 		# packaging: use NSIS to package everything into a self-extracting installer
 		set(CPACK_PACKAGE_INSTALL_DIRECTORY "scone-core")
 		set(CPACK_GENERATOR NSIS)
-		set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/scone_icon_24.ico")
+		set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/package/scone_icon_24.ico")
 
 		# set(CPACK_NSIS_HELP_LINK ${CPACK_PACKAGE_HOMEPAGE_URL})
 		set(CPACK_NSIS_CONTACT "info@goatstream.com")
@@ -129,11 +130,22 @@ if (SCONE_CORE_CPACK)
 	endif()
 
 	if (UNIX AND NOT APPLE)
-	    # packaging: package installation as a DEB
-	    set(CPACK_GENERATOR DEB)
-	    # set(CPACK_PACKAGING_INSTALL_PREFIX /opt/scone-core)
-	    # set(CPACK_DEBIAN_PACKAGE_DEPENDS "libblas3, liblapack3, libstdc++6")
-	    set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+		# packaging: package installation as a DEB
+		set(CPACK_GENERATOR DEB)
+		set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/scone-core")
+		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6")
+		set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+		set(CPACK_STRIP_FILES YES)
+
+		# packaging: configure a script that creates a symlink /usr/local/bin/osc --> /opt/osc/bin/osc
+		configure_file("${PROJECT_SOURCE_DIR}/resources/package/postinst.in" "postinst" @ONLY)
+
+		# packaging: configure a script that destroys the above symlink on uninstall
+		configure_file("${PROJECT_SOURCE_DIR}/resources/package/postrm.in" "postrm" @ONLY)
+
+		# packaging: tell debian packager to use the scripts for postinst and postrm actions
+		set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_BINARY_DIR}/postinst;${CMAKE_BINARY_DIR}/postrm")
+	
 	endif()
 
 	# CPack vars etc. now fully configured, so include it

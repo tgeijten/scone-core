@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# postinst: ran by the Debian package manager (dpkg) after scone-core is
+# installed.
+
+# create a symlink in /usr/local/bin to the installed scone-core, so that
+# users can write 'sconecmd' at the command line
+if [[ ! -e "/usr/local/bin/sconecmd" ]]; then
+    ln -s "/opt/scone-core/bin/sconecmd" "/usr/local/bin/sconecmd"
+fi
