@@ -70,7 +70,7 @@ add_subdirectory(src/sconecmd)
 add_subdirectory(src/sconeunittests)
 
 if (SCONE_HYFYDY)
-	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "${CMAKE_SOURCE_DIR}/../sconehfd" )
+	find_path( SCONE_HYFYDY_DIR "sconehfd/sconehfd/ModelHfd.h" HINTS "${CMAKE_SOURCE_DIR}/../sconehfd" "${CMAKE_SOURCE_DIR}/../../sconehfd" )
 	add_subdirectory("${SCONE_HYFYDY_DIR}" "${CMAKE_BINARY_DIR}/sconehfd")
 endif()
 
