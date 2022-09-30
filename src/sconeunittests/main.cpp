@@ -27,15 +27,15 @@ int main( int argc, const char* argv[] )
 		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 
 		if ( !args.has_flag( "skip-scenarios" ) ) {
-			if ( !args.has_flag( "skip-tutorials" ) && !args.has_flag( "skip-opensim" ) ) {
-				scone::add_scenario_tests( "scenarios/Tutorials" );
-			}
 #if SCONE_OPENSIM_3_ENABLED
 			if ( !args.has_flag( "skip-opensim3" ) && !args.has_flag( "skip-opensim" ) ) {
 				scone::add_scenario_tests( "scenarios/UnitTests/OpenSim3" );
 				scone::add_scenario_tests( "scenarios/Examples", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( "scenarios/Examples2", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( "scenarios/Tutorials2", "*OpenSim.scone" );
+				if ( !args.has_flag( "skip-tutorials" ) ) {
+					scone::add_scenario_tests( "scenarios/Tutorials" );
+				}
 			}
 #endif
 #if SCONE_OPENSIM_4_ENABLED
