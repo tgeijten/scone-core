@@ -48,6 +48,7 @@ PropNode load_scenario( const path& scenario_file, const TCLAP::UnlabeledMultiAr
 int main(int argc, char* argv[])
 {
 	xo::log::console_sink console_sink( xo::log::level::info );
+	xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 	scone::Initialize();
 
 	try
