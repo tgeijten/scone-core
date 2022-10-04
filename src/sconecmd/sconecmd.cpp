@@ -45,7 +45,7 @@ PropNode load_scenario( const path& scenario_file, const TCLAP::UnlabeledMultiAr
 }
 
 // main
-int main(int argc, char* argv[])
+int main( int argc, char* argv[] )
 {
 	xo::log::console_sink console_sink( xo::log::level::info );
 	xo::log::info( "SCONE version ", scone::GetSconeVersion() );
@@ -64,7 +64,9 @@ int main(int argc, char* argv[])
 		TCLAP::SwitchArg quietOutput( "q", "quiet", "Do not output simulation progress", cmd, false );
 		TCLAP::UnlabeledMultiArg< string > propArg( "property", "Override specific scenario property, using <key>=<value>", false, "<key>=<value>", cmd, true );
 #if SCONE_HYFYDY_ENABLED
-		TCLAP::ValueArg< String > licenseArg( "", "license", "Enter a Hyfydy License Key", true, "", "hyfydy" );
+		std::vector<string> hyfydyOptions{ "id", "key" };
+		TCLAP::ValuesConstraint<string> allowedVals( hyfydyOptions );
+		TCLAP::ValueArg< String > licenseArg( "", "hyfydy", "Hyfydy license key management", true, "", &allowedVals );
 		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg, &licenseArg };
 #else
 		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg };
@@ -74,8 +76,6 @@ int main(int argc, char* argv[])
 
 		try
 		{
-
-
 			// set log level (optimization defaults to info, evaluation defaults to trace)
 			if ( logArg.isSet() )
 				console_sink.set_log_level( xo::log::level( logArg.getValue() ) );
@@ -129,7 +129,10 @@ int main(int argc, char* argv[])
 			}
 #if SCONE_HYFYDY_ENABLED
 			else if ( licenseArg.isSet() ) {
-				scone::AddLicenseInteractive();
+				if ( licenseArg.getValue() == hyfydyOptions[ 0 ] )
+					std::cout << std::endl << "Hardware ID: " << scone::GetHardwareId() << std::endl;
+				else if ( licenseArg.getValue() == hyfydyOptions[ 1 ] )
+					scone::AddLicenseInteractive();
 			}
 #endif
 		}
