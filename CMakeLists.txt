@@ -25,7 +25,7 @@ option(SCONE_CORE_CPACK "Build SCONE installer using CPack" OFF)
 if(SCONE_CORE_CPACK)
 	file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/.version" SCONE_REPOSITORY_REVISION)	
 	set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION}.${SCONE_REPOSITORY_REVISION}")
-	message( "SCONE Version=" ${CPACK_PACKAGE_VERSION} )
+	message( "SCONE Version " ${CPACK_PACKAGE_VERSION} )
 endif()
 
 # Find TCLAP
@@ -36,8 +36,6 @@ find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/
 # Place build products (libraries, executables) in root
 # binary (build) directory. Otherwise, they get scattered around
 # the build directory and so the dll's aren't next to the executables.
-#get_filename_component(CONFIG_NAME "${CMAKE_BINARY_DIR}" NAME)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CONFIG_NAME}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
@@ -115,7 +113,6 @@ if (SCONE_CORE_CPACK)
 	set(CPACK_PACKAGE_HOMEPAGE_URL "https://goatstream.com")
 	set(CPACK_PACKAGE_DESCRIPTION "A tool for predictive musculoskeletal simulations")
 	set(CPACK_PACKAGE_EXECUTABLES "sconecmd;SCONE Command Line Interface")
-	#set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${SCONE_CORE_CPACK_VERSION})
 
 	# install scenarios
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples2" DESTINATION "./scenarios")
