@@ -22,6 +22,12 @@ option(SCONE_PYTHON "Build SconePy Python API" OFF)
 option(SCONE_USER_EXTENSIONS "Build sconeuser extension library" OFF)
 option(SCONE_CORE_CPACK "Build SCONE installer using CPack" OFF)
 
+if(SCONE_CORE_CPACK)
+	file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/.version" SCONE_REPOSITORY_REVISION)	
+	set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION}.${SCONE_REPOSITORY_REVISION}")
+	message( "SCONE Version=" ${CPACK_PACKAGE_VERSION} )
+endif()
+
 # Find TCLAP
 find_path( TCLAP_DIR NAMES "tclap/CmdLine.h" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/tclap-1.2.1/include" )
 
@@ -109,6 +115,7 @@ if (SCONE_CORE_CPACK)
 	set(CPACK_PACKAGE_HOMEPAGE_URL "https://goatstream.com")
 	set(CPACK_PACKAGE_DESCRIPTION "A tool for predictive musculoskeletal simulations")
 	set(CPACK_PACKAGE_EXECUTABLES "sconecmd;SCONE Command Line Interface")
+	#set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${SCONE_CORE_CPACK_VERSION})
 
 	# install scenarios
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples2" DESTINATION "./scenarios")
