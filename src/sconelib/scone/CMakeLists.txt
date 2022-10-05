@@ -130,6 +130,8 @@ set(CS_CONTROLLERS_REFLEX_FILES
 	controllers/Reflex.h
 	controllers/ReflexController.cpp
 	controllers/ReflexController.h
+	controllers/SensorReflex.cpp
+	controllers/SensorReflex.h
 	)
 set(CS_CONTROLLERS_STATE_FILES
 	controllers/GaitStateController.cpp
