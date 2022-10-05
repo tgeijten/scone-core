@@ -29,6 +29,7 @@ namespace scone
 		INIT_PROP( props, sigma_, 1.0 );
 		INIT_PROP( props, random_seed, DEFAULT_RANDOM_SEED );
 		INIT_PROP( props, flat_fitness_epsilon_, 1e-6 );
+		INIT_PROP( props, enable_boundary_transformer, false );
 	}
 
 	String EsOptimizer::GetClassSignature() const

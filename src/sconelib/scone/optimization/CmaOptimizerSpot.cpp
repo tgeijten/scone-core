@@ -38,6 +38,9 @@ namespace scone
 
 		set_fitness_tracking_window_size( window_size );
 
+		if ( enable_boundary_transformer )
+			set_boundary_transformer( std::make_unique<spot::reflective_boundary_transformer>( info() ) );
+
 		// stop conditions
 		add_stop_condition( std::make_unique< spot::max_steps_condition >( max_generations ) );
 		add_stop_condition( std::make_unique< spot::min_progress_condition >( min_progress, min_progress_samples ) );

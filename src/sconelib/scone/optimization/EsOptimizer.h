@@ -41,6 +41,9 @@ namespace scone
 		/// Epsilon value to detect flat fitness; default = 1e-6.
 		double flat_fitness_epsilon_;
 
+		/// Enable boundary transformer (experimental); default = 0.
+		bool enable_boundary_transformer;
+
 		int max_attempts;
 
 	private: // non-copyable and non-assignable
