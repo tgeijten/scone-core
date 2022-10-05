@@ -1,16 +1,6 @@
-import sys
 import numpy as np
 import time
-
-# Add sconepy module to system path
-if sys.platform.startswith('win'):
-    sys.path.append('C:/Program Files/SCONE/bin')
-elif sys.platform.startswith('linux'):
-    sys.path.append('/opt/scone-core/lib')
-else:
-    raise Exception('Unsupported platform')
-
-import sconepy
+from scone import sconepy
 
 # Helper function that shows various model properties
 def print_model_info(model):
@@ -107,18 +97,20 @@ print('SCONE Version', sconepy.version())
 sconepy.set_array_dtype_float32()
 
 # Run a couple of simulations
-# IMPORTANT: use store_data=False when measuring performance
 store_data = True
 
 # Create a SCONE model from a .scone file
-model = sconepy.load_model('data/H0918_hyfydy.scone')
-# model = sconepy.load_model( 'H1622_hyfydy.scone' )
-# model = sconepy.load_model( 'H0918_osim3.scone' )
-# model = sconepy.load_model( 'H0918_osim4.scone' )
-print_model_info(model)
-run_simulation(model, store_data, 1)
+if sconepy.is_supported('ModelHyfydy'):
+	model = sconepy.load_model('data/H0918_hyfydy.scone')
+	print_model_info(model)
+	run_simulation(model, store_data, 1)
 
-measure_performance('data/H0918_hyfydy.scone')
-measure_performance('data/H1622_hyfydy.scone')
-# measure_performance( 'H0918_osim3.scone' )
-# measure_performance( 'H0918_osim4.scone' )
+# Run performance benchmarks
+if sconepy.is_supported('ModelHyfydy'):
+	measure_performance('data/H0918_hyfydy.scone')
+
+if sconepy.is_supported('ModelOpenSim3'):
+	measure_performance( 'data/H0918_osim3.scone' )
+
+if sconepy.is_supported('ModelOpenSim4'):
+	measure_performance( 'data/H0918_osim4.scone' )
