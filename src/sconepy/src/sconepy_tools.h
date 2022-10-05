@@ -44,6 +44,9 @@ namespace scone
 		}
 		return model;
 	}
+	bool is_supported( const std::string& type_id ) {
+		return GetModelFactory().has_type( type_id );
+	}
 	std::map< std::string, double > get_state( const Model& model ) {
 		std::map< std::string, double > dict;
 		auto& s = model.GetState();

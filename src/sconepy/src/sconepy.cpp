@@ -24,6 +24,7 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
+	m.def( "is_supported", &scone::is_supported );
 	m.def( "replace_string_tags", &scone::ReplaceStringTags );
 
 	m.def( "set_array_dtype_float32", []() { g_f32 = true; } );
