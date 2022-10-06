@@ -169,6 +169,9 @@ namespace scone
 		// features supported by this model
 		virtual const ModelFeatures& GetFeatures() const { return m_Features; }
 
+		// check if this is a planar model
+		virtual bool IsPlanar() const;
+
 		// store current version for optimization results
 		virtual void AddVersionToPropNode( PropNode& pn ) const;
 

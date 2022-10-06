@@ -570,6 +570,14 @@ namespace scone
 		return pn;
 	}
 
+	bool Model::IsPlanar() const
+	{
+		for ( auto& d : GetDofs() )
+			if ( d->IsRotational() && d->GetRotationAxis() != Vec3::unit_z() )
+				return false;
+		return true;
+	}
+
 	void Model::AddVersionToPropNode( PropNode& pn ) const
 	{
 		pn.set( "scone_version", scone_version );
