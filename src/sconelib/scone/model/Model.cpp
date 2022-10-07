@@ -572,9 +572,11 @@ namespace scone
 
 	bool Model::IsPlanar() const
 	{
-		for ( auto& d : GetDofs() )
-			if ( d->IsRotational() && d->GetRotationAxis() != Vec3::unit_z() )
+		for ( auto& d : GetDofs() ) {
+			// check for any rotational dof that is not along Z
+			if ( d->IsRotational() && !xo::equal( xo::abs( d->GetRotationAxis().z ), Real( 1 ), Real( 0.001 ) ) )
 				return false;
+		}
 		return true;
 	}
 
