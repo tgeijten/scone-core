@@ -14,7 +14,7 @@
 #include "xo/filesystem/filesystem.h"
 #include "xo/string/string_cast.h"
 
-#if SCONE_EXPERIMENTAL_FEATURES_ENABLED
+#ifdef SCONE_DEVELOPMENT_BUILD
 	constexpr int SCONE_VERSION_MAJOR = 2;
 	constexpr int SCONE_VERSION_MINOR = 1;
 	constexpr int SCONE_VERSION_PATCH = 0;

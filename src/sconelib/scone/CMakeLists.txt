@@ -314,6 +314,10 @@ if (SCONE_EXPERIMENTAL_FEATURES)
 	target_include_directories(sconelib PUBLIC ${SNEL_INCLUDE_DIR})
 endif()
 
+if (SCONE_DEVELOPMENT_BUILD)
+	target_compile_definitions(sconelib PUBLIC SCONE_DEVELOPMENT_BUILD)
+endif()
+
 if (MSVC)
 	target_precompile_headers(sconelib PRIVATE <string> <vector> <algorithm> <memory> <limits> <fstream>)
 	file (GLOB_RECURSE PRECOMPILED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cmake_pch.*)
