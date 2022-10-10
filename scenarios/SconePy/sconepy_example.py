@@ -1,6 +1,6 @@
 import numpy as np
 import time
-from scone import sconepy
+from sconetools import sconepy
 
 # Helper function that shows various model properties
 def print_model_info(model):
