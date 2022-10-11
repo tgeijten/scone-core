@@ -6,8 +6,6 @@ SCONE_SOURCE_DIR="${SCRIPT_DIR}/.."
 SCONE_BUILD_DIR="${PWD}/build"
 SCONE_INSTALL_DIR="${PWD}/scone-core"
 
-source ${SCRIPT_DIR}/build_config
-
 cmake_args=(
     -DCMAKE_BUILD_TYPE="Release"
     -DCMAKE_INSTALL_PREFIX="${SCONE_INSTALL_DIR}"
