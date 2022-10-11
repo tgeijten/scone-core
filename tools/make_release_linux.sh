@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR="$(dirname -- "$0";)"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 SCONE_SOURCE_DIR="${SCRIPT_DIR}/.."
 SCONE_BUILD_DIR="${PWD}/build"
 SCONE_INSTALL_DIR="${PWD}/scone-core"
+
+echo ${SCRIPT_DIR}
+echo ${SCONE_SOURCE_DIR}
 
 cmake_args=(
     -DCMAKE_BUILD_TYPE="Release"
