@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(scone VERSION 2.1.0)
 
+# Set LINUX variable
+if(UNIX AND NOT APPLE)
+	set(LINUX TRUE)
+endif()
+
 # To create a folder hierarchy within Visual Studio.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -22,6 +27,9 @@ option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 option(SCONE_PYTHON "Build SconePy Python API" OFF)
 option(SCONE_USER_EXTENSIONS "Build sconeuser extension library" OFF)
 option(SCONE_CORE_CPACK "Build SCONE installer using CPack" OFF)
+if (LINUX)
+	option(SCONE_CORE_CPACK_DEBIAN "Build debian installer using CPack" OFF)
+endif()
 
 if(SCONE_CORE_CPACK)
 	file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/.version" SCONE_REPOSITORY_REVISION)	
@@ -45,7 +53,7 @@ if(WIN32)
 	set(CMAKE_INSTALL_LIBDIR bin)
 endif()
 
-if (UNIX AND NOT APPLE)
+if (LINUX)
 	set(CMAKE_INSTALL_RPATH "\$ORIGIN")
 	set(CMAKE_INSTALL_BINDIR bin)
 	set(CMAKE_INSTALL_LIBDIR lib)
@@ -134,21 +142,29 @@ if (SCONE_CORE_CPACK)
 	endif()
 
 	if (UNIX AND NOT APPLE)
-		# packaging: package installation as a DEB and TGZ
-		set(CPACK_GENERATOR DEB TGZ)
-		# set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/scone-core")
-		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6")
-		set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
-		set(CPACK_STRIP_FILES YES)
+		if (SCONE_CORE_CPACK_DEBIAN)
+			# packaging: package installation as a DEB
+			set(CPACK_GENERATOR DEB)
+			set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/scone-core")
+			set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6")
+			set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+			set(CPACK_STRIP_FILES YES)
 
-		# packaging: configure a script that creates a symlink /usr/local/bin/sconecmd --> /opt/osc/bin/sconecmd
-		# configure_file("${PROJECT_SOURCE_DIR}/resources/package/postinst.in" "postinst" @ONLY)
+			# packaging: configure a script that creates a symlink /usr/local/bin/sconecmd --> /opt/osc/bin/sconecmd
+			configure_file("${PROJECT_SOURCE_DIR}/resources/package/postinst.in" "postinst" @ONLY)
 
-		# packaging: configure a script that destroys the above symlink on uninstall
-		# configure_file("${PROJECT_SOURCE_DIR}/resources/package/postrm.in" "postrm" @ONLY)
+			# packaging: configure a script that destroys the above symlink on uninstall
+			configure_file("${PROJECT_SOURCE_DIR}/resources/package/postrm.in" "postrm" @ONLY)
 
-		# packaging: tell debian packager to use the scripts for postinst and postrm actions
-		# set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_BINARY_DIR}/postinst;${CMAKE_BINARY_DIR}/postrm")
+			# packaging: tell debian packager to use the scripts for postinst and postrm actions
+			set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_BINARY_DIR}/postinst;${CMAKE_BINARY_DIR}/postrm")
+		else()
+			# packaging: package installation as archive
+			set(CPACK_GENERATOR TGZ)
+			set(CPACK_PACKAGING_INSTALL_PREFIX "/scone-core")
+			set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6")
+			set(CPACK_STRIP_FILES YES)
+		endif()
 	endif()
 
 	# CPack vars etc. now fully configured, so include it
