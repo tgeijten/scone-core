@@ -16,6 +16,7 @@ cmake_args=(
     -DSCONE_LUA=ON
     -DSCONE_PYTHON=ON
     -DSCONE_CORE_CPACK=ON
+    -DSCONE_DEVELOPMENT_BUILD=ON
 )
 
 mkdir -p "${SCONE_BUILD_DIR}"
