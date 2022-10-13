@@ -15,8 +15,6 @@
 namespace scone
 {
 	SCONE_API xo::settings& GetSconeSettings();
-	SCONE_API void SaveSconeSettings();
-
 	template< typename T > T GetSconeSetting( const String& key ) { return GetSconeSettings().get<T>( key ); }
 
 	constexpr bool GetExperimentalFeaturesEnabled() { return SCONE_EXPERIMENTAL_FEATURES_ENABLED == 1; }

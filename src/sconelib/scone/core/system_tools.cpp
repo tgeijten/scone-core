@@ -39,7 +39,7 @@ namespace scone
 		}
 
 		if ( install_folder.empty() )
-			log::error( "Could not detect SCONE installation folder" );
+			log::error( "Could not detect SCONE installation folder from ", xo::get_application_dir() );
 		else log::debug( "SCONE installation root folder: ", install_folder );
 
 		return install_folder;
@@ -51,9 +51,10 @@ namespace scone
 		return g_RootFolder;
 	}
 
-	path GetFolder( const String& folder )
+	path GetFolder( const String& folder, path fallback_path )
 	{
-		return GetSconeSettings().get< path >( "folders." + folder );
+		auto p = GetSconeSettings().get< path >( "folders." + folder );
+		return !p.empty() ? p : fallback_path;
 	}
 
 	path GetSettingsFolder()
@@ -81,9 +82,9 @@ namespace scone
 		switch ( folder )
 		{
 		case SconeFolder::Root: return GetInstallFolder();
-		case SconeFolder::Results: return GetFolder( "results" );
-		case SconeFolder::Scenarios: return GetFolder( "scenarios" );
-		case SconeFolder::Geometry: return GetFolder( "geometry" );
+		case SconeFolder::Results: return GetFolder( "results", GetDataFolder() / "results" );
+		case SconeFolder::Scenarios: return GetFolder( "scenarios", GetDataFolder() );
+		case SconeFolder::Geometry: return GetFolder( "geometry", GetInstallFolder().parent_path() / "resources/geometry" );
 		default: SCONE_THROW( "Unknown folder type" );
 		}
 	}

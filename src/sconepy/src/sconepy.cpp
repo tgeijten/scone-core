@@ -20,7 +20,7 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.attr( "__version__" ) = "0.1.0";
 
 	m.def( "version", []() { return xo::to_str( scone::GetSconeVersion() ); } );
-	m.def( "scone_dir", []() { return scone::GetDataFolder().str(); } );
+	m.def( "scone_dir", []() { return scone::GetFolder( scone::SconeFolder::Scenarios ).str(); } );
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
