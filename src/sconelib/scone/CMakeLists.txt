@@ -77,6 +77,8 @@ set(CORE_TOOL_FILES
 	core/string_tools.h
 	core/GaitCycle.cpp
 	core/GaitCycle.h
+	core/ModelConverter.cpp
+	core/ModelConverter.h
 	core/CachedVar.h
 	)
 set(CS_CONTROLLERS_FILES
