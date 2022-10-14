@@ -1,5 +1,7 @@
 #include "ModelConverter.h"
 #include "xo/container/prop_node_tools.h"
+#include "scone/model/Joint.h"
+#include "scone/model/Muscle.h"
 
 namespace scone
 {
@@ -27,7 +29,14 @@ namespace scone
 		body_pn[ "name" ] = b.GetName();
 		body_pn[ "mass" ] = b.GetMass();
 		body_pn[ "inertia" ] = b.GetInertiaTensorDiagonal();
-		
+		if ( auto* j = b.GetJoint() )
+		{
+			auto& joint_pn = pn.add_child( "joint" );
+			joint_pn[ "parent" ] = j->GetParentBody().GetName();
+			joint_pn[ "pos_in_parent" ] = j->GetPos();
+			joint_pn[ "pos_in_child" ] = j->GetPos();
+		}
+
 		return pn;
 	}
 
@@ -36,8 +45,16 @@ namespace scone
 		return PropNode();
 	}
 
-	PropNode ModelConverter::ConvertMuscle( const Muscle& j )
+	PropNode ModelConverter::ConvertMuscle( const Muscle& m )
 	{
-		return PropNode();
+		PropNode pn;
+		auto& mus_pn = pn.add_child( "point_path_muscle" );
+		mus_pn[ "name" ] = m.GetName();
+		mus_pn[ "max_isometric_force" ] = m.GetMaxIsometricForce();
+		mus_pn[ "optimal_fiber_length" ] = m.GetOptimalFiberLength();
+		mus_pn[ "tendon_slack_length" ] = m.GetTendonSlackLength();
+		mus_pn[ "pennation_angle" ] = 0.0;
+
+		return pn;
 	}
 }
