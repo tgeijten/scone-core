@@ -331,6 +331,12 @@ if (MSVC)
 	target_compile_options( sconelib PRIVATE "/MP" ) # multithreaded compilation on MSVC
 endif()
 
+install(
+	TARGETS sconelib xo spot
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
+
 # To create folders in Visual Studio.
 source_group("tools" FILES ${CORE_BASE_FILES})
 source_group("math" FILES ${CORE_MATH_FILES})

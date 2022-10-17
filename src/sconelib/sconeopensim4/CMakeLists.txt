@@ -33,6 +33,7 @@ if (MSVC)
 	target_precompile_headers(sconeopensim4 PRIVATE <string> <vector> <algorithm> <memory> <limits> <fstream> <OpenSim/OpenSim.h>)
 	file (GLOB_RECURSE PRECOMPILED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cmake_pch.*)
 	source_group("CMakePCH" FILES ${PRECOMPILED_HEADER_FILES})
+	source_group("" FILES ${MODEL_OPENSIM_4_FILES})
 
 	target_compile_definitions( sconeopensim4 PRIVATE SCONE_MODEL_OPENSIM_4_EXPORTS )
 	target_compile_definitions( sconeopensim4 PRIVATE _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS )
@@ -61,7 +62,9 @@ if (MSVC)
 			)
 		endforeach()
 	endif()
-
 endif()
 
-source_group("" FILES ${MODEL_OPENSIM_4_FILES})
+install(TARGETS sconeopensim4
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)

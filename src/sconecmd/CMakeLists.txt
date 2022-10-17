@@ -44,8 +44,7 @@ elseif(UNIX AND APPLE)
     set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "@executable_path/lib")
 endif()
 
-install(
-	TARGETS sconecmd sconelib xo spot
+install(TARGETS sconecmd 
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	)
