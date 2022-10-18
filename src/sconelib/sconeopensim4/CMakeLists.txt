@@ -45,23 +45,23 @@ if (MSVC)
 	add_custom_command(TARGET sconeopensim4 POST_BUILD COMMENT "Updating DLLs" VERBATIM )
 
 	# Copy all OpenSim4 DLLs
-	if (SCONE_OPENSIM_4)
-		SET(OPENSIM4_INSTALL_DIR "${OpenSim_DIR}/..")
-		SET(OPENSIM4_DLLS osimTools osimAnalyses osimActuators osimSimulation osimLepton osimCommon 
-			SimTKsimbody SimTKmath SimTKcommon)
-		foreach(opensimdll ${OPENSIM4_DLLS})
-			add_custom_command(TARGET sconeopensim4 POST_BUILD
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll ${DLL_TARGET_DIR}
-			)
-		endforeach()
-		# Copy extra opensim files
-		SET(OPENSIM4_EXTRA_DLLS libblas liblapack libgcc_s_sjlj-1 libgfortran-3 libquadmath-0)
-		foreach(opensimdll ${OPENSIM4_EXTRA_DLLS})
-			add_custom_command(TARGET sconeopensim4 POST_BUILD
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}.dll ${DLL_TARGET_DIR}
-			)
-		endforeach()
-	endif()
+	SET(OPENSIM4_INSTALL_DIR "${OpenSim_DIR}/..")
+	SET(OPENSIM4_DLLS osimTools osimAnalyses osimActuators osimSimulation osimLepton osimCommon 
+		SimTKsimbody SimTKmath SimTKcommon)
+	foreach(opensimdll ${OPENSIM4_DLLS})
+		add_custom_command(TARGET sconeopensim4 POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll ${DLL_TARGET_DIR}
+		)
+		install(FILES ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll DESTINATION bin)
+	endforeach()
+	# Copy extra opensim files
+	SET(OPENSIM4_EXTRA_DLLS libblas liblapack libgcc_s_sjlj-1 libgfortran-3 libquadmath-0)
+	foreach(opensimdll ${OPENSIM4_EXTRA_DLLS})
+		add_custom_command(TARGET sconeopensim4 POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}.dll ${DLL_TARGET_DIR}
+		)
+		install(FILES ${OPENSIM4_INSTALL_DIR}/bin/${opensimdll}.dll DESTINATION bin)
+	endforeach()
 endif()
 
 install(TARGETS sconeopensim4

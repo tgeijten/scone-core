@@ -66,6 +66,7 @@ if (MSVC)
 		add_custom_command(TARGET sconeopensim3 POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll ${DLL_TARGET_DIR}
 		)
+		install(FILES ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}$<$<CONFIG:debug>:_d>.dll DESTINATION bin)
 	endforeach()
 
 	# Copy additional DLLs required by OpenSim
@@ -76,5 +77,6 @@ if (MSVC)
 		add_custom_command(TARGET sconeopensim3 POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}.dll ${DLL_TARGET_DIR}
 		)
+		install(FILES ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}.dll DESTINATION bin)
 	endforeach()
 endif()
