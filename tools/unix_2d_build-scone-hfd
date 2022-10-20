@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -xeuo pipefail
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source_dir="${script_dir}/../"
+
+source "${script_dir}/build_config"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    cmake_extra_args=(
+        -DSCONE_LUA=OFF
+        -DSCONE_PYTHON=OFF
+    )
+else
+    cmake_extra_args=(
+        -DSCONE_LUA=ON
+        -DSCONE_PYTHON=ON
+        -DSCONE_OPENSIM_3=OFF
+        -DSCONE_HYFYDY=ON
+        -DSCONE_CORE_CPACK=ON
+        -DSCONE_DEVELOPMENT_BUILD=ON
+   )
+fi
+
+mkdir -p "${SCONE_BUILD_DIR}"
+# mkdir -p "${SCONE_INSTALL_DIR}"
+cd "${SCONE_BUILD_DIR}"
+cmake "${source_dir}" \
+    -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
+    -DCMAKE_VERBOSE_MAKEFILE="${CMAKE_VERBOSE_MAKEFILE}" \
+    -DCMAKE_INSTALL_PREFIX="${SCONE_INSTALL_DIR}" \
+    -DOPENSIM_INSTALL_DIR="${OPENSIM3_INSTALL_PATH}" \
+    -DOPENSIM_INCLUDE_DIR="${OPENSIM3_INSTALL_PATH}/sdk/include" \
+    ${cmake_extra_args[@]}
+cmake --build . --parallel "${NUM_BUILD_JOBS}"

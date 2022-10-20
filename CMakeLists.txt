@@ -114,6 +114,7 @@ if (SCONE_CORE_CPACK)
 	set(CPACK_PACKAGE_HOMEPAGE_URL "https://goatstream.com")
 	set(CPACK_PACKAGE_DESCRIPTION "A tool for predictive musculoskeletal simulations")
 	set(CPACK_PACKAGE_EXECUTABLES "sconecmd;SCONE Command Line Interface")
+	set(CPACK_OUTPUT_FILE_PREFIX "./../packages")
 
 	# install scenarios
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples2" DESTINATION "./scenarios")
