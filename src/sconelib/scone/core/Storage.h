@@ -145,6 +145,13 @@ namespace scone
 			return result;
 		}
 
+		std::vector< TimeT > GetTimeData() const {
+			std::vector< TimeT > result( GetFrameCount() );
+			for ( index_t f = 0; f < GetFrameCount(); ++f )
+				result[ f ] = GetFrame( f ).GetTime();
+			return result;
+		}
+
 		size_t GetFrameCount() const { return m_Data.size(); }
 
 		index_t AddChannel( const String& label, ValueT default_value = ValueT( 0 ) ) {

@@ -494,7 +494,7 @@ namespace scone
 		if ( GetSconeSetting<bool>( "results.extract_channels" ) )
 		{
 			xo::storage< Real > sto;
-			sto.resize( GetData().GetFrameCount(), 0 );
+			sto.add_channel( "time", GetData().GetTimeData() );
 			xo::pattern_matcher match( GetSconeSetting<string>( "results.extract_channel_names" ) );
 			for ( index_t idx = 0; idx < GetData().GetChannelCount(); ++idx )
 				if ( const auto& label = GetData().GetLabels()[ idx ]; match( label ) )
