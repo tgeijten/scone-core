@@ -32,7 +32,7 @@ namespace scone
 		/// Local position at which to apply the perturbation; default = [ 0 0 0 ].
 		Vec3 position_offset;
 
-		// Perturbation force to apply; default = [ 0 0 0 ].
+		/// Perturbation force to apply; default = [ 0 0 0 ].
 		Vec3 force;
 
 		/// Perturbation moment to apply; default = [ 0 0 0 ].
