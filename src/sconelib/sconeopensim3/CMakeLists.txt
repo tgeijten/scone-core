@@ -31,11 +31,6 @@ target_link_libraries( sconeopensim3 PUBLIC sconelib ${OPENSIMSIMBODY_LIBRARIES}
 # Require C++17 standard
 set_target_properties(sconeopensim3 PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-install(TARGETS sconeopensim3
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-	)
-
 if (MSVC)
 	target_precompile_headers(sconeopensim3 PRIVATE <string> <vector> <algorithm> <memory> <limits> <fstream> <OpenSim/OpenSim.h>)
 	file (GLOB_RECURSE PRECOMPILED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cmake_pch.*)
@@ -80,3 +75,14 @@ if (MSVC)
 		install(FILES ${OPENSIM_INSTALL_DIR}/bin/${opensimdll}.dll DESTINATION bin)
 	endforeach()
 endif()
+
+if(LINUX)
+	# file(GLOB OSG_SO_FILES "${OSG_DIR}/lib64/*.so*")
+	# install(FILES ${OSG_SO_FILES} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+	install(DIRECTORY "${OPENSIM_INSTALL_DIR}/lib/" DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
+
+install(TARGETS sconeopensim3
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
