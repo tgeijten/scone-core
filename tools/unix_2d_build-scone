@@ -12,7 +12,6 @@ else
     cmake_extra_args=(
         -DSCONE_LUA=ON
         -DSCONE_PYTHON=ON
-        -DSCONE_OPENSIM_3=ON
    )
 fi
 
@@ -26,5 +25,6 @@ cmake ../ \
     -DCMAKE_INSTALL_PREFIX="${SCONE_INSTALL_DIR}" \
     -DOPENSIM_INSTALL_DIR="${OPENSIM3_INSTALL_PATH}" \
     -DOPENSIM_INCLUDE_DIR="${OPENSIM3_INSTALL_PATH}/sdk/include" \
+    -DSCONE_OPENSIM_3=ON \
     ${cmake_extra_args[@]}
 cmake --build . --parallel "${NUM_BUILD_JOBS}"
