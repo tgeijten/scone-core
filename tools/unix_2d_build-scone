@@ -12,6 +12,7 @@ else
     cmake_extra_args=(
         -DSCONE_LUA=ON
         -DSCONE_PYTHON=ON
+        -DSCONE_OPENSIM_3=ON
    )
 fi
 
