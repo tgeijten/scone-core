@@ -77,8 +77,6 @@ if (MSVC)
 endif()
 
 if(LINUX)
-	# file(GLOB OSG_SO_FILES "${OSG_DIR}/lib64/*.so*")
-	# install(FILES ${OSG_SO_FILES} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 	install(DIRECTORY "${OPENSIM_INSTALL_DIR}/lib/" DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
