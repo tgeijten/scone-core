@@ -18,7 +18,7 @@
 	constexpr int SCONE_VERSION_MAJOR = 2;
 	constexpr int SCONE_VERSION_MINOR = 1;
 	constexpr int SCONE_VERSION_PATCH = 0;
-	constexpr const char* SCONE_VERSION_POSTFIX = "BETA 8";
+	constexpr const char* SCONE_VERSION_POSTFIX = "BETA 9";
 #else
 	constexpr int SCONE_VERSION_MAJOR = 2;
 	constexpr int SCONE_VERSION_MINOR = 0;
