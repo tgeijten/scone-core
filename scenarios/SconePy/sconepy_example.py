@@ -101,16 +101,19 @@ store_data = True
 
 # Create a SCONE model from a .scone file
 if sconepy.is_supported('ModelHyfydy'):
-	model = sconepy.load_model('data/H0918_hyfydy.scone')
+	model = sconepy.load_model('data/H0918_hfd.scone')
 	print_model_info(model)
 	run_simulation(model, store_data, 1)
 
 # Run performance benchmarks
 if sconepy.is_supported('ModelHyfydy'):
-	measure_performance('data/H0918_hyfydy.scone')
+	measure_performance('data/H0918_hfd.scone')
+
+if sconepy.is_supported('ModelHyfydy'):
+	measure_performance('data/H0918_hfd_v2.scone')
 
 if sconepy.is_supported('ModelOpenSim3'):
-	measure_performance( 'data/H0918_osim3.scone' )
+	measure_performance('data/H0918_osim3.scone')
 
 if sconepy.is_supported('ModelOpenSim4'):
-	measure_performance( 'data/H0918_osim4.scone' )
+	measure_performance('data/H0918_osim4.scone')
