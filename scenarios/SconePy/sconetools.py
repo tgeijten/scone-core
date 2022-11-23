@@ -1,3 +1,7 @@
+# sconetools -- helper module to find sconepy
+# (C) Copyright Thomas Geijtenbeek
+# This file is part of SCONE. For more information, see http://scone.software.
+
 import sys
 import platform
 import pathlib
@@ -8,22 +12,28 @@ import importlib.util
 
 path_to_sconepy = ''
 
-def try_find_sconepy(path):
+def try_find_sconepy(pathlist):
     global path_to_sconepy
     if path_to_sconepy:
         return; # already found
-    if sorted(pathlib.Path(path).glob('sconepy*.*')):
-        path_to_sconepy = str(path)
+    for path in pathlist:
+        if sorted(pathlib.Path(path).glob('sconepy*.*')):
+            path_to_sconepy = str(path)
+            return;
 
 if importlib.util.find_spec('sconepy') is None:
     if sys.platform.startswith('win'):
-        try_find_sconepy('C:/Program Files/SCONE/bin')
-        try_find_sconepy('D:/Build/scone-studio/vc2019-x64/bin/Release')
+        try_find_sconepy([
+            'C:/Program Files/SCONE/bin',
+            'D:/Build/scone-studio/vc2019-x64/bin/Release'
+            ])
     elif sys.platform.startswith('linux'):
-        try_find_sconepy('/opt/scone-core/lib')
-        try_find_sconepy(pathlib.Path.home() / 'scone-core/lib')
-        try_find_sconepy('/opt/scone/lib')
-        try_find_sconepy(pathlib.Path.home() / 'scone/lib')
+        try_find_sconepy([
+            '/opt/scone-core/lib',
+            pathlib.Path.home() / 'scone-core/lib',
+            '/opt/scone/lib',
+            pathlib.Path.home() / 'scone/lib'
+            ])
 
     if path_to_sconepy:
         print('sconepy found at', path_to_sconepy)
