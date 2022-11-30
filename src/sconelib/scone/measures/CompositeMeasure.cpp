@@ -94,6 +94,14 @@ namespace scone
 		return total;
 	}
 
+	double CompositeMeasure::GetCurrentResult( const Model& model )
+	{
+		double total = 0.0;
+		for ( MeasureUP& m : m_Measures )
+			total += m->GetCurrentWeightedResult( model );
+		return total;
+	}
+
 	String CompositeMeasure::GetClassSignature() const
 	{
 		std::vector< String > strset;

@@ -149,6 +149,14 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "length", &scone::Leg::GetLength )
 		;
 
+	py::class_<scone::Measure>( m, "Measure" )
+		.def( "name", &scone::Measure::GetName )
+		.def( "final_result", &scone::Measure::GetResult )
+		.def( "final_weighted_result", &scone::Measure::GetWeightedResult )
+		.def( "current_result", &scone::Measure::GetCurrentResult )
+		.def( "current_weighted_result", &scone::Measure::GetCurrentWeightedResult )
+		;
+
 	py::class_<scone::Model>( m, "Model" )
 		.def( "name", &scone::Model::GetName )
 		.def( "com_pos", &scone::Model::GetComPos )
@@ -166,6 +174,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "actuators", []( scone::Model& m ) { return &m.GetActuators(); }, py::return_value_policy::reference )
 		.def( "muscles", []( scone::Model& m ) { return &m.GetMuscles(); }, py::return_value_policy::reference )
 		.def( "legs", []( scone::Model& m ) { return &m.GetLegs(); }, py::return_value_policy::reference )
+		.def( "measure", []( scone::Model& m ) { return m.GetMeasure(); }, py::return_value_policy::reference )
 		.def( "set_dof_positions", &scone::set_dof_positions )
 		.def( "set_dof_velocities", &scone::set_dof_velocities )
 		.def( "init_state_from_dofs", []( scone::Model& m ) { m.UpdateStateFromDofs(); } )

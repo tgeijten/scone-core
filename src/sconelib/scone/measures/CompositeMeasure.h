@@ -58,6 +58,8 @@ namespace scone
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 
+		virtual double GetCurrentResult( const Model& model ) override;
+
 		const PropNode* Measures;
 
 		/// Create symmetric measures for both sides; default = false.

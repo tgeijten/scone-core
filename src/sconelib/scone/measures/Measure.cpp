@@ -45,6 +45,24 @@ namespace scone
 		return GetWeight() * m;
 	}
 
+	double Measure::GetCurrentResult( const Model& model )
+	{
+		SCONE_ERROR( "GetCurrentResult() is not implemented for " + GetName() );
+	}
+
+	double Measure::GetCurrentWeightedResult( const Model& model )
+	{
+		Real m = GetCurrentResult( model ) + GetOffset();
+		if ( GetThreshold() != 0 )
+		{
+			if ( m < GetThreshold() )
+				m = 0;
+			else if ( m < GetThreshold() + threshold_transition )
+				m = m * ( m - GetThreshold() ) / threshold_transition;
+		}
+		return GetWeight() * m;
+	}
+
 	const String& Measure::GetName() const
 	{
 		if ( name_.empty() )
