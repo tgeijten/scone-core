@@ -4,10 +4,10 @@
 
 namespace scone
 {
-	class ModelConverter
+	class SCONE_API ModelConverter
 	{
 	public:
-		ModelConverter( const PropNode& settings );
+		ModelConverter( const PropNode& settings = {} );
 		virtual ~ModelConverter() = default;
 
 		PropNode ConvertModel( const Model& m );
@@ -18,7 +18,6 @@ namespace scone
 		
 	private:
 		PropNode ConvertBody( const Body& b );
-		PropNode ConvertJoint( const Joint& j );
 		PropNode ConvertMuscle( const Muscle& j );
 	};
 }

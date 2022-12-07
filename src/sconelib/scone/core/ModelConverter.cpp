@@ -9,15 +9,16 @@ namespace scone
 		INIT_MEMBER( pn, joint_stiffness_, 1e6 ),
 		INIT_MEMBER( pn, joint_limit_stiffness_, 500 ),
 		INIT_MEMBER( pn, body_mass_threshold_, 0.2 )
-	{
-	}
+	{}
 
-	PropNode ModelConverter::ConvertModel( const Model& m )
+	PropNode ModelConverter::ConvertModel( const Model& model )
 	{
 		PropNode pn;
 		auto& model_pn = pn.add_child( "model" );
-		for ( auto b : m.GetBodies() )
-			ConvertBody( *b );
+		for ( auto b : model.GetBodies() )
+			model_pn.merge( ConvertBody( *b ) );
+		for ( auto m : model.GetMuscles() )
+			model_pn.merge( ConvertMuscle( *m ) );
 
 		return pn;
 	}
@@ -31,18 +32,18 @@ namespace scone
 		body_pn[ "inertia" ] = b.GetInertiaTensorDiagonal();
 		if ( auto* j = b.GetJoint() )
 		{
+			auto& bp = j->GetParentBody();
+			auto& bc = j->GetBody();
+			auto tfp = xo::transformd{ bp.GetComPos(), bp.GetOrientation() };
+			auto tfc = xo::transformd{ bc.GetComPos(), bc.GetOrientation() };
+
 			auto& joint_pn = pn.add_child( "joint" );
 			joint_pn[ "parent" ] = j->GetParentBody().GetName();
-			joint_pn[ "pos_in_parent" ] = j->GetPos();
-			joint_pn[ "pos_in_child" ] = j->GetPos();
+			joint_pn[ "pos_in_parent" ] = tfp.inv_trans( j->GetPos() );
+			joint_pn[ "pos_in_child" ] = tfc.inv_trans( j->GetPos() );
 		}
 
 		return pn;
-	}
-
-	PropNode ModelConverter::ConvertJoint( const Joint& j )
-	{
-		return PropNode();
 	}
 
 	PropNode ModelConverter::ConvertMuscle( const Muscle& m )
@@ -54,6 +55,14 @@ namespace scone
 		mus_pn[ "optimal_fiber_length" ] = m.GetOptimalFiberLength();
 		mus_pn[ "tendon_slack_length" ] = m.GetTendonSlackLength();
 		mus_pn[ "pennation_angle" ] = 0.0;
+
+		auto& path_pn = mus_pn.add_child( "path" );
+		auto mp = m.GetLocalMusclePath();
+		for ( auto& [body, point] : mp ) {
+			auto& ppn = path_pn.add_child();
+			ppn[ "body" ] = body;
+			ppn[ "pos" ] = point;
+		}
 
 		return pn;
 	}
