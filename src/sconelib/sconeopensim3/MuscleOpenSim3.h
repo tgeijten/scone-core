@@ -70,6 +70,8 @@ namespace scone
 		virtual Real GetMinInput() const override { return m_MinActivation; }
 
 		virtual std::vector< Vec3 > GetMusclePath() const override;
+		virtual std::vector< std::pair< String, Vec3 > > GetLocalMusclePath() const override;
+
 		virtual void SetExcitation( Real u ) override;
 		virtual void InitializeActivation( Real a ) override;
 

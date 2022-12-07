@@ -71,6 +71,7 @@ namespace scone
 		virtual Real GetMaxContractionVelocity() const = 0;
 
 		virtual std::vector< Vec3 > GetMusclePath() const = 0;
+		virtual std::vector< std::pair< String, Vec3 > > GetLocalMusclePath() const { SCONE_THROW_NOT_IMPLEMENTED; }
 
 		virtual Real GetActivation() const = 0;
 		virtual Real GetExcitation() const = 0;

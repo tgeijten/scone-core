@@ -220,6 +220,15 @@ namespace scone
 		return points;
 	}
 
+	std::vector< std::pair< String, scone::Vec3 > > MuscleOpenSim3::GetLocalMusclePath() const
+	{
+		auto& pps = m_osMus.getGeometryPath().getCurrentPath( m_Model.GetTkState() );
+		std::vector< std::pair< String, Vec3 > > points;
+		for ( int i = 0; i < points.size(); ++i )
+			points.emplace_back( pps[ i ]->getBody().getName(), from_osim( pps[ i ]->getLocation() ) );
+		return points;
+	}
+
 	Real MuscleOpenSim3::GetActivation() const
 	{
 		return m_osMus.getActivation( m_Model.GetTkState() );
