@@ -39,6 +39,7 @@ namespace scone
 		virtual Real GetMaxIsometricForce() const override;
 		virtual Real GetOptimalFiberLength() const override;
 		virtual Real GetTendonSlackLength() const override;
+		virtual Real GetPennationAngleAtOptimal() const override;
 
 		// current force / length / velocity
 		virtual Real GetForce() const override;
@@ -70,7 +71,7 @@ namespace scone
 		virtual Real GetMinInput() const override { return m_MinActivation; }
 
 		virtual std::vector< Vec3 > GetMusclePath() const override;
-		virtual std::vector< std::pair< String, Vec3 > > GetLocalMusclePath() const override;
+		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const override;
 
 		virtual void SetExcitation( Real u ) override;
 		virtual void InitializeActivation( Real a ) override;

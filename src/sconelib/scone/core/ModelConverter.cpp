@@ -15,10 +15,12 @@ namespace scone
 	{
 		PropNode pn;
 		auto& model_pn = pn.add_child( "model" );
+
 		for ( auto b : model.GetBodies() )
-			model_pn.merge( ConvertBody( *b ) );
+			model_pn.append( ConvertBody( *b ) );
+
 		for ( auto m : model.GetMuscles() )
-			model_pn.merge( ConvertMuscle( *m ) );
+			model_pn.append( ConvertMuscle( *m ) );
 
 		return pn;
 	}
@@ -37,7 +39,8 @@ namespace scone
 			auto tfp = xo::transformd{ bp.GetComPos(), bp.GetOrientation() };
 			auto tfc = xo::transformd{ bc.GetComPos(), bc.GetOrientation() };
 
-			auto& joint_pn = pn.add_child( "joint" );
+			auto& joint_pn = body_pn.add_child( "joint" );
+			joint_pn[ "name" ] = j->GetName();
 			joint_pn[ "parent" ] = j->GetParentBody().GetName();
 			joint_pn[ "pos_in_parent" ] = tfp.inv_trans( j->GetPos() );
 			joint_pn[ "pos_in_child" ] = tfc.inv_trans( j->GetPos() );
@@ -54,14 +57,14 @@ namespace scone
 		mus_pn[ "max_isometric_force" ] = m.GetMaxIsometricForce();
 		mus_pn[ "optimal_fiber_length" ] = m.GetOptimalFiberLength();
 		mus_pn[ "tendon_slack_length" ] = m.GetTendonSlackLength();
-		mus_pn[ "pennation_angle" ] = 0.0;
+		mus_pn[ "pennation_angle" ] = m.GetPennationAngleAtOptimal();
 
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
 		for ( auto& [body, point] : mp ) {
 			auto& ppn = path_pn.add_child();
-			ppn[ "body" ] = body;
-			ppn[ "pos" ] = point;
+			ppn[ "body" ] = body->GetName();
+			ppn[ "pos" ] = point - body->GetLocalComPos();
 		}
 
 		return pn;

@@ -62,6 +62,11 @@ namespace scone
 		return m_osMus.getTendonSlackLength();
 	}
 
+	Real MuscleOpenSim4::GetPennationAngleAtOptimal() const
+	{
+		return m_osMus.getPennationAngleAtOptimalFiberLength();
+	}
+
 	Real MuscleOpenSim4::GetForce() const
 	{
 		// OpenSim: why can't I just use getWorkingState()?
@@ -222,12 +227,12 @@ namespace scone
 		return points;
 	}
 
-	std::vector< std::pair< String, scone::Vec3 > > MuscleOpenSim4::GetLocalMusclePath() const
+	std::vector< std::pair< Body*, scone::Vec3 > > MuscleOpenSim4::GetLocalMusclePath() const
 	{
 		auto& pps = m_osMus.getGeometryPath().getCurrentPath( m_Model.GetTkState() );
-		std::vector< std::pair< String, Vec3 > > points;
-		for ( int i = 0; i < points.size(); ++i )
-			points.emplace_back( pps[ i ]->getBody().getName(), from_osim( pps[ i ]->getLocation( m_Model.GetTkState() ) ) );
+		std::vector< std::pair< Body*, Vec3 > > points;
+		for ( int i = 0; i < pps.size(); ++i )
+			points.emplace_back( FindByName( m_Model.GetBodies(), pps[ i ]->getBody().getName() ), from_osim( pps[ i ]->getLocation( m_Model.GetTkState() ) ) );
 		return points;
 	}
 

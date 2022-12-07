@@ -41,6 +41,7 @@ namespace scone
 		virtual Real GetMaxIsometricForce() const = 0;
 		virtual Real GetOptimalFiberLength() const = 0;
 		virtual Real GetTendonSlackLength() const = 0;
+		virtual Real GetPennationAngleAtOptimal() const = 0;
 
 		virtual Real GetMass( Real specific_tension = 0.25e6, Real muscle_density = 1059.7 ) const;
 		virtual Real GetPCSA( Real specific_tension = 0.25e6 ) const;
@@ -71,7 +72,7 @@ namespace scone
 		virtual Real GetMaxContractionVelocity() const = 0;
 
 		virtual std::vector< Vec3 > GetMusclePath() const = 0;
-		virtual std::vector< std::pair< String, Vec3 > > GetLocalMusclePath() const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const { SCONE_THROW_NOT_IMPLEMENTED; }
 
 		virtual Real GetActivation() const = 0;
 		virtual Real GetExcitation() const = 0;
