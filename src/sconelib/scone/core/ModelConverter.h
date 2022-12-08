@@ -19,5 +19,7 @@ namespace scone
 	private:
 		PropNode ConvertBody( const Body& b );
 		PropNode ConvertMuscle( const Muscle& j );
+		PropNode ConvertContactGeometry( const ContactGeometry& j );
+		PropNode ConvertDof( const Dof& d );
 	};
 }
