@@ -37,6 +37,7 @@ namespace scone
 		virtual Vec3 GetRotationAxis() const = 0;
 		virtual const Joint* GetJoint() const { return m_Joint; }
 		virtual Range< Real > GetRange() const = 0;
+		virtual Real GetDefaultPos() const { return Real( 0 ); }
 
 		virtual bool IsActuated() const { return false; }
 		virtual Real GetMinInput() const override { return -1.0; }

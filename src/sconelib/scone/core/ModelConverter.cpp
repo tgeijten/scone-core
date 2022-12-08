@@ -165,6 +165,8 @@ namespace scone
 		dof_pn[ "source" ] = GetDofSourceName( d );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( boundsdeg( boundsrad( range ) ) ) : range;
+		if ( d.GetDefaultPos() != 0.0 )
+			dof_pn[ "default" ] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
 		return pn;
 	}
 }

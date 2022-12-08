@@ -97,6 +97,11 @@ namespace scone
 		return Range< Real >( m_osCoord.get_range( 0 ), m_osCoord.get_range( 1 ) );
 	}
 
+	Real DofOpenSim3::GetDefaultPos() const
+	{
+		return m_osCoord.getDefaultValue();
+	}
+
 	Real DofOpenSim3::GetMinInput() const
 	{
 		return m_OsCoordAct ? m_OsCoordAct->getMinControl() : 0.0;
