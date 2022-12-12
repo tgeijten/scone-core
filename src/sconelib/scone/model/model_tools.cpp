@@ -11,6 +11,12 @@
 #include "scone/core/string_tools.h"
 #include "scone/core/profiler_config.h"
 #include "scone/model/UserInput.h"
+#include "xo/container/flat_map.h"
+#include "xo/utility/side.h"
+#include "xo/system/log.h"
+#include "Dof.h"
+#include "Joint.h"
+#include "Body.h"
 
 using std::vector;
 using std::pair;
@@ -56,5 +62,49 @@ namespace scone
 				ui->SetValue( *v ), ++count;
 		}
 		return count;
+	}
+
+	bool IsRealJoint( const Joint& j ) {
+		return j.GetParentBody().GetMass() > 0;
+	}
+
+	struct dof_info {
+		string name;
+		bool mirror_left = false;
+	};
+
+	string GetDofSourceName( const Dof& dof ) {
+		static xo::flat_map<string, dof_info> dof_types{
+			{ "tx",{ "tx" } },
+			{ "ty",{ "ty" } },
+			{ "tz",{ "tz" } },
+			{ "tilt",{ "rz" } },
+			{ "extension",{ "rz" } },
+			{ "list",{ "rx" } },
+			{ "bending",{ "rx" } },
+			{ "rotation",{ "ry", true } },
+			{ "flexion",{ "rz" } },
+			{ "angle",{ "rz" } },
+			{ "adduction",{ "rx", true } },
+			{ "inversion",{ "rx", true } }
+		};
+
+		const auto& j = *dof.GetJoint();
+		auto split_name = xo::split_str( dof.GetName(), "_" );
+		if ( split_name.size() >= 2 )
+		{
+			string& dof_base_name = split_name[ 0 ];
+			string& dof_type_name = split_name[ 1 ];
+			auto side = xo::str_get_side( j.GetName() );
+			auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
+			if ( auto di = dof_types.find( dof_type_name ); di != dof_types.end() )
+			{
+				string prefix = di->second.mirror_left && side == xo::side::left ? "-" : "";
+				return prefix + base_name + "_" + di->second.name + xo::side_postfix( side );
+			}
+		}
+
+		xo::log::warning( "Cannot deduce dof name, coordinate=", dof.GetJoint(), " joint=", j.GetName() );
+		return "?";
 	}
 }

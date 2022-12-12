@@ -17,9 +17,11 @@ namespace scone
 		double body_mass_threshold_ = 0.2;
 		
 	private:
-		PropNode ConvertBody( const Body& b );
-		PropNode ConvertMuscle( const Muscle& j );
-		PropNode ConvertContactGeometry( const ContactGeometry& j );
-		PropNode ConvertDof( const Dof& d );
+		void ConvertBody( const Body& b, PropNode& parent_pn );
+		void ConvertJoint( const Joint& b, PropNode& parent_pn );
+		void ConvertMuscle( const Muscle& j, PropNode& parent_pn );
+		void ConvertContactGeometry( const ContactGeometry& j, PropNode& parent_pn );
+		void ConvertDof( const Dof& d, PropNode& parent_pn );
+		void ConvertMaterials( const Model& m, PropNode& parent_pn );
 	};
 }

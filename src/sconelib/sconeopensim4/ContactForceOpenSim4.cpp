@@ -30,15 +30,26 @@ namespace scone
 		m_PlaneNormal()
 	{
 		std::vector<std::string> geom_names;
+		Real sphere_radius = 0.0;
+		bool correct_stiffness = false;
 		if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &osForce ) )
 		{
 			auto hcfnc = const_cast<OpenSim::HuntCrossleyForce&>( *hcf ); // hack for OpenSim bug
 			geom_names = make_string_list( hcfnc.getContactParametersSet().get( 0 ).getGeometry() );
+			m_StaticFriction = hcfnc.getStaticFriction();
+			m_DynamicFriction = hcfnc.getDynamicFriction();
+			m_Stiffness = hcfnc.getStiffness();
+			m_Damping = hcfnc.getDissipation();
+			correct_stiffness = true;
 		}
 		else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &osForce ) )
 		{
 			auto effnc = const_cast<OpenSim::ElasticFoundationForce&>( *eff ); // hack for OpenSim bug
 			geom_names = make_string_list( effnc.getContactParametersSet().get( 0 ).getGeometry() );
+			m_StaticFriction = effnc.getStaticFriction();
+			m_DynamicFriction = effnc.getDynamicFriction();
+			m_Stiffness = effnc.getStiffness();
+			m_Damping = effnc.getDissipation();
 		}
 		else SCONE_ERROR( "Unsupported contact force: " + osForce.getName() );
 
@@ -56,10 +67,17 @@ namespace scone
 					m_PlaneNormal = cg.GetOri() * Vec3( p->normal_ );
 					m_PlaneLocation = cg.GetPos();
 				}
+				if ( auto s = std::get_if< xo::sphere >( &cg.GetShape() ); s && sphere_radius == 0.0 )
+					sphere_radius = s->radius_; // track sphere radius to compute HCF stiffness
+
 				m_Geometries.push_back( &cg );
 			}
 			else log::warning( "Could not find ContactGeometry: ", name ); // error is because #osim4 has no ground body / contact geom
 		}
+
+		// correct stiffness based on sphere radius
+		if ( correct_stiffness )
+			m_Stiffness = std::pow( 4.0 / 3.0 * std::sqrt( sphere_radius ) * m_Stiffness, 2.0 / 3.0 );
 
 		auto labels = m_osForce.getRecordLabels();
 		m_Labels.reserve( labels.size() );
