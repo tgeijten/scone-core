@@ -54,6 +54,8 @@ namespace scone
 
 		const Model& GetModel() const override;
 
+		virtual PropNode GetInfo() const override;
+
 	private:
 		friend class ModelOpenSim4;
 		ModelOpenSim4& m_Model;

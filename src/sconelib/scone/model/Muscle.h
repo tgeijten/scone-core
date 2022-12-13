@@ -91,7 +91,7 @@ namespace scone
 		virtual bool HasSharedJoints( const Muscle& other ) const;
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
-		virtual PropNode GetInfo() const;
+		virtual PropNode GetInfo() const override;
 
 	protected:
 		void InitBodyJointDofs( const Body* b );

@@ -29,9 +29,9 @@ namespace scone
 		return mom;
 	}
 
-	PropNode Dof::GetInfo()
+	PropNode Dof::GetInfo() const
 	{
-		PropNode pn;
+		PropNode pn = Actuator::GetInfo();
 		pn[ "name" ] = GetName();
 		if ( GetJoint() )
 			pn[ "joint" ] = GetJoint()->GetName();

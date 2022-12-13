@@ -11,13 +11,6 @@
 
 namespace scone
 {
-	using boundsrad = xo::bounds< xo::angle_< xo::angle_unit::radians, double > >;
-	using boundsdeg = xo::bounds< xo::angle_< xo::angle_unit::degrees, double > >;
-	using bounds3rad = xo::vec3_< boundsrad >;
-	using bounds3deg = xo::vec3_< boundsdeg >;
-	using radian = xo::radiand;
-	using degree = xo::degreed;
-
 	static constexpr Real fix_epsilon = 1e-6;
 	inline Real fix( Real v ) { return std::abs( v ) < fix_epsilon ? Real( 0 ) : v; }
 	inline Vec3 fix( Vec3 v ) { return Vec3( fix( v.x ), fix( v.y ), fix( v.z ) ); }
@@ -84,15 +77,24 @@ namespace scone
 		joint_pn[ "parent" ] = j.GetParentBody().GetName();
 		joint_pn[ "pos_in_parent" ] = fix( tfp.inv_trans( j.GetPos() ) );
 		joint_pn[ "pos_in_child" ] = fix( tfc.inv_trans( j.GetPos() ) );
-		auto limits = bounds3rad{ {0,0}, {0,0}, {0,0} };
+		auto limits = Bounds3Rad{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
 				auto axis = dof->GetRotationAxis();
 				auto range = dof->GetRange();
 				limits[ GetAxisIndex( axis ) ] = { Radian( range.min ), Radian( range.max ) };
+				auto dof_info = dof->GetInfo();
+				if ( dof_info.has_key( "limit_stiffness" ) ) {
+					// convert stiffness and damping
+					auto kp = dof_info.get<Real>( "limit_stiffness" );
+					auto kd = dof_info.get<Real>( "limit_damping" );
+					joint_pn[ "limit_stiffness" ] = kp * 180 / xo::num<Real>::pi;
+					joint_pn[ "limit_damping" ] = kd / ( kp * 2 ) * 180 / xo::num<Real>::pi;
+					limits[ GetAxisIndex( axis ) ] = dof_info.get<BoundsDeg>( "limit_range" );
+				}
 			}
 		}
-		joint_pn[ "limits" ] = bounds3deg( limits );
+		joint_pn[ "limits" ] = Bounds3Deg( limits );
 	}
 
 	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn )
@@ -128,7 +130,7 @@ namespace scone
 		dof_pn[ "name" ] = d.GetName();
 		dof_pn[ "source" ] = GetDofSourceName( d );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
-		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( boundsdeg( boundsrad( range ) ) ) : range;
+		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )
 			dof_pn[ "default" ] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
 	}

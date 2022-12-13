@@ -15,6 +15,7 @@
 #include <OpenSim/Simulation/Model/ForceSet.h>
 #include <OpenSim/Simulation/Model/CoordinateLimitForce.h>
 #include <OpenSim/Actuators/CoordinateActuator.h>
+#include "scone/core/Angle.h"
 
 namespace scone
 {
@@ -131,4 +132,16 @@ namespace scone
 	{
 		return m_Model;
 	}
+
+	PropNode DofOpenSim3::GetInfo() const
+	{
+		PropNode pn = Dof::GetInfo();
+		if ( m_pOsLimitForce ) {
+			pn[ "limit_stiffness" ] = m_pOsLimitForce->get_lower_stiffness();
+			pn[ "limit_damping" ] = m_pOsLimitForce->get_damping();
+			pn[ "limit_range" ] = BoundsDeg( m_pOsLimitForce->get_lower_limit(), m_pOsLimitForce->get_upper_limit() );
+		}
+		return pn;
+	}
 }
+
