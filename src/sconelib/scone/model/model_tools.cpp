@@ -104,13 +104,22 @@ namespace scone
 			}
 		}
 
-		xo::log::warning( "Cannot deduce dof name, coordinate=", dof.GetJoint(), " joint=", j.GetName() );
+		xo::log::warning( "Cannot deduce dof name, coordinate=", dof.GetName(), " joint=", j.GetName() );
 		return "?";
 	}
 
 	string GetDofSourceName( const Dof& dof )
 	{
-		// #todo: implement
-		return "?";
+		static const char* rot_postfix[ 3 ] = { "_rx", "_ry", "_rz" };
+		static const char* trans_postfix[ 3 ] = { "_tx", "_ty", "_tz" };
+		const auto& j = *dof.GetJoint();
+		auto side = xo::str_get_side( j.GetName() );
+		auto rotational = dof.IsRotational();
+		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
+		auto idx = GetAxisIndex( dof.GetRotationAxis() );
+		String name = ( IsRealJoint( j ) && idx != 2 && side == xo::side::left ) ? "-" : "";
+		name += base_name + ( rotational ? rot_postfix[ idx ] : trans_postfix[ idx ] ) + xo::side_postfix( side );
+		xo::log::info( dof.GetName(), " axis=", dof.GetRotationAxis() );
+		return name;
 	}
 }
