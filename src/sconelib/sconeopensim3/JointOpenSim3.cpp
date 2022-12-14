@@ -72,4 +72,12 @@ namespace scone
 		m_osJoint.getModel().getSimbodyEngine().getPosition( m_Model.GetTkState(), m_osJoint.getBody(), m_osJoint.getLocationInChild(), point );
 		return from_osim( point );
 	}
+	Vec3 JointOpenSim3::GetPosInParent() const
+	{
+		return from_osim( m_osJoint.get_location_in_parent() );
+	}
+	Vec3 JointOpenSim3::GetPosInChild() const
+	{
+		return from_osim( m_osJoint.getLocationInChild() );
+	}
 }

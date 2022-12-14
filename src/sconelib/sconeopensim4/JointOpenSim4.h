@@ -26,6 +26,8 @@ namespace scone
 
 		virtual const String& GetName() const;
 		virtual Vec3 GetPos() const override;
+		virtual Vec3 GetPosInParent() const override;
+		virtual Vec3 GetPosInChild() const override;
 		virtual Vec3 GetReactionForce() const override;
 
 	private:

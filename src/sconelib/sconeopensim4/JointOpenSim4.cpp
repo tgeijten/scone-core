@@ -83,4 +83,16 @@ namespace scone
 		return from_osim( point );
 #endif
 	}
+
+	Vec3 JointOpenSim4::GetPosInParent() const
+	{
+		auto& f0 = m_osJoint.get_frames( 0 );
+		return from_osim( f0.get_translation() );
+	}
+
+	Vec3 JointOpenSim4::GetPosInChild() const
+	{
+		auto& f1 = m_osJoint.get_frames( 1 );
+		return from_osim( f1.get_translation() );
+	}
 }

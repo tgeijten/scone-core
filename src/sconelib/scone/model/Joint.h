@@ -27,6 +27,9 @@ namespace scone
 		virtual ~Joint();
 
 		virtual Vec3 GetPos() const = 0;
+		virtual Vec3 GetPosInParent() const = 0;
+		virtual Vec3 GetPosInChild() const = 0;
+
 		virtual Vec3 GetReactionForce() const = 0;
 		virtual Vec3 GetLimitTorque() const;
 		virtual Real GetLimitPower() const;

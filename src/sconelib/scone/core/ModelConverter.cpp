@@ -75,8 +75,17 @@ namespace scone
 		auto& joint_pn = parent_pn.add_child( "joint" );
 		joint_pn[ "name" ] = j.GetName();
 		joint_pn[ "parent" ] = j.GetParentBody().GetName();
-		joint_pn[ "pos_in_parent" ] = fix( tfp.inv_trans( j.GetPos() ) );
-		joint_pn[ "pos_in_child" ] = fix( tfc.inv_trans( j.GetPos() ) );
+		joint_pn[ "pos_in_parent" ] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
+		joint_pn[ "pos_in_child" ] = fix( j.GetPosInChild() - bc.GetLocalComPos() );
+
+		// #todo: use this if GetPosInParent/Child() is not working:
+		//joint_pn[ "pos_in_parent" ] = fix( tfp.inv_trans( j.GetPos() ) );
+		//joint_pn[ "pos_in_child" ] = fix( tfc.inv_trans( j.GetPos() ) );
+
+		// #todo: ref_ori can only be set when in NullPose
+		//if ( bp.GetOrientation() != bc.GetOrientation() )
+		//	joint_pn[ "ref_ori" ] = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
+
 		auto limits = Bounds3Rad{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
@@ -128,7 +137,7 @@ namespace scone
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
 		dof_pn[ "name" ] = d.GetName();
-		dof_pn[ "source" ] = GetDofSourceName( d );
+		dof_pn[ "source" ] = GetDofSourceNameLookUp( d );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )

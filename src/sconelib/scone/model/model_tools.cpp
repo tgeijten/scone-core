@@ -73,7 +73,7 @@ namespace scone
 		bool mirror_left = false;
 	};
 
-	string GetDofSourceName( const Dof& dof ) {
+	string GetDofSourceNameLookUp( const Dof& dof ) {
 		static xo::flat_map<string, dof_info> dof_types{
 			{ "tx",{ "tx" } },
 			{ "ty",{ "ty" } },
@@ -105,6 +105,12 @@ namespace scone
 		}
 
 		xo::log::warning( "Cannot deduce dof name, coordinate=", dof.GetJoint(), " joint=", j.GetName() );
+		return "?";
+	}
+
+	string GetDofSourceName( const Dof& dof )
+	{
+		// #todo: implement
 		return "?";
 	}
 }

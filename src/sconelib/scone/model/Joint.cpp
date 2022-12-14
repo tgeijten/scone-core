@@ -65,6 +65,8 @@ namespace scone
 		pn[ "name" ] = GetName();
 		pn[ "parent" ] = GetParentBody().GetName();
 		pn[ "child" ] = GetBody().GetName();
+		pn[ "pos_in_parent" ] = GetPosInParent();
+		pn[ "pos_in_child" ] = GetPosInChild();
 		return pn;
 	}
 

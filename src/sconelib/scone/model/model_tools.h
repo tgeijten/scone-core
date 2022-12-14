@@ -24,5 +24,6 @@ namespace scone
 	SCONE_API size_t SetUserInputsFromPropNode( const PropNode& pn, const std::vector<UserInputUP>& user_inputs );
 
 	SCONE_API bool IsRealJoint( const Joint& j );
+	SCONE_API string GetDofSourceNameLookUp( const Dof& dof );
 	SCONE_API string GetDofSourceName( const Dof& dof );
 }
