@@ -53,11 +53,14 @@ namespace scone
 
 		if ( b.GetMass() < body_mass_threshold_ )
 			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
+
+		// joint
 		if ( auto* j = b.GetJoint(); j && IsRealJoint( *j ) )
 			ConvertJoint( *j, body_pn );
 		else if ( !b.GetLocalComPos().is_null() )
 			body_pn[ "pos" ] = b.GetLocalComPos();
 
+		// display geometry
 		for ( const auto& g : b.GetDisplayGeometries() ) {
 			auto& geom_pn = body_pn.add_child( "mesh" );
 			geom_pn[ "file" ] = g.filename_;
