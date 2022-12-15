@@ -35,6 +35,7 @@ namespace scone
 
 		virtual bool IsRotational() const = 0;
 		virtual Vec3 GetRotationAxis() const = 0;
+		virtual Vec3 GetLocalAxis() const { return Vec3::zero(); }
 		virtual const Joint* GetJoint() const { return m_Joint; }
 		virtual Range< Real > GetRange() const = 0;
 		virtual Real GetDefaultPos() const { return Real( 0 ); }

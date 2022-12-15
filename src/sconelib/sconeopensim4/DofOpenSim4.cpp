@@ -16,6 +16,8 @@
 #include <OpenSim/Simulation/Model/CoordinateLimitForce.h>
 #include <OpenSim/Actuators/CoordinateActuator.h>
 #include "scone/core/Angle.h"
+#include "xo/container/vector_type.h"
+#include "simbody_tools.h"
 
 namespace scone
 {
@@ -97,6 +99,23 @@ namespace scone
 	Vec3 DofOpenSim4::GetRotationAxis() const
 	{
 		return m_RotationAxis;
+	}
+
+	Vec3 DofOpenSim4::GetLocalAxis() const
+	{
+		auto* osJoint = &m_osCoord.getJoint();
+		if ( auto* customJoint = dynamic_cast<const OpenSim::CustomJoint*>( osJoint ) ) {
+			auto& st = customJoint->getSpatialTransform();
+			auto myIdx = st.getCoordinateNames().findIndex( m_osCoord.getName() );
+			auto idxVec = st.getCoordinateIndices();
+			for ( index_t axisIdx = 0; axisIdx < idxVec.size(); ++axisIdx )
+				if ( xo::contains( idxVec[ axisIdx ], myIdx ) )
+					return from_osim( st.getAxes()[ axisIdx ] );
+		}
+		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) )
+			return Vec3::unit_z();
+
+		return Vec3::zero();
 	}
 
 	Range< Real > DofOpenSim4::GetRange() const

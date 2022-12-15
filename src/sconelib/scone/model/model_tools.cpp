@@ -116,10 +116,10 @@ namespace scone
 		auto side = xo::str_get_side( j.GetName() );
 		auto rotational = dof.IsRotational();
 		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
-		auto idx = GetAxisIndex( dof.GetRotationAxis() );
+		auto idx = GetAxisIndex( dof.GetLocalAxis() );
 		String name = ( IsRealJoint( j ) && idx != 2 && side == xo::side::left ) ? "-" : "";
 		name += base_name + ( rotational ? rot_postfix[ idx ] : trans_postfix[ idx ] ) + xo::side_postfix( side );
-		xo::log::info( dof.GetName(), " axis=", dof.GetRotationAxis() );
+		xo::log::debug( dof.GetName(), " source=", name, " axis=", dof.GetLocalAxis() );
 		return name;
 	}
 }

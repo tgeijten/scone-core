@@ -98,7 +98,7 @@ namespace scone
 					auto kp = dof_info.get<Real>( "limit_stiffness" );
 					auto kd = dof_info.get<Real>( "limit_damping" );
 					joint_pn[ "limit_stiffness" ] = kp * 180 / xo::num<Real>::pi;
-					joint_pn[ "limit_damping" ] = kd / ( kp * 2 ) * 180 / xo::num<Real>::pi;
+					joint_pn[ "limit_damping" ] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
 					limits[ GetAxisIndex( axis ) ] = dof_info.get<BoundsDeg>( "limit_range" );
 				}
 			}
@@ -137,7 +137,7 @@ namespace scone
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
 		dof_pn[ "name" ] = d.GetName();
-		dof_pn[ "source" ] = GetDofSourceNameLookUp( d );
+		dof_pn[ "source" ] = GetDofSourceName( d );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )

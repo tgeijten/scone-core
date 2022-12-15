@@ -14,6 +14,7 @@ namespace scone
 
 		double joint_stiffness_ = 1e6;
 		double joint_limit_stiffness_ = 500;
+		double joint_limit_damping_angle_ = 2;
 		double body_mass_threshold_ = 0.2;
 		
 	private:
