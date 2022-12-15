@@ -6,6 +6,7 @@
 #include "xo/numerical/bounds.h"
 #include "xo/utility/side.h"
 #include "scone/model/model_tools.h"
+#include "scone/core/Log.h"
 #include "string_tools.h"
 #include "Angle.h"
 
@@ -50,6 +51,8 @@ namespace scone
 		body_pn[ "mass" ] = b.GetMass();
 		body_pn[ "inertia" ] = b.GetInertiaTensorDiagonal();
 
+		if ( b.GetMass() < body_mass_threshold_ )
+			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
 		if ( auto* j = b.GetJoint(); j && IsRealJoint( *j ) )
 			ConvertJoint( *j, body_pn );
 		else if ( !b.GetLocalComPos().is_null() )
@@ -70,28 +73,15 @@ namespace scone
 	{
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
-		auto tfp = xo::transformd{ bp.GetComPos(), bp.GetOrientation() };
-		auto tfc = xo::transformd{ bc.GetComPos(), bc.GetOrientation() };
 		auto& joint_pn = parent_pn.add_child( "joint" );
 		joint_pn[ "name" ] = j.GetName();
 		joint_pn[ "parent" ] = j.GetParentBody().GetName();
 		joint_pn[ "pos_in_parent" ] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
 		joint_pn[ "pos_in_child" ] = fix( j.GetPosInChild() - bc.GetLocalComPos() );
-
-		// #todo: use this if GetPosInParent/Child() is not working:
-		//joint_pn[ "pos_in_parent" ] = fix( tfp.inv_trans( j.GetPos() ) );
-		//joint_pn[ "pos_in_child" ] = fix( tfc.inv_trans( j.GetPos() ) );
-
-		// #todo: ref_ori can only be set when in NullPose
-		//if ( bp.GetOrientation() != bc.GetOrientation() )
-		//	joint_pn[ "ref_ori" ] = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
-
-		auto limits = Bounds3Rad{ {0,0}, {0,0}, {0,0} };
+		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
 				auto axis = dof->GetRotationAxis();
-				auto range = dof->GetRange();
-				limits[ GetAxisIndex( axis ) ] = { Radian( range.min ), Radian( range.max ) };
 				auto dof_info = dof->GetInfo();
 				if ( dof_info.has_key( "limit_stiffness" ) ) {
 					// convert stiffness and damping
@@ -101,6 +91,8 @@ namespace scone
 					joint_pn[ "limit_damping" ] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
 					limits[ GetAxisIndex( axis ) ] = dof_info.get<BoundsDeg>( "limit_range" );
 				}
+				else
+					limits[ GetAxisIndex( axis ) ] = { Degree( -360 ), Degree( 360 ) };
 			}
 		}
 		joint_pn[ "limits" ] = Bounds3Deg( limits );
