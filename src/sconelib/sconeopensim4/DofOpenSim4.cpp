@@ -14,6 +14,9 @@
 #include <OpenSim/Simulation/Model/Model.h>
 #include <OpenSim/Simulation/Model/ForceSet.h>
 #include <OpenSim/Simulation/Model/CoordinateLimitForce.h>
+#include "OpenSim/Simulation/SimbodyEngine/CustomJoint.h"
+#include "OpenSim/Simulation/SimbodyEngine/PinJoint.h"
+#include "OpenSim/Simulation/SimbodyEngine/SpatialTransform.h"
 #include <OpenSim/Actuators/CoordinateActuator.h>
 #include "scone/core/Angle.h"
 #include "xo/container/vector_type.h"

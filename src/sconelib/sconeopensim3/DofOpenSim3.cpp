@@ -16,9 +16,10 @@
 #include <OpenSim/Simulation/Model/CoordinateLimitForce.h>
 #include "OpenSim/Simulation/SimbodyEngine/CustomJoint.h"
 #include "OpenSim/Simulation/SimbodyEngine/PinJoint.h"
+#include "OpenSim/Simulation/SimbodyEngine/SpatialTransform.h"
 #include <OpenSim/Actuators/CoordinateActuator.h>
 #include "scone/core/Angle.h"
-#include "sconeopensim4/simbody_tools.h"
+#include "simbody_tools.h"
 
 namespace scone
 {
