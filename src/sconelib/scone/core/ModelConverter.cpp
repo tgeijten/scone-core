@@ -84,18 +84,27 @@ namespace scone
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
-				auto axis = dof->GetRotationAxis();
+				auto axis = dof->GetLocalAxis();
+				auto axis_idx = GetAxisIndex( axis );
+				auto sign = GetAxisSign( axis );
 				auto dof_info = dof->GetInfo();
 				if ( dof_info.has_key( "limit_stiffness" ) ) {
 					// convert stiffness and damping
-					auto kp = dof_info.get<Real>( "limit_stiffness" );
-					auto kd = dof_info.get<Real>( "limit_damping" );
-					joint_pn[ "limit_stiffness" ] = kp * 180 / xo::num<Real>::pi;
-					joint_pn[ "limit_damping" ] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
-					limits[ GetAxisIndex( axis ) ] = dof_info.get<BoundsDeg>( "limit_range" );
+					if ( use_stiffness_from_limit_force_ ) {
+						auto kp = dof_info.get<Real>( "limit_stiffness" );
+						auto kd = dof_info.get<Real>( "limit_damping" );
+						joint_pn[ "limit_stiffness" ] = kp * 180 / xo::num<Real>::pi;
+						joint_pn[ "limit_damping" ] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
+					}
+					// set limit range
+					auto dof_range = dof_info.get<BoundsDeg>( "limit_range" );
+					limits[ axis_idx ] = sign >= 0 ? dof_range : -dof_range;
 				}
-				else
-					limits[ GetAxisIndex( axis ) ] = { Degree( -360 ), Degree( 360 ) };
+				else {
+					if ( use_limits_from_dof_range_ )
+						limits[ axis_idx ] = BoundsRad( dof->GetRange().min, dof->GetRange().max );
+					else limits[ axis_idx ] = { Degree( -360 ), Degree( 360 ) };
+				}
 			}
 		}
 		joint_pn[ "limits" ] = Bounds3Deg( limits );

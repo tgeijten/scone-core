@@ -117,9 +117,25 @@ namespace scone
 		auto rotational = dof.IsRotational();
 		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
 		auto idx = GetAxisIndex( dof.GetLocalAxis() );
-		String name = ( IsRealJoint( j ) && idx != 2 && side == xo::side::left ) ? "-" : "";
+		auto sign = GetAxisSign( dof.GetLocalAxis() );
+		String name = ( rotational && sign < 0 ) ? "-" : "";
 		name += base_name + ( rotational ? rot_postfix[ idx ] : trans_postfix[ idx ] ) + xo::side_postfix( side );
 		xo::log::debug( dof.GetName(), " source=", name, " axis=", dof.GetLocalAxis() );
 		return name;
+	}
+
+	index_t GetAxisIndex( const Vec3& dir )
+	{
+		auto x = std::abs( dir.x ), y = std::abs( dir.y ), z = std::abs( dir.z );
+		if ( x > y && x > z )
+			return 0;
+		else if ( y > z )
+			return 1;
+		else return 2;
+	}
+
+	Real GetAxisSign( const Vec3& dir )
+	{
+		return dir[ GetAxisIndex( dir ) ] < 0 ? -1 : 1;
 	}
 }

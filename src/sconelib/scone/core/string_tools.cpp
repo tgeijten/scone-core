@@ -7,15 +7,18 @@
 */
 
 #include "string_tools.h"
+#include "version.h"
+#include "scone/model/model_tools.h"
 
 #include <time.h>
 
 #ifdef WIN32
-#include <shlwapi.h>
-#pragma comment( lib, "shlwapi.lib" )
-#pragma warning( disable: 4996 ) // no push/pop because it's a cpp file
+#	define NOMINMAX
+#	include <shlwapi.h>
+#	pragma comment( lib, "shlwapi.lib" )
+#	pragma warning( disable: 4996 ) // no push/pop because it's a cpp file
 #else
-#include <fnmatch.h>
+#	include <fnmatch.h>
 #endif
 
 #include <sstream>
@@ -24,7 +27,6 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
-#include "version.h"
 
 using std::cout;
 using std::endl;
@@ -69,15 +71,5 @@ namespace scone
 	const char* GetAxisName( const Vec3& dir )
 	{
 		return GetAxisName( GetAxisIndex( dir ) );
-	}
-
-	index_t GetAxisIndex( const Vec3& dir )
-	{
-		auto x = std::abs( dir.x ), y = std::abs( dir.y ), z = std::abs( dir.z );
-		if ( x > y && x > z )
-			return 0;
-		else if ( y > z )
-			return 1;
-		else return 2;
 	}
 }

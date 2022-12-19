@@ -26,4 +26,8 @@ namespace scone
 	SCONE_API bool IsRealJoint( const Joint& j );
 	SCONE_API string GetDofSourceNameLookUp( const Dof& dof );
 	SCONE_API string GetDofSourceName( const Dof& dof );
+
+	/// Derive axis index (X=0, Y=1, Z=2)
+	SCONE_API index_t GetAxisIndex( const Vec3& dir );
+	SCONE_API Real GetAxisSign( const Vec3& dir );
 }
