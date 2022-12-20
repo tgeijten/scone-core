@@ -51,7 +51,7 @@ namespace scone
 		body_pn[ "mass" ] = b.GetMass();
 		body_pn[ "inertia" ] = b.GetInertiaTensorDiagonal();
 
-		if ( b.GetMass() < body_mass_threshold_ )
+		if ( b.GetMass() > 0 && b.GetMass() < body_mass_threshold_ )
 			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
 
 		// joint

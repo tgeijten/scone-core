@@ -120,7 +120,6 @@ namespace scone
 		auto sign = GetAxisSign( dof.GetLocalAxis() );
 		String name = ( rotational && sign < 0 ) ? "-" : "";
 		name += base_name + ( rotational ? rot_postfix[ idx ] : trans_postfix[ idx ] ) + xo::side_postfix( side );
-		xo::log::debug( dof.GetName(), " source=", name, " axis=", dof.GetLocalAxis() );
 		return name;
 	}
 
