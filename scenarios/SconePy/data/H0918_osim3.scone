@@ -6,4 +6,5 @@ ModelOpenSim3 {
 	state_init_file = data/InitStateJump.zml
 	fixed_control_step_size = 0.001
 	initial_equilibration_activation = 0.05
+	<< neural_delays_FEA_v4.zml >>
 }
