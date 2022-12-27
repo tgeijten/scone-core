@@ -192,6 +192,7 @@ namespace scone
 		pn[ "max_isometric_force" ] = GetMaxIsometricForce();
 		pn[ "optimal_fiber_length" ] = GetOptimalFiberLength();
 		pn[ "tendon_slack_length" ] = GetTendonSlackLength();
+		pn[ "pennation_angle_at_optimal" ] = GetPennationAngleAtOptimal();
 		pn[ "max_contraction_velocity" ] = GetMaxContractionVelocity();
 		return pn;
 	}
