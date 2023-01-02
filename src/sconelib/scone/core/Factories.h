@@ -24,10 +24,10 @@
 namespace scone
 {
 	inline string GetFactoryErrorMessage( const String& name, const PropNode& pn ) {
-		if ( name == "Model" && pn.has_any_key( { "ModelHyfydy", "ModelHfd" } ) )
+		if ( name == "Model" && pn.has_any_key( { "ModelHyfydy", "ModelHfd", "HyfydyModel" } ) )
 			return ( "This scenario uses a Hyfydy model, but no active license key was found.\n"
 				"Please check Tools -> Preferences -> Hyfydy, or visit https://hyfydy.com for more information." );
-		else return ( "Error creating scenario" + name );
+		else return ( "Could not create object of type: " + name );
 	}
 	struct FactoryNotFoundException : public RuntimeException {
 		FactoryNotFoundException( const String& name, const PropNode& pn ) :
