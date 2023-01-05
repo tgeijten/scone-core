@@ -18,12 +18,12 @@
 	constexpr int SCONE_VERSION_MAJOR = 2;
 	constexpr int SCONE_VERSION_MINOR = 1;
 	constexpr int SCONE_VERSION_PATCH = 0;
-	constexpr const char* SCONE_VERSION_POSTFIX = "RC 2";
+	constexpr const char* SCONE_VERSION_POSTFIX = "RC 3";
 #else
 	constexpr int SCONE_VERSION_MAJOR = 2;
 	constexpr int SCONE_VERSION_MINOR = 1;
 	constexpr int SCONE_VERSION_PATCH = 0;
-	constexpr const char* SCONE_VERSION_POSTFIX = "RC 2";
+	constexpr const char* SCONE_VERSION_POSTFIX = "RC 3";
 #endif
 
 #if __has_include( "scone/../../repository_revision.h" )
