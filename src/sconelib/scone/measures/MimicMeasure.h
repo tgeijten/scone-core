@@ -49,6 +49,7 @@ namespace scone
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
+		virtual double GetCurrentResult( const Model& model ) override;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:

@@ -64,6 +64,11 @@ namespace scone
 		return  penalty;
 	}
 
+	double MuscleMeasure::GetCurrentResult( const Model& model )
+	{
+		return input.GetLatest() + activation.GetLatest() + length.GetLatest() + velocity.GetLatest() + force.GetLatest();
+	}
+
 	bool MuscleMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		input.AddSample( timestamp, muscle.GetInput() );

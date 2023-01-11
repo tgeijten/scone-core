@@ -23,6 +23,7 @@ namespace scone
 		JointLoadMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 
 		virtual double ComputeResult( const Model& model ) override;
+		virtual double GetCurrentResult( const Model& model ) override;
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 
 	protected:

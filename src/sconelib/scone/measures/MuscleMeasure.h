@@ -30,6 +30,7 @@ namespace scone
 	public:
 		MuscleMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 		virtual double ComputeResult( const Model& model ) override;
+		virtual double GetCurrentResult( const Model& model ) override;
 
 		/// Muscle to which to apply the penalty to.
 		Muscle& muscle;

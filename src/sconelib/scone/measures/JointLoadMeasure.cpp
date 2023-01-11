@@ -26,6 +26,11 @@ namespace scone
 		return RangePenalty<Real>::GetResult();
 	}
 
+	double JointLoadMeasure::GetCurrentResult( const Model& model )
+	{
+		return RangePenalty<Real>::GetLatest();
+	}
+
 	bool JointLoadMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		joint_load = joint.GetLoad();
@@ -34,7 +39,7 @@ namespace scone
 		return false;
 	}
 
-	scone::String JointLoadMeasure::GetClassSignature() const
+	String JointLoadMeasure::GetClassSignature() const
 	{
 		return "";
 	}

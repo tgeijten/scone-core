@@ -81,7 +81,6 @@ namespace scone
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
-
 		virtual double GetCurrentResult( const Model& model ) override { return m_Effort.GetLatest(); }
 
 	protected:

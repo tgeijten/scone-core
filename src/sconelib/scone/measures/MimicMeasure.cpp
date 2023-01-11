@@ -102,6 +102,11 @@ namespace scone
 		return result + penalty;
 	}
 
+	double MimicMeasure::GetCurrentResult( const Model& model )
+	{
+		return result_.GetLatest();
+	}
+
 	void MimicMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		frame[ "mimic_error" ] = result_.GetLatest();

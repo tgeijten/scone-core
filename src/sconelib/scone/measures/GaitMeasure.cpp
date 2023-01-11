@@ -20,7 +20,7 @@
 namespace scone
 {
 	GaitMeasure::GaitMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc )
+		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, termination_height, 0.5 );
 		INIT_PROP( props, min_velocity, 0 );
@@ -43,7 +43,7 @@ namespace scone
 			for ( const String& t : tokens )
 				m_BaseBodies.push_back( &( *FindByName( model.GetBodies(), t ) ) );
 		}
-		else 
+		else
 		{
 			// use foot_body for base bodies
 			for ( const auto& l : model.GetLegs() )
@@ -126,12 +126,21 @@ namespace scone
 		return 1.0 - step_measure / step_time;
 	}
 
+	double GaitMeasure::GetCurrentResult( const Model& model )
+	{
+		double step_vel = steps_.empty() ? 0 : steps_.back().length / GetStepDuration( steps_.size() - 1 );
+		double step_penalty = Range< double >( min_velocity, max_velocity ).GetRangeViolation( step_vel );
+		double norm_vel = xo::clamped( 1.0 - ( fabs( step_penalty ) / min_velocity ), -1.0, 1.0 );
+		return norm_vel;
+	}
+
 	void GaitMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		frame[ "step_length" ] = steps_.empty() ? 0 : steps_.back().length;
+		frame[ "step_velocity" ] = steps_.empty() ? 0 : steps_.back().length / GetStepDuration( steps_.size() - 1 );
 	}
 
-	void GaitMeasure::AddStep( const Model &model, double timestamp )
+	void GaitMeasure::AddStep( const Model& model, double timestamp )
 	{
 		double gait_dist = GetGaitDist( model );
 		double step_length = gait_dist - m_PrevGaitDist;
@@ -140,7 +149,7 @@ namespace scone
 		m_PrevGaitDist = gait_dist;
 	}
 
-	Real GaitMeasure::GetGaitDist( const Model &model )
+	Real GaitMeasure::GetGaitDist( const Model& model )
 	{
 		// compute average of feet and Com (smallest 2 values)
 		SCONE_ASSERT( m_BaseBodies.size() >= 2 );
@@ -150,6 +159,16 @@ namespace scone
 		distances.insert( xo::dot_product( direction, m_BaseBodies[ 0 ]->GetComPos() ) );
 		distances.insert( xo::dot_product( direction, m_BaseBodies[ 1 ]->GetComPos() ) );
 		return ( distances[ 0 ] + distances[ 1 ] ) / 2;
+	}
+
+	Real GaitMeasure::GetStepDuration( index_t step ) const
+	{
+		if ( steps_.empty() )
+			return 0.0;
+		else if ( step == 0 )
+			return steps_.front().time;
+		SCONE_ASSERT( steps_.size() > step );
+		return steps_[ step ].time - steps_[ step - 1 ].time;
 	}
 
 	String GaitMeasure::GetClassSignature() const

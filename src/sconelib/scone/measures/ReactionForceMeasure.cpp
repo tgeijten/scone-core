@@ -25,6 +25,11 @@ namespace scone
 		return RangePenalty<Real>::GetResult();
 	}
 
+	double ReactionForceMeasure::GetCurrentResult( const Model& model )
+	{
+		return RangePenalty<Real>::GetLatest();
+	}
+
 	bool ReactionForceMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		Real leg_load = 0.0f;

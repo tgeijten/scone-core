@@ -69,6 +69,12 @@ namespace scone
 		return penalty;
 	}
 
+	double DofMeasure::GetCurrentResult( const Model& model )
+	{
+		return position.GetLatest().value + velocity.GetLatest().value + acceleration.GetLatest().value + 
+			limit_torque.GetLatest() + actuator_torque.GetLatest();
+	}
+
 	bool DofMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )

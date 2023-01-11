@@ -61,6 +61,11 @@ namespace scone
 		return  penalty;
 	}
 
+	double BodyMeasure::GetCurrentResult( const Model& model )
+	{
+		return position.GetLatest() + velocity.GetLatest() + angular_velocity.GetLatest() + acceleration.GetLatest();
+	}
+
 	bool BodyMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )

@@ -62,6 +62,7 @@ namespace scone
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		void AddStep( const Model &model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
+		virtual double GetCurrentResult( const Model& model ) override;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:
@@ -76,6 +77,7 @@ namespace scone
 
 		std::vector< const Body* > m_BaseBodies;
 		Real GetGaitDist( const Model &model );
+		Real GetStepDuration( index_t step ) const;
 
 		bool HasNewFootContact( const Model& model );
 		std::vector< bool > m_PrevContactState;
