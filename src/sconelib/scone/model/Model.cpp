@@ -183,12 +183,12 @@ namespace scone
 	void Model::CreateControllers( const PropNode& pn, Params& par )
 	{
 		// add controller (new style, prefer define outside model)
-		if ( auto* cprops = pn.try_get_child( "Controller" ) )
-			SetController( scone::CreateController( *cprops, par, *this, Location() ) );
+		if ( auto controller_props = TryFindFactoryProps( GetControllerFactory(), pn, "Controller" ) )
+			CreateController( controller_props, par );
 
 		// add measure (new style, prefer define outside model)
-		if ( auto* cprops = pn.try_get_child( "Measure" ) )
-			SetMeasure( scone::CreateMeasure( *cprops, par, *this, Location() ) );
+		if ( auto measure_props = TryFindFactoryProps( GetMeasureFactory(), pn, "Measure" ) )
+			CreateMeasure( measure_props, par );
 
 		// add multiple controllers / measures (old style)
 		if ( auto* cprops = pn.try_get_child( "Controllers" ) )
