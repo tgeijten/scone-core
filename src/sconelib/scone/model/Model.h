@@ -93,6 +93,8 @@ namespace scone
 		Measure* GetMeasure() { return m_Measure.get(); }
 		const Measure* GetMeasure() const { return m_Measure.get(); }
 		void CreateMeasure( const FactoryProps& measure_fp, Params& par );
+		Real GetMeasureResult() { return GetMeasure() ? GetMeasure()->GetWeightedResult( *this ) : 0; }
+		Real GetCurrentMeasureResult() { return GetMeasure() ? GetMeasure()->GetCurrentWeightedResult( *this ) : 0; }
 
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }
