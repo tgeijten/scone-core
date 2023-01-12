@@ -64,6 +64,9 @@ namespace scone
 		/// Threshold load [bw] for detecting swing phase; default = stance_load_threshold.
 		Real swing_load_threshold;
 
+		/// Use model COM as reference for relative sagittal_pos instead of base body COM; default = 0.
+		Real use_model_com_reference_pos;
+
 		/// Bool indicating if control parameters should be the same for left and right; default = true.
 		bool symmetric;
 

@@ -56,6 +56,7 @@ namespace scone
 		INIT_MEMBER( props, leg_load_sensor_delay, 0.0 ),
 		stance_load_threshold( 0 ), // not used internally, only for documentation purpose
 		swing_load_threshold( 0 ), // not used internally, only for documentation purpose
+		INIT_MEMBER( props, use_model_com_reference_pos, false ),
 		INIT_MEMBER( props, symmetric, true ),
 		INIT_MEMBER( props, omnidirectional, false )
 	{
@@ -163,15 +164,16 @@ namespace scone
 			ls.leg_load = ls.load_sensor.GetValue( leg_load_sensor_delay );
 			ls.allow_stance_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) > ls.stance_load_threshold;
 			ls.allow_swing_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) <= ls.swing_load_threshold;
+			auto reference_pos = use_model_com_reference_pos ? model.GetComPos() : ls.leg.GetBaseBody().GetComPos();
 			if ( omnidirectional && model.HasRootBody() ) {
 				auto root_ori = model.GetRootBody().GetOrientation();
 				Vec3 sag_dir = root_ori * Vec3::unit_x(), cor_dir = root_ori * Vec3::unit_z();
-				ls.sagittal_pos = xo::dot_product( sag_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
-				ls.coronal_pos = xo::dot_product( cor_dir, ls.leg.GetFootBody().GetComPos() - ls.leg.GetBaseBody().GetComPos() );
+				ls.sagittal_pos = xo::dot_product( sag_dir, ls.leg.GetFootBody().GetComPos() - reference_pos );
+				ls.coronal_pos = xo::dot_product( cor_dir, ls.leg.GetFootBody().GetComPos() - reference_pos );
 			}
 			else {
-				ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - ls.leg.GetBaseBody().GetComPos().x;
-				ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - ls.leg.GetBaseBody().GetComPos().z;
+				ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - reference_pos.x;
+				ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - reference_pos.z;
 			}
 			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length * ls.late_stance_threshold;
 			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length * ls.liftoff_threshold;
