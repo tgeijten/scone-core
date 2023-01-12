@@ -50,12 +50,13 @@ namespace scone
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
+		virtual void Reset( Model& model ) override;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:
 		virtual String GetClassSignature() const override;
 		const Storage<>& storage_;
-		Statistic<> result_;
+		Statistic<> mimic_result_;
 		struct Channel {
 			index_t state_idx_;
 			index_t storage_idx_;

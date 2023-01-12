@@ -30,6 +30,12 @@ namespace scone
 		return RangePenalty<Real>::GetLatest();
 	}
 
+	void ReactionForceMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		RangePenalty<Real>::Reset();
+	}
+
 	bool ReactionForceMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		Real leg_load = 0.0f;

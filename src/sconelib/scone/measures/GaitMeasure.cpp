@@ -134,6 +134,15 @@ namespace scone
 		return norm_vel;
 	}
 
+	void GaitMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		steps_.clear();
+		m_PrevContactState.clear();
+		m_PrevGaitDist = 0.0;
+		m_Report.clear();
+	}
+
 	void GaitMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		frame[ "step_length" ] = steps_.empty() ? 0 : steps_.back().length;

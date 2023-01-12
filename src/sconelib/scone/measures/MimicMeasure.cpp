@@ -83,9 +83,9 @@ namespace scone
 		}
 
 		error /= state_storage_map_.size();
-		result_.AddSample( timestamp, error );
+		mimic_result_.AddSample( timestamp, error );
 
-		if ( ( average_error_limit != 0 && result_.GetAverage() > average_error_limit ) ||
+		if ( ( average_error_limit != 0 && mimic_result_.GetAverage() > average_error_limit ) ||
 			( peak_error_limit != 0 && error > peak_error_limit ) )
 			return true; // early termination
 
@@ -94,7 +94,7 @@ namespace scone
 
 	double MimicMeasure::ComputeResult( const Model& model )
 	{
-		auto result = use_best_match ? result_.GetLowest() : result_.GetAverage();
+		auto result = use_best_match ? mimic_result_.GetLowest() : mimic_result_.GetAverage();
 		auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
 		auto penalty = peak_error_limit * penalty_duration;
 		GetReport().set( "mimic_error", result );
@@ -104,12 +104,20 @@ namespace scone
 
 	double MimicMeasure::GetCurrentResult( const Model& model )
 	{
-		return result_.GetLatest();
+		return mimic_result_.GetLatest();
+	}
+
+	void MimicMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		mimic_result_.Reset();
+		for ( auto& c : channel_errors_ )
+			c.second = 0.0;
 	}
 
 	void MimicMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ "mimic_error" ] = result_.GetLatest();
+		frame[ "mimic_error" ] = mimic_result_.GetLatest();
 		if ( flags.get<StoreDataTypes::DebugData>() )
 		{
 			for ( auto& c : channel_errors_ )

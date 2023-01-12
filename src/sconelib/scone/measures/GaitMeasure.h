@@ -63,29 +63,28 @@ namespace scone
 		void AddStep( const Model &model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
+		virtual void Reset( Model& model ) override;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:
 		virtual String GetClassSignature() const override;
 
 	private:
+		std::vector< const Body* > m_BaseBodies;
+		Vec3 m_InitialComPos;
+		Real m_InitGaitDist;
+
 		struct Step {
 			TimeInSeconds time;
 			Real length;
 		};
 		std::vector< Step > steps_;
+		std::vector< bool > m_PrevContactState;
+		Real m_PrevGaitDist;
+		PropNode m_Report;
 
-		std::vector< const Body* > m_BaseBodies;
 		Real GetGaitDist( const Model &model );
 		Real GetStepDuration( index_t step ) const;
-
 		bool HasNewFootContact( const Model& model );
-		std::vector< bool > m_PrevContactState;
-
-		Vec3 m_InitialComPos;
-		Real m_InitGaitDist;
-		Real m_PrevGaitDist;
-
-		PropNode m_Report;
 	};
 }

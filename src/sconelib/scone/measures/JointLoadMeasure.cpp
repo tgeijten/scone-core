@@ -31,6 +31,12 @@ namespace scone
 		return RangePenalty<Real>::GetLatest();
 	}
 
+	void JointLoadMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		RangePenalty<Real>::Reset();
+	}
+
 	bool JointLoadMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		joint_load = joint.GetLoad();

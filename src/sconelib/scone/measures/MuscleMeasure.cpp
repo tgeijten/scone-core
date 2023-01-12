@@ -69,6 +69,12 @@ namespace scone
 		return input.GetLatest() + activation.GetLatest() + length.GetLatest() + velocity.GetLatest() + force.GetLatest();
 	}
 
+	void MuscleMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		input.Reset(); activation.Reset(); length.Reset(); velocity.Reset(); force.Reset();
+	}
+
 	bool MuscleMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		input.AddSample( timestamp, muscle.GetInput() );

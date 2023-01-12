@@ -25,6 +25,7 @@ namespace scone
 
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
+		virtual void Reset( Model& model ) override;
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 
 	protected:

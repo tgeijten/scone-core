@@ -63,6 +63,12 @@ namespace scone
 		return GetWeight() * m;
 	}
 
+	void Measure::Reset( Model& model )
+	{
+		result_.reset();
+		report_.clear();
+	}
+
 	const String& Measure::GetName() const
 	{
 		if ( name_.empty() )

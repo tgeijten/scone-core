@@ -102,6 +102,13 @@ namespace scone
 		return total;
 	}
 
+	void CompositeMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		for ( auto& c : m_Measures )
+			c->Reset( model );
+	}
+
 	String CompositeMeasure::GetClassSignature() const
 	{
 		std::vector< String > strset;

@@ -47,7 +47,7 @@ namespace scone
 		void SetDisabled( bool disabled ) { disabled_ = disabled; }
 
 		// Reset the state of the controller, called by Model::Reset()
-		virtual void Reset( Model& model ) {}
+		virtual void Reset( Model& model );
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override {}
 		virtual std::vector<xo::path> WriteResults( const xo::path& file ) const { return std::vector<xo::path>(); }

@@ -75,6 +75,12 @@ namespace scone
 			limit_torque.GetLatest() + actuator_torque.GetLatest();
 	}
 
+	void DofMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		position.Reset(); velocity.Reset(); acceleration.Reset(); limit_torque.Reset(); actuator_torque.Reset();
+	}
+
 	bool DofMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )

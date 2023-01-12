@@ -82,6 +82,7 @@ namespace scone
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override { return m_Effort.GetLatest(); }
+		virtual void Reset( Model& model ) override { Measure::Reset( model ); m_Effort.Reset(); }
 
 	protected:
 		virtual String GetClassSignature() const override;

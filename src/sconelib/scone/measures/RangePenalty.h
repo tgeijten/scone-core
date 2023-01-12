@@ -62,6 +62,8 @@ namespace scone
 			}
 		}
 
+		void Reset() { penalty.Reset(); }
+
 		size_t GetNumSamples() const { return penalty.GetNumSamples(); }
 
 		bool IsEmpty() const { return penalty.GetNumSamples() == 0; }

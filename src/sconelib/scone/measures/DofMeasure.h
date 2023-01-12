@@ -31,6 +31,7 @@ namespace scone
 		DofMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
+		virtual void Reset( Model& model ) override;
 
 		/// Dof to which to apply the penalty to.
 		Dof& dof;

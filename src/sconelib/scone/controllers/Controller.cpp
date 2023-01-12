@@ -8,6 +8,7 @@
 
 #include "Controller.h"
 #include "spot/par_tools.h"
+#include "scone/core/Log.h"
 
 namespace scone
 {
@@ -41,5 +42,10 @@ namespace scone
 		if ( IsActive( model, timestamp ) )
 			return PerformAnalysis( model, timestamp );
 		else return false;
+	}
+
+	void Controller::Reset( Model& model )
+	{
+		log::warning( "Reset() is not implemented for ", name_ );
 	}
 }

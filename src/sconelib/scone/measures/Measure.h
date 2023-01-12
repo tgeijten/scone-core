@@ -45,6 +45,7 @@ namespace scone
 		/// Get last computed measure value, for use in rewards.
 		virtual double GetCurrentResult( const Model& model );
 		double GetCurrentWeightedResult( const Model& model );
+		virtual void Reset( Model& model ) override;
 
 		PropNode& GetReport() { return report_; }
 		const PropNode& GetReport() const { return report_; }

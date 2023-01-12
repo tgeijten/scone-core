@@ -464,6 +464,8 @@ namespace scone
 		m_DelayedActuators.Reset();
 		if ( GetController() )
 			GetController()->Reset( *this );
+		if ( GetMeasure() )
+			GetMeasure()->Reset( *this );
 	}
 
 	PropNode Model::GetSimulationReport() const
