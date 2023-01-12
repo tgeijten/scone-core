@@ -66,6 +66,12 @@ namespace scone
 		return position.GetLatest() + velocity.GetLatest() + angular_velocity.GetLatest() + acceleration.GetLatest();
 	}
 
+	void BodyMeasure::Reset( Model& model )
+	{
+		Measure::Reset( model );
+		position.Reset(); velocity.Reset(); angular_velocity.Reset(); acceleration.Reset();
+	}
+
 	bool BodyMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )

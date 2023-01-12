@@ -23,6 +23,7 @@ namespace scone
 		BodyMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
+		virtual void Reset( Model& model ) override;
 
 		/// Body to which to apply the penalty to.
 		const Body& body;
