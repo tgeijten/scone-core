@@ -203,6 +203,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "has_simulation_ended", &scone::Model::HasSimulationEnded )
 		.def( "current_measure", &scone::Model::GetCurrentMeasureResult )
 		.def( "final_measure", &scone::Model::GetMeasureResult )
+		.def( "log_measure_report", []( scone::Model& m ) { return scone::log_measure_report( m ); } )
 		.def( "integration_step", &scone::Model::GetIntegrationStep )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )
 		.def( "set_store_data", &scone::Model::SetStoreData )

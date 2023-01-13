@@ -60,6 +60,10 @@ namespace scone
 			s.SetValue( key, value );
 		model.SetState( s, 0.0 );
 	};
+	void log_measure_report( const Model& model ) {
+		if ( model.GetMeasure() )
+			log::info( model.GetMeasure()->GetReport() );
+	}
 
 	void check_array_length( size_t expected, size_t received ) {
 		SCONE_ERROR_IF( expected != received, stringf( "Invalid array length; expected %d, received %d", expected, received ) );
