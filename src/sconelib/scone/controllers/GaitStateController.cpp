@@ -38,6 +38,8 @@ namespace scone
 		coronal_pos( 0.0 ),
 		allow_stance_transition( false ),
 		allow_swing_transition( false ),
+		allow_late_stance_transition( false ),
+		allow_liftoff_transition( false ),
 		allow_landing_transition( false ),
 		leg_length( props.get( "override_leg_length", l.GetLength() ) ),
 		INIT_PAR_MEMBER( props, par, stance_load_threshold, 0.1 ),
