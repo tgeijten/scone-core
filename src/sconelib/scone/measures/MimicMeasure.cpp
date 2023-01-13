@@ -98,7 +98,7 @@ namespace scone
 		auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
 		auto penalty = peak_error_limit * penalty_duration;
 		GetReport().set( "mimic_error", result );
-		GetReport().set( "penalty", penalty );
+		GetReport().set( "early_termination_penalty", penalty );
 		return result + penalty;
 	}
 
@@ -117,11 +117,11 @@ namespace scone
 
 	void MimicMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ "mimic_error" ] = mimic_result_.GetLatest();
+		frame[ "MimicMeasure.penalty" ] = mimic_result_.GetLatest();
 		if ( flags.get<StoreDataTypes::DebugData>() )
 		{
 			for ( auto& c : channel_errors_ )
-				frame[ c.first + "_mimic_error" ] = c.second;
+				frame[ c.first + ".mimic_penalty" ] = c.second;
 		}
 	}
 
