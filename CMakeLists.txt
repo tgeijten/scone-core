@@ -25,6 +25,7 @@ option(SCONE_ENABLE_PROFILER "Enable SCONE profiler" ON)
 option(SCONE_DEVELOPMENT_BUILD "Set the SCONE version to be the development version" OFF)
 option(SCONE_EXPERIMENTAL_FEATURES "Enable experimental features" OFF)
 option(SCONE_PYTHON "Build SconePy Python API" OFF)
+option(SCONE_BENCH "Build SCONE Benchmark tool" OFF)
 option(SCONE_USER_EXTENSIONS "Build sconeuser extension library" OFF)
 option(SCONE_CORE_CPACK "Build SCONE installer using CPack" OFF)
 if (LINUX)
@@ -86,6 +87,10 @@ endif()
 if (SCONE_PYTHON)
 	add_subdirectory(submodules/pybind11)
 	add_subdirectory(src/sconepy)
+endif()
+
+if (SCONE_BENCH)
+	add_subdirectory(src/sconebench)
 endif()
 
 # Create .sconeroot in build folder
