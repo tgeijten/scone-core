@@ -32,7 +32,7 @@ int main( int argc, char* argv[] )
 			for ( const auto& f : files )
 			{
 				auto scenario_pn = scone::LoadScenario( scone::FindScenario( f ), false );
-				scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", 16 );
+				scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", 8 );
 			}
 		}
 	} catch ( std::exception& e )
