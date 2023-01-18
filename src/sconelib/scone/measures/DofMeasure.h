@@ -15,13 +15,26 @@
 
 namespace scone
 {
-	/// Measure that adds a penalty when a degree of freedom (DOF) is outside a specific range.
-	/** Penalties can be based on DOF position, DOF velocity, DOF acceleration, and restitution force. Example:
+	/// Measure that adds a penalty for a specific degree-of-freedom (DoF).
+	/** Penalties can be based on ''position'', ''velocity'', ''acceleration'', ''limit_torque'' and ''actuator_torque''. Example:
 	\verbatim
+	# Measure for upper body
 	DofMeasure {
 		dof = pelvis_tilt
 		position { min = -45 max = 0 abs_penalty = 10 } # Penalize leaning backwards
 		velocity { min = -10 max = 10 abs_penalty = 10 } # Penalize upper body motion
+	}
+	# Measure for knee limits
+	CompositeMeasure {
+		name = DofLimits
+		symmetric = true
+		DofMeasure {
+			dof = knee_angle
+			threshold = 2
+			threshold_transition = 2
+			weight = 0.1
+			limit_torque { min = 0 max = 0 abs_penalty = 1 }
+		}
 	}
 	\endverbatim
 	*/
