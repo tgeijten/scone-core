@@ -53,7 +53,7 @@ namespace xo
 
 namespace scone
 {
-	void add_scenario_tests( const path& test_dir, const xo::pattern_matcher& include, const xo::pattern_matcher& exclude, bool include_subdirs )
+	void add_scenario_tests( const path& test_dir, const xo::pattern_matcher& include, const xo::pattern_matcher& exclude, int levels )
 	{
 		auto full_test_dir = GetFolder( SconeFolder::Root ) / test_dir;
 		auto results_dir = GetFolder( SconeFolder::Root ) / "resources/unittestdata" / test_dir / xo::get_computer_name() + "_results";
@@ -65,11 +65,11 @@ namespace scone
 		for ( fs::directory_iterator it( full_test_dir.str() ); it != fs::directory_iterator(); ++it )
 		{
 			const auto& fs_path = it->path();
-			if ( fs::is_directory( fs_path ) && fs_path.filename() != "data" )
-				add_scenario_tests( test_dir / fs_path.filename().string(), include, exclude, include_subdirs );
+			if ( fs::is_directory( fs_path ) && levels > 0 && !exclude( fs_path.filename().string() ) )
+				add_scenario_tests( test_dir / fs_path.filename().string(), include, exclude, levels - 1 );
 
 			auto test_file = xo::path( fs_path.string() );
-			auto str = test_file.filename().str();
+			auto str = test_file.str();
 			if ( include( str ) && !exclude( str ) )
 			{
 				xo::log::debug( "Adding test case: ", test_file.filename() );

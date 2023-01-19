@@ -8,5 +8,5 @@ namespace scone
 	void add_scenario_tests( const xo::path& dir,
 		const xo::pattern_matcher& include = "*.scone;*.par",
 		const xo::pattern_matcher& exclude = "data",
-		bool include_subdirs = true );
+		int recurse_subdir_levels = 1 );
 }

@@ -51,6 +51,7 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( "./scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( "./scenarios/Examples2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( "./scenarios/Tutorials2", "*Hyfydy.scone" );
+				scone::add_scenario_tests( "./scenarios/Benchmarks", "*.par" );
 
 #if SCONE_EXPERIMENTAL_FEATURES_ENABLED
 				scone::add_scenario_tests( "./scenarios/UnitTests/HyfydyExperimental", "*.par" );
