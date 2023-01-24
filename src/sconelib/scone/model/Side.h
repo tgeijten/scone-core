@@ -93,6 +93,8 @@ namespace scone
 		return GetNameNoSide( str ) + GetSideName( GetOppositeSide( GetSideFromName( str ) ) );
 	}
 
+	inline bool IsMirrored( const String& str1, const String& str2 ) { return str1 == GetMirroredName( str2 ); }
+
 	// get axis that is mirrored in the XY plane for Side::Left, used in e.g. BodyOrientationSensor
 	inline Vec3 GetSidedAxis( Vec3 axis, Side side ) {
 		if ( side == Side::Left ) { axis.x = -axis.x; axis.y = -axis.y; }
@@ -128,6 +130,9 @@ namespace scone
 
 		SCONE_THROW( "Could not find " + xo::quoted( name ) + " or " + xo::quoted( sided_name ) );
 	}
+
+	inline Vec3 GetMirrored( Vec3 v ) { v.z = -v.z; return v; }
+	inline bool IsMirrored( const Vec3& v1, const Vec3& v2 ) { return v1 == GetMirrored( v2 ); }
 }
 
 namespace xo

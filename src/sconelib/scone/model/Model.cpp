@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <tuple>
 #include <fstream>
+#include "symmetry_tools.h"
 
 using std::endl;
 
@@ -552,6 +553,10 @@ namespace scone
 		model_pn[ "mass" ] = GetMass();
 		model_pn[ "gravity" ] = GetGravity();
 		model_pn[ "leg count" ] = GetLegCount();
+		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
+			auto& asym_pn = model_pn.add_child( "asymmetries" );
+			asym_pn.add_values( objects.begin(), objects.end() );
+		}
 
 		for ( const auto& item : GetBodies() )
 			pn[ "Bodies" ].add_child( item->GetName(), item->GetInfo() );
