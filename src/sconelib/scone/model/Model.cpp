@@ -552,6 +552,9 @@ namespace scone
 		model_pn[ "name" ] = GetName();
 		model_pn[ "mass" ] = GetMass();
 		model_pn[ "gravity" ] = GetGravity();
+		model_pn[ "dof count" ] = GetDofs().size();
+		model_pn[ "muscle count" ] = GetMuscles().size();
+		model_pn[ "body count" ] = GetBodies().size();
 		model_pn[ "leg count" ] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
 			auto& asym_pn = model_pn.add_child( "asymmetries" );

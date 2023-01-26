@@ -28,6 +28,14 @@ namespace scone
 		return true;
 	}
 
+	bool CheckSymmetry( const Dof& d1, const Dof& d2 ) {
+		if ( d1.GetRange().min != d2.GetRange().min )
+			return false;
+		if ( d1.GetRange().max != d2.GetRange().max )
+			return false;
+		return true;
+	}
+
 	std::vector<string> CheckSymmetry( const Model& model ) {
 		std::vector<string> objects;
 		for ( const auto& mus : model.GetMuscles() ) {
@@ -35,6 +43,12 @@ namespace scone
 			if ( !CheckSymmetry( *mus, *om ) ) {
 				objects.push_back( mus->GetName() );
 				log::warning( "Muscles ", mus->GetName(), " and ", om->GetName(), " are not symmetric" );
+			}
+		}
+		for ( const auto& dof : model.GetDofs() ) {
+			const auto& dof_mir = FindByName( model.GetDofs(), GetMirroredName( dof->GetName() ) );
+			if ( !CheckSymmetry( *dof, *dof_mir ) ) {
+				objects.push_back( dof->GetName() );
 			}
 		}
 		return objects;
