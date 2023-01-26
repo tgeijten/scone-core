@@ -101,8 +101,10 @@ namespace scone
 					limits[ axis_idx ] = sign >= 0 ? dof_range : -dof_range;
 				}
 				else {
-					if ( use_limits_from_dof_range_ )
-						limits[ axis_idx ] = BoundsRad( dof->GetRange().min, dof->GetRange().max );
+					if ( use_limits_from_dof_range_ ) {
+						auto dof_range = BoundsRad( dof->GetRange().min, dof->GetRange().max );
+						limits[ axis_idx ] = sign >= 0 ? dof_range : -dof_range;
+					}
 					else limits[ axis_idx ] = { Degree( -360 ), Degree( 360 ) };
 				}
 			}
