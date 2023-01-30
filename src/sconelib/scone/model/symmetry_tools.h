@@ -36,20 +36,22 @@ namespace scone
 		return true;
 	}
 
+	template< typename T > bool CheckSymmetry( const T& obj, const std::vector<T*>& cont ) {
+		auto mir_ob = TryFindByName( cont, GetMirroredName( obj.GetName() ) );
+		if ( mir_ob == cont.end() )
+			return false;
+		return CheckSymmetry( obj, **mir_ob );
+	}
+
 	std::vector<string> CheckSymmetry( const Model& model ) {
 		std::vector<string> objects;
 		for ( const auto& mus : model.GetMuscles() ) {
-			const auto& om = FindByName( model.GetMuscles(), GetMirroredName( mus->GetName() ) );
-			if ( !CheckSymmetry( *mus, *om ) ) {
+			if ( !CheckSymmetry( *mus, model.GetMuscles() ) )
 				objects.push_back( mus->GetName() );
-				log::warning( "Muscles ", mus->GetName(), " and ", om->GetName(), " are not symmetric" );
-			}
 		}
 		for ( const auto& dof : model.GetDofs() ) {
-			const auto& dof_mir = FindByName( model.GetDofs(), GetMirroredName( dof->GetName() ) );
-			if ( !CheckSymmetry( *dof, *dof_mir ) ) {
+			if ( !CheckSymmetry( *dof, model.GetDofs() ) )
 				objects.push_back( dof->GetName() );
-			}
 		}
 		return objects;
 	}
