@@ -469,6 +469,19 @@ namespace scone
 			GetMeasure()->Reset( *this );
 	}
 
+	void Model::TryAdvanceSimulationTo( double time )
+	{
+		try
+		{
+			AdvanceSimulationTo( time );
+		}
+		catch ( std::exception& e )
+		{
+			log::error( "Simulation error at t=", GetTime(), ": ", e.what() );
+			RequestTermination();
+		}
+	}
+
 	PropNode Model::GetSimulationReport() const
 	{
 		PropNode pn;
