@@ -787,6 +787,7 @@ namespace scone
 				if ( auto idx = m_State.FindIndexByPattern( "/jointset/*/" + key + "/speed" ); idx != NoIndex )
 					m_State.SetValue( idx, value.get<Real>() );
 		}
+		CopyStateToTk();
 	}
 
 	void ModelOpenSim4::FixTkState( double force_threshold /*= 0.1*/, double fix_accuracy /*= 0.1 */ )

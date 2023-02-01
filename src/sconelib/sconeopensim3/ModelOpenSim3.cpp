@@ -736,6 +736,7 @@ namespace scone
 			for ( const auto& [key, value] : pn[ "velocities" ] )
 				m_State.TrySetValue( key + "_u", value.get<Real>() );
 		}
+		CopyStateToTk();
 	}
 
 	void ModelOpenSim3::FixTkState( double force_threshold /*= 0.1*/, double fix_accuracy /*= 0.1 */ )
