@@ -51,6 +51,9 @@ namespace scone
 
 		/// Lock the parameters from this file, preventing them to be optimized; default = 0.
 		bool locked = false;
+
+		/// Use values from the first column of the .par file (generation best) as mean; default = false.
+		bool use_best_as_mean;
 	};
 }
 

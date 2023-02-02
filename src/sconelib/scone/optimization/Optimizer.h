@@ -39,6 +39,9 @@ namespace scone
 		/// computed as follows: STDEV = parameter value * init_file_std_factor + init_file_std_offset; default = true.
 		bool use_init_file_std;
 
+		/// Use values from the first column of the .par file (generation best) as mean; default = false.
+		bool use_init_file_best_as_mean;
+
 		/// Factor by which to multiply the standard deviations from the init_file; default = 1.0.
 		double init_file_std_factor;
 

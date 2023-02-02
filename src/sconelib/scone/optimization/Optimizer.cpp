@@ -55,6 +55,7 @@ namespace scone
 		INIT_PROP( props, init_file_std_factor, 1.0 );
 		INIT_PROP( props, init_file_std_offset, 0.0 );
 		INIT_PROP( props, use_init_file_std, true );
+		INIT_PROP( props, use_init_file_best_as_mean, false );
 		INIT_PROP( props, init_file_include, {} );
 		INIT_PROP( props, init_file_exclude, {} );
 
@@ -77,7 +78,7 @@ namespace scone
 			init_file = FindFile( init_file );
 			auto result = info.import_mean_std( init_file,
 				use_init_file_std, init_file_std_factor, init_file_std_offset,
-				init_file_include, init_file_exclude );
+				init_file_include, init_file_exclude, use_init_file_best_as_mean );
 			log::debug( "Imported ", result.first, " of ", info.dim(), ", skipped ", result.second, " parameters from ", init_file );
 		}
 
@@ -88,7 +89,7 @@ namespace scone
 			GetObjective().AddExternalResource( init.file );
 			std::pair< size_t, size_t > r;
 			if ( !init.locked )
-				r = info.import_mean_std( init.file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude );
+				r = info.import_mean_std( init.file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude, init.use_best_as_mean );
 			else r = info.import_locked( init.file );
 			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init_file );
 		}
