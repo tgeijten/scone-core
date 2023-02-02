@@ -36,13 +36,16 @@ namespace scone
 			evals *= 4;
 
 		// run simulations
-		xo::flat_map<string, std::vector<xo::time>> bm_components;
-		xo::flat_map<string, std::vector<xo::time>> bm_totals;
+		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;
+		auto add_benchmark = [&]( const std::string sv, xo::time value ) {
+			auto& bm = bm_components[ sv ];
+			if ( bm.empty() )
+				bm.reserve( evals );
+			bm.push_back( value.secondsd() );
+		};
 		xo::time duration;
 		for ( index_t idx = 0; idx < evals; ++idx )
 		{
-			xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
-
 			xo::timer t;
 			auto model = mo->CreateModelFromParams( par );
 			model->SetStoreData( false );
@@ -53,14 +56,18 @@ namespace scone
 			if ( !timings.empty() )
 			{
 				for ( const auto& timing : timings )
-					bm_components[ timing.first ].push_back( timing.second.first / timing.second.second );
-				bm_components[ "EvalTotal" ].push_back( total_time );
-				bm_components[ "EvalSim" ].push_back( ( total_time - create_model_time ) );
-				if ( !timings.empty() )
-					bm_components[ "EvalSimModel" ].push_back( timings.front().second.first );
+					add_benchmark( timing.first, timing.second.first / timing.second.second );
+				add_benchmark( "EvalTotal", total_time );
+				add_benchmark( "EvalSim", ( total_time - create_model_time ) );
+				add_benchmark( "EvalSimModel", timings.front().second.first );
 				duration = xo::time_from_seconds( model->GetTime() );
-				log::info( "Benchmarked trial ", idx + 1, " of ", evals, "; simulated ", duration, "s in ", total_time, "s (", duration / total_time, "x real-time)" );
+				auto real_time_x = model->GetTime() / total_time.secondsd();
+				auto [mean, stdev] = xo::mean_std( bm_components[ "EvalTotal" ] );
+				auto rt_mean = model->GetTime() / mean;
+				auto rt_norm_std = stdev / mean;
+				printf( "%3.2fx\tM=%3.2f (~%.2f)\n", real_time_x, rt_mean, rt_norm_std );
 			}
+			//xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
 		}
 
 		// read baseline
@@ -85,7 +92,7 @@ namespace scone
 		{
 			Benchmark bm;
 			bm.name_ = bms.first;
-			bm.time_ = xo::median( bms.second );
+			bm.time_ = xo::time_from_seconds( xo::median( bms.second ) );
 			bm.baseline_ = baseline_medians[ bms.first ];
 			bm.std_ = xo::mean_std( bms.second ).second;
 			benchmarks.push_back( bm );
@@ -101,7 +108,7 @@ namespace scone
 
 			if ( eval )
 				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%+6.2f%%\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
-					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), bm.diff_std(), bm.std_ * 1e-6, duration / bm.time_ ) );
+					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), bm.diff_std(), bm.std_ , duration / bm.time_ ) );
 			else
 				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%+6.2f%%\t%+6.2fS\t%6.2f", bm.name_.c_str(),
 					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_perc(), bm.diff_std(), bm.std_ ) );
@@ -111,13 +118,13 @@ namespace scone
 				xo::create_directories( baseline_file.parent_path().str() );
 				auto ostr = std::ofstream( baseline_file.str(), std::ios_base::app );
 				if ( eval )
-					ostr << xo::stringf( "%-32s\t%8.2f\t%8.2f\n", bm.name_.c_str(), bm.time_.milliseconds(), bm.std_ * 1e-6 );
+					ostr << xo::stringf( "%-32s\t%8.2f\t%8.2f\n", bm.name_.c_str(), bm.time_.milliseconds(), bm.std_ );
 				else
 					ostr << xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
 			}
 		}
 
 		if ( !has_baseline )
-			log::info( "Performance results written to ", baseline_file );
+			log::info( "Results written to ", baseline_file );
 	}
 }
