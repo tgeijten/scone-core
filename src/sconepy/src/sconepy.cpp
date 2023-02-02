@@ -53,6 +53,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "to_euler_yzx", []( scone::Quat& q ) { return euler_yzx_from_quat( q ); } )
 		.def( "to_euler_zxy", []( scone::Quat& q ) { return euler_zxy_from_quat( q ); } )
 		.def( "to_euler_zyx", []( scone::Quat& q ) { return euler_zyx_from_quat( q ); } )
+		.def( "to_rotation_vector", []( scone::Quat& q ) { return rotation_vector_from_quat( q ); } )
 		;
 
 	py::class_<scone::Body>( m, "Body" )
