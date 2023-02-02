@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t evals )
+	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples )
 	{
 		log::info( file.parent_path().stem() / file.filename() );
 
@@ -33,18 +33,21 @@ namespace scone
 		auto baseline_file = results_dir / xo::get_computer_name() / file.stem() + ".stats";
 		bool has_baseline = xo::file_exists( baseline_file );
 		if ( !has_baseline )
-			evals *= 4;
+			min_samples *= 4;
+		auto max_samples = min_samples * 10;
+		double min_norm_std = 0.01;
 
 		// run simulations
 		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;
 		auto add_benchmark = [&]( const std::string sv, xo::time value ) {
 			auto& bm = bm_components[ sv ];
 			if ( bm.empty() )
-				bm.reserve( evals );
+				bm.reserve( max_samples );
 			bm.push_back( value.secondsd() );
 		};
 		xo::time duration;
-		for ( index_t idx = 0; idx < evals; ++idx )
+		std::vector<TimeInSeconds> bmsortedbest;
+		for ( index_t idx = 0; idx < max_samples; ++idx )
 		{
 			xo::timer t;
 			auto model = mo->CreateModelFromParams( par );
@@ -62,10 +65,18 @@ namespace scone
 				add_benchmark( "EvalSimModel", timings.front().second.first );
 				duration = xo::time_from_seconds( model->GetTime() );
 				auto real_time_x = model->GetTime() / total_time.secondsd();
-				auto [mean, stdev] = xo::mean_std( bm_components[ "EvalTotal" ] );
+
+				auto& bmvec = bm_components[ "EvalTotal" ];
+				//auto n = ( bmvec.size() + 1 ) / 2;
+				auto n = std::min( min_samples, bmvec.size() );
+				bmsortedbest.resize( n );
+				std::partial_sort_copy( bmvec.begin(), bmvec.end(), bmsortedbest.begin(), bmsortedbest.end() );
+				auto [mean, stdev] = xo::mean_std( bmsortedbest );
 				auto rt_mean = model->GetTime() / mean;
-				auto rt_norm_std = stdev / mean;
-				printf( "%3.2fx\tM=%3.2f (~%.2f)\n", real_time_x, rt_mean, rt_norm_std );
+				auto norm_std = stdev / mean;
+				printf( "%03zd: %6.2f M=%6.2f S=%.4f\n", idx, real_time_x, rt_mean, norm_std );
+				if ( norm_std < min_norm_std && idx >= min_samples )
+					break;
 			}
 			//xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
 		}
@@ -88,13 +99,15 @@ namespace scone
 
 		// process
 		std::vector<Benchmark> benchmarks;
-		for ( const auto& bms : bm_components )
+		for ( const auto& [name, samples] : bm_components )
 		{
 			Benchmark bm;
-			bm.name_ = bms.first;
-			bm.time_ = xo::time_from_seconds( xo::median( bms.second ) );
-			bm.baseline_ = baseline_medians[ bms.first ];
-			bm.std_ = xo::mean_std( bms.second ).second;
+			bm.name_ = name;
+			std::partial_sort_copy( samples.begin(), samples.end(), bmsortedbest.begin(), bmsortedbest.end() );
+			auto [mean, stdev] = xo::mean_std( bmsortedbest );
+			bm.time_ = xo::time_from_seconds( mean );
+			bm.baseline_ = baseline_medians[ name ];
+			bm.std_ = stdev;
 			benchmarks.push_back( bm );
 		}
 
@@ -104,11 +117,11 @@ namespace scone
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
-			log::level l = bm.diff_std() > 1 ? log::level::error : ( bm.diff_std() < -1 ? log::level::warning : log::level::info );
+			log::level l = bm.diff_std() > 3 ? log::level::error : ( bm.diff_std() < -3 ? log::level::warning : log::level::info );
 
 			if ( eval )
 				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%+6.2f%%\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
-					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), bm.diff_std(), bm.std_ , duration / bm.time_ ) );
+					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), bm.diff_std(), bm.std_, duration / bm.time_ ) );
 			else
 				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%+6.2f%%\t%+6.2fS\t%6.2f", bm.name_.c_str(),
 					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_perc(), bm.diff_std(), bm.std_ ) );

@@ -28,11 +28,11 @@ int main( int argc, char* argv[] )
 		auto filename = scone::GetDataFolder() / "Benchmarks";
 		if ( xo::directory_exists( filename ) )
 		{
-			auto files = xo::find_files( filename, "*.scone", true, 0 );
+			auto files = xo::find_files( filename, "bench*.scone", true, 0 );
 			for ( const auto& f : files )
 			{
 				auto scenario_pn = scone::LoadScenario( scone::FindScenario( f ), false );
-				scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", 50 );
+				scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", 10 );
 			}
 		}
 	} catch ( std::exception& e )
