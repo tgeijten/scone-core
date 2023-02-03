@@ -18,6 +18,7 @@ namespace scone
 		double std_;
 
 		xo::time diff() const { return time_ - baseline_; }
+		double diff_norm() const { return diff() / baseline_; }
 		double diff_perc() const { return 100 * ( diff() / baseline_ ); }
 		double diff_std() const { return diff().secondsd() / std_; }
 	};

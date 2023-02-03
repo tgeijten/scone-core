@@ -117,14 +117,15 @@ namespace scone
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
-			log::level l = bm.diff_std() > 3 ? log::level::error : ( bm.diff_std() < -3 ? log::level::warning : log::level::info );
+			auto diff_std = bm.diff_norm() / min_norm_std;
+			log::level l = diff_std > 3 ? log::level::error : ( diff_std < -3 ? log::level::warning : log::level::info );
 
 			if ( eval )
 				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%+6.2f%%\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
-					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), bm.diff_std(), bm.std_, duration / bm.time_ ) );
+					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), diff_std, bm.std_, duration / bm.time_ ) );
 			else
 				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%+6.2f%%\t%+6.2fS\t%6.2f", bm.name_.c_str(),
-					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_perc(), bm.diff_std(), bm.std_ ) );
+					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_perc(), diff_std, bm.std_ ) );
 
 			if ( !has_baseline )
 			{

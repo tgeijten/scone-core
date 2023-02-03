@@ -16,23 +16,30 @@
 #include "scone/sconelib_config.h"
 #include "xo/filesystem/filesystem.h"
 #include "scone/optimization/opt_tools.h"
+#include "xo/utility/arg_parser.h"
+#include "xo/string/pattern_matcher.h"
 
-int main( int argc, char* argv[] )
+int main( int argc, const char* argv[] )
 {
 	xo::log::console_sink console_sink( xo::log::level::info );
-	xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 
 	try
 	{
+		auto args = xo::arg_parser( argc, argv );
+		console_sink.set_log_level( xo::log::level( args.get<int>( "l", int( xo::log::level::info ) ) ) );
+
+		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 		scone::Initialize();
-		auto filename = scone::GetDataFolder() / "Benchmarks";
-		if ( xo::directory_exists( filename ) )
+
+		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
+		auto folder = scone::GetDataFolder() / "Benchmarks";
+		if ( xo::directory_exists( folder ) )
 		{
-			auto files = xo::find_files( filename, "bench*.scone", true, 0 );
+			auto files = xo::find_files( folder, "bench*.scone", true, 0 );
 			for ( const auto& f : files )
 			{
 				auto scenario_pn = scone::LoadScenario( scone::FindScenario( f ), false );
-				scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", 10 );
+				scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", 10 );
 			}
 		}
 	} catch ( std::exception& e )
