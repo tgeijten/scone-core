@@ -629,7 +629,11 @@ namespace scone
 		m_ContactGeometries.clear();
 		m_ContactForces.clear();
 
+		m_MusclePtrs.clear();
 		m_ActuatorPtrs.clear();
+		m_BodyPtrs.clear();
+		m_JointPtrs.clear();
+		m_DofPtrs.clear();
 		m_RootBody = m_GroundBody = nullptr;
 
 		m_Controller.reset();
