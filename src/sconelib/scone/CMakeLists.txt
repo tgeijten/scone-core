@@ -183,6 +183,8 @@ set(MEASURE_FILES
 	measures/Measure.h
 	measures/StepMeasure.cpp
 	measures/StepMeasure.h
+	measures/SimulationMeasure.cpp
+	measures/SimulationMeasure.h
 	)
 set(OPT_API_FILES
 	optimization/EsOptimizer.cpp

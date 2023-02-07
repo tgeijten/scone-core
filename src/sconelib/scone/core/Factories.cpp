@@ -48,6 +48,7 @@
 #include "scone/measures/ReactionForceMeasure.h"
 #include "scone/measures/MuscleMeasure.h"
 #include "scone/measures/StepMeasure.h"
+#include "scone/measures/SimulationMeasure.h"
 
 #include "scone/core/Exception.h"
 #include "scone/optimization/CmaOptimizerSpot.h"
@@ -124,7 +125,8 @@ namespace scone
 			.register_type< ReactionForceMeasure >()
 			.register_type< BalanceMeasure >()
 			.register_type< MimicMeasure >()
-			.register_type< StepMeasure >();
+			.register_type< StepMeasure >()
+			.register_type< SimulationMeasure >();
 
  		return g_MeasureFactory;
 	}
