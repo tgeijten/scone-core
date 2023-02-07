@@ -160,6 +160,7 @@ namespace scone
 
 	void Optimizer::PrepareOutputFolder()
 	{
+		SCONE_ERROR_IF( GetObjective().dim() <= 0, "Objective has no free parameters" );
 		SCONE_ASSERT( output_folder_.empty() );
 
 		auto p = output_root / GetSignature();

@@ -29,8 +29,6 @@ namespace scone
 		),
 		INIT_MEMBER( pn, max_errors, max_errors_ )
 	{
-		SCONE_ASSERT( GetObjective().dim()  > 0 );
-
 		max_errors_ = max_errors; // copy to spot::optimizer::max_errors_
 		lambda_ = lambda();
 		mu_ = mu();
