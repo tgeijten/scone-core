@@ -1,5 +1,5 @@
 set(FILES
-    main.cpp
+    sconeunittests.cpp
 	optimization_test.cpp
 	scenario_test.h
 	scenario_test.cpp

@@ -32,7 +32,7 @@ int main( int argc, const char* argv[] )
 		scone::Initialize();
 
 		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
-		auto folder = scone::GetDataFolder() / "Benchmarks";
+		auto folder = scone::GetDataFolder() / args.get<std::string>( 0, "Benchmarks" );
 		if ( xo::directory_exists( folder ) )
 		{
 			auto files = xo::find_files( folder, "bench*.scone", true, 0 );

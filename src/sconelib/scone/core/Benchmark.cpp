@@ -74,7 +74,7 @@ namespace scone
 				auto [mean, stdev] = xo::mean_std( bmsortedbest );
 				auto rt_mean = model->GetTime() / mean;
 				auto norm_std = stdev / mean;
-				printf( "%03zd: %6.2f M=%6.2f S=%.4f\n", idx, real_time_x, rt_mean, norm_std );
+				printf( "%03zd: %6.2f M=%6.2f S=%.4f\r", idx, real_time_x, rt_mean, norm_std );
 				if ( norm_std < min_norm_std && idx >= min_samples )
 					break;
 			}
