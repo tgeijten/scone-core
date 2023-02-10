@@ -28,7 +28,8 @@ namespace scone
 			INIT_MEMBER( pn, std_offset, 0.0 ),
 			INIT_MEMBER( pn, include, "" ),
 			INIT_MEMBER( pn, exclude, "" ),
-			INIT_MEMBER( pn, locked, false )
+			INIT_MEMBER( pn, locked, false ),
+			INIT_MEMBER( pn, use_best_as_mean, false )
 		{}
 
 		/// Parameter file (.par) to be used for initial parameter values.
@@ -53,7 +54,7 @@ namespace scone
 		bool locked = false;
 
 		/// Use values from the first column of the .par file (generation best) as mean; default = false.
-		bool use_best_as_mean;
+		bool use_best_as_mean = false;
 	};
 }
 
