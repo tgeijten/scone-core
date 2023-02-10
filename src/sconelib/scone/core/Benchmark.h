@@ -9,7 +9,8 @@
 namespace scone
 {
 	/// Creates and evaluates SimulationObjective. Logs unused properties.
-	SCONE_API void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples );
+	SCONE_API void BenchmarkScenario( 
+		const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples, double min_norm_std = 0.01 );
 
 	struct SCONE_API Benchmark {
 		String name_;

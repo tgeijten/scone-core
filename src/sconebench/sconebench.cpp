@@ -32,6 +32,9 @@ int main( int argc, const char* argv[] )
 		scone::Initialize();
 
 		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
+		bool fast = args.has_flag( "fast" );
+		auto min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
+		auto min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
 		auto folder = scone::GetDataFolder() / args.get<std::string>( 0, "Benchmarks" );
 		if ( xo::directory_exists( folder ) )
 		{
@@ -39,7 +42,7 @@ int main( int argc, const char* argv[] )
 			for ( const auto& f : files )
 			{
 				auto scenario_pn = scone::LoadScenario( scone::FindScenario( f ), false );
-				scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", 10 );
+				scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", min_samples, min_norm_std );
 			}
 		}
 	} catch ( std::exception& e )

@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples )
+	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples, double min_norm_std )
 	{
 		log::info( file.parent_path().stem() / file.filename() );
 
@@ -35,7 +35,6 @@ namespace scone
 		if ( !has_baseline )
 			min_samples *= 4;
 		auto max_samples = min_samples * 10;
-		double min_norm_std = 0.01;
 
 		// run simulations
 		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;
