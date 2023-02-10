@@ -58,9 +58,8 @@ namespace scone
 		auto full_test_dir = rootdir / subdir;
 		auto results_dir = GetFolder( SconeFolder::Root ) / "resources/unittestdata" / subdir / xo::get_computer_name() + "_results";
 		if ( XO_IS_DEBUG_BUILD ) results_dir += string( "_debug" );
-		xo::create_directories( results_dir );
 
-		xo::log::debug( "Adding dir: ", full_test_dir );
+		xo::log::debug( "scanning dir: ", full_test_dir );
 
 		for ( fs::directory_iterator it( full_test_dir.str() ); it != fs::directory_iterator(); ++it )
 		{
@@ -73,6 +72,7 @@ namespace scone
 			if ( include( str ) && !exclude( str ) )
 			{
 				xo::log::debug( "Adding test case: ", test_file.filename() );
+				xo::create_directories( results_dir );
 				xo::path report_file = results_dir / test_file.stem() + ".zml";
 				xo::test::add_test_case( test_file.stem().str(), xo::test::scenario_test( test_file, report_file ) );
 			}

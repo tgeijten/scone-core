@@ -136,6 +136,7 @@ namespace scone
 					ostr << xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
 			}
 		}
+		log::info( "Simulation duration ", duration );
 
 		if ( !has_baseline )
 			log::info( "Results written to ", baseline_file );
