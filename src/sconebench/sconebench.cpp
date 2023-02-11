@@ -41,7 +41,7 @@ int main( int argc, const char* argv[] )
 			auto files = xo::find_files( folder, "bench*.scone", true, 0 );
 			for ( const auto& f : files )
 			{
-				auto scenario_pn = scone::LoadScenario( scone::FindScenario( f ), false );
+				auto scenario_pn = scone::LoadScenario( f );
 				scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", min_samples, min_norm_std );
 			}
 		}

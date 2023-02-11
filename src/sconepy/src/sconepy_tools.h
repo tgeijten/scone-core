@@ -22,9 +22,7 @@ namespace fs = std::filesystem;
 namespace scone
 {
 	void evaluate_par_file( const std::string& file ) {
-		xo::path scenario_file = FindScenario( file );
-		auto scenario_pn = LoadScenario( scenario_file, true ); // for compatibility of versions < 2.0.0
-		auto out_path = scenario_file.parent_path();
+		auto scenario_pn = LoadScenario( file );
 		log::info( "Evaluating ", file );
 		auto results = EvaluateScenario( scenario_pn, file, file );
 		log::info( results );

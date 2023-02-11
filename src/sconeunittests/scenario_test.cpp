@@ -22,8 +22,7 @@ namespace xo
 			{}
 
 			void operator()( test_case& XO_ACTIVE_TEST_CASE ) {
-				auto scenario_file = scone::FindScenario( test_file_ );
-				auto scenario_pn = scone::LoadScenario( scenario_file, true );
+				auto scenario_pn = scone::LoadScenario( test_file_ );
 				auto eval_pn = scone::EvaluateScenario( scenario_pn, test_file_, xo::path() );
 
 				if ( xo::file_exists( report_file_ ) )

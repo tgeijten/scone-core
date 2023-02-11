@@ -36,8 +36,8 @@ namespace scone
 	// Insert empty "scone_version" and "simulator_version" for when loading older results that don't have versions stored
 	SCONE_API void AddEmptyVersionForOldScenarios( PropNode& scenario_pn );
 
-	// Loads a scenario prop_node, optionally adding empty versions when missing
-	SCONE_API PropNode LoadScenario( const path& scenario_file, bool add_missing_version = false );
+	// Loads a scenario prop_node form a .scone or .par file. Adds empty version for .par files
+	SCONE_API PropNode LoadScenario( const path& scenario_or_par_file );
 
 	// Gets spot::evaluator based on SCONE settings
 	SCONE_API spot::evaluator& GetSpotEvaluator();

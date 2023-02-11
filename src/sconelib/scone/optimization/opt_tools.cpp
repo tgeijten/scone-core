@@ -54,8 +54,10 @@ namespace scone
 		LogUnusedProperties( scenario_pn );
 
 		// create model
-		bool has_par_file = par_file.extension_no_dot() == "par";
-		ModelUP model = has_par_file ? mo->CreateModelFromParFile( par_file ) : mo->CreateModelFromParams( mo->info() );
+		auto par = SearchPoint( mo->info() );
+		if ( par_file.extension_no_dot() == "par" )
+			par.import_values( par_file );
+		ModelUP model = mo->CreateModelFromParams( par );
 
 		model->SetStoreData( store_data );
 
@@ -106,12 +108,12 @@ namespace scone
 		else log::warning( "Could not find Model in scenario" );
 	}
 
-	PropNode LoadScenario( const path& scenario_file, bool add_missing_version )
+	PropNode LoadScenario( const path& scenario_or_par_file )
 	{
-		PropNode scenario_pn;
-		scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
-		if ( add_missing_version )
-			AddEmptyVersionForOldScenarios( scenario_pn );
+		path scenario_file = FindScenario( scenario_or_par_file );
+		PropNode scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
+		if ( scenario_or_par_file.extension_no_dot() == "par" )
+			AddEmptyVersionForOldScenarios( scenario_pn ); // Add empty version for results from SCONE < 2.0
 		return scenario_pn;
 	}
 

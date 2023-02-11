@@ -96,8 +96,7 @@ int main( int argc, char* argv[] )
 			}
 			else if ( parArg.isSet() )
 			{
-				path scenario_file = scone::FindScenario( parArg.getValue() );
-				auto scenario_pn = scone::LoadScenario( scenario_file, true ); // for compatibility of versions < 2.0.0
+				auto scenario_pn = scone::LoadScenario( parArg.getValue() );
 				handle_custom_arguments( scenario_pn, propArg );
 				auto out_path = path( outArg.isSet() ? outArg.getValue() : parArg.getValue() );
 				scone::log::info( "Evaluating ", parArg.getValue() );
