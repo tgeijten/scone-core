@@ -42,7 +42,6 @@ namespace scone
 	{
 		LuaModel lm( const_cast<Model&>( model ) );
 		auto value = result_( &lm );
-		GetReport().set_value( value );
 		return value;
 	}
 

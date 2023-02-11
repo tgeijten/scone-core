@@ -39,31 +39,31 @@ namespace scone
 		{
 			penalty += position.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".position_penalty" , stringf( "%g", position.GetResult() ) );
+				report_.set( name_ + ".position_penalty" , stringf( "%g", position.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
+				report_.set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
 		if ( !acceleration.IsNull() )
 		{
 			penalty += acceleration.GetResult().value;
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".acceleration_penalty", stringf( "%g", acceleration.GetResult() ) );
+				report_.set( name_ + ".acceleration_penalty", stringf( "%g", acceleration.GetResult() ) );
 		}
 		if ( !limit_torque.IsNull() )
 		{
 			penalty += limit_torque.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".limit_torque_penalty", stringf( "%g", limit_torque.GetResult() ) );
+				report_.set( name_ + ".limit_torque_penalty", stringf( "%g", limit_torque.GetResult() ) );
 		}
 		if ( !actuator_torque.IsNull() )
 		{
 			penalty += actuator_torque.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".actuator_torque_penalty", stringf( "%g", actuator_torque.GetResult() ) );
+				report_.set( name_ + ".actuator_torque_penalty", stringf( "%g", actuator_torque.GetResult() ) );
 		}
 
 		return penalty;

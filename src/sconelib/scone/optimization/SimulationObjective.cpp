@@ -36,4 +36,14 @@ namespace scone
 	{
 		m.AdvanceSimulationTo( t );
 	}
+
+	PropNode SimulationObjective::GetReport( Model& m ) const
+	{
+		PropNode report;
+		if ( m.GetMeasure() ) {
+			report = m.GetMeasure()->GetReport();
+			report.set_value( GetResult( m ) );
+		}
+		return report;
+	}
 }

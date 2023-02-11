@@ -92,7 +92,7 @@ namespace scone
 		{
 			result += l.penalty.GetAverage();
 			if ( m_Limits.size() > 1 )
-				GetReport().set( l.dof.GetName(), stringf( "%g", l.penalty.GetAverage() ) );
+				report_.set( l.dof.GetName(), stringf( "%g", l.penalty.GetAverage() ) );
 		}
 
 		return result;

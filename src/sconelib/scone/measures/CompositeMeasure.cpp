@@ -86,10 +86,8 @@ namespace scone
 				if ( hasofs || hasthreshold )
 					value += ")";
 			}
-			GetReport().add_child( m->GetName(), m->GetReport() ).set_value( value );
+			report_.add_child( m->GetName(), m->GetReport() ).set_value( value );
 		}
-
-		GetReport().set_value( total );
 
 		return total;
 	}

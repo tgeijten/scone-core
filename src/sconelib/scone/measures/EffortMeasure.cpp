@@ -85,14 +85,14 @@ namespace scone
 			auto tot_effort = m_Effort.GetTotal();
 			auto delta_com = model.GetComPos() - m_InitComPos;
 			double distance = std::max( min_distance, omnidirectional ? xo::length( delta_com ) : delta_com.x );
-			GetReport().set( "effort", tot_effort );
-			GetReport().set( "distance", distance );
+			report_.set( "effort", tot_effort );
+			report_.set( "distance", distance );
 			result = tot_effort / ( model.GetMass() * distance );
 		}
 		else
 		{
 			auto avg_effort = m_Effort.GetAverage();
-			GetReport().set( "effort", avg_effort );
+			report_.set( "effort", avg_effort );
 			result = avg_effort;
 		}
 

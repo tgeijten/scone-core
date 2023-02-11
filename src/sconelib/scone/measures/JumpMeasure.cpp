@@ -189,9 +189,8 @@ namespace scone
 		if ( negate_result )
 			result = -result;
 
-		GetReport().set_value( result );
-		GetReport().set( "jump_height", jump_height );
-		GetReport().set( "early_jump_penalty", early_jump_penalty );
+		report_.set( "jump_height", jump_height );
+		report_.set( "early_jump_penalty", early_jump_penalty );
 
 		return result;
 	}
@@ -206,10 +205,10 @@ namespace scone
 		double com_landing_distance = GetLandingDist( com_pos, com_vel );
 		double body_landing_distance = target_body ? GetLandingDist( target_body->GetComPos(), target_body->GetComVel() ) : 1000.0;
 
-		GetReport().set( "early_jump_penalty", early_jump_penalty );
-		GetReport().set( "takeoff_speed", takeoff_speed );
-		GetReport().set( "com_landing_distance", com_landing_distance );
-		GetReport().set( "body_landing_distance", body_landing_distance );
+		report_.set( "early_jump_penalty", early_jump_penalty );
+		report_.set( "takeoff_speed", takeoff_speed );
+		report_.set( "com_landing_distance", com_landing_distance );
+		report_.set( "body_landing_distance", body_landing_distance );
 
 		double result = 0.0;
 		switch ( state )
@@ -228,16 +227,14 @@ namespace scone
 		case scone::JumpMeasure::Recover:
 		{
 			double recover_bonus = 50 + 50 * ( model.GetTime() - recover_start_time ) / recover_time;
-			GetReport().set( "recover_bonus", recover_bonus );
-			GetReport().set( "recover_cop_dist", recover_cop_dist );
+			report_.set( "recover_bonus", recover_bonus );
+			report_.set( "recover_cop_dist", recover_cop_dist );
 			result = 10 + recover_bonus * ( std::min( { com_landing_distance, body_landing_distance, recover_cop_dist } ) - early_jump_penalty );
 			break;
 		}
 		}
 
 		if ( negate_result ) result = -result;
-
-		GetReport().set_value( result );
 
 		return result;
 	}

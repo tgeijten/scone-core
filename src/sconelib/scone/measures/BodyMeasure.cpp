@@ -37,25 +37,25 @@ namespace scone
 		{
 			penalty += position.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".pos_penalty", stringf( "%g", position.GetResult() ) );
+				report_.set( name_ + ".pos_penalty", stringf( "%g", position.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".vel_penalty", stringf( "%g", velocity.GetResult() ) );
+				report_.set( name_ + ".vel_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
 		if ( !angular_velocity.IsNull() )
 		{
 			penalty += angular_velocity.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".ang_vel_penalty", stringf( "%g", angular_velocity.GetResult() ) );
+				report_.set( name_ + ".ang_vel_penalty", stringf( "%g", angular_velocity.GetResult() ) );
 		}
 		if ( !acceleration.IsNull() )
 		{
 			penalty += acceleration.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".acc_penalty", stringf( "%g", acceleration.GetResult() ) );
+				report_.set( name_ + ".acc_penalty", stringf( "%g", acceleration.GetResult() ) );
 		}
 
 		return  penalty;

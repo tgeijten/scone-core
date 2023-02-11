@@ -70,17 +70,17 @@ namespace scone
 		if ( !stride_length.IsNull() )
 		{
 			penalty += stride_length.GetResult();
-			GetReport().set( "stride_length_penalty", stride_length.GetResult() );
+			report_.set( "stride_length_penalty", stride_length.GetResult() );
 		}
 		if ( !stride_duration.IsNull() )
 		{
 			penalty += stride_duration.GetResult();
-			GetReport().set( "stride_duration_penalty", stride_duration.GetResult() );
+			report_.set( "stride_duration_penalty", stride_duration.GetResult() );
 		}
 		if ( !stride_velocity.IsNull() )
 		{
 			penalty += stride_velocity.GetResult();
-			GetReport().set( "stride_velocity_penalty", stride_velocity.GetResult() );
+			report_.set( "stride_velocity_penalty", stride_velocity.GetResult() );
 		}
 
 		return penalty;

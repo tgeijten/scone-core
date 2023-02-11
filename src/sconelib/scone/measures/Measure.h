@@ -47,7 +47,6 @@ namespace scone
 		double GetCurrentWeightedResult( const Model& model );
 		virtual void Reset( Model& model ) override;
 
-		PropNode& GetReport() { return report_; }
 		const PropNode& GetReport() const { return report_; }
 	
 		virtual const String& GetName() const override;

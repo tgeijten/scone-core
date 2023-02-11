@@ -97,8 +97,8 @@ namespace scone
 		auto result = use_best_match ? mimic_result_.GetLowest() : mimic_result_.GetAverage();
 		auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
 		auto penalty = peak_error_limit * penalty_duration;
-		GetReport().set( "mimic_error", result );
-		GetReport().set( "early_termination_penalty", penalty );
+		report_.set( "mimic_error", result );
+		report_.set( "early_termination_penalty", penalty );
 		return result + penalty;
 	}
 

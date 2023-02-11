@@ -34,31 +34,31 @@ namespace scone
 		{
 			penalty += input.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".input_penalty", stringf( "%g", input.GetResult() ) );
+				report_.set( name_ + ".input_penalty", stringf( "%g", input.GetResult() ) );
 		}
 		if ( !activation.IsNull() )
 		{
 			penalty += activation.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".activation_penalty", stringf( "%g", activation.GetResult() ) );
+				report_.set( name_ + ".activation_penalty", stringf( "%g", activation.GetResult() ) );
 		}
 		if ( !length.IsNull() )
 		{
 			penalty += length.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".length_penalty", stringf( "%g", length.GetResult() ) );
+				report_.set( name_ + ".length_penalty", stringf( "%g", length.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
 			penalty += velocity.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
+				report_.set( name_ + ".velocity_penalty", stringf( "%g", velocity.GetResult() ) );
 		}
 		if ( !force.IsNull() )
 		{
 			penalty += force.GetResult();
 			if ( range_count > 1 )
-				GetReport().set( name_ + ".force_penalty", stringf( "%g", force.GetResult() ) );
+				report_.set( name_ + ".force_penalty", stringf( "%g", force.GetResult() ) );
 		}
 
 		return  penalty;
