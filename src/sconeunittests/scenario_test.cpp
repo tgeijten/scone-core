@@ -24,11 +24,11 @@ namespace xo
 			void operator()( test_case& XO_ACTIVE_TEST_CASE ) {
 				auto scenario_pn = scone::LoadScenario( test_file_ );
 				auto eval_pn = scone::EvaluateScenario( scenario_pn, test_file_, xo::path() );
+				auto& eval_result = eval_pn.get_child( "result" ).get_str();
 
 				if ( xo::file_exists( report_file_ ) )
 				{
 					auto base_pn = xo::load_file( report_file_ );
-					auto& eval_result = eval_pn.get_child( "result" ).get_str();
 					auto& base_result = base_pn.get_child( "result" ).get_str();
 					XO_CHECK_MESSAGE( eval_result == base_result, eval_result + " != " + base_result );
 					if ( eval_result != base_result )
@@ -40,6 +40,7 @@ namespace xo
 				else
 				{
 					XO_CHECK_MESSAGE( false, "Could not find results for " + report_file_.filename().str() );
+					log::info( eval_pn );
 					xo::save_file( eval_pn, report_file_ );
 				}
 			}
