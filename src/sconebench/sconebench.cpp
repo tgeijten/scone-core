@@ -1,7 +1,7 @@
 /*
-** sconecmd.cpp
+** sconebench.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -35,18 +35,24 @@ int main( int argc, const char* argv[] )
 		bool fast = args.has_flag( "fast" );
 		auto min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
 		auto min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
-		auto folder = scone::GetDataFolder() / args.get<std::string>( 0, "Benchmarks" );
+		auto folder = scone::GetFolder( scone::SconeFolder::Scenarios ) / args.get<std::string>( 0, "Benchmarks" );
+		xo::log::info( "Running benchmarks from ", folder);
 		if ( xo::directory_exists( folder ) )
 		{
 			auto files = xo::find_files( folder, "bench*.scone", true, 0 );
 			for ( const auto& f : files )
 			{
-				auto scenario_pn = scone::LoadScenario( f );
-				scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", min_samples, min_norm_std );
+				try {
+					auto scenario_pn = scone::LoadScenario( f );
+					scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", min_samples, min_norm_std );
+				}
+				catch ( std::exception& e ) {
+					scone::log::error( "Error benchmarking ", f.filename(), ": ", e.what() );
+				}
 			}
 		}
-	} catch ( std::exception& e )
-	{
+	}
+	catch ( std::exception& e ) {
 		scone::log::critical( e.what() );
 		return -1;
 	}

@@ -19,7 +19,8 @@ namespace scone
 {
 	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples, double min_norm_std )
 	{
-		log::info( file.parent_path().stem() / file.filename() );
+		log::info( "" );
+		log::info( "BENCHMARK: ", file.parent_path().stem() / file.filename() );
 
 		xo::scoped_thread_priority prio_raiser( xo::thread_priority::realtime );
 
