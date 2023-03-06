@@ -24,7 +24,7 @@ namespace scone
 		INIT_PROP( pn, prediction_look_ahead_, prediction_window_ );
 		INIT_PROP( pn, max_generations_without_file_output, 100000 );
 
-		INIT_PROP( pn, optimizations_, 6 );
+		INIT_PROP( pn, optimizations, 6 );
 		INIT_PROP( pn, active_optimizations_, 6 );
 		INIT_PROP( pn, concurrent_optimizations_, 2 );
 		INIT_PROP( pn, random_seed_, 1 );
@@ -38,7 +38,7 @@ namespace scone
 		PrepareOutputFolder();
 
 		// fill the pool
-		for ( int i = 0; i < optimizations_; ++i )
+		for ( int i = 0; i < optimizations; ++i )
 		{
 			// reuse the props from CmaPoolOptimizer
 			props_.push_back( scenario_pn_copy_.get_child( "CmaPoolOptimizer" ) );

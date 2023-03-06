@@ -24,8 +24,17 @@ namespace scone
 		virtual void Run() override;
 		virtual void SetOutputMode( OutputMode m ) override;
 
-		/// Maximum number of optimizations; default = 3.
-		size_t optimizations_;
+		/// Maximum total number of optimizations; default = 6.
+		size_t optimizations;
+
+		/// Maximum number of optimizations active at the same time; default = 6.
+		size_t active_optimizations;
+
+		/// Maximum number of optimizations that are evaluated concurrently; default = 2.
+		size_t concurrent_optimizations;
+
+		/// Terminate optimizations whose predicted fitness is lower than the current best; default = 1.
+		bool use_predicted_fitness_stop_condition;
 
 		/// Random seed of the first optimization; default = 1.
 		long random_seed_;
