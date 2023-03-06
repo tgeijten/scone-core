@@ -83,7 +83,7 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
-		INIT_PROP( props, integration_accuracy, 0.001 );
+		INIT_PROP( props, integration_accuracy, scone_version >= xo::version( 2, 2, 0 ) ? 0.002 : 0.001 );
 		INIT_PROP( props, integration_method, String( "SemiExplicitEuler2" ) );
 
 		INIT_PROP_REQUIRED( props, model_file );
