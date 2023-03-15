@@ -33,6 +33,9 @@ try_clone_checkout() {
 # scone project directory
 export PROJECT_DIR=${PWD}
 
+# scone source repository directory
+export SCONE_REPOSITORY_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+
 # scone build dir
 export SCONE_BUILD_DIR=${PROJECT_DIR}/build
 
@@ -41,7 +44,7 @@ export SCONE_INSTALL_DIR=${PROJECT_DIR}/install
 
 # whether makefiles should emit commands (useful for debugging
 # compiler flags + errors)
-export CMAKE_VERBOSE_MAKEFILE="${CMAKE_VERBOSE_MAKEFILE:-True}"
+export CMAKE_VERBOSE_MAKEFILE="${CMAKE_VERBOSE_MAKEFILE:-False}"
 
 # type of cmake build for all source builds. Usually "Release" or
 # "RelWithDebInfo". "Debug" if you want a faster compile and nicer

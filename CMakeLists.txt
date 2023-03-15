@@ -54,10 +54,10 @@ include(GNUInstallDirs)
 # Set INSTALL directories
 if(LINUX)
 	set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+elseif(APPLE)
+	set(CMAKE_MACOSX_RPATH ON)
+	# set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
 endif()
-
-# Silence CMake warning on OSX.
-set(CMAKE_MACOSX_RPATH ON)
 
 # Build lua if SCONE_LUA is set
 if (SCONE_LUA)

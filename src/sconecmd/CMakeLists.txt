@@ -41,7 +41,8 @@ endif()
 if (LINUX)
 	set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "\$ORIGIN/../lib")
 elseif(APPLE)
-    set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "@executable_path/lib")
+	set(CMAKE_MACOSX_RPATH TRUE)
+	set_target_properties(sconecmd PROPERTIES INSTALL_RPATH "@executable_path/../lib")
 endif()
 
 install(TARGETS sconecmd 

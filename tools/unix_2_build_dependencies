@@ -16,7 +16,3 @@ echo "${0}: dependency build complete: the following directories were created:"
 # find "${OSG_INSTALL_PATH}" -maxdepth 2 -mindepth 1
 find "${SIMBODY_INSTALL_PATH}" -maxdepth 2 -mindepth 1
 find "${OPENSIM3_INSTALL_PATH}" -maxdepth 2 -mindepth 1
-
-echo "${0}: all dependencies built: building SCONE"
-${SCONE_REPOSITORY_DIR}/tools/unix_2d_build-scone-core-hfd
-

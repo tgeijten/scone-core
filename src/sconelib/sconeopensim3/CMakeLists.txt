@@ -76,7 +76,7 @@ if (MSVC)
 	endforeach()
 endif()
 
-if(LINUX)
+if(LINUX OR APPLE)
 	install(DIRECTORY "${OPENSIM_INSTALL_DIR}/lib/" DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 

@@ -7,10 +7,10 @@ source "$( dirname ${BASH_SOURCE} )/build_config"
 # ${SCONE_REPOSITORY_DIR}/tools/unix_2a_build-osg
 
 echo "${0}: starting simbody build"
-${SCONE_REPOSITORY_DIR}/tools/unix_2b_build-simbody
+${SCONE_REPOSITORY_DIR}/tools/unix_2b_build-simbody-fix
 
 echo "${0}: starting opensim3 build"
-${SCONE_REPOSITORY_DIR}/tools/unix_2c_build-opensim3
+${SCONE_REPOSITORY_DIR}/tools/unix_2c_build-opensim3-fix
 
 echo "${0}: dependency build complete: the following directories were created:"
 # find "${OSG_INSTALL_PATH}" -maxdepth 2 -mindepth 1

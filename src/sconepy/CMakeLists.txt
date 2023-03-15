@@ -36,6 +36,11 @@ endif()
 
 source_group("" FILES ${SCONEPY_FILES})
 
+if(APPLE)
+	set(CMAKE_MACOSX_RPATH ON)
+	set_target_properties(sconepy PROPERTIES INSTALL_RPATH "@loader_path")
+endif()
+
 if(WIN32)
 	# Windows: Install Python module to bin folder
 	install(TARGETS sconepy

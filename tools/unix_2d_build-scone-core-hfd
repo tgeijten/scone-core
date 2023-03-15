@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 set -xeuo pipefail
-script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source_dir="${script_dir}/../"
-
-source "${script_dir}/build_config"
+source "$( dirname ${BASH_SOURCE} )/build_config"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     cmake_extra_args=(
-        -DSCONE_LUA=OFF
-        -DSCONE_PYTHON=OFF
+        -DSCONE_LUA=ON
+        -DSCONE_PYTHON=ON
+        -DSCONE_OPENSIM_3=ON
+        -DSCONE_HYFYDY=ON
+        -DSCONE_DEVELOPMENT_BUILD=ON
     )
 else
     cmake_extra_args=(
@@ -32,4 +32,5 @@ cmake "${source_dir}" \
     -DOPENSIM_INSTALL_DIR="${OPENSIM3_INSTALL_PATH}" \
     -DOPENSIM_INCLUDE_DIR="${OPENSIM3_INSTALL_PATH}/sdk/include" \
     ${cmake_extra_args[@]}
+
 cmake --build . --parallel "${NUM_BUILD_JOBS}" --target install
