@@ -10,8 +10,6 @@ CmaOptimizer {
 			state_init_file = data/InitStateJump.zml
 			initial_load = 1
 			fixed_control_step_size = 0.005 # larger step sizes give better performance
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		# Controller based on lua script

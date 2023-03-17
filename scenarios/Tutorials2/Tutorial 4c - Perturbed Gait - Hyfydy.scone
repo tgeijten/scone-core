@@ -15,8 +15,6 @@ CmaOptimizer {
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			fixed_control_step_size = 0.005
 			enable_external_forces = 1 # Required when applying external forces
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		CompositeController {

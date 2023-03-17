@@ -9,8 +9,6 @@ CmaOptimizer {
 			model_file = data/H0914.hfd
 			state_init_file = data/InitStateJump.zml
 			fixed_control_step_size = 0.01
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		# Controller for the Model

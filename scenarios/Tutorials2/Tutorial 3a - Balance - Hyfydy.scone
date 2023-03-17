@@ -11,8 +11,6 @@ CmaOptimizer {
 			state_init_file = data/InitStateStand.zml
 			initial_load = 1
 			fixed_control_step_size = 0.005
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		# Controller for reflex based balance (different file)

@@ -11,8 +11,6 @@ CmaOptimizer {
 			state_init_file = data/InitStateStand.zml
 			initial_load = 1
 			fixed_control_step_size = 0.005
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		# CompositeController with multiple sub-controllers
@@ -24,7 +22,7 @@ CmaOptimizer {
 			# Motor noise controller
 			NoiseController {
 				base_noise = 0.01
-				proportional_noise = 0.1
+				proportional_noise = 0.15
 			}
 		}
 		
