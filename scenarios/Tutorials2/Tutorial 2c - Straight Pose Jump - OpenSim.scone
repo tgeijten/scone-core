@@ -15,13 +15,11 @@ CmaOptimizer {
 		FeedForwardController {
 			symmetric = 1
 			
-			# 3rd degree polynomial ax^3 + bx^2 + cx + d
-			Polynomial {
-				degree = 3
-				coefficient0 = 0.3~0.01<0,1> # initial value for d
-				coefficient1 = 0~0.1<-10,10> # initial value for c
-				coefficient2 = 0~1<-10,10> # initial value for b
-				coefficient3 = 0~1<-10,10> # initial value for a
+			# Function for feed-forward pattern
+			PieceWiseConstant {
+				control_points = 3
+				control_point_y = 0.3~0.01<0,1> # Initial y value of control points
+				control_point_dt = 0.2~0.01<0.001,1> # Initial delta time between control points
 			}
 		}
 		

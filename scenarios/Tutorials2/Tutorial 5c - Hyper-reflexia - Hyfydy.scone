@@ -15,8 +15,6 @@ CmaOptimizer {
 			initial_state_offset =	0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			fixed_control_step_size = 0.005
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		CompositeController {

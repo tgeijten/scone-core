@@ -18,8 +18,6 @@ CmaOptimizer {
 			
 			# Required for Perturbations
 			enable_external_forces = 1
-			
-			<< data/HfdConfigPlanarV2.zml >>
 		}
 		
 		# Controller for perturbed gait
