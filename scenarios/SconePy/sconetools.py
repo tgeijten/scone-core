@@ -36,7 +36,8 @@ if importlib.util.find_spec('sconepy') is None:
             ])
     elif sys.platform.startswith('darwin'):
         try_find_sconepy([
-            "/Applications/SconeStudio.app/Contents/MacOS/lib"
+            '/Applications/SCONE.app/Contents/MacOS/lib',
+            pathlib.Path.home() / 'SCONE.app/Contents/MacOS/lib'
             ])
 
     if path_to_sconepy:
