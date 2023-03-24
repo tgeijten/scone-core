@@ -1,5 +1,7 @@
 set(SCONE_CONFIG_FILES
 	sconelib_config.h
+	"../../../VERSION.txt"
+	scone_version.h.in
 	)
 set(CORE_BASE_FILES
 	core/HasData.h
@@ -301,13 +303,16 @@ if (SCONE_EXPERIMENTAL_FEATURES)
 	list( APPEND SCONELIB_FILES ${CS_CONTROLLERS_EXPERIMENTAL_FILES} )
 endif()
 
+# congifure scone_version.h
+configure_file(scone_version.h.in scone_version.h @ONLY)
+
 # add sources to single lib
-add_library(sconelib SHARED ${SCONELIB_FILES} )
+add_library(sconelib SHARED ${SCONELIB_FILES})
 
 # Require C++17 standard
 set_target_properties(sconelib PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(sconelib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+target_include_directories(sconelib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 target_link_libraries(sconelib xo spot)
 
@@ -366,4 +371,4 @@ source_group("model" FILES ${SIM_SIMULATIONANDCONTROL_FILES})
 source_group("model" FILES ${SIM_SYSTEM_FILES})
 source_group("model" FILES ${SIM_TOPOLOGY_FILES})
 
-source_group("" FILES ${SCONE_CONFIG_FILES})
+source_group("" FILES ${SCONE_CONFIG_FILES} )
