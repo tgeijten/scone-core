@@ -15,9 +15,23 @@
 namespace scone
 {
 	/// Measure for how well a simulation mimics data from predefined motion file.
-	/// This measure only considers variable that are part of the actual state of the model,
-	/// which includes the DOFs, DOF velocities, muscle activation (*.activation), and muscle fiber length (*.fiber_length)
-	/// Variables that are derived from the state are not included in the measure.
+	/** This measure only considers variable that are part of the model state,
+	which includes DOFs, DOF velocities, muscle activation (*.activation), and muscle fiber length (*.fiber_length)
+	Variables that are derived from the state are not included in the measure. Example:
+	\verbatim
+	# Measure for mimicking 2D gait
+	MimicMeasure {
+		name = Mimic
+		weight = 10000
+		file = my_data_file.sto
+		include_states = "*.pos.x;*.pos.y;*.ori.z;*.activation"
+		stop_time = 2
+		threshold = 0.01
+		average_error_limit = 0.01
+		activation_error_weight = 0.25
+	}
+	\endverbatim
+	*/
 	class MimicMeasure : public Measure
 	{
 	public:
