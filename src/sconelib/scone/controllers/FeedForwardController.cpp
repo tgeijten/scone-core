@@ -46,6 +46,9 @@ namespace scone
 			}
 		}
 
+		if ( m_ActInfos.empty() )
+			SCONE_ERROR( "No matching actuators (include=\"" + include + "\", exclude=\"" + exclude + "\")" );
+
 		for ( ActInfo& ai : m_ActInfos )
 		{
 			if ( symmetric )
