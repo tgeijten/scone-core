@@ -36,10 +36,10 @@ int main( int argc, const char* argv[] )
 		auto min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
 		auto min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
 		auto folder = scone::GetFolder( scone::SconeFolder::Scenarios ) / args.get<std::string>( 0, "Benchmarks" );
-		xo::log::info( "Running benchmarks from ", folder);
+		xo::log::info( "Running benchmarks from ", folder );
 		if ( xo::directory_exists( folder ) )
 		{
-			auto files = xo::find_files( folder, "bench*.scone", true, 0 );
+			auto files = xo::find_files( folder, include, true, 0 );
 			for ( const auto& f : files )
 			{
 				try {
