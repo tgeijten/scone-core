@@ -36,10 +36,8 @@ namespace scone
 		if ( model_->GetMeasure() )
 			info_.set_minimize( model_->GetMeasure()->GetMinimize() );
 
-		if ( !model_->GetController() )
-			log::warning( "Warning: Model has no Controller" );
-		if ( !model_->GetMeasure() )
-			log::warning( "Warning: Model has no Measure" );
+		if ( info_.dim() > 0 && !model_->GetMeasure() )
+			log::warning( "Warning: Model has free parameters but no Measure" );
 
 		signature_ = model_->GetSignature();
 
