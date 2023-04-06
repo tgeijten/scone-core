@@ -53,12 +53,12 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials2", "*Hyfydy.scone" );
-				scone::add_scenario_tests( install_dir, "scenarios/Benchmarks", "*.par" );
+				scone::add_scenario_tests( install_dir, "scenarios/Benchmarks", "*.par", "data", 1 );
 				scone::add_scenario_tests( scone::GetDataFolder(), "Benchmarks", "bench*.scone" );
 #	if SCONE_EXPERIMENTAL_FEATURES_ENABLED
-				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/HyfydyExperimental", "*.par" );
+				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/HyfydyExperimental", "*.par", "data", 1 );
 				if ( args.has_flag( "add-blueprints" ) )
-					scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Blueprints", "*.par" );
+					scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Blueprints", "*.par", "data", 1 );
 #	endif
 			}
 #endif

@@ -10,5 +10,5 @@ namespace scone
 		const xo::path& sub_folder,
 		const xo::pattern_matcher& include = "*.scone;*.par",
 		const xo::pattern_matcher& exclude = "data",
-		int recurse_subdir_levels = 1 );
+		int recurse_subdir_levels = 0 );
 }
