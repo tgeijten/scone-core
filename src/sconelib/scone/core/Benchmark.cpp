@@ -46,6 +46,7 @@ namespace scone
 			bm.push_back( value.secondsd() );
 		};
 		xo::time duration;
+		double result = 0.0;
 		std::vector<TimeInSeconds> bmsortedbest;
 		for ( index_t idx = 0; idx < max_samples; ++idx )
 		{
@@ -56,6 +57,7 @@ namespace scone
 			mo->AdvanceSimulationTo( *model, model->GetSimulationEndTime() );
 			auto total_time = t();
 			auto timings = model->GetBenchmarks();
+			result = model->GetMeasureResult();
 			if ( !timings.empty() )
 			{
 				for ( const auto& timing : timings )
@@ -137,7 +139,7 @@ namespace scone
 					ostr << xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
 			}
 		}
-		log::info( "Simulation duration ", duration );
+		log::info( "Simulation duration=", duration.secondsd(), " result=", result );
 
 		if ( !has_baseline )
 			log::info( "Results written to ", baseline_file );
