@@ -130,6 +130,7 @@ namespace scone
 		void InitializeController();
 
 		static String GetOpenSimBuildVersion();
+		virtual String GetSimulatorId() const { return "OpenSim-" + GetOpenSimBuildVersion(); }
 
 	private:
 		void InitStateFromTk();

@@ -173,6 +173,9 @@ namespace scone
 		// features supported by this model
 		virtual const ModelFeatures& GetFeatures() const { return m_Features; }
 
+		// get string identifying simulator name and version
+		virtual String GetSimulatorId() const = 0;
+
 		// check if this is a planar model
 		virtual bool IsPlanar() const;
 

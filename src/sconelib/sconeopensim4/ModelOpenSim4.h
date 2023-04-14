@@ -130,6 +130,7 @@ namespace scone
 		virtual void AdjustStateForLoad( Real load ) override;
 
 		static String GetOpenSimBuildVersion();
+		virtual String GetSimulatorId() const { return "OpenSim-" + GetOpenSimBuildVersion(); }
 
 	private:
 		void InitStateFromTk();

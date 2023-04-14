@@ -31,7 +31,7 @@ namespace scone
 		if ( is_par_file )
 			par.import_values( file );
 
-		auto baseline_file = results_dir / xo::get_computer_name() / file.stem() + ".stats";
+		auto baseline_file = results_dir / xo::get_computer_name() / "baseline" / file.stem() + ".baseline";
 		bool has_baseline = xo::file_exists( baseline_file );
 		if ( !has_baseline )
 			min_samples *= 4;
@@ -116,6 +116,8 @@ namespace scone
 		std::sort( benchmarks.begin(), benchmarks.end(), [&]( auto&& a, auto&& b ) { return a.time_ > b.time_; } );
 
 		// report
+		string history_header = "SimulatorId     ";
+		string history_str = mo->GetModel().GetSimulatorId();
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
@@ -123,8 +125,12 @@ namespace scone
 			log::level l = diff_std > 3 ? log::level::error : ( diff_std < -3 ? log::level::warning : log::level::info );
 
 			if ( eval )
+			{
 				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%5.2fx\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
 					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_factor(), diff_std, bm.std_, duration / bm.time_ ) );
+				history_str += "\t" + xo::to_str( duration / bm.time_ );
+				history_header += "\t" + bm.name_;
+			}
 			else
 				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%5.2fx\t%+6.2fS\t%6.2f", bm.name_.c_str(),
 					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_factor(), diff_std, bm.std_ ) );
@@ -140,6 +146,11 @@ namespace scone
 			}
 		}
 		log::info( "Simulation duration=", duration.secondsd(), " result=", result );
+
+		auto history_file = results_dir / xo::get_computer_name() / file.stem() + ".history";
+		if ( !xo::file_exists( history_file ) )
+			xo::save_string( history_file, history_header + "\n" );
+		xo::append_string( history_file, history_str + "\n" );
 
 		if ( !has_baseline )
 			log::info( "Results written to ", baseline_file );
