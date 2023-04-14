@@ -123,11 +123,11 @@ namespace scone
 			log::level l = diff_std > 3 ? log::level::error : ( diff_std < -3 ? log::level::warning : log::level::info );
 
 			if ( eval )
-				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%+6.2f%%\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
-					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_perc(), diff_std, bm.std_, duration / bm.time_ ) );
+				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%5.2fx\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
+					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_factor(), diff_std, bm.std_, duration / bm.time_ ) );
 			else
-				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%+6.2f%%\t%+6.2fS\t%6.2f", bm.name_.c_str(),
-					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_perc(), diff_std, bm.std_ ) );
+				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%5.2fx\t%+6.2fS\t%6.2f", bm.name_.c_str(),
+					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_factor(), diff_std, bm.std_ ) );
 
 			if ( !has_baseline )
 			{
