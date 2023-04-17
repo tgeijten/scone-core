@@ -33,8 +33,10 @@ int main( int argc, const char* argv[] )
 
 		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
 		bool fast = args.has_flag( "fast" );
-		auto min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
-		auto min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
+		scone::BenchmarkOptions bopt;
+		bopt.min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
+		bopt.min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
+		bopt.log_history = args.has_flag( "h" );
 		auto folder = scone::GetFolder( scone::SconeFolder::Scenarios ) / args.get<std::string>( 0, "Benchmarks" );
 		xo::log::info( "Running benchmarks from ", folder );
 		if ( xo::directory_exists( folder ) )
@@ -44,7 +46,7 @@ int main( int argc, const char* argv[] )
 			{
 				try {
 					auto scenario_pn = scone::LoadScenario( f );
-					scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", min_samples, min_norm_std );
+					scone::BenchmarkScenario( scenario_pn, f, folder / "_benchmark_results", bopt );
 				}
 				catch ( std::exception& e ) {
 					scone::log::error( "Error benchmarking ", f.filename(), ": ", e.what() );

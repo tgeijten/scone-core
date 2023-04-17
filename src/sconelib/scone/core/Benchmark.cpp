@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, size_t min_samples, double min_norm_std )
+	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, const BenchmarkOptions& bo )
 	{
 		log::info( "" );
 		log::info( "BENCHMARK: ", file.parent_path().stem() / file.filename() );
@@ -33,14 +33,13 @@ namespace scone
 
 		auto baseline_file = results_dir / xo::get_computer_name() / "baseline" / file.stem() + ".baseline";
 		bool has_baseline = xo::file_exists( baseline_file );
-		if ( !has_baseline )
-			min_samples *= 4;
+		auto min_samples = has_baseline ? bo.min_samples : bo.min_samples * 4;
 		auto max_samples = min_samples * 10;
 
 		// run simulations
 		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;
 		auto add_benchmark = [&]( const std::string sv, xo::time value ) {
-			auto& bm = bm_components[ sv ];
+			auto& bm = bm_components[sv];
 			if ( bm.empty() )
 				bm.reserve( max_samples );
 			bm.push_back( value.secondsd() );
@@ -68,7 +67,7 @@ namespace scone
 				duration = xo::time_from_seconds( model->GetTime() );
 				auto real_time_x = model->GetTime() / total_time.secondsd();
 
-				auto& bmvec = bm_components[ "EvalTotal" ];
+				auto& bmvec = bm_components["EvalTotal"];
 				//auto n = ( bmvec.size() + 1 ) / 2;
 				auto n = std::min( min_samples, bmvec.size() );
 				bmsortedbest.resize( n );
@@ -77,7 +76,7 @@ namespace scone
 				auto rt_mean = model->GetTime() / mean;
 				auto norm_std = stdev / mean;
 				printf( "%03zd: %6.2f M=%6.2f S=%.4f\r", idx, real_time_x, rt_mean, norm_std );
-				if ( norm_std < min_norm_std && idx >= min_samples )
+				if ( norm_std < bo.min_norm_std && idx >= min_samples )
 					break;
 			}
 			//xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
@@ -95,7 +94,7 @@ namespace scone
 				bstr >> bname >> bmedian >> bstd;
 				bool eval = xo::str_begins_with( bname, "Eval" );
 				if ( bstr.good() )
-					baseline_medians[ bname ] = eval ? xo::time_from_milliseconds( bmedian ) : xo::time_from_nanoseconds( bmedian );
+					baseline_medians[bname] = eval ? xo::time_from_milliseconds( bmedian ) : xo::time_from_nanoseconds( bmedian );
 			}
 		}
 
@@ -108,7 +107,7 @@ namespace scone
 			std::partial_sort_copy( samples.begin(), samples.end(), bmsortedbest.begin(), bmsortedbest.end() );
 			auto [mean, stdev] = xo::mean_std( bmsortedbest );
 			bm.time_ = xo::time_from_seconds( mean );
-			bm.baseline_ = baseline_medians[ name ];
+			bm.baseline_ = baseline_medians[name];
 			bm.std_ = stdev;
 			benchmarks.push_back( bm );
 		}
@@ -121,7 +120,7 @@ namespace scone
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
-			auto diff_std = bm.diff_norm() / min_norm_std;
+			auto diff_std = bm.diff_norm() / bo.min_norm_std;
 			log::level l = diff_std > 3 ? log::level::error : ( diff_std < -3 ? log::level::warning : log::level::info );
 
 			if ( eval )
@@ -147,10 +146,12 @@ namespace scone
 		}
 		log::info( "Simulation duration=", duration.secondsd(), " result=", result );
 
-		auto history_file = results_dir / xo::get_computer_name() / file.stem() + ".history";
-		if ( !xo::file_exists( history_file ) )
-			xo::save_string( history_file, history_header + "\n" );
-		xo::append_string( history_file, history_str + "\n" );
+		if ( bo.log_history ) {
+			auto history_file = results_dir / xo::get_computer_name() / file.stem() + ".history";
+			if ( !xo::file_exists( history_file ) )
+				xo::save_string( history_file, history_header + "\n" );
+			xo::append_string( history_file, history_str + "\n" );
+		}
 
 		if ( !has_baseline )
 			log::info( "Results written to ", baseline_file );

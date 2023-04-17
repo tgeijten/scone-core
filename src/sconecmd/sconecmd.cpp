@@ -110,20 +110,22 @@ int main( int argc, char* argv[] )
 			else if ( benchArg.isSet() )
 			{
 				auto filename = xo::path( benchArg.getValue() );
+				scone::BenchmarkOptions bopt;
+				bopt.min_samples = bxArg.getValue();
 				if ( xo::directory_exists( filename ) )
 				{
 					auto files = xo::find_files( filename, "*.par", true, 1 );
 					for ( const auto& f : files )
 					{
 						auto scenario_pn = load_scenario( scone::FindScenario( f ), propArg );
-						scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", bxArg.getValue() );
+						scone::BenchmarkScenario( scenario_pn, f, filename / "_benchmark_results", bopt );
 					}
 				}
 				else
 				{
 					auto f = path( benchArg.getValue() );
 					auto scenario_pn = load_scenario( scone::FindScenario( benchArg.getValue() ), propArg );
-					scone::BenchmarkScenario( scenario_pn, f, f.parent_path() / "_benchmark_results", bxArg.getValue() );
+					scone::BenchmarkScenario( scenario_pn, f, f.parent_path() / "_benchmark_results", bopt );
 				}
 			}
 #if SCONE_HYFYDY_ENABLED
