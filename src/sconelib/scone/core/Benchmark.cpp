@@ -33,7 +33,8 @@ namespace scone
 
 		auto baseline_file = results_dir / xo::get_computer_name() / "baseline" / file.stem() + ".baseline";
 		bool has_baseline = xo::file_exists( baseline_file );
-		auto min_samples = has_baseline ? bo.min_samples : bo.min_samples * 4;
+		bool create_baseline = bo.create_baseline || !has_baseline;
+		auto min_samples = create_baseline ? 4 * bo.min_samples : bo.min_samples;
 		auto max_samples = min_samples * 10;
 
 		// run simulations
@@ -117,6 +118,7 @@ namespace scone
 		// report
 		string history_header = "SimulatorId     ";
 		string history_str = mo->GetModel().GetSimulatorId();
+		string baseline_str;
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
@@ -134,14 +136,12 @@ namespace scone
 				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%5.2fx\t%+6.2fS\t%6.2f", bm.name_.c_str(),
 					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_factor(), diff_std, bm.std_ ) );
 
-			if ( !has_baseline )
+			if ( create_baseline )
 			{
-				xo::create_directories( baseline_file.parent_path().str() );
-				auto ostr = std::ofstream( baseline_file.str(), std::ios_base::app );
 				if ( eval )
-					ostr << xo::stringf( "%-32s\t%8.2f\t%8.2f\n", bm.name_.c_str(), bm.time_.milliseconds(), bm.std_ );
+					baseline_str += xo::stringf( "%-32s\t%8.2f\t%8.2f\n", bm.name_.c_str(), bm.time_.milliseconds(), bm.std_ );
 				else
-					ostr << xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
+					baseline_str += xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
 			}
 		}
 		log::info( "Simulation duration=", duration.secondsd(), " result=", result );
@@ -153,7 +153,10 @@ namespace scone
 			xo::append_string( history_file, history_str + "\n" );
 		}
 
-		if ( !has_baseline )
+		if ( create_baseline )
+		{
+			xo::save_string( baseline_file, baseline_str );
 			log::info( "Results written to ", baseline_file );
+		}
 	}
 }

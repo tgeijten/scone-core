@@ -12,6 +12,7 @@ namespace scone
 		size_t min_samples = 8;
 		double min_norm_std = 0.01;
 		bool log_history = true;
+		bool create_baseline = false;
 	};
 
 	SCONE_API void BenchmarkScenario( 

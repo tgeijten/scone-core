@@ -37,6 +37,7 @@ int main( int argc, const char* argv[] )
 		bopt.min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
 		bopt.min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
 		bopt.log_history = args.has_flag( "h" );
+		bopt.create_baseline = args.has_flag( "b" );
 		auto folder = scone::GetFolder( scone::SconeFolder::Scenarios ) / args.get<std::string>( 0, "Benchmarks" );
 		xo::log::info( "Running benchmarks from ", folder );
 		if ( xo::directory_exists( folder ) )
