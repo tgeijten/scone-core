@@ -97,7 +97,7 @@ namespace scone
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );
 
 		// set store data info from settings
-		auto& flags = GetStoreDataFlags();
+		auto& flags = m_StoreDataFlags;
 		flags.set( StoreDataTypes::BodyPosition, GetSconeSetting<bool>( "data.body" ) );
 		flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( "data.joint" ) );
 		flags.set( StoreDataTypes::ActuatorInput, GetSconeSetting<bool>( "data.actuator" ) );

@@ -268,8 +268,8 @@ namespace scone
 		xo::version scone_version;
 
 		virtual void SetStoreData( bool store );
+		bool GetStoreData() const { return m_StoreData; }
 		bool MustStoreCurrentFrame() const;
-		StoreDataFlags& GetStoreDataFlags() { return m_StoreDataFlags; }
 		const StoreDataFlags& GetStoreDataFlags() const { return m_StoreDataFlags; }
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }

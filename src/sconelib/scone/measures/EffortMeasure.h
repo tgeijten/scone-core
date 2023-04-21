@@ -93,6 +93,8 @@ namespace scone
 		Real m_Uchida2016BasalEnergy;
 		Real m_AerobicFactor;
 		Statistic< double > m_Effort;
+		std::vector<String> m_MuscleNames;
+		mutable std::vector<Real> m_MuscleEfforts;
 		Vec3 m_InitComPos;
 		PropNode m_Report;
 		std::vector< Real > m_SlowTwitchFiberRatios;

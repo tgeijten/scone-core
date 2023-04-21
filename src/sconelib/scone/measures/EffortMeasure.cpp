@@ -54,6 +54,9 @@ namespace scone
 		m_AerobicFactor = 1.5; // 1.5 is for aerobic conditions, 1.0 for anaerobic. may need to add as option later
 		m_InitComPos = model.GetComPos();
 		SetSlowTwitchRatios( props, model );
+		for ( auto& mus : model.GetMuscles() )
+			m_MuscleNames.push_back( name_ + "." + mus->GetName() + ".penalty" );
+		m_MuscleEfforts.resize( model.GetMuscles().size() );
 	}
 
 	EffortMeasure::MuscleProperties::MuscleProperties( const PropNode& props ) :
@@ -155,6 +158,8 @@ namespace scone
 			Real effort_w = xo::max( 0.0, mus->GetActiveFiberForce() * -v_ce );
 			Real effort = effort_a + effort_m + effort_s + effort_w;
 			e += effort;
+			if ( model.GetStoreData() )
+				m_MuscleEfforts[ i ] = effort;
 
 			SCONE_ERROR_IF( fa != fa, "Error computing fa for " + mus->GetName() + "; excitation=" + to_str( mus->GetExcitation() ) );
 		}
@@ -240,6 +245,9 @@ namespace scone
 
 			// total metabolic rate for this muscle
 			double Edot = ( totalHeatRate + Wdot ) * mass;
+
+			if ( model.GetStoreData() )
+				m_MuscleEfforts[ i ] = Edot;
 
 			e += Edot;
 		}
@@ -354,5 +362,7 @@ namespace scone
 	void EffortMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		frame[ name_ + ".penalty" ] = m_Effort.GetLatest();
+		for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i )
+			frame[m_MuscleNames[ i ] ] = m_MuscleEfforts[i];
 	}
 }
