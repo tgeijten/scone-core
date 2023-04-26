@@ -19,6 +19,8 @@
 #include "xo/string/string_cast.h"
 #include "scone/core/types.h"
 #include "scone/core/Vec3.h"
+#include "xo/geometry/quat.h"
+#include "xo/numerical/constants.h"
 
 namespace scone
 {
@@ -132,7 +134,7 @@ namespace scone
 	}
 
 	inline Vec3 GetMirrored( Vec3 v ) { v.z = -v.z; return v; }
-	inline bool IsMirrored( const Vec3& v1, const Vec3& v2 ) { return v1 == GetMirrored( v2 ); }
+	inline bool IsMirrored( const Vec3& v1, const Vec3& v2, Real eps = xo::num<Real>::epsilon ) { return xo::equal( v1, GetMirrored( v2 ), eps ); }
 }
 
 namespace xo

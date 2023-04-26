@@ -573,7 +573,7 @@ namespace scone
 		model_pn[ "leg count" ] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
 			auto& asym_pn = model_pn.add_child( "asymmetries" );
-			asym_pn.add_values( objects.begin(), objects.end() );
+			asym_pn.merge( objects );
 		}
 
 		for ( const auto& item : GetBodies() )
