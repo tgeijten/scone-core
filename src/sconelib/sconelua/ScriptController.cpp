@@ -22,7 +22,7 @@ namespace scone
 		Controller( pn, par, model, loc ),
 		script_file( FindFile( pn.get<path>( "script_file" ) ) ),
 		INIT_MEMBER( pn, external_files, std::vector<path>() ),
-		script_( new lua_script( script_file, pn, par, model ) )
+		script_( new lua_script( script_file, pn ) )
 	{
 		// optional functions
 		if ( auto f = script_->try_find_function( "init" ) )

@@ -11,7 +11,7 @@ namespace scone
 		Measure( pn, par, model, loc ),
 		script_file( FindFile( pn.get<path>( "script_file" ) ) ),
 		INIT_MEMBER( pn, external_files, std::vector<path>() ),
-		script_( new lua_script( script_file, pn, par, const_cast<Model&>( model ) ) ) // const_cast is needed because Lua doesn't care about const
+		script_( new lua_script( script_file, pn ) )
 	{
 		// optional functions
 		if ( auto f = script_->try_find_function( "init" ) )

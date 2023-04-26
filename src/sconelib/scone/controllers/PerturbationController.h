@@ -51,7 +51,7 @@ namespace scone
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 
 		// must be active even before start_time / after stop_time, so that perturbations can be turned off
-		virtual bool IsActive( const Model& model, double time ) override { return !disabled_; }
+		virtual bool IsActive( const Model& model, double time ) const override { return !disabled_; }
 
 	protected:
 		virtual String GetClassSignature() const override;

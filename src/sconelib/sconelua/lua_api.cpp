@@ -127,6 +127,12 @@ namespace scone
 			"joint_count", &LuaModel::joint_count
 			);
 
+		lua.new_usertype<LuaController>( "LuaController", sol::constructors<>(),
+			"child_count", &LuaController::child_count,
+			"set_child_enabled", &LuaController::set_child_enabled,
+			"is_child_enabled", &LuaController::is_child_enabled
+			);
+
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),
 			"create_from_mean_std", &LuaParams::create_from_mean_std,
 			"create_from_string", &LuaParams::create_from_string

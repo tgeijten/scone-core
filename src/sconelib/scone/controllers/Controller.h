@@ -41,10 +41,11 @@ namespace scone
 		bool UpdateAnalysis( const Model& model, double timestamp );
 
 		// Check if Controller is active, i.e. start_time >= time_stamp > stop_time && disabled state is not set
-		virtual bool IsActive( const Model& model, double time ) { return time >= start_time && ( stop_time == 0.0 || time < stop_time ) && !disabled_; }
+		virtual bool IsActive( const Model& model, double time ) const { return time >= start_time && ( stop_time == 0.0 || time < stop_time ) && !disabled_; }
 
 		// Set the disabled state of the controller, this is checked in IsActive().
 		void SetDisabled( bool disabled ) { disabled_ = disabled; }
+		bool IsDisabled() const { return disabled_; }
 
 		// Reset the state of the controller, called by Model::Reset()
 		virtual void Reset( Model& model );

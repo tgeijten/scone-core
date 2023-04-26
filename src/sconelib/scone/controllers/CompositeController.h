@@ -29,6 +29,9 @@ namespace scone
 
 		virtual PropNode GetInfo() const override;
 
+		const std::vector< ControllerUP >& GetChildren() const { return controllers_; }
+		std::vector< ControllerUP >& GetChildren() { return controllers_; }
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;

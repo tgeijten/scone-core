@@ -7,7 +7,7 @@
 
 namespace scone
 {
-	lua_script::lua_script( const path& script_file, const PropNode& pn, Params& par, Model& model ) :
+	lua_script::lua_script( const path& script_file, const PropNode& pn ) :
 		script_file_( script_file )
 	{
 		lua_.open_libraries( sol::lib::base, sol::lib::math, sol::lib::package, sol::lib::string );

@@ -6,13 +6,14 @@
 #include "scone/model/Actuator.h"
 #include "scone/model/Muscle.h"
 #include "scone/model/Dof.h"
+#include "scone/model/Joint.h"
 #include "scone/core/Log.h"
 #include "scone/core/Storage.h"
+#include "scone/controllers/CompositeController.h"
 
 #include "xo/geometry/vec3_type.h"
 #include "xo/string/string_cast.h"
 #include "xo/geometry/quat_type.h"
-#include "scone/model/Joint.h"
 #include "xo/geometry/quat.h"
 
 namespace sol { class state; }
@@ -337,6 +338,24 @@ namespace scone
 		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
 
 		Model& mod_;
+	};
+
+	/// Controller type for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaController
+	{
+		LuaController( CompositeController& c ) : controller_( c ) {}
+
+		/// number of child controllers
+		int child_count() { return static_cast<int>( controller_.GetChildren().size() ); }
+
+		/// enable controller at index (starting at 1)
+		void set_child_enabled( int index, bool enabled ) { GetByLuaIndex( controller_.GetChildren(), index )->SetDisabled( !enabled ); }
+
+		/// check if controller at index is enabled (starting at 1)
+		bool is_child_enabled( int index ) { return !GetByLuaIndex( controller_.GetChildren(), index )->IsDisabled(); }
+
+		CompositeController& controller_;
 	};
 
 	/// parameter access for use in lua scripting.
