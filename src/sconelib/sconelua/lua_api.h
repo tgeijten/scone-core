@@ -311,14 +311,14 @@ namespace scone
 		LuaDof dof( int index ) { return *GetByLuaIndex( mod_.GetDofs(), index ); }
 		/// find a muscle with a specific name
 		LuaDof find_dof( LuaString name ) { return *GetByLuaName( mod_.GetDofs(), name ); }
-		/// number of bodies
+		/// number of dofs
 		int dof_count() { return static_cast<int>( mod_.GetDofs().size() ); }
 
 		/// get the muscle at index (starting at 1)
 		LuaMuscle muscle( int index ) { return *GetByLuaIndex( mod_.GetMuscles(), index ); }
 		/// find a muscle with a specific name
 		LuaMuscle find_muscle( LuaString name ) { return *GetByLuaName( mod_.GetMuscles(), name ); }
-		/// number of bodies
+		/// number of muscles
 		int muscle_count() { return static_cast<int>( mod_.GetMuscles().size() ); }
 
 		/// get the body at index (starting at 1)
@@ -334,7 +334,7 @@ namespace scone
 		LuaJoint joint( int index ) { return *GetByLuaIndex( mod_.GetJoints(), index ); }
 		/// find a joint with a specific name
 		LuaJoint find_joint( LuaString name ) { return *GetByLuaName( mod_.GetJoints(), name ); }
-		/// number of bodies
+		/// number of joints
 		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
 
 		Model& mod_;
