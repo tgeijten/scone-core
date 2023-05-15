@@ -128,7 +128,11 @@ namespace scone
 			);
 
 		lua.new_usertype<LuaController>( "LuaController", sol::constructors<>(),
+			"name", &LuaController::name,
 			"child_count", &LuaController::child_count,
+			"child", &LuaController::child,
+			"enable", &LuaController::enable,
+			"enabled", &LuaController::enabled,
 			"set_child_enabled", &LuaController::set_child_enabled,
 			"is_child_enabled", &LuaController::is_child_enabled
 			);

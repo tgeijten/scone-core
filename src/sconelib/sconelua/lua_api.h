@@ -344,18 +344,34 @@ namespace scone
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaController
 	{
-		LuaController( CompositeController& c ) : controller_( c ) {}
+		LuaController( Controller& c ) : cont_( c ), comp_cont_( dynamic_cast<CompositeController*>( &c ) ) {}
+
+		/// get the name of the body
+		LuaString name() { return cont_.GetName().c_str(); }
 
 		/// number of child controllers
-		int child_count() { return static_cast<int>( controller_.GetChildren().size() ); }
+		int child_count() { return static_cast<int>( comp_cont_ ? children().size() : 0 ); }
 
-		/// enable controller at index (starting at 1)
-		void set_child_enabled( int index, bool enabled ) { GetByLuaIndex( controller_.GetChildren(), index )->SetDisabled( !enabled ); }
+		/// get child controller
+		LuaController child( int index ) { return *GetByLuaIndex( children(), index ); }
+
+		/// enable controller 
+		void enable( bool enabled ) { cont_.SetDisabled( !enabled ); }
 
 		/// check if controller at index is enabled (starting at 1)
-		bool is_child_enabled( int index ) { return !GetByLuaIndex( controller_.GetChildren(), index )->IsDisabled(); }
+		bool enabled() { return !cont_.IsDisabled(); }
 
-		CompositeController& controller_;
+		/// enable controller at index (starting at 1)
+		void set_child_enabled( int index, bool enabled ) { GetByLuaIndex( children(), index )->SetDisabled( !enabled ); }
+
+		/// check if controller at index is enabled (starting at 1)
+		bool is_child_enabled( int index ) { return !GetByLuaIndex( children(), index )->IsDisabled(); }
+
+		Controller& cont_;
+		CompositeController* comp_cont_;
+
+	private:
+		std::vector< ControllerUP >& children() { SCONE_ERROR_IF( !comp_cont_, "Controller has no children" ); return comp_cont_->GetChildren(); }
 	};
 
 	/// parameter access for use in lua scripting.

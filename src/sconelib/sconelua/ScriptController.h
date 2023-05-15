@@ -1,7 +1,7 @@
 #pragma once
 
 #include "platform.h"
-#include "scone/controllers/Controller.h"
+#include "scone/controllers/CompositeController.h"
 #include "scone/core/system_tools.h"
 
 #include <functional>
@@ -17,12 +17,15 @@ namespace scone
 		-- This function is called at the start of the simulation
 		-- 'model' can be used to initialize the desired actuators (see LuaModel)
 		-- 'par' can be used to define parameters for optimization (see LuaPar)
-		-- 'side' denotes if the controller is for a specific side (-1 = left, 0 = any, 1 = right)
+		-- 'side' denotes if the controller is for a specific side (-1 = left, 0 = unspecified, 1 = right)
 	end
 
-	function update( model )
+	function update( model, time, controller )
 		-- This function is called at each simulation timestep
 		-- Use it to update the actuator inputs
+		-- 'model' can be used to update the desired actuators (see LuaModel)
+		-- 'time' is the time elapsed since this controller was activated
+		-- 'controller' can be used to enable/disable child controllers of this ScriptController (see LuaController)
 		return false -- change to 'return true' to terminate the simulation early
 	end
 
@@ -33,7 +36,7 @@ namespace scone
 	\endverbatim
 	See Tutorial 6a and 6b for more information.
 	*/
-	class SCONE_LUA_API ScriptController : public Controller
+	class SCONE_LUA_API ScriptController : public CompositeController
 	{
 	public:
 		ScriptController( const PropNode& props, Params& par, Model& model, const Location& loc );
@@ -52,7 +55,7 @@ namespace scone
 
 		u_ptr< class lua_script > script_;
 		std::function<void( struct LuaModel*, struct LuaParams*, double )> init_;
-		std::function<bool( struct LuaModel*, double )> update_;
+		std::function<bool( struct LuaModel*, double, struct LuaController* )> update_;
 		std::function<double( struct LuaFrame* )> store_;
 	};
 }

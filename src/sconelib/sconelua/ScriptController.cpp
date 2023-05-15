@@ -19,7 +19,7 @@
 namespace scone
 {
 	ScriptController::ScriptController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-		Controller( pn, par, model, loc ),
+		CompositeController( pn, par, model, loc ),
 		script_file( FindFile( pn.get<path>( "script_file" ) ) ),
 		INIT_MEMBER( pn, external_files, std::vector<path>() ),
 		script_( new lua_script( script_file, pn ) )
@@ -64,7 +64,8 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
 		LuaModel lm( model );
-		return update_( &lm, timestamp );
+		LuaController lc( *this );
+		return update_( &lm, timestamp, &lc );
 	}
 
 	String ScriptController::GetClassSignature() const

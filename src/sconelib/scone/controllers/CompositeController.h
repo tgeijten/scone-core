@@ -14,11 +14,13 @@ namespace scone
 {
 	/// Controller consisting of multiple child controllers.
 	/// Child Controllers are inserted as children of this parameter, e.g. ''CompositeController { FeedForwardController { ... } ReflexController { ... } }''.
-	class CompositeController : public Controller
+	class SCONE_API CompositeController : public Controller
 	{
 	public:
 		CompositeController( const PropNode& props, Params& par, Model& model, const Location& loc );
-		virtual ~CompositeController() {}
+		CompositeController( const CompositeController& props ) = delete;
+		CompositeController& operator=( const CompositeController& props ) = delete;
+		virtual ~CompositeController() = default;
 		
 		virtual void Reset( Model& model ) override;
 
