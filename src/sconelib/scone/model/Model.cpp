@@ -231,7 +231,7 @@ namespace scone
 			auto dt = GetTime() - m_PrevStoreDataTime;
 			auto step_count = GetIntegrationStep() - m_PrevStoreDataStep;
 			frame[ "simulation_frequency" ] = dt > 0 ? step_count / dt : 0.0;
-			frame[ "simulation_step_size" ] = dt / step_count;
+			frame[ "simulation_step_size" ] = step_count > 0 ? dt / step_count : 0.0;
 			frame[ "simulation_step_count" ] = step_count;
 		}
 
