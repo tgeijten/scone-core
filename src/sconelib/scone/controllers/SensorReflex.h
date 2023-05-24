@@ -17,7 +17,7 @@ namespace scone
 	class SensorReflex : public Reflex
 	{
 	public:
-		SensorReflex( const PropNode& props, Params& par, Model& model, const Location& loc, SensorDelayAdapter& s );
+		SensorReflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc, SensorDelayAdapter& s );
 
 		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
 		bool mirror_left;

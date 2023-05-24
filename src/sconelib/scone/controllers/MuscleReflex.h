@@ -22,7 +22,7 @@ namespace scone
 	class MuscleReflex : public Reflex
 	{
 	public:
-		MuscleReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		MuscleReflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc );
 		virtual ~MuscleReflex();
 
 		virtual void ComputeControls( double timestamp ) override;

@@ -15,8 +15,8 @@
 
 namespace scone
 {
-	BodyPointReflex::BodyPointReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-		Reflex( pn, par, model, loc ),
+	BodyPointReflex::BodyPointReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		INIT_MEMBER( pn, offset, Vec3::zero() ),
 		INIT_MEMBER( pn, direction, Vec3::zero() ),

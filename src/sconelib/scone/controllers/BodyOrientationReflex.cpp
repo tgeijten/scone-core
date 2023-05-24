@@ -25,8 +25,8 @@ namespace scone
 		else return no_index;
 	}
 
-	BodyOrientationReflex::BodyOrientationReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-		Reflex( pn, par, model, loc ),
+	BodyOrientationReflex::BodyOrientationReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		INIT_MEMBER( pn, axis, Vec3::unit_z() ),
 		INIT_MEMBER( pn, axis_name, GetAxisName( GetAxis( axis ) ) ),

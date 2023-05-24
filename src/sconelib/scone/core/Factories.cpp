@@ -156,9 +156,9 @@ namespace scone
 		return g_ReflexFactory;
 	}
 
-	ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, const Location& target_area )
+	ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, ReflexController& rc, const Location& target_area )
 	{
-		return GetReflexFactory().create( fp.type(), fp.props(), par, model, target_area );
+		return GetReflexFactory().create( fp.type(), fp.props(), par, model, rc, target_area );
 	}
 
 	FunctionFactory& GetFunctionFactory()

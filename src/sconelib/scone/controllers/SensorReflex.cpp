@@ -12,8 +12,8 @@
 
 namespace scone
 {
-	SensorReflex::SensorReflex( const PropNode& pn, Params& par, Model& model, const Location& loc, SensorDelayAdapter& s ) :
-		Reflex( pn, par, model, loc ),
+	SensorReflex::SensorReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc, SensorDelayAdapter& s ) :
+		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		val_(),
 		sign_( mirror_left && loc.GetSide() == Side::Left ? -1.0 : 1.0 ),

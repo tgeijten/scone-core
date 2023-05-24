@@ -17,8 +17,8 @@
 
 namespace scone
 {
-	ComPivotReflex::ComPivotReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-		Reflex( pn, par, model, loc ),
+	ComPivotReflex::ComPivotReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER( pn, pivot_body, "" ),
 		INIT_MEMBER( pn, dir, Vec3::unit_z() ),
 		INIT_MEMBER( pn, mirror_left, false ),

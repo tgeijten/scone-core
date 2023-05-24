@@ -17,7 +17,7 @@ namespace scone
 	class ComPivotReflex : public Reflex
 	{
 	public:
-		ComPivotReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		ComPivotReflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc );
 		virtual ~ComPivotReflex();
 
 		virtual void ComputeControls( double timestamp ) override;

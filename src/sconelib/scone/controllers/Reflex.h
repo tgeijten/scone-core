@@ -21,7 +21,7 @@ namespace scone
 	class Reflex : public HasData
 	{
 	public:
-		Reflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		Reflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc );
 		virtual ~Reflex();
 
 		/// Name of the target actuator; use _o for actuators on the opposite side.

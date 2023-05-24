@@ -15,8 +15,8 @@
 
 namespace scone
 {
-	MuscleReflex::MuscleReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-	Reflex( pn, par, model, loc ),
+	MuscleReflex::MuscleReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+	Reflex( pn, par, model, rc, loc ),
 	source( *FindByLocation( model.GetMuscles(), pn.get<string>( "source", target ), loc ) ),
 	m_pForceSensor( nullptr ),
 	m_pLengthSensor( nullptr ),

@@ -32,9 +32,9 @@ namespace scone
 		auto create_reflex = [&]( const FactoryProps& fp ) {
 			if ( dual_sided ) {
 				for ( auto side : { Side::Left, Side::Right } )
-					m_Reflexes.push_back( CreateReflex( fp, par, model, Location( side, symmetric ) ) );
+					m_Reflexes.push_back( CreateReflex( fp, par, model, *this, Location( side, symmetric ) ) );
 			}
-			else m_Reflexes.push_back( CreateReflex( fp, par, model, Location( loc.side_, symmetric ) ) );
+			else m_Reflexes.push_back( CreateReflex( fp, par, model, *this, Location( loc.side_, symmetric ) ) );
 		};
 
 		for ( const auto& item : props )

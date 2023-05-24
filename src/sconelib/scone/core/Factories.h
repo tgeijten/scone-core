@@ -39,9 +39,9 @@ namespace scone
 		PropNode props_;
 	};
 
-	using ReflexFactory = xo::factory< Reflex, const PropNode&, Params&, Model&, const Location& >;
+	using ReflexFactory = xo::factory< Reflex, const PropNode&, Params&, Model&, ReflexController&, const Location& >;
 	SCONE_API ReflexFactory& GetReflexFactory();
-	SCONE_API ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, const Location& target_area );
+	SCONE_API ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, ReflexController& rc, const Location& target_area );
 
 	using FunctionFactory = xo::factory< Function, const PropNode&, Params& >;
 	SCONE_API FunctionFactory& GetFunctionFactory();

@@ -17,7 +17,7 @@ namespace scone
 	class BodyOrientationReflex : public Reflex
 	{
 	public:
-		BodyOrientationReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		BodyOrientationReflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc );
 		virtual ~BodyOrientationReflex();
 
 		virtual void ComputeControls( double timestamp ) override;

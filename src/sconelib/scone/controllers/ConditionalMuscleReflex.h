@@ -18,7 +18,7 @@ namespace scone
 	class ConditionalMuscleReflex : public MuscleReflex
 	{
 	public:
-		ConditionalMuscleReflex( const PropNode& props, Params& par, Model& model, const Location& loc );
+		ConditionalMuscleReflex( const PropNode& props, Params& par, Model& model, ReflexController& rc, const Location& loc );
 		virtual ~ConditionalMuscleReflex();
 
 		/// Name of the DoF used for the condition.

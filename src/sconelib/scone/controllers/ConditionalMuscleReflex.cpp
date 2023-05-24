@@ -15,8 +15,8 @@
 
 namespace scone
 {
-	ConditionalMuscleReflex::ConditionalMuscleReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-	MuscleReflex( pn, par, model, loc ),
+	ConditionalMuscleReflex::ConditionalMuscleReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+	MuscleReflex( pn, par, model, rc, loc ),
 	dof( *FindByLocation( model.GetDofs(), pn.get< String >( "dof" ), loc ) ),
 	m_pConditionalDofPos( nullptr ),
 	m_pConditionalDofVel( nullptr )

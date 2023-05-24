@@ -16,8 +16,8 @@
 
 namespace scone
 {
-	DofReflex::DofReflex( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
-		Reflex( pn, par, model, loc ),
+	DofReflex::DofReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
+		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		INIT_MEMBER( pn, source_parent, "" ),
 		INIT_MEMBER( pn, mirror_left, false ),
