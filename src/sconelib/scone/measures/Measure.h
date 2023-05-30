@@ -38,11 +38,11 @@ namespace scone
 		/// Indicate whether this measure should be minimized; default value depends on the measure type (usually true).
 		bool minimize;
 
-		/// Get final result.
+		// Get final result.
 		double GetResult( const Model& model );
 		double GetWeightedResult( const Model& model );
 
-		/// Get last computed measure value, for use in rewards.
+		// Get last computed measure value, for use in rewards.
 		virtual double GetCurrentResult( const Model& model );
 		double GetCurrentWeightedResult( const Model& model );
 		virtual void Reset( Model& model ) override;
