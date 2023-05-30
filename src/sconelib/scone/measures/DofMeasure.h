@@ -52,14 +52,17 @@ namespace scone
 		/// Optional parent dof which will be added to the dof value.
 		Dof* parent;
 
-		/// Penalty for when the DOF position [deg] is out of range.
-		RangePenalty<Degree> position;
+		/// Set if rotations are in degrees or radians; default = 1
+		bool in_degrees;
 
-		/// Penalty for when the DOF velocity [deg/s] is out of range.
-		RangePenalty<Degree> velocity;
+		/// Penalty for when the DOF position [deg or m] is out of range.
+		RangePenalty<Real> position;
 
-		/// Penalty for when the DOF acceleration [deg/s%%^%%2] is out of range.
-		RangePenalty<Degree> acceleration;
+		/// Penalty for when the DOF velocity [deg/s or m/s] is out of range.
+		RangePenalty<Real> velocity;
+
+		/// Penalty for when the DOF acceleration [deg/s%%^%%2 or m/s%%^%%2] is out of range.
+		RangePenalty<Real> acceleration;
 
 		/// Penalty for when the DOF limit torque [Nm] is out of range (this value is signed!).
 		RangePenalty<Real> limit_torque;
@@ -74,5 +77,6 @@ namespace scone
 
 	private:
 		int range_count;
+		Real ConvertDofValue( Real value ) const { return in_degrees ? Radian( value ).deg_value() : value; }
 	};
 }
