@@ -26,7 +26,7 @@ namespace scone
 		transition_times.push_back( time );
 		for ( index_t idx = 0; idx < trans_pn.size(); ++idx )
 		{
-			transition_intervals.push_back( par.get( xo::stringf( "transition%d", idx + 1 ), trans_pn[ idx ] ) );
+			transition_intervals.push_back( par.get( xo::stringf( "transition%d", idx + 1 ), trans_pn[idx] ) );
 			transition_times.push_back( transition_times.back() + transition_intervals.back() );
 		}
 	}
@@ -34,19 +34,19 @@ namespace scone
 	bool SequentialController::ComputeControls( Model& model, double timestamp )
 	{
 		active_idx_ = GetActiveIdx( timestamp );
-		return controllers_[ active_idx_ ]->UpdateControls( model, timestamp );
+		return controllers_[active_idx_]->UpdateControls( model, timestamp );
 	}
 
 	void SequentialController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		auto name = GetName().empty() ? "SequentialController" : GetName();
-		frame[ name + ".active_index" ] = static_cast<double>( active_idx_ );
-		CompositeController::StoreData( frame, flags );
+		String name = GetName().empty() ? "SequentialController" : GetName();
+		frame[name + ".active_index"] = static_cast<double>( active_idx_ );
+		controllers_[active_idx_]->StoreData( frame, flags );
 	}
 
 	bool SequentialController::PerformAnalysis( const Model& model, double timestamp )
 	{
-		return controllers_[ GetActiveIdx( timestamp ) ]->UpdateAnalysis( model, timestamp );
+		return controllers_[GetActiveIdx( timestamp )]->UpdateAnalysis( model, timestamp );
 	}
 
 	xo::index_t SequentialController::GetActiveIdx( double timestamp )
