@@ -7,7 +7,6 @@
 */
 
 #pragma once
-#include "xo/utility/cached_var.h"
 
 #include "scone/core/platform.h"
 #include "scone/core/types.h"
@@ -21,6 +20,7 @@
 #include "Leg.h"
 #include "Sensor.h"
 #include "ModelFeatures.h"
+#include "DelayBuffer.h"
 
 #include "scone/controllers/Controller.h"
 #include "scone/core/HasExternalResources.h"
@@ -34,7 +34,6 @@
 #include <type_traits>
 #include <utility>
 #include <any>
-#include "DelayBuffer.h"
 
 namespace scone
 {
