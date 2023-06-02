@@ -17,7 +17,8 @@ namespace scone
 	m_Body( body ),
 	m_ParentBody( parent_body )
 	{
-		m_Body.m_Joint = this;
+		if ( m_Body.GetMass() != 0 )
+			m_Body.m_Joint = this;
 	}
 
 	Vec3 Joint::GetLimitTorque() const
