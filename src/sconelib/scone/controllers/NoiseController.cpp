@@ -10,6 +10,7 @@
 #include "scone/model/Model.h"
 #include "scone/model/Actuator.h"
 #include "scone/core/string_tools.h"
+#include "scone/core/profiler_config.h"
 
 namespace scone
 {
@@ -24,6 +25,8 @@ namespace scone
 
 	bool NoiseController::ComputeControls( Model& model, double timestamp )
 	{
+		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
+
 		for ( auto& a : model.GetActuators() )
 		{
 			auto noise_std = base_noise + proportional_noise * a->GetInput();
