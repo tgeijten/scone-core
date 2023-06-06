@@ -21,6 +21,7 @@
 #include "xo/system/system_tools.h"
 #include "scone/core/Benchmark.h"
 #include "xo/filesystem/filesystem.h"
+#include "scone/core/system_tests.h"
 
 using scone::PropNode;
 using scone::String;
@@ -60,6 +61,7 @@ int main( int argc, char* argv[] )
 		TCLAP::ValueArg< int > bxArg( "x", "benchmarkx", "Number of benchmarks to perform", false, 8, ">0", cmd );
 		TCLAP::ValueArg< String > outArg( "r", "result", "Output file for evaluation result", false, "", "Output file (*.sto)", cmd );
 		TCLAP::ValueArg< int > logArg( "l", "log", "Set the log level", false, 1, "1-7", cmd );
+		TCLAP::ValueArg< String > testArg( "", "test", "Perform test (internal use only)", false, "", "" );
 		TCLAP::SwitchArg statusOutput( "s", "status", "Output full status updates", cmd, false );
 		TCLAP::SwitchArg quietOutput( "q", "quiet", "Do not output simulation progress", cmd, false );
 		TCLAP::UnlabeledMultiArg< string > propArg( "property", "Override specific scenario property, using <key>=<value>", false, "<key>=<value>", cmd, true );
@@ -67,7 +69,7 @@ int main( int argc, char* argv[] )
 		std::vector<string> hyfydyOptions{ "id", "key" };
 		TCLAP::ValuesConstraint<string> allowedVals( hyfydyOptions );
 		TCLAP::ValueArg< String > licenseArg( "", "hyfydy", "Hyfydy license key management", true, "", &allowedVals );
-		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg, &licenseArg };
+		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg, &licenseArg, &testArg };
 #else
 		auto xor_args = std::vector<TCLAP::Arg*>{ &optArg, &parArg , &benchArg };
 #endif
@@ -128,11 +130,15 @@ int main( int argc, char* argv[] )
 					scone::BenchmarkScenario( scenario_pn, f, f.parent_path() / "_benchmark_results", bopt );
 				}
 			}
+			else if ( testArg.isSet() )
+			{
+				scone::perform_test( testArg.getValue() );
+			}
 #if SCONE_HYFYDY_ENABLED
 			else if ( licenseArg.isSet() ) {
-				if ( licenseArg.getValue() == hyfydyOptions[ 0 ] )
+				if ( licenseArg.getValue() == hyfydyOptions[0] )
 					std::cout << std::endl << "Hardware ID: " << scone::GetHardwareId() << std::endl;
-				else if ( licenseArg.getValue() == hyfydyOptions[ 1 ] )
+				else if ( licenseArg.getValue() == hyfydyOptions[1] )
 					scone::AddLicenseInteractive();
 			}
 #endif

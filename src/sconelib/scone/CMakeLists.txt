@@ -57,6 +57,8 @@ set(CORE_SYSTEM_FILES
 	core/types.h
 	core/system_tools.cpp
 	core/system_tools.h
+	core/system_tests.cpp
+	core/system_tests.h
 	core/Settings.cpp
 	core/Settings.h
 	core/scone_settings_schema.h
