@@ -46,8 +46,8 @@ namespace scone
 	void PerturbationController::AddPerturbation()
 	{
 		Perturbation p;
-		p.start = perturbations.empty() ? start_time : perturbations.back().start + rng_.uni( interval );
-		p.stop = p.start + rng_.uni( duration );
+		p.start = perturbations.empty() ? start_time : perturbations.back().start + rng_.uniform( interval );
+		p.stop = p.start + rng_.uniform( duration );
 		p.force = force;
 		p.moment = moment;
 		perturbations.emplace_back( p );

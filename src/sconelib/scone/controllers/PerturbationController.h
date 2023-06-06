@@ -68,7 +68,7 @@ namespace scone
 		void AddPerturbation();
 		std::vector< Perturbation > perturbations;
 
-		xo::random_number_generator rng_;
+		xo::random_number_generator_default rng_;
 
 		bool active_;
 		Vec3 current_force;

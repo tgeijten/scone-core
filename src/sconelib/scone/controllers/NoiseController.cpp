@@ -28,7 +28,7 @@ namespace scone
 		{
 			auto noise_std = base_noise + proportional_noise * a->GetInput();
 			if ( noise_std > 0.0 )
-				a->AddInput( rng_.norm( 0.0, noise_std ) );
+				a->AddInput( rng_.normal( 0.0, noise_std ) );
 		}
 		return false;
 	}
@@ -38,3 +38,4 @@ namespace scone
 		return stringf( "N%02d", xo::round_cast<int>( 100 * proportional_noise ) );
 	}
 }
+

@@ -34,6 +34,6 @@ namespace scone
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
 
-		xo::random_number_generator rng_;
+		xo::random_number_generator_default rng_;
 	};
 }
