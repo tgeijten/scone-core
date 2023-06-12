@@ -9,6 +9,8 @@
 
 namespace scone
 {
+	using ArrayOfFiles = std::vector<path>;
+
 	/// Controller defined through a Lua script.
 	/** Runs the script defined in the file defined by ''script_file'', which is relative to the folder of the scone scenario.
 	See also LuaModel, LuaBody, LuaDof, LuaActuator, LuaMuscle, LuaFrame. Example of a Lua controller script:
@@ -46,8 +48,8 @@ namespace scone
 		/// filename of the Lua script, path is relative to the .scone file
 		path script_file;
 
-		/// Array of files used by the Lua script; files included by 'require' should be added here
-		std::vector<path> external_files;
+		/// Array of files used by the Lua script; files included by 'require' should be added here as ''external_files = [ file1, file2 ]''
+		ArrayOfFiles external_files;
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
