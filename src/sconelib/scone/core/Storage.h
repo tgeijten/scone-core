@@ -132,6 +132,9 @@ namespace scone
 		
 		bool IsEmpty() const { return m_Data.empty(); }
 
+		Frame& Front() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.front(); }
+		const Frame& Front() const { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.front(); }
+
 		Frame& Back() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
 		const Frame& Back() const { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
 
