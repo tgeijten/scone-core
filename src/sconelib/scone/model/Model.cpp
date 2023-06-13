@@ -152,7 +152,7 @@ namespace scone
 
 	String Model::GetClassSignature() const
 	{
-		auto sig = GetName();
+		String sig = GetName();
 		if ( GetController() )
 			sig += '.' + GetController()->GetSignature();
 		if ( GetMeasure() )
