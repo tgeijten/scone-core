@@ -32,6 +32,7 @@ int main( int argc, const char* argv[] )
 		scone::Initialize();
 
 		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
+		xo::pattern_matcher exclude = args.get<std::string>( "exclude", "" );
 		bool fast = args.has_flag( "fast" );
 		scone::BenchmarkOptions bopt;
 		bopt.min_samples = args.get<size_t>( "min_samples", fast ? 8 : 12 );
@@ -42,7 +43,7 @@ int main( int argc, const char* argv[] )
 		xo::log::info( "Running benchmarks from ", folder );
 		if ( xo::directory_exists( folder ) )
 		{
-			auto files = xo::find_files( folder, include, true, 0 );
+			auto files = xo::find_files( folder, include, exclude, true, 0 );
 			for ( const auto& f : files )
 			{
 				try {
