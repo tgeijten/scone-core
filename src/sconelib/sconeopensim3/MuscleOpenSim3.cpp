@@ -29,7 +29,6 @@ namespace scone
 	MuscleOpenSim3::MuscleOpenSim3( ModelOpenSim3& model, OpenSim::Muscle& mus ) :
 		m_Model( model ),
 		m_osMus( mus ),
-		m_MomentArmCacheTimeStamp( -1 ),
 		m_MinActivation( 0 ) // will be set correctly below
 	{
 		InitJointsDofs();
@@ -147,6 +146,7 @@ namespace scone
 
 	Real MuscleOpenSim3::GetMomentArm( const Dof& dof ) const
 	{
+#if ENABLE_MOMENT_ARM_CACHE
 		auto t = GetModel().GetTime();
 		if ( m_MomentArmCacheTimeStamp != t )
 		{
@@ -159,8 +159,11 @@ namespace scone
 				m_MomentArmCache[ &dof ] = mom;
 			}
 		}
-
 		return m_MomentArmCache[ &dof ];
+#else
+		const auto& dof_sb = dynamic_cast<const DofOpenSim3&>( dof );
+		return m_osMus.getGeometryPath().computeMomentArm( m_Model.GetTkState(), dof_sb.GetOsCoordinate() );
+#endif
 	}
 
 	void MuscleOpenSim3::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const

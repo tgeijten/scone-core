@@ -15,6 +15,8 @@
 #include <vector>
 #include "xo/container/flat_map.h"
 
+#define ENABLE_MOMENT_ARM_CACHE 0
+
 namespace OpenSim
 {
 	class Muscle;
@@ -87,7 +89,9 @@ namespace scone
 		ModelOpenSim4& m_Model;
 		OpenSim::Muscle& m_osMus;
 		double m_MinActivation;
-		mutable TimeInSeconds m_MomentArmCacheTimeStamp;
+#if ENABLE_MOMENT_ARM_CACHE
+		mutable TimeInSeconds m_MomentArmCacheTimeStamp = -1.0;
 		mutable xo::flat_map< const Dof*, Real > m_MomentArmCache;
+#endif
 	};
 }
