@@ -47,7 +47,7 @@ namespace scone
 		INIT_MEMBER( pn, dim_, 10 ),
 		INIT_MEMBER( pn, range_, get_range( function_ ) ),
 		INIT_MEMBER( pn, mean_, range_.center() ),
-		INIT_MEMBER( pn, std_, range_.range() / 5 ),
+		INIT_MEMBER( pn, std_, range_.length() / 5 ),
 		fun_( get_function_ptr( function_ ) )
 	{
 		auto range = get_range( function_ );
