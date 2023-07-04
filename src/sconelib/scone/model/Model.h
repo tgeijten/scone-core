@@ -295,6 +295,7 @@ namespace scone
 		virtual void StoreCurrentFrame();
 
 		virtual void AddExternalDisplayGeometries( const path& model_path );
+		virtual Muscle* AddMuscle( MuscleUP mus );
 		virtual void Clear();
 
 		mutable xo::profiler m_Profiler;

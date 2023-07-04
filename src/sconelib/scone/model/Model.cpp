@@ -621,6 +621,14 @@ namespace scone
 		}
 	}
 
+	Muscle* Model::AddMuscle( MuscleUP mus )
+	{
+		m_Muscles.emplace_back( std::move( mus ) );
+		m_MusclePtrs.emplace_back( m_Muscles.back().get() );
+		m_ActuatorPtrs.emplace_back( m_Muscles.back().get() );
+		return m_Muscles.back().get();
+	}
+
 	void Model::Clear()
 	{
 		m_Muscles.clear();
