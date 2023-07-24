@@ -14,7 +14,17 @@
 
 namespace scone
 {
-	/// Multiple CMA-ES optimizations than run in a prioritized fashion, based on their predicted fitness.
+	/// Optimizer that runs multiple CMA-ES optimizations in a prioritized fashion, based on their predicted fitness.
+	/** The CmaPoolOptimizer can be used in place of a CmaOptimzer. Example usage:
+	\verbatim
+	CmaPoolOptimizer {
+		optimizations = 12 # Total number of optimizations
+		active_optimizations = 6 # Number of optimizations active at the same time
+
+		SimulationObjective { ... }
+	}
+	\endverbatim
+	*/
 	class CmaPoolOptimizer : public Optimizer, public spot::optimizer_pool
 	{
 	public:
@@ -33,7 +43,7 @@ namespace scone
 		/// Maximum number of optimizations that are evaluated concurrently; default = 2.
 		size_t concurrent_optimizations;
 
-		/// Terminate optimizations whose predicted fitness is lower than the current best; default = 1.
+		/// Terminate optimizations with a predicted fitness lower than the current best; default = 1.
 		bool use_predicted_fitness_stop_condition;
 
 		/// Random seed of the first optimization; default = 1.
