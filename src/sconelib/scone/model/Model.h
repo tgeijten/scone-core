@@ -258,6 +258,15 @@ namespace scone
 		/// Activation used to equilibrate muscles before control inputs are known; default = 0.05
 		Real initial_equilibration_activation;
 
+		/// Minimum muscle activation, values below are clamped to this; default = 0.01.
+		Real min_muscle_activation;
+
+		/// Maximum muscle activation, values above are clamped to this; default = 1.
+		Real max_muscle_activation;
+
+		/// Maximum individual muscle activation, allows for optimization of individual max activation; default = not set.
+		const PropNode* max_individual_muscle_activation;
+
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;
 
@@ -295,7 +304,7 @@ namespace scone
 		virtual void StoreCurrentFrame();
 
 		virtual void AddExternalDisplayGeometries( const path& model_path );
-		virtual Muscle* AddMuscle( MuscleUP mus );
+		virtual Muscle* AddMuscle( MuscleUP mus, Params& par );
 		virtual void Clear();
 
 		mutable xo::profiler m_Profiler;

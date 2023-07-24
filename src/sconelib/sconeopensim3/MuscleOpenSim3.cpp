@@ -27,6 +27,7 @@ namespace scone
 	const double MOMENT_ARM_EPSILON = 0.000001;
 
 	MuscleOpenSim3::MuscleOpenSim3( ModelOpenSim3& model, OpenSim::Muscle& mus ) :
+		Muscle( model ),
 		m_Model( model ),
 		m_osMus( mus )
 	{
@@ -38,6 +39,8 @@ namespace scone
 		else if ( auto mus = dynamic_cast<OpenSim::Thelen2003Muscle*>( &m_osMus ) )
 			m_MinActivation = mus->getMinimumActivation();
 		else m_MinActivation = m_osMus.getMinControl();
+
+		m_MaxActivation = model.max_muscle_activation;
 
 		InitializeActivation( model.initial_equilibration_activation );
 	}

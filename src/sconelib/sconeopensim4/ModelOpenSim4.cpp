@@ -387,9 +387,7 @@ namespace scone
 			OpenSim::Actuator& osAct = m_pOsimModel->getActuators().get( idx );
 			if ( OpenSim::Muscle* osMus = dynamic_cast<OpenSim::Muscle*>( &osAct ) )
 			{
-				m_Muscles.emplace_back( std::make_unique<MuscleOpenSim4>( *this, *osMus ) );
-				m_MusclePtrs.push_back( m_Muscles.back().get() );
-				m_ActuatorPtrs.push_back( m_Muscles.back().get() );
+				AddMuscle( std::make_unique<MuscleOpenSim4>( *this, *osMus ), par );
 			}
 			else if ( auto* osCo = dynamic_cast<OpenSim::CoordinateActuator*>( &osAct ) )
 			{

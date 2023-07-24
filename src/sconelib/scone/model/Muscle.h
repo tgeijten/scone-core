@@ -24,7 +24,7 @@ namespace scone
 	class SCONE_API Muscle : public Actuator
 	{
 	public:
-		Muscle();
+		Muscle( const class Model& model );
 		virtual ~Muscle();
 
 		virtual Real GetMinInput() const override { return m_MinActivation; }
@@ -78,6 +78,8 @@ namespace scone
 		virtual Real GetExcitation() const = 0;
 		virtual void SetExcitation( Real u ) = 0;
 		virtual void InitializeActivation( Real u ) = 0;
+		virtual void SetMinActivation( Real min_act ) { m_MinActivation = min_act; }
+		virtual void SetMaxActivation( Real max_act ) { m_MaxActivation = max_act; }
 
 		virtual Side GetSide() const;
 

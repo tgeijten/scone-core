@@ -49,6 +49,9 @@ namespace scone
 		INIT_MEMBER( props, initial_load_dof, "pelvis_ty" ),
 		INIT_PAR_MEMBER( props, par, sensor_delay_scaling_factor, 1.0 ),
 		INIT_PAR_MEMBER( props, par, initial_equilibration_activation, 0.05 ),
+		INIT_PAR_MEMBER( props, par, min_muscle_activation, 0.01 ),
+		INIT_PAR_MEMBER( props, par, max_muscle_activation, 1.0 ),
+		max_individual_muscle_activation( props.try_get_child( "max_individual_muscle_activation" ) ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
 		INIT_MEMBER( props, user_input_file, "" ),
@@ -621,11 +624,17 @@ namespace scone
 		}
 	}
 
-	Muscle* Model::AddMuscle( MuscleUP mus )
+	Muscle* Model::AddMuscle( MuscleUP mus, Params& par )
 	{
+		if ( max_individual_muscle_activation ) {
+			auto s = GetNameNoSide( mus->GetName() ) + ".max_activation";
+			auto a = par.get( s, *max_individual_muscle_activation );
+			mus->SetMaxActivation( a );
+		}
 		m_Muscles.emplace_back( std::move( mus ) );
 		m_MusclePtrs.emplace_back( m_Muscles.back().get() );
 		m_ActuatorPtrs.emplace_back( m_Muscles.back().get() );
+
 		return m_Muscles.back().get();
 	}
 

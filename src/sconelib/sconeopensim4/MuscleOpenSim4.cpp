@@ -27,6 +27,7 @@ namespace scone
 	const double MOMENT_ARM_EPSILON = 0.000001;
 
 	MuscleOpenSim4::MuscleOpenSim4( ModelOpenSim4& model, OpenSim::Muscle& mus ) :
+		Muscle( model ),
 		m_Model( model ),
 		m_osMus( mus )
 	{
