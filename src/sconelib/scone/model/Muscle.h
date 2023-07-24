@@ -27,8 +27,8 @@ namespace scone
 		Muscle();
 		virtual ~Muscle();
 
-		virtual Real GetMinInput() const override { return 0.0; }
-		virtual Real GetMaxInput() const override { return 1.0; }
+		virtual Real GetMinInput() const override { return m_MinActivation; }
+		virtual Real GetMaxInput() const override { return m_MaxActivation; }
 
 		virtual const Body& GetOriginBody() const = 0;
 		virtual const Body& GetInsertionBody() const = 0;
@@ -98,5 +98,7 @@ namespace scone
 		void InitJointsDofs();
 		mutable std::vector< const Joint* > m_Joints;
 		mutable std::vector< const Dof* > m_Dofs;
+		Real m_MinActivation;
+		Real m_MaxActivation;
 	};
 }

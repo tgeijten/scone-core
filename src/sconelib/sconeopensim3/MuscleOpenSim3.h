@@ -70,7 +70,6 @@ namespace scone
 
 		virtual Real GetActivation() const override;
 		virtual Real GetExcitation() const override;
-		virtual Real GetMinInput() const override { return m_MinActivation; }
 
 		virtual std::vector< Vec3 > GetMusclePath() const override;
 		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const override;
@@ -88,7 +87,6 @@ namespace scone
 	private:
 		ModelOpenSim3& m_Model;
 		OpenSim::Muscle& m_osMus;
-		double m_MinActivation;
 #if ENABLE_MOMENT_ARM_CACHE
 		mutable TimeInSeconds m_MomentArmCacheTimeStamp = -1.0;
 		mutable xo::flat_map< const Dof*, Real > m_MomentArmCache;

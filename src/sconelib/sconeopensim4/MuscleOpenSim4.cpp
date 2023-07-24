@@ -28,8 +28,7 @@ namespace scone
 
 	MuscleOpenSim4::MuscleOpenSim4( ModelOpenSim4& model, OpenSim::Muscle& mus ) :
 		m_Model( model ),
-		m_osMus( mus ),
-		m_MinActivation( xo::constantsd::lowest() ) // will be set correctly below
+		m_osMus( mus )
 	{
 		InitJointsDofs();
 
@@ -249,7 +248,7 @@ namespace scone
 		// use our own control value, as OpenSim calls getControls()
 		// this could lead to infinite recursion
 		// make sure to clamp it for calls (important for metabolics)
-		return xo::clamped( GetInput(), 0.0, 1.0 );
+		return xo::clamped( GetInput(), m_MinActivation, m_MaxActivation );
 	}
 
 	void MuscleOpenSim4::SetExcitation( Real u )

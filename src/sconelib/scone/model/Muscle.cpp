@@ -20,7 +20,10 @@
 
 namespace scone
 {
-	Muscle::Muscle() : Actuator()
+	Muscle::Muscle() :
+		Actuator(),
+		m_MinActivation( 0.0 ),
+		m_MaxActivation( 1.0 )
 	{}
 
 	Muscle::~Muscle()
