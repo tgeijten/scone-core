@@ -27,16 +27,8 @@ namespace scone
 }
 
 // assertion and exceptions
-#define SCONE_THROW_NOT_IMPLEMENTED throw scone::LogicException( std::string( __func__ ) + "(): Function not implemented");
-
-#define SCONE_ASSERT_DEBUG_ALWAYS
-
-#if defined(_DEBUG) || defined(SCONE_ASSERT_DEBUG_ALWAYS)
-#define SCONE_ASSERT_DEBUG( _expression_ ) \
-		if (!(_expression_)) throw scone::RuntimeException( "Assertion Failure in " + std::string( __func__ ) + "(): "#_expression_ );
-#else
-#define SCONE_ASSERT_DEBUG( _expression_ )
-#endif
+#define SCONE_THROW_NOT_IMPLEMENTED \
+	throw scone::LogicException( std::string( __func__ ) + "(): Function not implemented");
 
 #define SCONE_ASSERT( _expression_ ) \
 	if (!(_expression_)) throw scone::RuntimeException( "Assertion Failure in " + std::string( __func__ ) + "(): "#_expression_ );
