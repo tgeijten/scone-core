@@ -49,7 +49,7 @@ int main( int argc, const char* argv[] )
 #endif
 #if SCONE_HYFYDY_ENABLED
 			if ( !args.has_flag( "skip-hyfydy" ) ) {
-				//scone::add_scenario_tests( install_dir,  "scenarios/UnitTests/Hyfydy", "*.par" );
+				scone::add_scenario_tests( install_dir,  "scenarios/UnitTests/Hyfydy", "*.par", "", 1 );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials2", "*Hyfydy.scone" );
