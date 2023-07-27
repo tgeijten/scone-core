@@ -131,7 +131,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "insertion_body", &scone::Muscle::GetInsertionBody, py::return_value_policy::reference )
 		.def( "excitation", &scone::Muscle::GetExcitation )
 		.def( "activation", &scone::Muscle::GetActivation )
-		.def( "set_excitation", &scone::Muscle::SetExcitation )
+		//.def( "set_excitation", &scone::Muscle::SetExcitation )
 		.def( "init_activation", &scone::Muscle::InitializeActivation )
 		.def( "force", &scone::Muscle::GetForce )
 		.def( "force_norm", &scone::Muscle::GetNormalizedForce )
