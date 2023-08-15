@@ -144,6 +144,8 @@ PYBIND11_MODULE( sconepy, m ) {
 	py::class_<scone::Leg>( m, "Leg" )
 		.def( "name", &scone::Leg::GetName )
 		.def( "contact_force", &scone::Leg::GetContactForce )
+		.def( "contact_moment", &scone::Leg::GetContactMoment )
+		.def( "contact_pos", &scone::Leg::GetContactPos )
 		.def( "contact_load", &scone::Leg::GetLoad )
 		.def( "upper_body", &scone::Leg::GetUpperBody, py::return_value_policy::reference )
 		.def( "foot_body", &scone::Leg::GetFootBody, py::return_value_policy::reference )

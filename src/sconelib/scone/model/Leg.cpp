@@ -47,6 +47,16 @@ namespace scone
 		return GetContactForceValue().force;
 	}
 
+	Vec3 Leg::GetContactMoment() const
+	{
+		return GetContactForceValue().moment();
+	}
+
+	Vec3 Leg::GetContactPos() const
+	{
+		return GetContactForceValue().point;
+	}
+
 	Vec3 Leg::GetRelFootPos() const
 	{
 		return GetFootBody().GetComPos() - GetBaseBody().GetComPos();

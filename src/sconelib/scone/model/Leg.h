@@ -30,6 +30,8 @@ namespace scone
 		const String& GetName() const override { return m_Name; }
 
 		Vec3 GetContactForce() const;
+		Vec3 GetContactMoment() const;
+		Vec3 GetContactPos() const;
 		Vec3 GetRelFootPos() const;
 		void GetContactForceMomentCop( Vec3& force, Vec3& moment, Vec3& cop ) const;
 		ForceValue GetContactForceValue() const;
