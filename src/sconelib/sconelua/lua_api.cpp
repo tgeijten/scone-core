@@ -109,6 +109,8 @@ namespace scone
 			"max_duration", &LuaModel::max_duration,
 			"com_pos", &LuaModel::com_pos,
 			"com_vel", &LuaModel::com_vel,
+			"mass", &LuaModel::mass,
+			"gravity", &LuaModel::gravity,
 			"actuator", &LuaModel::actuator,
 			"find_actuator", &LuaModel::find_actuator,
 			"actuator_count", &LuaModel::actuator_count,
