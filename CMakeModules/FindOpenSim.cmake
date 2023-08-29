@@ -101,7 +101,7 @@
 # and *_LIBRARY variables. If we DO find OpenSim, then we also set the
 # *_INCLUDE_DIRS and *_LIBRARIES variables that the client is expected to use.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5)
 
 # Search for an OpenSim installation.
 # -----------------------------------
