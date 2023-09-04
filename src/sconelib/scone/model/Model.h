@@ -166,10 +166,6 @@ namespace scone
 		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
 		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[ id ]; }
 
-		// custom model-specific settings, used by derived classes
-		virtual int SetModelSettings( const PropNode& pn ) { return 0; }
-		virtual PropNode GetModelSettings() const { return PropNode(); }
-
 		// Model info
 		virtual PropNode GetInfo() const;
 
