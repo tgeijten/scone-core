@@ -12,8 +12,15 @@ namespace scone
 	using ArrayOfFiles = std::vector<path>;
 
 	/// Controller defined through a Lua script.
-	/** Runs the script defined in the file defined by ''script_file'', which is relative to the folder of the scone scenario.
-	See also LuaModel, LuaBody, LuaDof, LuaActuator, LuaMuscle, LuaFrame. Example of a Lua controller script:
+	/** Runs the script defined in the file defined by ''script_file'', which is relative to the folder of the scone scenario:
+	\verbatim
+	ScriptController {
+		script_file = "data/script_file.lua"
+		external_files = [ "data/my_included_file.lua" ]
+	}
+	\endverbatim
+	
+	Example of a Lua controller script:
 	\verbatim
 	function init( model, par, side )
 		-- This function is called at the start of the simulation
@@ -36,7 +43,7 @@ namespace scone
 		-- 'current_frame' can be used to store values for analysis (see LuaFrame)
 	end
 	\endverbatim
-	See Tutorial 6a and 6b for more information.
+	See also LuaModel, LuaBody, LuaDof, LuaActuator, LuaMuscle, LuaFrame. See Tutorial 6a and 6b for more information.
 	*/
 	class SCONE_LUA_API ScriptController : public CompositeController
 	{
