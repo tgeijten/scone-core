@@ -1,6 +1,8 @@
 #pragma once
 
 #include "scone/model/Model.h"
+#include <string>
+#include "xo/container/flat_set.h"
 
 namespace scone
 {
@@ -26,5 +28,8 @@ namespace scone
 		void ConvertContactGeometry( const ContactGeometry& j, PropNode& parent_pn );
 		void ConvertDof( const Dof& d, PropNode& parent_pn );
 		void ConvertMaterials( const Model& m, PropNode& parent_pn );
+
+		xo::flat_set<std::string> converted_bodies_;
 	};
 }
+

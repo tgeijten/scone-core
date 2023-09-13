@@ -24,6 +24,8 @@ namespace scone
 
 	PropNode ModelConverter::ConvertModel( const Model& model )
 	{
+		converted_bodies_.clear();
+
 		PropNode pn;
 		auto& model_pn = pn.add_child( "model" );
 
@@ -46,6 +48,14 @@ namespace scone
 
 	void ModelConverter::ConvertBody( const Body& b, PropNode& parent_pn )
 	{
+		if ( converted_bodies_.contains( b.GetName() ) )
+			return;
+
+		// check if parent body is converted
+		auto* j = b.GetJoint();
+		if ( j && IsRealJoint( *j ) && !converted_bodies_.contains( j->GetParentBody().GetName() ) )
+			ConvertBody( j->GetParentBody(), parent_pn );
+
 		auto& body_pn = parent_pn.add_child( "body" );
 		body_pn[ "name" ] = b.GetName();
 		body_pn[ "mass" ] = b.GetMass();
@@ -55,8 +65,9 @@ namespace scone
 			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
 
 		// joint
-		if ( auto* j = b.GetJoint(); j && IsRealJoint( *j ) )
+		if ( j && IsRealJoint( *j ) ) {
 			ConvertJoint( *j, body_pn );
+		}
 		else if ( !b.GetLocalComPos().is_null() )
 			body_pn[ "pos" ] = b.GetLocalComPos();
 
@@ -70,13 +81,15 @@ namespace scone
 			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
 				geom_pn[ "scale" ] = g.scale_;
 		}
+
+		converted_bodies_.insert( b.GetName() );
 	}
 
-	void ModelConverter::ConvertJoint( const Joint& j, PropNode& parent_pn )
+	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn )
 	{
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
-		auto& joint_pn = parent_pn.add_child( "joint" );
+		auto& joint_pn = body_pn.add_child( "joint" );
 		joint_pn[ "name" ] = j.GetName();
 		joint_pn[ "parent" ] = j.GetParentBody().GetName();
 		joint_pn[ "pos_in_parent" ] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
