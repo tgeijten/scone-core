@@ -55,12 +55,12 @@ namespace scone::NN
 
 	NeuralNetworkController::NeuralNetworkController( const PropNode& pn, Params& par, Model& model, const Location& area ) :
 		Controller( pn, par, model, area ),
-		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
-		INIT_MEMBER( pn, parameter_aliases_, {} ),
 		INIT_PAR_MEMBER( pn, par, leakyness_, 0.01 ),
 		INIT_MEMBER( pn, ignore_muscle_lines_, false ),
 		INIT_MEMBER( pn, symmetric_, true ),
-		INIT_MEMBER( pn, accurate_neural_delays_, false )
+		INIT_MEMBER( pn, accurate_neural_delays_, false ),
+		INIT_MEMBER_REQUIRED( pn, neural_delays_ ),
+		INIT_MEMBER( pn, parameter_aliases_, {} )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

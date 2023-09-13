@@ -22,12 +22,12 @@ namespace scone
 	ContactForceOpenSim3::ContactForceOpenSim3( ModelOpenSim3& model, const OpenSim::Force& osForce ) :
 		m_osForce( osForce ),
 		m_Model( model ),
-		m_LastNumDynamicsRealizations( -1 ),
 		m_Force(),
 		m_Moment(),
 		m_Point(),
-		m_PlaneLocation(),
-		m_PlaneNormal()
+		m_LastNumDynamicsRealizations( -1 ),
+		m_PlaneNormal(),
+		m_PlaneLocation()
 	{
 		std::vector<std::string> geom_names;
 		Real sphere_radius = 0.0;

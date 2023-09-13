@@ -21,12 +21,12 @@ namespace scone
 		INIT_MEMBER( props, symmetric, target_area.symmetric_ ),
 		INIT_MEMBER( props, include, "*" ),
 		INIT_MEMBER( props, exclude, "" ),
-		INIT_MEMBER( props, pid, Vec3(1.0,0.0,0.0)),
 		INIT_MEMBER( props, scale, 1.0),
+		file(FindFile(props.get<path>("file"))),
 		INIT_MEMBER( props, include_states, xo::pattern_matcher("*")),
 		INIT_MEMBER( props, exclude_states, xo::pattern_matcher("")),
 		INIT_MEMBER( props, time_offset, 0),
-		file(FindFile(props.get<path>("file"))),
+		INIT_MEMBER( props, pid, Vec3(1.0,0.0,0.0)),
 		storage_(g_storage_cache(file))
 	{
 		INIT_PROP( props, symmetric, target_area.symmetric_ );

@@ -41,8 +41,8 @@ namespace scone
 		struct DynamicOutputUpdater : public OutputUpdater {
 			DynamicOutputUpdater( const PropNode& pn ) :
 				OutputUpdater( pn ),
-				deact_rate_( pn.get<float>( "deact_rate" ) ),
-				act_rate_( pn.get<float>( "act_rate" ) )
+				act_rate_( pn.get<float>( "act_rate" ) ),
+				deact_rate_( pn.get<float>( "deact_rate" ) )
 			{}
 			virtual void Update( std::vector<Neuron>& nv, const double dt ) override {
 				for ( auto& n : nv ) {

@@ -36,4 +36,5 @@ constexpr bool SCONE_DEBUG = true;
 
 #if defined(_MSC_VER)
 #	pragma warning( disable: 4251 ) // disable W4251, unfortunately there's no nice way to do this
+#	pragma warning( 3: 5038 ) // Class member initialization order warning
 #endif

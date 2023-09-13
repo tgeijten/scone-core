@@ -19,8 +19,8 @@ namespace scone
 
 	EsOptimizer::EsOptimizer( const PropNode& props, const PropNode& scenario_pn, const path& scenario_dir ) :
 		Optimizer( props, scenario_pn, scenario_dir ),
-		mu_( 0 ),
 		lambda_( 0 ),
+		mu_( 0 ),
 		sigma_( 1.0 ),
 		max_attempts( 100 )
 	{

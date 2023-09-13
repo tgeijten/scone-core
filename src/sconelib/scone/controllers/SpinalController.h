@@ -13,7 +13,7 @@ namespace scone
 {
 	struct MuscleInfo {
 		MuscleInfo( const string& name, index_t idx, TimeInSeconds delay ) :
-			name_( name ), index_( idx ), side_( GetSideFromName( name ) ), delay_( delay )
+			name_( name ), side_( GetSideFromName( name ) ), index_( idx ), delay_( delay )
 		{}
 
 		string name_;

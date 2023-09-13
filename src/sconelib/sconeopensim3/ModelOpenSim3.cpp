@@ -67,6 +67,7 @@ namespace scone
 	// Constructor
 	ModelOpenSim3::ModelOpenSim3( const PropNode& props, Params& par ) :
 		Model( props, par ),
+		INIT_MEMBER( props, safe_mode, true ),
 		m_pOsimModel( nullptr ),
 		m_pTkState( nullptr ),
 		m_pProbe( 0 ),
@@ -74,8 +75,7 @@ namespace scone
 		m_PrevIntStep( -1 ),
 		m_PrevTime( 0.0 ),
 		m_Mass( 0.0 ),
-		m_BW( 0.0 ),
-		INIT_MEMBER( props, safe_mode, true )
+		m_BW( 0.0 )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 

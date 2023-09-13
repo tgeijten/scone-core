@@ -19,10 +19,10 @@ namespace scone
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
-		INIT_MEMBER( pn, neural_delays_, {} ),
-		INIT_MEMBER_REQUIRED( pn, activation_ ),
 		INIT_MEMBER( pn, planar, model.GetDofs().size() < 14 ),
-		INIT_MEMBER( pn, neuron_equilibration_steps, 20 )
+		INIT_MEMBER( pn, neuron_equilibration_steps, 20 ),
+		INIT_MEMBER( pn, neural_delays_, {} ),
+		INIT_MEMBER_REQUIRED( pn, activation_ )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

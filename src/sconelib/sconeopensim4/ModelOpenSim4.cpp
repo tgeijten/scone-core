@@ -70,6 +70,7 @@ namespace scone
 	// Constructor
 	ModelOpenSim4::ModelOpenSim4( const PropNode& props, Params& par ) :
 		Model( props, par ),
+		INIT_MEMBER( props, safe_mode, false ),
 		m_pOsimModel( nullptr ),
 		m_pTkState( nullptr ),
 		m_pProbe( 0 ),
@@ -78,8 +79,7 @@ namespace scone
 		m_PrevTime( 0.0 ),
 		m_EndTime( xo::constants<TimeInSeconds>::max() ),
 		m_Mass( 0.0 ),
-		m_BW( 0.0 ),
-		INIT_MEMBER( props, safe_mode, false )
+		m_BW( 0.0 )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 

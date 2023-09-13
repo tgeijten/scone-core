@@ -29,7 +29,7 @@ namespace scone
 	Real MuscleVelocitySensor::GetValue() const { return muscle_.GetNormalizedFiberVelocity(); }
 
 	String MuscleLengthVelocitySensor::GetName() const { return muscle_.GetName() + ".L"; }
-	Real MuscleLengthVelocitySensor::GetValue() const { return muscle_.GetNormalizedFiberLength() + kv_ * muscle_.GetNormalizedFiberVelocity() ; }
+	Real MuscleLengthVelocitySensor::GetValue() const { return muscle_.GetNormalizedFiberLength() + kv_ * muscle_.GetNormalizedFiberVelocity(); }
 
 	String MuscleLengthVelocitySqrtSensor::GetName() const { return muscle_.GetName() + ".L"; }
 	Real MuscleLengthVelocitySqrtSensor::GetValue() const { return muscle_.GetNormalizedFiberLength() + kv_ * xo::signed_sqrt( muscle_.GetNormalizedFiberVelocity() ); }
@@ -102,7 +102,7 @@ namespace scone
 		SCONE_ERROR_IF( axis_ >= 3, "Invalid axis: " + to_str( axis_ ) );
 	}
 	Real BodyEulerOriSensor::GetValue() const {
-		return scale_ * xo::euler_yzx_from_quat( xo::normalized_fast( body_.GetOrientation() ) )[ axis_ ].value;
+		return scale_ * xo::euler_yzx_from_quat( xo::normalized_fast( body_.GetOrientation() ) )[axis_].value;
 	}
 
 	BodyAngularVelocitySensor::BodyAngularVelocitySensor( const Body& body, const Vec3& dir, const String& postfix, Side side, double scale ) :
@@ -117,8 +117,8 @@ namespace scone
 
 	BodyOriVelSensor::BodyOriVelSensor( const Body& body, const Vec3& dir, double kv, const String& postfix, Side side, double target ) :
 		body_( body ),
-		dir_( GetSidedAxis( dir, side ) ),
 		kv_( kv ),
+		dir_( GetSidedAxis( dir, side ) ),
 		name_( GetSidedName( body_.GetName() + postfix, side ) + ".BOV" ),
 		target_( target )
 	{}
@@ -129,7 +129,11 @@ namespace scone
 	}
 
 	ComBosSensor::ComBosSensor( const Model& mod, const Vec3& dir, double kv, const String& name, Side side ) :
-		model_( mod ), dir_( GetSidedDirection( dir, side ) ), kv_( kv ), name_( GetSidedName( name, side ) + ".CB" ) {
+		model_( mod ),
+		kv_( kv ),
+		dir_( GetSidedDirection( dir, side ) ),
+		name_( GetSidedName( name, side ) + ".CB" )
+	{
 		SCONE_ERROR_IF( model_.GetLegCount() <= 0, "Could not find legs in model" );
 		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
@@ -145,7 +149,7 @@ namespace scone
 
 	ComPivotPosSensor::ComPivotPosSensor( const Model& mod, const Body& pivot_body, const Vec3& dir, Side side ) :
 		model_( mod ), pivot_body_( pivot_body ), dir_( GetSidedDirection( dir, side ) ) {
-			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComPivotPosSensor::GetName() const {
 		return "com-" + pivot_body_.GetName() + ".CP" + GetAxisName( dir_ );
@@ -157,7 +161,7 @@ namespace scone
 
 	ComPivotVelSensor::ComPivotVelSensor( const Model& mod, const Body& pivot_body, const Vec3& dir, Side side ) :
 		model_( mod ), pivot_body_( pivot_body ), dir_( GetSidedDirection( dir, side ) ) {
-			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComPivotVelSensor::GetName() const {
 		return "com-" + pivot_body_.GetName() + ".CV" + GetAxisName( dir_ );
@@ -169,7 +173,7 @@ namespace scone
 
 	ComSupportPosSensor::ComSupportPosSensor( const Model& mod, const Vec3& dir, Side side ) :
 		model_( mod ), dir_( GetSidedDirection( dir, side ) ), side_( side ) {
-			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComSupportPosSensor::GetName() const {
 		return GetSidedName( "com_support", side_ ) + ".CSP" + GetAxisName( dir_ );
@@ -183,7 +187,7 @@ namespace scone
 
 	ComSupportVelSensor::ComSupportVelSensor( const Model& mod, const Vec3& dir, Side side ) :
 		model_( mod ), dir_( GetSidedDirection( dir, side ) ), side_( side ) {
-			SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
+		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComSupportVelSensor::GetName() const {
 		return GetSidedName( "com_support", side_ ) + ".CSV" + GetAxisName( dir_ );

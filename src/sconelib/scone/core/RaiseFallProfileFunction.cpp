@@ -35,11 +35,11 @@ namespace scone
 	};
 
 	RaiseFallProfileFunction::RaiseFallProfileFunction(const PropNode& props, Params& par) :
-		m_pSineImpl(new SineImpl),
 		start_time(props.get_child("start_time")),
 		raise_time(props.get_child("raise_time")),
 		fall_time(props.get_child("fall_time")),
-		peak(props.get_child("peak"))
+		peak(props.get_child("peak")),
+		m_pSineImpl(new SineImpl)
 	{
 		m_pSineImpl->start_time = par.get("StartTime", start_time);
 		m_pSineImpl->raise_time = par.get("RaiseTime", raise_time);
