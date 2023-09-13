@@ -42,6 +42,15 @@ namespace scone
 			m_Damping = hcfnc.getDissipation();
 			correct_stiffness = true;
 		}
+		else if ( auto* ssf = dynamic_cast<const OpenSim::SmoothSphereHalfSpaceForce*>( &osForce ) )
+		{
+			auto ssfnc = const_cast<OpenSim::SmoothSphereHalfSpaceForce&>( *ssf ); // hack for OpenSim bug
+			//geom_names = make_string_list( ssfnc.getContactParametersSet().get( 0 ).getGeometry() );
+			m_StaticFriction = ssfnc.get_static_friction();
+			m_DynamicFriction = ssfnc.get_dynamic_friction();
+			m_Stiffness = ssfnc.get_stiffness();
+			m_Damping = ssfnc.get_dissipation();
+		}
 		else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &osForce ) )
 		{
 			auto effnc = const_cast<OpenSim::ElasticFoundationForce&>( *eff ); // hack for OpenSim bug

@@ -408,6 +408,8 @@ namespace scone
 		{
 			if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &forces.get( i ) ) )
 				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim4>( *this, *hcf ) );
+			else if ( auto* ssf = dynamic_cast<const OpenSim::SmoothSphereHalfSpaceForce*>( &forces.get( i ) ) )
+				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim4>( *this, *ssf ) );
 			else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &forces.get( i ) ) )
 				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim4>( *this, *eff ) );
 		}
