@@ -12,7 +12,7 @@ namespace scone
 		ModelConverter( const PropNode& settings = {} );
 		virtual ~ModelConverter() = default;
 
-		PropNode ConvertModel( const Model& m );
+		PropNode ConvertModel( Model& m );
 
 		double joint_stiffness_ = 1e6;
 		double joint_limit_stiffness_ = 500;

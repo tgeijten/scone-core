@@ -22,8 +22,10 @@ namespace scone
 		INIT_MEMBER( pn, body_mass_threshold_, 0.2 )
 	{}
 
-	PropNode ModelConverter::ConvertModel( const Model& model )
+	PropNode ModelConverter::ConvertModel( Model& model )
 	{
+		model.SetNullState();
+
 		converted_bodies_.clear();
 
 		PropNode pn;
@@ -43,6 +45,8 @@ namespace scone
 		for ( auto& d : model.GetDofs() )
 			ConvertDof( *d, model_pn );
 
+		model.Reset();
+
 		return pn;
 	}
 
@@ -57,29 +61,31 @@ namespace scone
 			ConvertBody( j->GetParentBody(), parent_pn );
 
 		auto& body_pn = parent_pn.add_child( "body" );
-		body_pn[ "name" ] = b.GetName();
-		body_pn[ "mass" ] = b.GetMass();
-		body_pn[ "inertia" ] = b.GetInertiaTensorDiagonal();
+		body_pn["name"] = b.GetName();
+		body_pn["mass"] = b.GetMass();
+		body_pn["inertia"] = b.GetInertiaTensorDiagonal();
 
 		if ( b.GetMass() > 0 && b.GetMass() < body_mass_threshold_ )
 			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
 
 		// joint
-		if ( j && IsRealJoint( *j ) ) {
+		if ( j && IsRealJoint( *j ) )
 			ConvertJoint( *j, body_pn );
+		else if ( !b.GetLocalComPos().is_null() ) {
+			body_pn["pos"] = b.GetLocalComPos();
+			if ( !b.GetOrientation().is_identity() )
+				body_pn["ori"] = b.GetOrientation();
 		}
-		else if ( !b.GetLocalComPos().is_null() )
-			body_pn[ "pos" ] = b.GetLocalComPos();
 
 		// display geometry
 		for ( const auto& g : b.GetDisplayGeometries() ) {
 			auto& geom_pn = body_pn.add_child( "mesh" );
-			geom_pn[ "file" ] = g.filename_;
-			geom_pn[ "pos" ] = g.pos_ - b.GetLocalComPos();
+			geom_pn["file"] = g.filename_;
+			geom_pn["pos"] = g.pos_ - b.GetLocalComPos();
 			if ( g.ori_ != Quat::identity() )
-				geom_pn[ "ori" ] = g.ori_;
+				geom_pn["ori"] = g.ori_;
 			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
-				geom_pn[ "scale" ] = g.scale_;
+				geom_pn["scale"] = g.scale_;
 		}
 
 		converted_bodies_.insert( b.GetName() );
@@ -90,10 +96,13 @@ namespace scone
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
 		auto& joint_pn = body_pn.add_child( "joint" );
-		joint_pn[ "name" ] = j.GetName();
-		joint_pn[ "parent" ] = j.GetParentBody().GetName();
-		joint_pn[ "pos_in_parent" ] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
-		joint_pn[ "pos_in_child" ] = fix( j.GetPosInChild() - bc.GetLocalComPos() );
+		joint_pn["name"] = j.GetName();
+		joint_pn["parent"] = j.GetParentBody().GetName();
+		joint_pn["pos_in_parent"] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
+		joint_pn["pos_in_child"] = fix( j.GetPosInChild() - bc.GetLocalComPos() );
+		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
+		if ( !ref_ori.is_identity() )
+			joint_pn["ref_ori"] = ref_ori;
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
@@ -106,61 +115,61 @@ namespace scone
 					if ( use_stiffness_from_limit_force_ ) {
 						auto kp = dof_info.get<Real>( "limit_stiffness" );
 						auto kd = dof_info.get<Real>( "limit_damping" );
-						joint_pn[ "limit_stiffness" ] = kp * 180 / xo::num<Real>::pi;
-						joint_pn[ "limit_damping" ] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
+						joint_pn["limit_stiffness"] = kp * 180 / xo::num<Real>::pi;
+						joint_pn["limit_damping"] = kd / ( kp * joint_limit_damping_angle_ ) * 180 / xo::num<Real>::pi;
 					}
 					// set limit range
 					auto dof_range = dof_info.get<BoundsDeg>( "limit_range" );
-					limits[ axis_idx ] = sign >= 0 ? dof_range : -dof_range;
+					limits[axis_idx] = sign >= 0 ? dof_range : -dof_range;
 				}
 				else {
 					if ( use_limits_from_dof_range_ ) {
 						auto dof_range = BoundsRad( dof->GetRange().min, dof->GetRange().max );
-						limits[ axis_idx ] = sign >= 0 ? dof_range : -dof_range;
+						limits[axis_idx] = sign >= 0 ? dof_range : -dof_range;
 					}
-					else limits[ axis_idx ] = { Degree( -360 ), Degree( 360 ) };
+					else limits[axis_idx] = { Degree( -360 ), Degree( 360 ) };
 				}
 			}
 		}
-		joint_pn[ "limits" ] = Bounds3Deg( limits );
+		joint_pn["limits"] = Bounds3Deg( limits );
 	}
 
 	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn )
 	{
 		auto& mus_pn = parent_pn.add_child( "point_path_muscle" );
-		mus_pn[ "name" ] = m.GetName();
-		mus_pn[ "max_isometric_force" ] = m.GetMaxIsometricForce();
-		mus_pn[ "optimal_fiber_length" ] = m.GetOptimalFiberLength();
-		mus_pn[ "tendon_slack_length" ] = m.GetTendonSlackLength();
-		mus_pn[ "pennation_angle" ] = m.GetPennationAngleAtOptimal();
+		mus_pn["name"] = m.GetName();
+		mus_pn["max_isometric_force"] = m.GetMaxIsometricForce();
+		mus_pn["optimal_fiber_length"] = m.GetOptimalFiberLength();
+		mus_pn["tendon_slack_length"] = m.GetTendonSlackLength();
+		mus_pn["pennation_angle"] = m.GetPennationAngleAtOptimal();
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
 		for ( auto& [body, point] : mp ) {
 			auto& ppn = path_pn.add_child();
-			ppn[ "body" ] = body->GetName();
-			ppn[ "pos" ] = point - body->GetLocalComPos();
+			ppn["body"] = body->GetName();
+			ppn["pos"] = point - body->GetLocalComPos();
 		}
 	}
 
 	void ModelConverter::ConvertContactGeometry( const ContactGeometry& cg, PropNode& parent_pn )
 	{
 		auto& cg_pn = parent_pn.add_child( "geometry" );
-		cg_pn[ "name" ] = cg.GetName();
+		cg_pn["name"] = cg.GetName();
 		cg_pn.append( to_prop_node( cg.GetShape() ) );
-		cg_pn[ "body" ] = cg.GetBody().GetName();
-		cg_pn[ "pos" ] = fix( cg.GetPos() - cg.GetBody().GetLocalComPos() );
-		cg_pn[ "ori" ] = fix( Vec3( xo::vec3degd( xo::euler_xyz_from_quat( cg.GetOri() ) ) ) );
+		cg_pn["body"] = cg.GetBody().GetName();
+		cg_pn["pos"] = fix( cg.GetPos() - cg.GetBody().GetLocalComPos() );
+		cg_pn["ori"] = fix( Vec3( xo::vec3degd( xo::euler_xyz_from_quat( cg.GetOri() ) ) ) );
 	}
 
 	void ModelConverter::ConvertDof( const Dof& d, PropNode& parent_pn )
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
-		dof_pn[ "name" ] = d.GetName();
-		dof_pn[ "source" ] = GetDofSourceName( d );
+		dof_pn["name"] = d.GetName();
+		dof_pn["source"] = GetDofSourceName( d );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
-		dof_pn[ "range" ] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
+		dof_pn["range"] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )
-			dof_pn[ "default" ] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
+			dof_pn["default"] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
 	}
 
 	void ModelConverter::ConvertMaterials( const Model& m, PropNode& parent_pn )
@@ -168,15 +177,15 @@ namespace scone
 		if ( !m.GetContactForces().empty() ) {
 			auto& cf = *m.GetContactForces().front();
 			auto& mat_pn = parent_pn.add_child( "material" );
-			mat_pn[ "name" ] = "default_material";
-			mat_pn[ "static_friction" ] = cf.GetStaticFriction();
-			mat_pn[ "dynamic_friction" ] = cf.GetDynamicFriction();
-			mat_pn[ "stiffness" ] = cf.GetStiffness();
-			mat_pn[ "damping" ] = cf.GetDamping();
+			mat_pn["name"] = "default_material";
+			mat_pn["static_friction"] = cf.GetStaticFriction();
+			mat_pn["dynamic_friction"] = cf.GetDynamicFriction();
+			mat_pn["stiffness"] = cf.GetStiffness();
+			mat_pn["damping"] = cf.GetDamping();
 		}
 		auto& opt_pn = parent_pn.add_child( "model_options" );
-		opt_pn[ "joint_stiffness" ] = joint_stiffness_;
-		opt_pn[ "joint_limit_stiffness" ] = joint_limit_stiffness_;
+		opt_pn["joint_stiffness"] = joint_stiffness_;
+		opt_pn["joint_limit_stiffness"] = joint_limit_stiffness_;
 	}
 }
 
