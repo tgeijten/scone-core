@@ -30,8 +30,8 @@ namespace scone
 		m_PlaneLocation()
 	{
 		std::vector<std::string> geom_names;
-		Real sphere_radius = 0.0;
-		bool correct_stiffness = false;
+		Real sphere_radius = 1.0;
+		bool incorporate_sphere_radius_in_stiffness = false;
 		if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &osForce ) )
 		{
 			auto hcfnc = const_cast<OpenSim::HuntCrossleyForce&>( *hcf ); // hack for OpenSim bug
@@ -40,7 +40,7 @@ namespace scone
 			m_DynamicFriction = hcfnc.getDynamicFriction();
 			m_Stiffness = hcfnc.getStiffness();
 			m_Damping = hcfnc.getDissipation();
-			correct_stiffness = true;
+			incorporate_sphere_radius_in_stiffness = true;
 		}
 		else if ( auto* ssf = dynamic_cast<const OpenSim::SmoothSphereHalfSpaceForce*>( &osForce ) )
 		{
@@ -50,6 +50,7 @@ namespace scone
 			m_DynamicFriction = ssfnc.get_dynamic_friction();
 			m_Stiffness = ssfnc.get_stiffness();
 			m_Damping = ssfnc.get_dissipation();
+			incorporate_sphere_radius_in_stiffness = true;
 		}
 		else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &osForce ) )
 		{
@@ -85,7 +86,7 @@ namespace scone
 		}
 
 		// correct stiffness based on sphere radius
-		if ( correct_stiffness )
+		if ( incorporate_sphere_radius_in_stiffness )
 			m_Stiffness = std::pow( 4.0 / 3.0 * std::sqrt( sphere_radius ) * m_Stiffness, 2.0 / 3.0 );
 
 		auto labels = m_osForce.getRecordLabels();
