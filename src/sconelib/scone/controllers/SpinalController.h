@@ -8,6 +8,7 @@
 #include "scone/model/DelayBuffer.h"
 #include "scone/model/Side.h"
 #include "xo/container/flat_set.h"
+#include <vector>
 
 namespace scone
 {

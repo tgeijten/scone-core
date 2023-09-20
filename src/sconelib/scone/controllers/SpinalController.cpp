@@ -13,9 +13,10 @@ namespace scone
 {
 	using xo::uint32;
 	using snel::group_id, snel::link_id;
+	using std::vector;
 	constexpr auto both_sides = { Side::Right, Side::Left };
 	static const char* axis_names[] = { "x", "y", "z" };
-	std::vector<Side> get_sides( const Location& loc ) { if ( loc.GetSide() == Side::None ) return both_sides; else return { loc.GetSide() }; }
+	vector<Side> get_sides( const Location& loc ) { if ( loc.GetSide() == Side::None ) return both_sides; else return { loc.GetSide() }; }
 
 	SpinalController::SpinalController( const PropNode& pn, Params& par, Model& model, const Location& loc ) :
 		Controller( pn, par, model, loc ),
@@ -320,20 +321,20 @@ namespace scone
 		Connect( sgid, sidx, tgid, tidx, par, par_pn, 1 );
 	}
 
-	void SpinalController::Connect( group_id sgid, const std::vector<xo::uint32>& sidxvec, group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
+	void SpinalController::Connect( group_id sgid, const vector<uint32>& sidxvec, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
 	{
 		const PropNode& par_pn = GetPropNode( sgid, tgid, pn, pn2, suffix );
 		for ( auto sidx : sidxvec )
 			Connect( sgid, sidx, tgid, tidx, par, par_pn, sidxvec.size() );
 	}
 
-	void SpinalController::TryConnect( snel::group_id sgid, xo::uint32 sidx, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
+	void SpinalController::TryConnect( group_id sgid, uint32 sidx, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
 	{
 		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
 			Connect( sgid, sidx, tgid, tidx, par, *par_pn, 1 );
 	}
 
-	void SpinalController::TryConnect( snel::group_id sgid, const std::vector<xo::uint32>& sidxvec, snel::group_id tgid, xo::uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
+	void SpinalController::TryConnect( group_id sgid, const vector<uint32>& sidxvec, group_id tgid, uint32 tidx, Params& par, const PropNode& pn, const PropNode* pn2, const char* suffix )
 	{
 		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
 			for ( auto sidx : sidxvec )
