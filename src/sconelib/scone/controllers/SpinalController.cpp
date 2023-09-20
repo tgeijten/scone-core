@@ -117,7 +117,7 @@ namespace scone
 			auto& mg = muscle_groups_[ mgi ];
 			auto* contra_mg = mg.contra_group_index_ < muscle_groups_.size() ? &muscle_groups_[ mg.contra_group_index_ ] : nullptr;
 
-			// IA interneurons
+			// L -> IA / IA -> IA
 			if ( ia_group_ ) {
 				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
@@ -423,9 +423,10 @@ namespace scone
 
 	const PropNode& SpinalController::GetPropNode( group_id sgid, group_id tgid, const PropNode& pn, const PropNode* pn2, const char* suffix ) const
 	{
-		if ( auto* par_pn = TryGetPropNode( PropNodeName( sgid, tgid, suffix ), pn, pn2 ) )
+		auto pn_name = PropNodeName( sgid, tgid, suffix );
+		if ( auto* par_pn = TryGetPropNode( pn_name, pn, pn2 ) )
 			return *par_pn;
-		SCONE_ERROR( "Could not find " + PropNodeName( sgid, tgid, suffix ) );
+		SCONE_ERROR( "Could not find " + pn_name );
 	}
 
 	string SpinalController::ParName( const string& src, const string& trg ) const
