@@ -1,7 +1,7 @@
 /*
 ** MuscleReflex.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,13 +16,13 @@
 namespace scone
 {
 	MuscleReflex::MuscleReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
-	Reflex( pn, par, model, rc, loc ),
-	source( *FindByLocation( model.GetMuscles(), pn.get<string>( "source", target ), loc ) ),
-	m_pForceSensor( nullptr ),
-	m_pLengthSensor( nullptr ),
-	m_pVelocitySensor( nullptr ),
-	m_pSpindleSensor( nullptr ),
-	m_pActivationSensor( nullptr )
+		Reflex( pn, par, model, rc, loc ),
+		source( *FindByLocation( model.GetMuscles(), pn.get<string>( "source", target ), loc ) ),
+		m_pForceSensor( nullptr ),
+		m_pLengthSensor( nullptr ),
+		m_pVelocitySensor( nullptr ),
+		m_pSpindleSensor( nullptr ),
+		m_pActivationSensor( nullptr )
 	{
 		// init names
 		String par_name = GetParName( pn, loc );
@@ -62,7 +62,7 @@ namespace scone
 		if ( KV != 0.0 )
 			m_pVelocitySensor = &model.AcquireDelayedSensor< MuscleVelocitySensor >( source );
 
-		if ( KS!= 0.0 )
+		if ( KS != 0.0 )
 			m_pSpindleSensor = &model.AcquireDelayedSensor< MuscleSpindleSensor >( source );
 
 		if ( KA != 0.0 )
@@ -102,15 +102,15 @@ namespace scone
 		auto name = GetReflexName( actuator_.GetName(), source.GetName() );
 
 		if ( m_pLengthSensor )
-			frame[ name + ".RL" ] = u_l;
+			frame[name + ".RL"] = u_l;
 		if ( m_pVelocitySensor )
-			frame[ name + ".RV" ] = u_v;
+			frame[name + ".RV"] = u_v;
 		if ( m_pForceSensor )
-			frame[ name + ".RF" ] = u_f;
+			frame[name + ".RF"] = u_f;
 		if ( m_pSpindleSensor )
-			frame[ name + ".RS" ] = u_s;
+			frame[name + ".RS"] = u_s;
 		if ( m_pActivationSensor )
-			frame[ name + ".RA" ] = u_a;
+			frame[name + ".RA"] = u_a;
 		//frame[ name + ".R" ] = u_total;
 	}
 }

@@ -18,18 +18,18 @@ namespace scone
 
 	Real RaisedCosine::GetValue( Real x )
 	{
-		if (mean - half_width <= x && x <= mean + half_width)
+		if ( mean - half_width <= x && x <= mean + half_width )
 			return offset + amplitude / 2
-				* (1 + cos( ( x - mean ) * pi() / half_width ));
+			* ( 1 + cos( ( x - mean ) * pi() / half_width ) );
 		else
 			return offset;
 	}
 
 	Real RaisedCosine::GetDerivativeValue( Real x )
 	{
-		if (mean - half_width <= x && x <= mean + half_width)
-			return -(amplitude * pi() ) / ( 2 * half_width )
-				* sin( ( x -  mean ) * pi() / half_width );
+		if ( mean - half_width <= x && x <= mean + half_width )
+			return -( amplitude * pi() ) / ( 2 * half_width )
+			* sin( ( x - mean ) * pi() / half_width );
 		else
 			return 0;
 

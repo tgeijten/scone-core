@@ -1,7 +1,7 @@
 /*
 ** BalanceMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -11,9 +11,9 @@
 
 namespace scone
 {
-	
+
 	BalanceMeasure::BalanceMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc )
+		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, termination_height, 0.5 );
 

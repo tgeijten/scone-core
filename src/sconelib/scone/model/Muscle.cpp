@@ -1,7 +1,7 @@
 /*
 ** Muscle.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -147,29 +147,29 @@ namespace scone
 		Actuator::StoreData( frame, flags );
 
 		if ( flags( StoreDataTypes::ActuatorInput ) || flags( StoreDataTypes::MuscleProperties ) )
-			frame[ GetName() + ".excitation" ] = GetExcitation();
+			frame[GetName() + ".excitation"] = GetExcitation();
 
 		if ( flags( StoreDataTypes::MuscleProperties ) )
 		{
 			const auto& name = GetName();
 			if ( !flags( StoreDataTypes::State ) ) // activation is also part of state
-				frame[ name + ".activation" ] = GetActivation();
+				frame[name + ".activation"] = GetActivation();
 
 			// tendon / mtu properties
-			frame[ name + ".tendon_length" ] = GetTendonLength();
-			frame[ name + ".tendon_length_norm" ] = GetNormalizedTendonLength() - 1;
-			frame[ name + ".mtu_length" ] = GetLength();
-			frame[ name + ".mtu_velocity" ] = GetVelocity();
-			frame[ name + ".mtu_force" ] = GetForce();
-			frame[ name + ".mtu_force_norm" ] = GetNormalizedForce();
-			frame[ name + ".mtu_power" ] = GetForce() * GetVelocity();
+			frame[name + ".tendon_length"] = GetTendonLength();
+			frame[name + ".tendon_length_norm"] = GetNormalizedTendonLength() - 1;
+			frame[name + ".mtu_length"] = GetLength();
+			frame[name + ".mtu_velocity"] = GetVelocity();
+			frame[name + ".mtu_force"] = GetForce();
+			frame[name + ".mtu_force_norm"] = GetNormalizedForce();
+			frame[name + ".mtu_power"] = GetForce() * GetVelocity();
 
 			// fiber properties
-			frame[ name + ".cos_pennation_angle" ] = GetCosPennationAngle();
-			frame[ name + ".force_length_multiplier" ] = GetActiveForceLengthMultipler();
-			frame[ name + ".passive_fiber_force_norm" ] = GetPassiveFiberForce() / GetMaxIsometricForce();
-			frame[ name + ".fiber_length_norm" ] = GetNormalizedFiberLength();
-			frame[ name + ".fiber_velocity_norm" ] = GetNormalizedFiberVelocity();
+			frame[name + ".cos_pennation_angle"] = GetCosPennationAngle();
+			frame[name + ".force_length_multiplier"] = GetActiveForceLengthMultipler();
+			frame[name + ".passive_fiber_force_norm"] = GetPassiveFiberForce() / GetMaxIsometricForce();
+			frame[name + ".fiber_length_norm"] = GetNormalizedFiberLength();
+			frame[name + ".fiber_velocity_norm"] = GetNormalizedFiberVelocity();
 		}
 
 		if ( flags( StoreDataTypes::MuscleDofMomentPower ) )
@@ -179,9 +179,9 @@ namespace scone
 				auto name = GetName() + "." + d->GetName();
 				auto ma = GetMomentArm( *d );
 				auto mom = GetForce() * ma;
-				frame[ name + ".moment_arm" ] = ma;
-				frame[ name + ".moment" ] = mom;
-				frame[ name + ".power" ] = mom * d->GetVel();
+				frame[name + ".moment_arm"] = ma;
+				frame[name + ".moment"] = mom;
+				frame[name + ".power"] = mom * d->GetVel();
 			}
 		}
 	}
@@ -189,14 +189,14 @@ namespace scone
 	PropNode Muscle::GetInfo() const
 	{
 		PropNode pn;
-		pn[ "name" ] = GetName();
-		pn[ "origin" ] = GetOriginBody().GetName();
-		pn[ "insertion" ] = GetInsertionBody().GetName();
-		pn[ "max_isometric_force" ] = GetMaxIsometricForce();
-		pn[ "optimal_fiber_length" ] = GetOptimalFiberLength();
-		pn[ "tendon_slack_length" ] = GetTendonSlackLength();
-		pn[ "pennation_angle_at_optimal" ] = GetPennationAngleAtOptimal();
-		pn[ "max_contraction_velocity" ] = GetMaxContractionVelocity();
+		pn["name"] = GetName();
+		pn["origin"] = GetOriginBody().GetName();
+		pn["insertion"] = GetInsertionBody().GetName();
+		pn["max_isometric_force"] = GetMaxIsometricForce();
+		pn["optimal_fiber_length"] = GetOptimalFiberLength();
+		pn["tendon_slack_length"] = GetTendonSlackLength();
+		pn["pennation_angle_at_optimal"] = GetPennationAngleAtOptimal();
+		pn["max_contraction_velocity"] = GetMaxContractionVelocity();
 		return pn;
 	}
 

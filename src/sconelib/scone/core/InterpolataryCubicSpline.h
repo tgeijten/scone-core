@@ -20,7 +20,7 @@ namespace scone
 		InterpolataryCubicSpline( const PropNode& props, Params& par );
 		virtual ~InterpolataryCubicSpline();
 
-		enum SplineType {NatCubSpline = 0, CatmullRomSpline = 1, CubHermite = 2, MonotonicCub = 3};
+		enum SplineType { NatCubSpline = 0, CatmullRomSpline = 1, CubHermite = 2, MonotonicCub = 3 };
 		String spline_type;
 
 		/// for Catmull Rom spline, additional points before the first point and after the last point 
@@ -44,7 +44,7 @@ namespace scone
 
 		/// Parameter for the offset time.
 		const PropNode* offset_time_node;
-		
+
 		/// Parameter for the scale time.
 		const PropNode* scale_time_node;
 
@@ -67,7 +67,7 @@ namespace scone
 		/// Flag indicating if the spline repeating itself continuously 
 		bool cyclic;
 
-		virtual Real GetValue(Real x) override;
+		virtual Real GetValue( Real x ) override;
 		virtual String GetSignature() override;
 
 	protected:

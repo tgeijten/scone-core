@@ -12,7 +12,7 @@ namespace scone
 			auto inter = sto.ComputeInterpolatedFrame( begin + perc * ( end - begin ) / 100.0 );
 			auto& f = new_sto.AddFrame( perc );
 			for ( index_t i = 0; i < sto.GetChannelCount(); ++i )
-				f[ i ] = inter.value( i );
+				f[i] = inter.value( i );
 		}
 		return new_sto;
 	}
@@ -21,11 +21,11 @@ namespace scone
 	{
 		SCONE_ASSERT( sto.GetFrameCount() > 0 );
 		auto force_idx = sto.GetChannelIndex( force_channel );
-		auto prev_force = sto.GetFrame( 0 )[ force_idx ];
+		auto prev_force = sto.GetFrame( 0 )[force_idx];
 		std::vector< TimeInSeconds > cycle_start_times;
 		for ( index_t idx = 1; idx < sto.GetFrameCount(); ++idx )
 		{
-			auto force = sto.GetFrame( idx )[ force_idx ];
+			auto force = sto.GetFrame( idx )[force_idx];
 			if ( prev_force <= threshold && force > threshold )
 			{
 				cycle_start_times.push_back( sto.GetFrame( idx ).GetTime() );
@@ -37,6 +37,6 @@ namespace scone
 		auto cycle = cycle_start_times.size() / 2;
 		//log::debug( "Picked cycle ", cycle, ": ", cycle_start_times[ cycle ], " - ", cycle_start_times[ cycle + 1 ] );
 
-		return ExtractNormalized( sto, cycle_start_times[ cycle ], cycle_start_times[ cycle + 1 ] );
+		return ExtractNormalized( sto, cycle_start_times[cycle], cycle_start_times[cycle + 1] );
 	}
 }

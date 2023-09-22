@@ -1,7 +1,7 @@
 /*
 ** GaitCycleMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -43,11 +43,11 @@ namespace scone
 				auto trg = GetMirroredStateNameAndSign( name );
 				index_t trg_idx = FindIndex( state.GetNames(), trg.first );
 				SCONE_ASSERT( trg_idx != NoIndex ); // make sure the target state name exists
-				diff = abs( m_InitState[ idx ] - trg.second * state[ trg_idx ] );
+				diff = abs( m_InitState[idx] - trg.second * state[trg_idx] );
 			}
 			else
 			{
-				diff = abs( m_InitState[ idx ] - state[ idx ] );
+				diff = abs( m_InitState[idx] - state[idx] );
 			}
 
 			total_diff += diff * diff;

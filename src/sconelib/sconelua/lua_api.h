@@ -25,7 +25,7 @@ namespace scone
 
 	template< typename T > T& GetByLuaIndex( std::vector<T>& vec, int index ) {
 		SCONE_ERROR_IF( index < 1 || index > vec.size(), "Index must be between 1 and " + xo::to_str( vec.size() ) );
-		return vec[ index - 1 ];
+		return vec[index - 1];
 	}
 
 	template< typename T > T& GetByLuaName( std::vector<T>& vec, const std::string name ) {
@@ -62,10 +62,12 @@ namespace scone
 		static void error( LuaString msg ) { log::error( msg ); }
 		/// create quaternion from Euler angles (xyz degrees)
 		static LuaQuat quat_from_euler_deg( double x, double y, double z ) {
-			return xo::quat_from_euler( xo::degreed( x ), xo::degreed( y ), xo::degreed( z ) ); }
+			return xo::quat_from_euler( xo::degreed( x ), xo::degreed( y ), xo::degreed( z ) );
+		}
 		/// create quaternion from Euler angles (xyz radians)
 		static LuaQuat quat_from_euler_rad( double x, double y, double z ) {
-			return xo::quat_from_euler( xo::radiand( x ), xo::radiand( y ), xo::radiand( z ) ); }
+			return xo::quat_from_euler( xo::radiand( x ), xo::radiand( y ), xo::radiand( z ) );
+		}
 	};
 
 	/// Access to writing data for scone Analysis window
@@ -74,11 +76,11 @@ namespace scone
 		LuaFrame( Storage<Real>::Frame& f ) : frame_( f ) {}
 
 		/// set a numeric value for channel named key
-		void set_value( LuaString key, LuaNumber value ) { frame_[ key ] = value; }
+		void set_value( LuaString key, LuaNumber value ) { frame_[key] = value; }
 		/// set a numeric value for channel named key
-		void set_vec3( LuaString key, LuaVec3 v ) { string s( key ); frame_[ s + "_x" ] = v.x; frame_[ s + "_y" ] = v.y; frame_[ s + "_z" ] = v.z; }
+		void set_vec3( LuaString key, LuaVec3 v ) { string s( key ); frame_[s + "_x"] = v.x; frame_[s + "_y"] = v.y; frame_[s + "_z"] = v.z; }
 		/// set a boolean (true or false) value for channel named key
-		void set_bool( LuaString key, bool b ) { frame_[ key ] = b ? 1.0 : 0.0; }
+		void set_bool( LuaString key, bool b ) { frame_[key] = b ? 1.0 : 0.0; }
 		/// get time of current frame
 		LuaNumber time() { return frame_.GetTime(); }
 

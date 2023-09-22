@@ -1,7 +1,7 @@
 /*
 ** GaitStateController.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -162,7 +162,7 @@ namespace scone
 		// update statuses
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
 		{
-			LegState& ls = *m_LegStates[ idx ];
+			LegState& ls = *m_LegStates[idx];
 			ls.leg_load = ls.load_sensor.GetValue( leg_load_sensor_delay );
 			ls.allow_stance_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) > ls.stance_load_threshold;
 			ls.allow_swing_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) <= ls.swing_load_threshold;
@@ -177,16 +177,16 @@ namespace scone
 				ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - reference_pos.x;
 				ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - reference_pos.z;
 			}
-			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length * ls.late_stance_threshold;
-			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length * ls.liftoff_threshold;
+			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length* ls.late_stance_threshold;
+			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length* ls.liftoff_threshold;
 			ls.allow_landing_transition = ls.sagittal_pos > ls.leg_length * ls.landing_threshold;
 		}
 
 		// update states
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
 		{
-			LegState& ls = *m_LegStates[ idx ];
-			LegState& mir_ls = *m_LegStates[ idx ^ 1 ];
+			LegState& ls = *m_LegStates[idx];
+			LegState& mir_ls = *m_LegStates[idx ^ 1];
 			GaitState new_state = ls.state;
 
 			switch ( ls.state )
@@ -265,7 +265,7 @@ namespace scone
 		// update controller states
 		for ( ConditionalControllerUP& cc : m_ConditionalControllers )
 		{
-			bool activate = cc->state_mask.test( m_LegStates[ cc->leg_index ]->state );
+			bool activate = cc->state_mask.test( m_LegStates[cc->leg_index]->state );
 
 			// activate or deactivate controller
 			if ( activate != cc->active )
@@ -282,7 +282,7 @@ namespace scone
 		String s = "G";
 		std::map< String, int > controllers;
 		for ( const ConditionalControllerUP& cc : m_ConditionalControllers )
-			controllers[ cc->controller->GetSignature() ] += 1;
+			controllers[cc->controller->GetSignature()] += 1;
 		for ( auto it = controllers.begin(); it != controllers.end(); ++it )
 			s += to_str( it->second / m_LegStates.size() ) + it->first;
 		return s;
@@ -295,11 +295,11 @@ namespace scone
 	{
 		// store states
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[ m_LegStates[ idx ]->leg.GetName() + ".state" ] = m_LegStates[ idx ]->state;
+			frame[m_LegStates[idx]->leg.GetName() + ".state"] = m_LegStates[idx]->state;
 
 		// store sagittal pos
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[ m_LegStates[ idx ]->leg.GetName() + ".sag_pos" ] = m_LegStates[ idx ]->sagittal_pos;
+			frame[m_LegStates[idx]->leg.GetName() + ".sag_pos"] = m_LegStates[idx]->sagittal_pos;
 
 		for ( auto& cc : m_ConditionalControllers )
 		{
@@ -310,7 +310,7 @@ namespace scone
 
 	String GaitStateController::GetConditionName( const ConditionalController& cc ) const
 	{
-		String s = m_LegStates[ cc.leg_index ]->leg.GetName();
+		String s = m_LegStates[cc.leg_index]->leg.GetName();
 		for ( int i = 0; i < StateCount; ++i )
 		{
 			if ( cc.state_mask.test( i ) )

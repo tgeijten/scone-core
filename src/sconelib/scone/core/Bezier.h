@@ -1,7 +1,7 @@
 /*
 ** Bezier.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights
 *reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
@@ -49,10 +49,10 @@ namespace scone
 
 		Bezier( const std::vector< Real >& controlPoints );
 		Bezier( const PropNode& props, Params& par );
-		virtual ~Bezier( );
+		virtual ~Bezier();
 		virtual Real GetValue( Real x ) override;
 		virtual Real GetDerivativeValue( Real x ) override;
-		virtual String GetSignature( ) override;
+		virtual String GetSignature() override;
 
 	protected:
 		std::vector< Real > m_ControlPoints;

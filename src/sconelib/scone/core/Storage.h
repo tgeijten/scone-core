@@ -1,7 +1,7 @@
 /*
 ** Storage.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -33,40 +33,40 @@ namespace scone
 			friend class Storage;
 
 			Frame( Storage& store, TimeT t, ValueT default_value = ValueT( 0 ) ) :
-			m_Store( store ),
-			m_Time( t ),
-			m_Values( store.GetChannelCount(), default_value ) { }
+				m_Store( store ),
+				m_Time( t ),
+				m_Values( store.GetChannelCount(), default_value ) { }
 
 			TimeT GetTime() const { return m_Time; }
 
-			ValueT& operator[]( index_t idx ) { return m_Values[ idx ]; }
+			ValueT& operator[]( index_t idx ) { return m_Values[idx]; }
 
-			const ValueT& operator[]( index_t idx ) const { return m_Values[ idx ]; }
+			const ValueT& operator[]( index_t idx ) const { return m_Values[idx]; }
 
 			ValueT& operator[]( const String& label ) {
 				index_t idx = m_Store.TryGetChannelIndex( label );
 				if ( idx == NoIndex )
 					idx = m_Store.AddChannel( label );
-				return m_Values[ idx ];
+				return m_Values[idx];
 			}
 
 			const ValueT& operator[]( const String& label ) const {
 				index_t idx = m_Store.GetChannelIndex( label );
 				SCONE_ASSERT( idx != NoIndex );
-				return m_Values[ idx ];
+				return m_Values[idx];
 			}
 
 			const std::vector< ValueT >& GetValues() const { return m_Values; }
 
 			void SetVec3( const String& label, const Vec3& vec ) {
-				(*this)[ label + "_x" ] = vec.x;
-				(*this)[ label + "_y" ] = vec.y;
-				(*this)[ label + "_z" ] = vec.z;
+				( *this )[label + "_x"] = vec.x;
+				( *this )[label + "_y"] = vec.y;
+				( *this )[label + "_z"] = vec.z;
 			}
 
 			Vec3 GetVec3( index_t idx ) const {
 				SCONE_ASSERT( idx != NoIndex && idx + 2 < m_Values.size() );
-				return Vec3( m_Values[ idx ], m_Values[ idx + 1 ], m_Values[ idx + 2 ] );
+				return Vec3( m_Values[idx], m_Values[idx + 1], m_Values[idx + 2] );
 			}
 
 		private:
@@ -87,7 +87,7 @@ namespace scone
 		};
 		Storage( const std::vector< String >& labels ) : m_Labels( labels ) {
 			for ( index_t i = 0; i < m_Labels.size(); ++i )
-				m_LabelIndexMap[ m_Labels[ i ] ] = i;
+				m_LabelIndexMap[m_Labels[i]] = i;
 		}
 		Storage& operator=( const Storage& other ) {
 			m_Labels = other.m_Labels;
@@ -118,7 +118,7 @@ namespace scone
 				size = ( GetFrameCount() + stride - 1 ) / stride;
 			r.m_Data.reserve( size );
 			for ( size_t i = start; r.m_Data.size() < size && i < m_Data.size(); i += stride )
-				r.m_Data.push_back( std::make_unique<Frame>( *m_Data[ i ] ) );
+				r.m_Data.push_back( std::make_unique<Frame>( *m_Data[i] ) );
 			return r;
 		}
 
@@ -129,7 +129,7 @@ namespace scone
 			m_InterpolationCache.clear(); // cached iterators have become invalid
 			return *m_Data.back();
 		}
-		
+
 		bool IsEmpty() const { return m_Data.empty(); }
 
 		Frame& Front() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.front(); }
@@ -138,20 +138,20 @@ namespace scone
 		Frame& Back() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
 		const Frame& Back() const { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
 
-		Frame& GetFrame( index_t frame_idx ) { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[ frame_idx ]; }
-		const Frame& GetFrame( index_t frame_idx ) const { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[ frame_idx ]; }
+		Frame& GetFrame( index_t frame_idx ) { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[frame_idx]; }
+		const Frame& GetFrame( index_t frame_idx ) const { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[frame_idx]; }
 
 		std::vector< ValueT > GetChannelData( index_t idx ) const {
 			std::vector< ValueT > result( GetFrameCount() );
 			for ( index_t f = 0; f < GetFrameCount(); ++f )
-				result[ f ] = GetFrame( f )[ idx ];
+				result[f] = GetFrame( f )[idx];
 			return result;
 		}
 
 		std::vector< TimeT > GetTimeData() const {
 			std::vector< TimeT > result( GetFrameCount() );
 			for ( index_t f = 0; f < GetFrameCount(); ++f )
-				result[ f ] = GetFrame( f ).GetTime();
+				result[f] = GetFrame( f ).GetTime();
 			return result;
 		}
 
@@ -160,9 +160,9 @@ namespace scone
 		index_t AddChannel( const String& label, ValueT default_value = ValueT( 0 ) ) {
 			SCONE_ASSERT_MSG( TryGetChannelIndex( label ) == NoIndex, "Channel " + label + " already exists" );
 			m_Labels.push_back( label );
-			m_LabelIndexMap[ label ] = m_Labels.size() - 1;
+			m_LabelIndexMap[label] = m_Labels.size() - 1;
 			for ( auto it = m_Data.begin(); it != m_Data.end(); ++it )
-				(*it)->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
+				( *it )->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
 			return m_Labels.size() - 1;
 		}
 
@@ -181,7 +181,7 @@ namespace scone
 
 		size_t GetChannelCount() const { return m_Labels.size(); }
 		const std::vector< String >& GetLabels() const { return m_Labels; }
-		const String& GetLabel( index_t idx ) const { return m_Labels[ idx ]; }
+		const String& GetLabel( index_t idx ) const { return m_Labels[idx]; }
 		const container_t& GetData() const { return m_Data; }
 
 		index_t GetClosestFrameIndex( TimeT time ) const {
@@ -194,7 +194,7 @@ namespace scone
 			else {
 				auto it0 = it;
 				--it0;
-				if ( time - (*it0)->GetTime() <= (*it)->GetTime() - time )
+				if ( time - ( *it0 )->GetTime() <= ( *it )->GetTime() - time )
 					return it0 - m_Data.begin();
 				else return it - m_Data.begin();
 			}
@@ -206,7 +206,7 @@ namespace scone
 		struct InterpolatedFrame {
 			double upper_weight;
 			typename container_t::const_iterator upper_frame, lower_frame;
-			ValueT value( index_t channel_idx ) const { return upper_weight * (**upper_frame)[ channel_idx ] + ( 1.0 - upper_weight ) * (**lower_frame)[ channel_idx ]; }
+			ValueT value( index_t channel_idx ) const { return upper_weight * ( **upper_frame )[channel_idx] + ( 1.0 - upper_weight ) * ( **lower_frame )[channel_idx]; }
 		};
 
 		// Compute interpolated value (always recomputes, slow)
@@ -235,7 +235,7 @@ namespace scone
 			{
 				// we have an actual interpolation
 				bf.lower_frame = bf.upper_frame - 1;
-				bf.upper_weight = ( time - (*bf.lower_frame)->GetTime() ) / ( (*bf.upper_frame)->GetTime() - (*bf.lower_frame)->GetTime() );
+				bf.upper_weight = ( time - ( *bf.lower_frame )->GetTime() ) / ( ( *bf.upper_frame )->GetTime() - ( *bf.lower_frame )->GetTime() );
 			}
 
 			return bf;
@@ -254,7 +254,7 @@ namespace scone
 				return cacheIt->second;
 
 			InterpolatedFrame bf = ComputeInterpolatedFrame( time );
-			m_InterpolationCache[ time ] = bf;
+			m_InterpolationCache[time] = bf;
 
 			return bf;
 		}

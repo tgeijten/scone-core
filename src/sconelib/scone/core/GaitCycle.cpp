@@ -4,12 +4,12 @@
 namespace scone
 {
 	index_t FindNextTouch( const Storage<>& sto, index_t idx, const index_t channel_idx, const Real threshold ) {
-		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[ channel_idx ] < threshold ) idx++;
+		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] < threshold ) idx++;
 		return idx < sto.GetFrameCount() ? idx : no_index;
 	}
 
 	index_t FindNextFlight( const Storage<>& sto, index_t idx, const index_t channel_idx, const Real threshold ) {
-		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[ channel_idx ] >= threshold ) idx++;
+		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] >= threshold ) idx++;
 		return idx < sto.GetFrameCount() ? idx : no_index;
 	}
 

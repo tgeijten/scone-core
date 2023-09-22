@@ -23,8 +23,8 @@ namespace scone
 		const PropNode& raise_time;
 		const PropNode& fall_time;
 		const PropNode& peak;
-		
-		virtual Real GetValue(Real x) override;
+
+		virtual Real GetValue( Real x ) override;
 		virtual String GetSignature() override;
 
 	protected:

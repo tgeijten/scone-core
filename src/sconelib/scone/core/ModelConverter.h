@@ -20,7 +20,7 @@ namespace scone
 		bool use_limits_from_dof_range_ = false;
 		double joint_limit_damping_angle_ = 5;
 		double body_mass_threshold_ = 0.2;
-		
+
 	private:
 		void ConvertBody( const Body& b, PropNode& parent_pn );
 		void ConvertJoint( const Joint& b, PropNode& parent_pn );

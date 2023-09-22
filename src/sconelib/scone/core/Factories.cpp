@@ -1,7 +1,7 @@
 /*
 ** Factories.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -128,7 +128,7 @@ namespace scone
 			.register_type< StepMeasure >()
 			.register_type< SimulationMeasure >();
 
- 		return g_MeasureFactory;
+		return g_MeasureFactory;
 	}
 
 	MeasureUP CreateMeasure( const FactoryProps& fp, Params& par, const Model& model, const Location& target_area )
@@ -171,7 +171,7 @@ namespace scone
 			.register_type< Polynomial >()
 			.register_type< SineWave >()
 			.register_type< Bezier >()
-    		.register_type< RaisedCosine >()
+			.register_type< RaisedCosine >()
 			.register_type< RaiseFallProfileFunction >()
 			.register_type< InterpolataryCubicSpline >();
 

@@ -1,7 +1,7 @@
 /*
 ** EffortMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	xo::dictionary< EffortMeasureType > g_MeasureNames {
+	xo::dictionary< EffortMeasureType > g_MeasureNames{
 		{ EffortMeasureType::Constant, "Constant" },
 		{ EffortMeasureType::TotalForce, "TotalForce" },
 		{ EffortMeasureType::Wang2012, "Wang2012" },
@@ -137,9 +137,9 @@ namespace scone
 		double e = m_Wang2012BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[i];
 			double mass = mus->GetMass( specific_tension, muscle_density );
-			Real l = m_SlowTwitchFiberRatios[ i ];
+			Real l = m_SlowTwitchFiberRatios[i];
 			Real fa = 40 * l * sin( REAL_HALF_PI * mus->GetExcitation() ) + 133 * ( 1 - l ) * ( 1 - cos( REAL_HALF_PI * mus->GetExcitation() ) );
 			Real fm = 74 * l * sin( REAL_HALF_PI * mus->GetActivation() ) + 111 * ( 1 - l ) * ( 1 - cos( REAL_HALF_PI * mus->GetActivation() ) );
 			Real l_ce_norm = mus->GetFiberLength() / mus->GetOptimalFiberLength();
@@ -159,7 +159,7 @@ namespace scone
 			Real effort = effort_a + effort_m + effort_s + effort_w;
 			e += effort;
 			if ( model.GetStoreData() )
-				m_MuscleEfforts[ i ] = effort;
+				m_MuscleEfforts[i] = effort;
 
 			SCONE_ERROR_IF( fa != fa, "Error computing fa for " + mus->GetName() + "; excitation=" + to_str( mus->GetExcitation() ) );
 		}
@@ -174,7 +174,7 @@ namespace scone
 		double e = m_Uchida2016BasalEnergy;
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[i];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 
 			// calculate A parameter
@@ -187,7 +187,7 @@ namespace scone
 				A = ( excitation + activation ) / 2;
 
 			// calculate slowTwitchRatio factor
-			Real slowTwitchRatio = m_SlowTwitchFiberRatios[ i ];
+			Real slowTwitchRatio = m_SlowTwitchFiberRatios[i];
 			double uSlow = slowTwitchRatio * sin( REAL_HALF_PI * excitation );
 			double uFast = ( 1 - slowTwitchRatio ) * ( 1 - cos( REAL_HALF_PI * excitation ) );
 			slowTwitchRatio = ( excitation == 0 ) ? 1.0 : uSlow / ( uSlow + uFast );
@@ -247,7 +247,7 @@ namespace scone
 			double Edot = ( totalHeatRate + Wdot ) * mass;
 
 			if ( model.GetStoreData() )
-				m_MuscleEfforts[ i ] = Edot;
+				m_MuscleEfforts[i] = Edot;
 
 			e += Edot;
 		}
@@ -272,7 +272,7 @@ namespace scone
 		// update muscle if its name is in the map
 		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[ i ];
+			const auto& mus = model.GetMuscles()[i];
 
 			bool foundMuscle = false;
 			for ( auto it = muscPropsInput.begin(); it != muscPropsInput.end(); ++it )
@@ -280,7 +280,7 @@ namespace scone
 				if ( xo::pattern_matcher( it->muscle, ";" )( mus->GetName() ) )
 				{
 					SCONE_ASSERT_MSG( !foundMuscle, "multiple muscle names matched in MuscleProperties" );
-					m_SlowTwitchFiberRatios[ i ] = it->slow_twitch_ratio;
+					m_SlowTwitchFiberRatios[i] = it->slow_twitch_ratio;
 					foundMuscle = true;
 				}
 			}
@@ -361,8 +361,8 @@ namespace scone
 
 	void EffortMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ name_ + ".penalty" ] = m_Effort.GetLatest();
+		frame[name_ + ".penalty"] = m_Effort.GetLatest();
 		for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i )
-			frame[m_MuscleNames[ i ] ] = m_MuscleEfforts[i];
+			frame[m_MuscleNames[i]] = m_MuscleEfforts[i];
 	}
 }

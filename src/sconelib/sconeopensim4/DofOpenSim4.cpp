@@ -1,7 +1,7 @@
 /*
 ** DofOpenSim4.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -112,8 +112,8 @@ namespace scone
 			auto myIdx = st.getCoordinateNames().findIndex( m_osCoord.getName() );
 			auto idxVec = st.getCoordinateIndices();
 			for ( index_t axisIdx = 0; axisIdx < idxVec.size(); ++axisIdx )
-				if ( xo::contains( idxVec[ axisIdx ], myIdx ) )
-					return from_osim( st.getAxes()[ axisIdx ] );
+				if ( xo::contains( idxVec[axisIdx], myIdx ) )
+					return from_osim( st.getAxes()[axisIdx] );
 		}
 		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) )
 			return Vec3::unit_z();
@@ -165,9 +165,9 @@ namespace scone
 	{
 		PropNode pn = Dof::GetInfo();
 		if ( m_pOsLimitForce ) {
-			pn[ "limit_stiffness" ] = m_pOsLimitForce->get_lower_stiffness();
-			pn[ "limit_damping" ] = m_pOsLimitForce->get_damping();
-			pn[ "limit_range" ] = BoundsDeg( m_pOsLimitForce->get_lower_limit(), m_pOsLimitForce->get_upper_limit() );
+			pn["limit_stiffness"] = m_pOsLimitForce->get_lower_stiffness();
+			pn["limit_damping"] = m_pOsLimitForce->get_damping();
+			pn["limit_range"] = BoundsDeg( m_pOsLimitForce->get_lower_limit(), m_pOsLimitForce->get_upper_limit() );
 		}
 		return pn;
 	}

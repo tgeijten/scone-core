@@ -1,7 +1,7 @@
 /*
 ** math.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -45,11 +45,11 @@ namespace scone
 	inline Real RandUni( Real lower, Real upper ) { return lower + ( upper - lower ) * rand() / RAND_MAX; }
 
 	// sign function returns -1.0 on negative, 1.0 otherwise
-	template< typename T > int Sign( const T& value ) { return (value < T(0)) ? -1 : 1; }
+	template< typename T > int Sign( const T& value ) { return ( value < T( 0 ) ) ? -1 : 1; }
 
 	// float comparison
 	template< typename T >
-	bool Equals( const T& v1, const T& v2, const T& tolerance = std::numeric_limits<T>::epsilon() ) { 
+	bool Equals( const T& v1, const T& v2, const T& tolerance = std::numeric_limits<T>::epsilon() ) {
 		return ( std::fabs( v1 - v2 ) <= std::fabs( v1 ) * tolerance );
 	}
 

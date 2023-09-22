@@ -1,7 +1,7 @@
 /*
 ** Model.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -97,7 +97,7 @@ namespace scone
 
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }
-		const Leg& GetLeg( size_t idx ) const { return m_Legs[ idx ]; }
+		const Leg& GetLeg( size_t idx ) const { return m_Legs[idx]; }
 		const Leg& GetLeg( const Location& loc ) const { for ( auto& l : m_Legs ) if ( l.GetSide() == loc.GetSide() ) return l; xo_error( "Could not find leg" ); }
 		std::vector< Leg >& GetLegs() { return m_Legs; }
 		const std::vector< Leg >& GetLegs() const { return m_Legs; }
@@ -164,7 +164,7 @@ namespace scone
 		const PropNode& GetUserData() const { return m_UserData; }
 		PropNode& GetUserData() { return m_UserData; }
 		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
-		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[ id ]; }
+		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[id]; }
 
 		// Model info
 		virtual PropNode GetInfo() const;

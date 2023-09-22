@@ -1,7 +1,7 @@
 /*
 ** Range.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -34,7 +34,7 @@ namespace scone
 		T max;
 
 		// explicit conversion constructor
-		template< typename U > explicit Range( const Range<U>& o ) : min( T( o.min ) ), max( T( o.max) ) {}
+		template< typename U > explicit Range( const Range<U>& o ) : min( T( o.min ) ), max( T( o.max ) ) {}
 
 		// test if a value is inside the range
 		bool Test( const T& value ) { return ( value >= min ) && ( value <= max ); }

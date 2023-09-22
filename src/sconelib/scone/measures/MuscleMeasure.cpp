@@ -1,7 +1,7 @@
 /*
 ** MuscleMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -93,14 +93,14 @@ namespace scone
 	void MuscleMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( !input.IsNull() )
-			frame[ muscle.GetName() + ".input_penalty" ] = input.GetLatest();
+			frame[muscle.GetName() + ".input_penalty"] = input.GetLatest();
 		if ( !activation.IsNull() )
-			frame[ muscle.GetName() + ".activation_penalty" ] = activation.GetLatest();
+			frame[muscle.GetName() + ".activation_penalty"] = activation.GetLatest();
 		if ( !length.IsNull() )
-			frame[ muscle.GetName() + ".length_penalty" ] = length.GetLatest();
+			frame[muscle.GetName() + ".length_penalty"] = length.GetLatest();
 		if ( !velocity.IsNull() )
-			frame[ muscle.GetName() + ".velocity_penalty" ] = velocity.GetLatest();
+			frame[muscle.GetName() + ".velocity_penalty"] = velocity.GetLatest();
 		if ( !force.IsNull() )
-			frame[ muscle.GetName() + ".force_penalty" ] = force.GetLatest();
+			frame[muscle.GetName() + ".force_penalty"] = force.GetLatest();
 	}
 }

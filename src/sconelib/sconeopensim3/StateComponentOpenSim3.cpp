@@ -1,7 +1,7 @@
 /*
 ** StateComponentOpenSim3.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -70,7 +70,7 @@ namespace OpenSim
 	void StateComponentOpenSim3::setStateVariables( SimTK::State& s, std::vector< Real > x0 ) const
 	{
 		for ( int i = 0; i < x0.size(); i++ )
-			setStateVariable( s, m_stateVariables[ i ], x0[ i ] );
+			setStateVariable( s, m_stateVariables[i], x0[i] );
 	}
 
 	SimTK::Vector StateComponentOpenSim3::computeStateVariableDerivatives( const SimTK::State& s ) const
@@ -79,7 +79,7 @@ namespace OpenSim
 		auto dxdt = m_stateComponent->CalcStateDerivatives( s.getTime(), x0 );
 		SimTK::Vector result( int( dxdt.size() ), 0.0 );
 		for ( int i = 0; i < dxdt.size(); i++ )
-			result[ i ] = dxdt[ i ];
+			result[i] = dxdt[i];
 
 		return result;
 	}

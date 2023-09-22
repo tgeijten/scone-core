@@ -1,7 +1,7 @@
 /*
 ** MuscleOpenSim4.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -157,10 +157,10 @@ namespace scone
 				auto mom = m_osMus.getGeometryPath().computeMomentArm( m_Model.GetTkState(), dof_sb.GetOsCoordinate() );
 				if ( fabs( mom ) < MOMENT_ARM_EPSILON || dof_sb.GetOsCoordinate().getLocked( m_Model.GetTkState() ) )
 					mom = 0;
-				m_MomentArmCache[ &dof ] = mom;
+				m_MomentArmCache[&dof] = mom;
 			}
 		}
-		return m_MomentArmCache[ &dof ];
+		return m_MomentArmCache[&dof];
 #else
 		const auto& dof_sb = dynamic_cast<const DofOpenSim4&>( dof );
 		return m_osMus.getGeometryPath().computeMomentArm( m_Model.GetTkState(), dof_sb.GetOsCoordinate() );
@@ -175,12 +175,12 @@ namespace scone
 			auto f_t = m_osMus.getTendonForce( m_Model.GetTkState() ) / m_osMus.getCosPennationAngle( m_Model.GetTkState() ) / m_osMus.getMaxIsometricForce();
 			auto f_pe = m_osMus.getPassiveFiberForce( m_Model.GetTkState() ) / m_osMus.getMaxIsometricForce();
 			auto f_ce = m_osMus.getActiveForceLengthMultiplier( m_Model.GetTkState() ) * m_osMus.getActivation( m_Model.GetTkState() );
-			frame[ GetName() + ".inv_ce_vel" ] = ( f_t - f_pe ) / f_ce;
-			frame[ GetName() + ".ce_vel_norm" ] = m_osMus.getNormalizedFiberVelocity( m_Model.GetTkState() );
-			frame[ GetName() + ".ce_vel" ] = m_osMus.getFiberVelocity( m_Model.GetTkState() );
-			frame[ GetName() + ".inv_ce_vel_ft" ] = f_t;
-			frame[ GetName() + ".inv_ce_vel_fpe" ] = f_pe;
-			frame[ GetName() + ".inv_ce_vel_fce" ] = f_ce;
+			frame[GetName() + ".inv_ce_vel"] = ( f_t - f_pe ) / f_ce;
+			frame[GetName() + ".ce_vel_norm"] = m_osMus.getNormalizedFiberVelocity( m_Model.GetTkState() );
+			frame[GetName() + ".ce_vel"] = m_osMus.getFiberVelocity( m_Model.GetTkState() );
+			frame[GetName() + ".inv_ce_vel_ft"] = f_t;
+			frame[GetName() + ".inv_ce_vel_fpe"] = f_pe;
+			frame[GetName() + ".inv_ce_vel_fce"] = f_ce;
 		}
 	}
 
@@ -222,10 +222,10 @@ namespace scone
 		std::vector< Vec3 > points( pps.getSize() );
 		for ( int i = 0; i < points.size(); ++i )
 		{
-			const auto& mob = m_Model.GetOsimModel().getMultibodySystem().getMatterSubsystem().getMobilizedBody( pps[ i ]->getBody().getMobilizedBodyIndex() );
-			auto world_pos = mob.getBodyTransform( m_Model.GetTkState() ) * pps[ i ]->getLocation( m_Model.GetTkState() );
+			const auto& mob = m_Model.GetOsimModel().getMultibodySystem().getMatterSubsystem().getMobilizedBody( pps[i]->getBody().getMobilizedBodyIndex() );
+			auto world_pos = mob.getBodyTransform( m_Model.GetTkState() ) * pps[i]->getLocation( m_Model.GetTkState() );
 
-			points[ i ] = from_osim( world_pos );
+			points[i] = from_osim( world_pos );
 		}
 		return points;
 	}
@@ -235,7 +235,7 @@ namespace scone
 		auto& pps = m_osMus.getGeometryPath().getCurrentPath( m_Model.GetTkState() );
 		std::vector< std::pair< Body*, Vec3 > > points;
 		for ( int i = 0; i < pps.size(); ++i )
-			points.emplace_back( FindByName( m_Model.GetBodies(), pps[ i ]->getBody().getName() ), from_osim( pps[ i ]->getLocation( m_Model.GetTkState() ) ) );
+			points.emplace_back( FindByName( m_Model.GetBodies(), pps[i]->getBody().getName() ), from_osim( pps[i]->getLocation( m_Model.GetTkState() ) ) );
 		return points;
 	}
 

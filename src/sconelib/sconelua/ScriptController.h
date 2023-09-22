@@ -19,7 +19,7 @@ namespace scone
 		external_files = [ "data/my_included_file.lua" ]
 	}
 	\endverbatim
-	
+
 	Example of a Lua controller script:
 	\verbatim
 	function init( model, par, side )

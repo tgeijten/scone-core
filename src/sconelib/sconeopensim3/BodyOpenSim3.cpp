@@ -1,7 +1,7 @@
 /*
 ** BodyOpenSim3.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -150,7 +150,7 @@ namespace scone
 		// #todo: cache this baby (after profiling), because sensors evaluate it for each channel
 		auto& mb = m_osBody.getModel().getMultibodySystem().getMatterSubsystem().getMobilizedBody( m_osBody.getIndex() );
 		const auto& quat = mb.getBodyRotation( m_Model.GetTkState() ).convertRotationToQuaternion();
-		Quat q1( quat[ 0 ], quat[ 1 ], quat[ 2 ], quat[ 3 ] );
+		Quat q1( quat[0], quat[1], quat[2], quat[3] );
 
 		return q1;
 	}
@@ -281,10 +281,10 @@ namespace scone
 		for ( auto i = 0; i < gset.getSize(); ++i )
 		{
 			geoms.emplace_back(
-				gset[ i ].getGeometryFile(),
-				disp_pos + from_osim( gset[ i ].getTransform().p() ),
-				disp_ori * from_osim( SimTK::Quaternion( gset[ i ].getTransform().R() ) ),
-				xo::multiply( disp_scale, from_osim( gset[ i ].getScaleFactors() ) ) );
+				gset[i].getGeometryFile(),
+				disp_pos + from_osim( gset[i].getTransform().p() ),
+				disp_ori * from_osim( SimTK::Quaternion( gset[i].getTransform().R() ) ),
+				xo::multiply( disp_scale, from_osim( gset[i].getScaleFactors() ) ) );
 		}
 
 		return geoms;

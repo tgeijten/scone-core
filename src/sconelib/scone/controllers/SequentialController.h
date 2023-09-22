@@ -1,7 +1,7 @@
 /*
 ** SequentialController.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -22,7 +22,7 @@ namespace scone
 	# Example of a 2-step feed-forward jumping controller using a SequentialController
 	SequentialController {
 		# We have two controllers, so one interval
-		transition_intervals = [ ~0.15<0.1,0.5> ] 
+		transition_intervals = [ ~0.15<0.1,0.5> ]
 
 		# First controller prepares for jumping
 		FeedForwardController {

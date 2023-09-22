@@ -1,7 +1,7 @@
 /*
 ** HasSignature.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,9 +16,9 @@ namespace scone
 {
 	HasSignature::HasSignature( const PropNode& pn )
 	{
-		INIT_PROP( pn, signature_prefix, String("") );
-		INIT_PROP( pn, signature_postfix, String("") );
-		INIT_PROP( pn, signature, String("") );
+		INIT_PROP( pn, signature_prefix, String( "" ) );
+		INIT_PROP( pn, signature_postfix, String( "" ) );
+		INIT_PROP( pn, signature, String( "" ) );
 
 		// replace DATE_TIME tag with (yes, indeed) DATE and TIME
 		ReplaceStringTags( signature_prefix );

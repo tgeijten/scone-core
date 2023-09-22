@@ -1,7 +1,7 @@
 /*
 ** SimilarityObjective.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -18,7 +18,7 @@ namespace scone
 	public:
 		SimilarityObjective( const PropNode& props, const path& find_file_folder );
 		virtual ~SimilarityObjective() {}
-		
+
 		virtual void AdvanceSimulationTo( Model& m, TimeInSeconds t ) const override;
 		virtual fitness_t GetResult( Model& m ) const override;
 		virtual PropNode GetReport( Model& m ) const override;

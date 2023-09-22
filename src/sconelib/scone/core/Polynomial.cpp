@@ -1,7 +1,7 @@
 /*
 ** Polynomial.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -47,7 +47,7 @@ namespace scone
 		for ( int i = 1; i < m_Coeffs.size(); i++ )
 		{
 			r += m_Coeffs[i] * c;
-			c *= (i + 1) * x / i;
+			c *= ( i + 1 ) * x / i;
 		}
 
 		return r;
@@ -55,7 +55,7 @@ namespace scone
 
 	void Polynomial::SetCoefficient( size_t idx, Real value )
 	{
-		m_Coeffs[ idx ] = value;
+		m_Coeffs[idx] = value;
 	}
 
 	size_t Polynomial::GetCoefficientCount()

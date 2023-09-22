@@ -34,7 +34,7 @@ namespace scone
 		l_group_ = AddInputNeuronGroup( "L" );
 		l_bias_ = pn.get<Real>( "L_bias", 0.0 );
 		for ( auto& musinf : muscles_ ) {
-			auto& mus = *model.GetMuscles()[ musinf.index_ ];
+			auto& mus = *model.GetMuscles()[musinf.index_];
 			auto& sp = model.AcquireSensor<MuscleLengthSensor>( mus );
 			l_sensors_.push_back( model.GetDelayedSensor( sp, musinf.delay_ ) );
 			AddNeuron( l_group_, mus.GetName(), 0.0 );
@@ -43,7 +43,7 @@ namespace scone
 		// create F neurons
 		f_group_ = AddInputNeuronGroup( "F" );
 		for ( auto& musinf : muscles_ ) {
-			auto& mus = *model.GetMuscles()[ musinf.index_ ];
+			auto& mus = *model.GetMuscles()[musinf.index_];
 			auto& sp = model.AcquireSensor<MuscleForceSensor>( mus );
 			f_sensors_.push_back( model.GetDelayedSensor( sp, musinf.delay_ ) );
 			AddNeuron( f_group_, mus.GetName(), 0.0 );
@@ -57,13 +57,13 @@ namespace scone
 			auto ves_delay = ves_pn->get<Real>( "delay" );
 			for ( int axis = planar ? 2 : 0; axis < 3; ++axis ) {
 				for ( auto side : sides ) {
-					auto& bp = model.AcquireSensor<BodyOrientationSensor>( body, Vec3::axis( axis ), axis_names[ axis ], side );
+					auto& bp = model.AcquireSensor<BodyOrientationSensor>( body, Vec3::axis( axis ), axis_names[axis], side );
 					ves_sensors_.push_back( model.GetDelayedSensor( bp, ves_delay ) );
-					AddNeuron( ves_group_, string( "p" ) + axis_names[ axis ] + GetSideName( side ), 0.0 );
-					if ( ves_vel_gain_ != 0.0 )	{
-						auto& bv = model.AcquireSensor<BodyAngularVelocitySensor>( body, Vec3::axis( axis ), axis_names[ axis ], side, ves_vel_gain_ );
+					AddNeuron( ves_group_, string( "p" ) + axis_names[axis] + GetSideName( side ), 0.0 );
+					if ( ves_vel_gain_ != 0.0 ) {
+						auto& bv = model.AcquireSensor<BodyAngularVelocitySensor>( body, Vec3::axis( axis ), axis_names[axis], side, ves_vel_gain_ );
 						ves_sensors_.push_back( model.GetDelayedSensor( bv, ves_delay ) );
-						AddNeuron( ves_group_, string( "v" ) + axis_names[ axis ] + GetSideName( side ), 0.0 );
+						AddNeuron( ves_group_, string( "v" ) + axis_names[axis] + GetSideName( side ), 0.0 );
 					}
 				}
 			}
@@ -101,8 +101,8 @@ namespace scone
 		// MN neurons (motor neurons)
 		mn_group_ = AddNeuronGroup( "MN", pn );
 		for ( auto& musinf : muscles_ ) {
-			auto* mgpn = !musinf.group_indices_.empty() ? &muscle_groups_[ musinf.group_indices_.front() ].pn_ : nullptr;
-			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[ musinf.index_ ], musinf.delay_ ) );
+			auto* mgpn = !musinf.group_indices_.empty() ? &muscle_groups_[musinf.group_indices_.front()].pn_ : nullptr;
+			actuators_.push_back( model.GetDelayedActuator( *model.GetMuscles()[musinf.index_], musinf.delay_ ) );
 			AddNeuron( mn_group_, musinf.name_, par, pn, mgpn );
 		}
 
@@ -115,8 +115,8 @@ namespace scone
 
 		// connect muscle group interneurons
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
-			auto& mg = muscle_groups_[ mgi ];
-			auto* contra_mg = mg.contra_group_index_ < muscle_groups_.size() ? &muscle_groups_[ mg.contra_group_index_ ] : nullptr;
+			auto& mg = muscle_groups_[mgi];
+			auto* contra_mg = mg.contra_group_index_ < muscle_groups_.size() ? &muscle_groups_[mg.contra_group_index_] : nullptr;
 
 			// L -> IA / IA -> IA
 			if ( ia_group_ ) {
@@ -187,7 +187,7 @@ namespace scone
 			if ( pm_group_ ) {
 				// IB -> PM
 				for ( uint32 smgi = 0; smgi < muscle_groups_.size(); ++smgi ) {
-					if ( mg.side_ == muscle_groups_[ smgi ].side_ ) {
+					if ( mg.side_ == muscle_groups_[smgi].side_ ) {
 						if ( ib_group_ )
 							Connect( ib_group_, smgi, pm_group_, mgi, par, pn, &mg.pn_ );
 						if ( ibi_group_ )
@@ -206,7 +206,7 @@ namespace scone
 
 		// connect motor units
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			const PropNode* mg_pn = muscles_[ mi ].group_indices_.empty() ? nullptr : &muscle_groups_[ muscles_[ mi ].group_indices_.front() ].pn_;
+			const PropNode* mg_pn = muscles_[mi].group_indices_.empty() ? nullptr : &muscle_groups_[muscles_[mi].group_indices_.front()].pn_;
 
 			// monosynaptic L connections
 			if ( l_group_ )
@@ -214,21 +214,21 @@ namespace scone
 
 			// connect IAIN to antagonists
 			if ( ia_group_ )
-				Connect( ia_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				Connect( ia_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// connect IBIN to group members
 			if ( ib_group_ ) {
-				TryConnect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
-				TryConnect( ib_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, "_ant_weight" );
+				TryConnect( ib_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				TryConnect( ib_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, "_ant_weight" );
 			}
 			if ( ibi_group_ )
-				Connect( ibi_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				Connect( ibi_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 			if ( ibe_group_ )
-				Connect( ibe_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				Connect( ibe_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// PM -> MN
 			if ( pm_group_ )
-				Connect( pm_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				Connect( pm_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// RC -> MN
 			if ( rc_group_ ) {
@@ -244,15 +244,15 @@ namespace scone
 
 		// update L and F
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi ) {
-			network_.set_value( l_group_, mi, snel::real( l_sensors_[ mi ].GetValue() + l_bias_ ) );
-			network_.set_value( f_group_, mi, snel::real( f_sensors_[ mi ].GetValue() ) );
+			network_.set_value( l_group_, mi, snel::real( l_sensors_[mi].GetValue() + l_bias_ ) );
+			network_.set_value( f_group_, mi, snel::real( f_sensors_[mi].GetValue() ) );
 		}
 		// update VES
 		for ( uint32 vi = 0; vi < ves_sensors_.size(); ++vi )
-			network_.set_value( ves_group_, vi, snel::real( ves_sensors_[ vi ].GetValue() ) );
+			network_.set_value( ves_group_, vi, snel::real( ves_sensors_[vi].GetValue() ) );
 		// update LD
 		for ( uint32 vi = 0; vi < load_sensors_.size(); ++vi )
-			network_.set_value( load_group_, vi, snel::real( load_sensors_[ vi ].GetValue() ) );
+			network_.set_value( load_group_, vi, snel::real( load_sensors_[vi].GetValue() ) );
 
 		network_.update();
 
@@ -261,7 +261,7 @@ namespace scone
 				network_.update();
 
 		for ( uint32 mi = 0; mi < muscles_.size(); ++mi )
-			actuators_[ mi ].AddInput( network_.value( mn_group_, mi ) );
+			actuators_[mi].AddInput( network_.value( mn_group_, mi ) );
 
 		return false;
 	}
@@ -269,19 +269,19 @@ namespace scone
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Real bias )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		neuron_names_.emplace_back( neuron_group_names_[ gid.idx ] + '.' + name );
+		neuron_names_.emplace_back( neuron_group_names_[gid.idx] + '.' + name );
 		auto nid = network_.add_neuron( gid, snel::real( bias ) );
-		return nid.idx - network_.groups_[ gid.idx ].neuron_begin_.idx;
+		return nid.idx - network_.groups_[gid.idx].neuron_begin_.idx;
 	}
 
 	uint32 SpinalController::AddNeuron( group_id gid, const String& name, Params& par, const PropNode& pn, const PropNode* pn2 )
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
-		neuron_names_.emplace_back( neuron_group_names_[ gid.idx ] + '.' + name );
-		auto* par_pn = TryGetPropNode( neuron_group_names_[ gid.idx ] + "_bias", pn, pn2 );
+		neuron_names_.emplace_back( neuron_group_names_[gid.idx] + '.' + name );
+		auto* par_pn = TryGetPropNode( neuron_group_names_[gid.idx] + "_bias", pn, pn2 );
 		auto bias = par_pn ? par.get( GetNameNoSide( neuron_names_.back() ), *par_pn ) : 0.0;
 		auto nid = network_.add_neuron( gid, snel::real( bias ) );
-		return nid.idx - network_.groups_[ gid.idx ].neuron_begin_.idx;
+		return nid.idx - network_.groups_[gid.idx].neuron_begin_.idx;
 	}
 
 	group_id SpinalController::AddNeuronGroup( const String& name, const PropNode& pn )
@@ -374,13 +374,13 @@ namespace scone
 
 		// set muscle group indices
 		for ( uint32 mgi = 0; mgi < muscle_groups_.size(); ++mgi ) {
-			auto& mg = muscle_groups_[ mgi ];
+			auto& mg = muscle_groups_[mgi];
 			auto apat = mg.pn_.try_get<xo::pattern_matcher>( "antagonists" );
 			auto rpat = mg.pn_.try_get<xo::pattern_matcher>( "related" );
 			auto cl_apat = mg.pn_.try_get<xo::pattern_matcher>( "cl_antagonists" );
 			for ( uint32 mgi_other = 0; mgi_other < muscle_groups_.size(); ++mgi_other ) {
 				if ( mgi != mgi_other ) {
-					auto& mg_other = muscle_groups_[ mgi_other ];
+					auto& mg_other = muscle_groups_[mgi_other];
 					bool same_side = mg.side_ == mg_other.side_;
 					bool is_antagonist = ( same_side && apat && apat->match( mg_other.name_ ) ) || ( !same_side && cl_apat && cl_apat->match( mg_other.name_ ) );
 					bool is_related = same_side && rpat && rpat->match( mg_other.name_ );
@@ -391,7 +391,7 @@ namespace scone
 					if ( is_antagonist ) {
 						mg.ant_group_indices_.emplace_back( mgi_other );
 						for ( auto mi : mg.muscle_indices_ )
-							muscles_[ mi ].ant_group_indices_.insert( mgi_other );
+							muscles_[mi].ant_group_indices_.insert( mgi_other );
 					}
 					if ( is_related )
 						mg.related_group_indices_.emplace_back( mgi_other );
@@ -443,12 +443,12 @@ namespace scone
 	{
 		SCONE_ASSERT( network_.neuron_count() == neuron_names_.size() );
 		for ( index_t i = 0; i < network_.neuron_count(); ++i ) {
-			frame[ neuron_names_[ i ] ] = network_.values_[ i ];
-			const auto& n = network_.neurons_[ i ];
+			frame[neuron_names_[i]] = network_.values_[i];
+			const auto& n = network_.neurons_[i];
 			for ( auto lid = n.input_begin_; lid != n.input_end_; ++lid ) {
-				const auto& l = network_.links_[ lid.idx ];
+				const auto& l = network_.links_[lid.idx];
 				auto v = network_.value( l.input_ ) * l.weight_;
-				frame[ neuron_names_[ i ] + '-' + neuron_names_[ l.input_.idx ] ] = v;
+				frame[neuron_names_[i] + '-' + neuron_names_[l.input_.idx]] = v;
 			}
 		}
 	}
@@ -467,31 +467,31 @@ namespace scone
 
 	PropNode SpinalController::GetInfo() const {
 		PropNode pn;
-		pn[ "neurons" ] = network_.neuron_count();
-		pn[ "links" ] = network_.link_count();
+		pn["neurons"] = network_.neuron_count();
+		pn["links"] = network_.link_count();
 		auto& muscles_pn = pn.add_child( "Muscles" );
 		for ( auto& m : muscles_ ) {
 			auto& mpn = muscles_pn.add_child( m.name_ );
-			mpn[ "delay" ] = m.delay_;
-			mpn[ "groups" ] = m.group_indices_;
-			mpn[ "antagonists" ] = m.ant_group_indices_;
+			mpn["delay"] = m.delay_;
+			mpn["groups"] = m.group_indices_;
+			mpn["antagonists"] = m.ant_group_indices_;
 		}
 		auto& mgspn = pn.add_child( "MuscleGroups" );
 		for ( auto& mg : muscle_groups_ ) {
 			auto& mgpn = mgspn.add_child( mg.sided_name() );
-			mgpn[ "muscles" ] = mg.muscle_indices_;
-			mgpn[ "antagonists" ] = mg.ant_group_indices_;
+			mgpn["muscles"] = mg.muscle_indices_;
+			mgpn["antagonists"] = mg.ant_group_indices_;
 		}
 		auto& nspn = pn.add_child( "Neurons" );
 		for ( auto gid = group_id( 0 ); gid.idx < network_.groups_.size(); ++( gid.idx ) ) {
-			auto& gpn = nspn.add_child( neuron_group_names_[ gid.idx ] );
+			auto& gpn = nspn.add_child( neuron_group_names_[gid.idx] );
 			for ( uint32 nidx = 0; nidx < network_.group_size( group_id( gid ) ); ++nidx ) {
 				auto nid = network_.get_id( gid, nidx );
-				auto& n = network_.neurons_[ nid.idx ];
-				auto& npn = gpn.add_child( neuron_names_[ nid.idx ] );
-				npn[ "bias" ] = n.bias_;
+				auto& n = network_.neurons_[nid.idx];
+				auto& npn = gpn.add_child( neuron_names_[nid.idx] );
+				npn["bias"] = n.bias_;
 				for ( auto lit = n.input_begin_.iter( network_.links_ ); lit != n.input_end_.iter( network_.links_ ); ++lit )
-					npn[ neuron_names_[ lit->input_.idx ] ] = lit->weight_;
+					npn[neuron_names_[lit->input_.idx]] = lit->weight_;
 			}
 		}
 		return pn;

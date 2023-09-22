@@ -1,7 +1,7 @@
 /*
 ** SensorNeuron.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,13 +21,13 @@
 namespace scone
 {
 	SensorNeuron::SensorNeuron( const PropNode& pn, Params& par, NeuralController& nc, const String& name, index_t idx, Side side, const String& act_func ) :
-	Neuron( pn, name, idx, side, act_func ),
-	input_sensor_(),
-	use_sample_delay_( false ),
-	sample_delay_frames_( 0 ),
-	sample_delay_window_( 21 ),
-	sensor_gain_( 1.0 ),
-	type_( pn.get< string >( "type" ) )
+		Neuron( pn, name, idx, side, act_func ),
+		input_sensor_(),
+		use_sample_delay_( false ),
+		sample_delay_frames_( 0 ),
+		sample_delay_window_( 21 ),
+		sensor_gain_( 1.0 ),
+		type_( pn.get< string >( "type" ) )
 	{
 		ScopedParamSetPrefixer sp( par, GetParName() );
 		delay_ = pn.get< double >( "delay", nc.GetDelay( GetNameNoSide( name ) ) );
@@ -37,7 +37,7 @@ namespace scone
 
 		auto& model = nc.GetModel();
 
-		switch( xo::hash( type_ ) )
+		switch ( xo::hash( type_ ) )
 		{
 		case "F"_hash:
 			muscle_ = FindByName( model.GetMuscles(), name );

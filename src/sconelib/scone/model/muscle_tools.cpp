@@ -29,8 +29,8 @@ namespace scone
 
 		// DofRangeVec{ range.begin(), range.end() } does not work with MVSC 2017
 		DofRangeVec result;
-		for (auto r : range)
-			result.push_back(r);
+		for ( auto r : range )
+			result.push_back( r );
 
 		return result;
 	}
@@ -53,8 +53,8 @@ namespace scone
 
 		for ( index_t i = 0; i < range.size(); ++i )
 		{
-			dof.SetPos( Degree( range[ i ] ).rad_value() );
-			sto[ i ][ name + ".CE" ] = mus.GetLength() - mus.GetTendonSlackLength();
+			dof.SetPos( Degree( range[i] ).rad_value() );
+			sto[i][name + ".CE"] = mus.GetLength() - mus.GetTendonSlackLength();
 		}
 	}
 

@@ -1,7 +1,7 @@
 /*
 ** GaitMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -98,19 +98,19 @@ namespace scone
 		size_t counted_steps = 0;
 		for ( int step = 0; step < step_count; ++step )
 		{
-			double dt = step > 0 ? steps_[ step ].time - steps_[ step - 1 ].time : steps_[ step ].time;
-			double step_vel = steps_[ step ].length / dt;
+			double dt = step > 0 ? steps_[step].time - steps_[step - 1].time : steps_[step].time;
+			double step_vel = steps_[step].length / dt;
 			double step_penalty = Range< double >( min_velocity, max_velocity ).GetRangeViolation( step_vel );
 			double norm_vel = xo::clamped( 1.0 - ( fabs( step_penalty ) / min_velocity ), -1.0, 1.0 );
 
 			log::TraceF( "%.3f: step=%d vel=%.3f (%.3f/%.3f) penalty=%.3f norm_vel=%.3f %s",
-				steps_[ step ].time, step, step_vel, steps_[ step ].length, dt, step_penalty, norm_vel, step < start_step ? "" : "*" );
+				steps_[step].time, step, step_vel, steps_[step].length, dt, step_penalty, norm_vel, step < start_step ? "" : "*" );
 
 			if ( step >= start_step )
 			{
 				step_measure += dt * norm_vel;
 				step_time += dt;
-				step_length += steps_[ step ].length;
+				step_length += steps_[step].length;
 				step_duration += dt;
 				counted_steps++;
 			}
@@ -145,8 +145,8 @@ namespace scone
 
 	void GaitMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ "step_length" ] = steps_.empty() ? 0 : steps_.back().length;
-		frame[ "step_velocity" ] = steps_.empty() ? 0 : steps_.back().length / GetStepDuration( steps_.size() - 1 );
+		frame["step_length"] = steps_.empty() ? 0 : steps_.back().length;
+		frame["step_velocity"] = steps_.empty() ? 0 : steps_.back().length / GetStepDuration( steps_.size() - 1 );
 	}
 
 	void GaitMeasure::AddStep( const Model& model, double timestamp )
@@ -165,9 +165,9 @@ namespace scone
 		xo::sorted_vector< double > distances;
 		distances.reserve( 3 );
 		distances.insert( xo::dot_product( direction, model.GetComPos() ) );
-		distances.insert( xo::dot_product( direction, m_BaseBodies[ 0 ]->GetComPos() ) );
-		distances.insert( xo::dot_product( direction, m_BaseBodies[ 1 ]->GetComPos() ) );
-		return ( distances[ 0 ] + distances[ 1 ] ) / 2;
+		distances.insert( xo::dot_product( direction, m_BaseBodies[0]->GetComPos() ) );
+		distances.insert( xo::dot_product( direction, m_BaseBodies[1]->GetComPos() ) );
+		return ( distances[0] + distances[1] ) / 2;
 	}
 
 	Real GaitMeasure::GetStepDuration( index_t step ) const
@@ -177,7 +177,7 @@ namespace scone
 		else if ( step == 0 )
 			return steps_.front().time;
 		SCONE_ASSERT( steps_.size() > step );
-		return steps_[ step ].time - steps_[ step - 1 ].time;
+		return steps_[step].time - steps_[step - 1].time;
 	}
 
 	String GaitMeasure::GetClassSignature() const
@@ -199,8 +199,8 @@ namespace scone
 		for ( size_t idx = 0; idx < model.GetLegCount(); ++idx )
 		{
 			bool contact = model.GetLeg( idx ).GetLoad() >= load_threshold;
-			has_new_contact |= contact && !m_PrevContactState[ idx ];
-			m_PrevContactState[ idx ] = contact;
+			has_new_contact |= contact && !m_PrevContactState[idx];
+			m_PrevContactState[idx] = contact;
 		}
 
 		return has_new_contact;

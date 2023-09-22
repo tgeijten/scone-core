@@ -1,7 +1,7 @@
 /*
 ** Neuron.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -169,7 +169,7 @@ namespace scone
 			size_t input_layer_size = nc.GetLayerSize( input_layer );
 			for ( index_t idx = 0; idx < input_layer_size; ++idx )
 			{
-				auto sensor = nc.GetSensorNeurons()[ idx ].get();
+				auto sensor = nc.GetSensorNeurons()[idx].get();
 				if ( xo::pattern_match( sensor->type_, input_type ) )
 				{
 					if ( CheckRelation( connect, sensor, pn ) )
@@ -194,7 +194,8 @@ namespace scone
 									}
 								}
 							}
-						} else
+						}
+						else
 						{
 							// input sensor is no muscle, so we need no breakdown (#todo: a little neater)
 							for ( auto& mp : mpvec )
@@ -208,7 +209,8 @@ namespace scone
 					}
 				}
 			}
-		} else if ( !input_layer.empty() )
+		}
+		else if ( !input_layer.empty() )
 		{
 			// connection from previous interneuron layer
 			size_t input_layer_size = nc.GetLayerSize( input_layer );
@@ -235,7 +237,8 @@ namespace scone
 				default: SCONE_THROW( "Invalid connection type: " + connection_dict( connect ) );
 				}
 			}
-		} else if ( pn.has_key( "offset" ) )
+		}
+		else if ( pn.has_key( "offset" ) )
 		{
 			// this is a channel with only an offset -- used for backwards compatibility
 			for ( auto& mp : mpvec )

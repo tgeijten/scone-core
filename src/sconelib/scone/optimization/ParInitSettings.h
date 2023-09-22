@@ -21,7 +21,7 @@ namespace scone
 	struct ParInitSettings
 	{
 		ParInitSettings() = default;
-		ParInitSettings( const PropNode& pn ) : 
+		ParInitSettings( const PropNode& pn ) :
 			INIT_MEMBER_REQUIRED( pn, file ),
 			INIT_MEMBER( pn, use_std, true ),
 			INIT_MEMBER( pn, std_factor, 1.0 ),

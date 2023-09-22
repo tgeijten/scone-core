@@ -1,7 +1,7 @@
 /*
 ** BodyOpenSim4.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -151,7 +151,7 @@ namespace scone
 		// #todo: cache this baby (after profiling), because sensors evaluate it for each channel
 		auto& mb = m_osBody.getModel().getMultibodySystem().getMatterSubsystem().getMobilizedBody( m_osBody.getMobilizedBodyIndex() );
 		const auto& quat = mb.getBodyRotation( m_Model.GetTkState() ).convertRotationToQuaternion();
-		Quat q1( quat[ 0 ], quat[ 1 ], quat[ 2 ], quat[ 3 ] );
+		Quat q1( quat[0], quat[1], quat[2], quat[3] );
 
 		return q1;
 	}
@@ -269,7 +269,7 @@ namespace scone
 		for ( const auto& mesh : m_osBody.getComponentList<OpenSim::Mesh>() )
 		{
 			auto trans = mesh.getFrame().findTransformInBaseFrame();
-			geoms.emplace_back( 
+			geoms.emplace_back(
 				mesh.get_mesh_file(),
 				from_osim( trans.p() ),
 				from_osim( SimTK::Quaternion( trans.R() ) ),

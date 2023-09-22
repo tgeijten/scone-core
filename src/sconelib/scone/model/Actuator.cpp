@@ -1,7 +1,7 @@
 /*
 ** Actuator.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,7 +21,7 @@ namespace scone
 	void Actuator::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( flags( StoreDataTypes::ActuatorInput ) )
-			frame[ GetName() + ".input" ] = GetInput();
+			frame[GetName() + ".input"] = GetInput();
 	}
 
 	PropNode Actuator::GetInfo() const

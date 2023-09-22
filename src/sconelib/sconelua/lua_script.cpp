@@ -18,11 +18,11 @@ namespace scone
 
 		// set path for lua modules to current script file folder
 		// #todo: add these modules to external resources too!
-		lua_[ "package" ][ "path" ] = ( folder / "?.lua" ).c_str();
+		lua_["package"]["path"] = ( folder / "?.lua" ).c_str();
 
 		// propagate all properties to scone namespace in lua script
 		for ( auto& prop : pn )
-			lua_[ "scone" ][ prop.first ] = prop.second.get<string>();
+			lua_["scone"][prop.first] = prop.second.get<string>();
 
 		// load script
 		auto script = lua_.load_file( script_file_.str() );
@@ -46,14 +46,14 @@ namespace scone
 
 	sol::function lua_script::find_function( const String& name )
 	{
-		sol::function f = lua_[ name ];
+		sol::function f = lua_[name];
 		SCONE_ERROR_IF( !f.valid(), "Error in " + script_file_.filename().str() + ": Could not find function " + xo::quoted( name ) );
 		return f;
 	}
 
 	sol::function lua_script::try_find_function( const String& name )
 	{
-		sol::function f = lua_[ name ];
+		sol::function f = lua_[name];
 		return f;
 	}
 }

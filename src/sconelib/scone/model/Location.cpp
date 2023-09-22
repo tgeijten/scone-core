@@ -1,7 +1,7 @@
 /*
 ** Location.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -15,7 +15,7 @@ namespace scone
 	{
 		auto name_side = GetSideFromName( name );
 		auto name_no_side = GetNameNoSide( name );
-	
+
 		if ( name_side == Side::None ) // no side in name, add location side
 			return name_no_side + GetSideName( side_ );
 		else if ( name_side == Side::Opposite )

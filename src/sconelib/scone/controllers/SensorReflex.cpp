@@ -1,7 +1,7 @@
 /*
 ** SensorReflex.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,7 +16,7 @@ namespace scone
 		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		val_(),
-		sign_( mirror_left && loc.GetSide() == Side::Left ? -1.0 : 1.0 ),
+		sign_( mirror_left&& loc.GetSide() == Side::Left ? -1.0 : 1.0 ),
 		source_( s )
 	{
 		String par_name = GetParName( pn, loc );
@@ -45,6 +45,6 @@ namespace scone
 	void SensorReflex::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		auto name = GetReflexName( actuator_.GetName(), source_.GetName() );
-		frame[ name + ".V" ] = val_;
+		frame[name + ".V"] = val_;
 	}
 }

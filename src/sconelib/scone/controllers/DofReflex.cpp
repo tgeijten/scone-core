@@ -1,7 +1,7 @@
 /*
 ** DofReflex.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -24,7 +24,7 @@ namespace scone
 		u_p(), u_v(),
 		m_SourceDof( *FindByNameTrySided( model.GetDofs(), source, loc.side_ ) ),
 		m_SourceParentDof( !source_parent.empty() ? &*FindByNameTrySided( model.GetDofs(), source_parent, loc.side_ ) : nullptr ),
-		m_Mirror( mirror_left && loc.GetSide() == Side::Left ),
+		m_Mirror( mirror_left&& loc.GetSide() == Side::Left ),
 		m_pTargetPosSource( nullptr ),
 		m_DelayedPos( model.AcquireDelayedSensor< DofPositionSensor >( m_SourceDof, m_SourceParentDof ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< DofVelocitySensor >( m_SourceDof, m_SourceParentDof ) )
@@ -92,7 +92,7 @@ namespace scone
 	void DofReflex::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		auto name = GetReflexName( actuator_.GetName(), source );
-		frame[ name + ".RDP" ] = u_p;
-		frame[ name + ".RDV" ] = u_v;
+		frame[name + ".RDP"] = u_p;
+		frame[name + ".RDV"] = u_v;
 	}
 }

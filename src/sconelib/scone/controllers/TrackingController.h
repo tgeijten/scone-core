@@ -15,9 +15,9 @@
 
 namespace scone
 {
-    /// Controller that produces a feedback control signal for any actuator, based on a pid tracking of a model state.
-    /** Example:
-    \verbatim
+	/// Controller that produces a feedback control signal for any actuator, based on a pid tracking of a model state.
+	/** Example:
+	\verbatim
 		TrackingController{
 			include = "actuator_name"
 			pid = [160000., 0.0, 1600.0]
@@ -27,8 +27,8 @@ namespace scone
 			file = "data/tracking_states.sto"
 			include_states = "state_name"
 		}
-    \endverbatim
-    */
+	\endverbatim
+	*/
 	class TrackingController : public Controller
 	{
 	public:

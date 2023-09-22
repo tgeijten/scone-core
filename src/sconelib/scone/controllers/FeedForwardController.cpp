@@ -1,7 +1,7 @@
 /*
 ** FeedForwardController.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -31,11 +31,11 @@ namespace scone
 		auto& actuators = model.GetActuators();
 		for ( size_t idx = 0; idx < actuators.size(); ++idx )
 		{
-			const auto& name = actuators[ idx ]->GetName();
+			const auto& name = actuators[idx]->GetName();
 			if ( incl( name ) && !excl( name ) )
 			{
 				ActInfo ai;
-				ai.full_name = actuators[ idx ]->GetName();
+				ai.full_name = actuators[idx]->GetName();
 				ai.name = GetNameNoSide( ai.full_name );
 				ai.side = GetSideFromName( ai.full_name );
 				ai.actuator_idx = idx;
@@ -79,14 +79,14 @@ namespace scone
 		// evaluate functions
 		std::vector< double > funcresults( m_Functions.size() );
 		for ( size_t idx = 0; idx < m_Functions.size(); ++idx )
-			funcresults[ idx ] = m_Functions[ idx ]->GetValue( time );
+			funcresults[idx] = m_Functions[idx]->GetValue( time );
 
 		// apply results to all actuators
 		auto& actuators = model.GetActuators();
 		for ( ActInfo& ai : m_ActInfos )
 		{
 			// apply results directly to control value
-			actuators[ ai.actuator_idx ]->AddInput( funcresults[ ai.function_idx ] );
+			actuators[ai.actuator_idx]->AddInput( funcresults[ai.function_idx] );
 		}
 
 		return false;

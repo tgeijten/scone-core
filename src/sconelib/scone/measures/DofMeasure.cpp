@@ -1,7 +1,7 @@
 /*
 ** DofMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -13,10 +13,10 @@
 namespace scone
 {
 	DofMeasure::DofMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc ),
-	dof( *FindByLocation( model.GetDofs(), props.get< String >( "dof" ), loc ) ),
-	parent( nullptr ),
-	range_count( 0 )
+		Measure( props, par, model, loc ),
+		dof( *FindByLocation( model.GetDofs(), props.get< String >( "dof" ), loc ) ),
+		parent( nullptr ),
+		range_count( 0 )
 	{
 		if ( props.try_get< String >( "parent" ) )
 			parent = FindByLocation( model.GetDofs(), props.get< String >( "parent" ), loc );
@@ -41,7 +41,7 @@ namespace scone
 		{
 			penalty += position.GetResult();
 			if ( range_count > 1 )
-				report_.set( name_ + ".position_penalty" , stringf( "%g", position.GetResult() ) );
+				report_.set( name_ + ".position_penalty", stringf( "%g", position.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
@@ -73,7 +73,7 @@ namespace scone
 
 	double DofMeasure::GetCurrentResult( const Model& model )
 	{
-		return position.GetLatest() + velocity.GetLatest() + acceleration.GetLatest() + 
+		return position.GetLatest() + velocity.GetLatest() + acceleration.GetLatest() +
 			limit_torque.GetLatest() + actuator_torque.GetLatest();
 	}
 
@@ -106,14 +106,14 @@ namespace scone
 	void DofMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( !position.IsNull() )
-			frame[ dof.GetName() + ".position_penalty" ] = position.GetLatest();
+			frame[dof.GetName() + ".position_penalty"] = position.GetLatest();
 		if ( !velocity.IsNull() )
-			frame[ dof.GetName() + ".velocity_penalty" ] = velocity.GetLatest();
+			frame[dof.GetName() + ".velocity_penalty"] = velocity.GetLatest();
 		if ( !acceleration.IsNull() )
-			frame[ dof.GetName() + ".acceleration_penalty" ] = acceleration.GetLatest();
+			frame[dof.GetName() + ".acceleration_penalty"] = acceleration.GetLatest();
 		if ( !limit_torque.IsNull() )
-			frame[ dof.GetName() + ".limit_torque_penalty" ] = limit_torque.GetLatest();
+			frame[dof.GetName() + ".limit_torque_penalty"] = limit_torque.GetLatest();
 		if ( !actuator_torque.IsNull() )
-			frame[ dof.GetName() + ".actuator_torque_penalty" ] = actuator_torque.GetLatest();
+			frame[dof.GetName() + ".actuator_torque_penalty"] = actuator_torque.GetLatest();
 	}
 }

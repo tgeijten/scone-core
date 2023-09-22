@@ -1,7 +1,7 @@
 /*
 ** ConditionalMuscleReflex.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,10 +16,10 @@
 namespace scone
 {
 	ConditionalMuscleReflex::ConditionalMuscleReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
-	MuscleReflex( pn, par, model, rc, loc ),
-	dof( *FindByLocation( model.GetDofs(), pn.get< String >( "dof" ), loc ) ),
-	m_pConditionalDofPos( nullptr ),
-	m_pConditionalDofVel( nullptr )
+		MuscleReflex( pn, par, model, rc, loc ),
+		dof( *FindByLocation( model.GetDofs(), pn.get< String >( "dof" ), loc ) ),
+		m_pConditionalDofPos( nullptr ),
+		m_pConditionalDofVel( nullptr )
 	{
 		m_pConditionalDofPos = &model.AcquireDelayedSensor< DofPositionSensor >( dof );
 		m_pConditionalDofVel = &model.AcquireDelayedSensor< DofVelocitySensor >( dof );

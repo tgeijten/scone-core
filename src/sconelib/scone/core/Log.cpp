@@ -1,7 +1,7 @@
 /*
 ** Log.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -41,7 +41,7 @@ namespace scone
 
 		void LogMessageCheck( Level level, const char* message )
 		{
-			xo::log::message( static_cast< xo::log::level >( level ), message );
+			xo::log::message( static_cast<xo::log::level>( level ), message );
 		}
 
 		void SCONE_API LogMessage( Level level, const String& msg )

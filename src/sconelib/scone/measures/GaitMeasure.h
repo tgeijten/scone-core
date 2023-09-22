@@ -1,7 +1,7 @@
 /*
 ** GaitMeasure.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -24,7 +24,7 @@ namespace scone
 	In order to save simulation time and increasing optimization performance, the ''termination_height'' parameter is used to detect if the model has fallen,
 	after which the simulation is terminated early (assuming it will not recover). It does so by comparing the center of mass (COM) height
 	to the initial state, and terminates when ''(COM-height / initial-COM-height) < termination_height''.
-	
+
 	See Tutorials 4 and 5 for examples.
 	*/
 	class GaitMeasure : public Measure
@@ -60,7 +60,7 @@ namespace scone
 		bool use_initial_heading;
 
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
-		void AddStep( const Model &model, double timestamp );
+		void AddStep( const Model& model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
 		virtual void Reset( Model& model ) override;
@@ -83,7 +83,7 @@ namespace scone
 		Real m_PrevGaitDist;
 		PropNode m_Report;
 
-		Real GetGaitDist( const Model &model );
+		Real GetGaitDist( const Model& model );
 		Real GetStepDuration( index_t step ) const;
 		bool HasNewFootContact( const Model& model );
 	};

@@ -1,7 +1,7 @@
 /*
 ** Joint.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -14,8 +14,8 @@
 namespace scone
 {
 	Joint::Joint( Body& body, Body& parent_body ) :
-	m_Body( body ),
-	m_ParentBody( parent_body )
+		m_Body( body ),
+		m_ParentBody( parent_body )
 	{
 		if ( m_Body.GetMass() != 0 )
 			m_Body.m_Joint = this;
@@ -57,17 +57,17 @@ namespace scone
 	{
 		// store joint reaction force magnitude
 		if ( flags( StoreDataTypes::JointReactionForce ) )
-			frame[ GetName() + ".load" ] = GetLoad();
+			frame[GetName() + ".load"] = GetLoad();
 	}
 
 	PropNode Joint::GetInfo() const
 	{
 		PropNode pn;
-		pn[ "name" ] = GetName();
-		pn[ "parent" ] = GetParentBody().GetName();
-		pn[ "child" ] = GetBody().GetName();
-		pn[ "pos_in_parent" ] = GetPosInParent();
-		pn[ "pos_in_child" ] = GetPosInChild();
+		pn["name"] = GetName();
+		pn["parent"] = GetParentBody().GetName();
+		pn["child"] = GetBody().GetName();
+		pn["pos_in_parent"] = GetPosInParent();
+		pn["pos_in_child"] = GetPosInChild();
 		return pn;
 	}
 

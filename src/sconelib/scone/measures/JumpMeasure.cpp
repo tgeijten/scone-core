@@ -1,7 +1,7 @@
 /*
 ** JumpMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -159,7 +159,7 @@ namespace scone
 	void JumpMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( flags.get< StoreDataTypes::ControllerData >() )
-			frame[ "jump_dist" ] = dot_dir( current_pos );
+			frame["jump_dist"] = dot_dir( current_pos );
 	}
 
 	double JumpMeasure::GetHighJumpResult( const Model& model )

@@ -1,7 +1,7 @@
 /*
 ** Event.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,8 +21,8 @@ namespace scone
 		for ( index_t frame_idx = 1; frame_idx < s.GetFrameCount(); ++frame_idx )
 		{
 			TimeInSeconds time = s.GetFrame( frame_idx ).GetTime();
-			Real grf = s.GetFrame( frame_idx )[ right_idx ];
-			Real prev_grf = s.GetFrame( frame_idx - 1 )[ right_idx ];
+			Real grf = s.GetFrame( frame_idx )[right_idx];
+			Real prev_grf = s.GetFrame( frame_idx - 1 )[right_idx];
 
 			if ( grf > 0 && prev_grf == 0 )
 				e.push_back( Event{ time, Event::RightHeelStrike } );
@@ -35,16 +35,16 @@ namespace scone
 		{
 			for ( index_t i = 0; i < e.size() - 2; ++i )
 			{
-				if ( e[ i ].event == Event::RightHeelStrike )
+				if ( e[i].event == Event::RightHeelStrike )
 				{
 					// detect 'bump': short contact followed by long flight
-					if ( e[ i + 1 ].time - e[ i ].time < timespan && e[ i + 2 ].time - e[ i + 1 ].time > timespan )
+					if ( e[i + 1].time - e[i].time < timespan && e[i + 2].time - e[i + 1].time > timespan )
 						e.erase( e.begin() + i, e.begin() + 2 );
 				}
-				else if ( e[ i ].event == Event::RightToeOff )
+				else if ( e[i].event == Event::RightToeOff )
 				{
 					// detect short flight
-					if ( e[ i + 1 ].time - e[ i ].time < timespan )
+					if ( e[i + 1].time - e[i].time < timespan )
 						e.erase( e.begin() + i, e.begin() + 2 );
 				}
 			}

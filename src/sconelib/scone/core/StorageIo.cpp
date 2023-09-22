@@ -1,7 +1,7 @@
 /*
 ** StorageIo.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -59,7 +59,7 @@ namespace scone
 			{
 				str << frame->GetTime();
 				for ( size_t idx = 0; idx < storage.GetChannelCount(); ++idx )
-					str << "\t" << ( *frame )[ idx ];
+					str << "\t" << ( *frame )[idx];
 				str << "\n";
 				prev_time = t;
 			}
@@ -81,7 +81,7 @@ namespace scone
 			{
 				fprintf( f, "%g", frame->GetTime() );
 				for ( size_t idx = 0; idx < storage.GetChannelCount(); ++idx )
-					fprintf( f, "\t%g", ( *frame )[ idx ] );
+					fprintf( f, "\t%g", ( *frame )[idx] );
 				fprintf( f, "\n" );
 				prev_time = t;
 			}
@@ -118,7 +118,7 @@ namespace scone
 
 	void SCONE_API WriteStorageSto( const Storage<Real, TimeInSeconds>& storage, std::FILE* f, const String& name, TimeInSeconds min_interval )
 	{
-		fprintf( f, "%s\nversion=1\nnRows=%zd\nnColumns=%zd\ninDegrees=no\nendheader\n", 
+		fprintf( f, "%s\nversion=1\nnRows=%zd\nnColumns=%zd\ninDegrees=no\nendheader\n",
 			name.c_str(), CountFrames( storage, min_interval ), storage.GetChannelCount() + 1 );
 		WriteStorageTxt( storage, f, "time", min_interval );
 	}
@@ -203,7 +203,7 @@ namespace scone
 			{
 				double value = 0.0;
 				str >> value;
-				frame[ i ] = value;
+				frame[i] = value;
 			}
 		}
 	}

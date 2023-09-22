@@ -1,7 +1,7 @@
 /*
 ** Profiler.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -23,7 +23,7 @@ namespace scone
 	}
 
 	ScopedProfile::ScopedProfile( class Profiler& prof, const String& scope ) :
-	m_Profiler( prof )
+		m_Profiler( prof )
 	{
 		if ( m_Profiler.IsActive() )
 			m_StartTime = m_Profiler.StartMeasure( scope );
@@ -36,9 +36,9 @@ namespace scone
 	}
 
 	Profiler::Profiler() :
-	m_Root( nullptr ),
-	m_Current( &m_Root ),
-	m_bActive( true )
+		m_Root( nullptr ),
+		m_Current( &m_Root ),
+		m_bActive( true )
 	{
 
 	}
@@ -89,10 +89,10 @@ namespace scone
 	}
 
 	Profiler::Item::Item( Item* p ) :
-	parent( p ),
-	num_samples( 0 ),
-	inclusive_time( 0 ),
-	peak_time( 0 )
+		parent( p ),
+		num_samples( 0 ),
+		inclusive_time( 0 ),
+		peak_time( 0 )
 	{
 	}
 
@@ -109,7 +109,7 @@ namespace scone
 		if ( it == children.end() )
 		{
 			// create new item
-			children[ scope ] = std::unique_ptr< Item >( new Item( this ) );
+			children[scope] = std::unique_ptr< Item >( new Item( this ) );
 			it = children.find( scope );
 		}
 		return *it->second;
@@ -118,7 +118,7 @@ namespace scone
 	HighResolutionTime Profiler::Item::GetReport( PropNode& pn )
 	{
 		Item* topnode = this;
-		for (; topnode->parent && topnode->parent->parent; topnode = topnode->parent );
+		for ( ; topnode->parent && topnode->parent->parent; topnode = topnode->parent );
 		HighResolutionTime topnode_time = topnode->inclusive_time;
 		HighResolutionTime children_time = 0;
 

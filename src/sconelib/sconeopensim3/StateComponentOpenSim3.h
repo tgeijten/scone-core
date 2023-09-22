@@ -1,7 +1,7 @@
 /*
 ** StateComponentOpenSim3.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,17 +21,17 @@ namespace OpenSim
 	class StateComponentOpenSim3 : public OpenSim::ModelComponent
 	{
 	private:
-		OpenSim_DECLARE_CONCRETE_OBJECT(StateComponentOpenSim3, ModelComponent);
+		OpenSim_DECLARE_CONCRETE_OBJECT( StateComponentOpenSim3, ModelComponent );
 		// A class that introduces event detection and handling for
 		// hybrid systems.
 		class EventHandler : public SimTK::TriggeredEventHandler
 		{
 		public:
-			EventHandler(StateComponentOpenSim3*, scone::StateComponent*);
-			SimTK::Real getValue(const SimTK::State& s) const override;
-			void handleEvent(SimTK::State& s,
-							 SimTK::Real accuracy,
-							 bool& shouldTerminate) const override;
+			EventHandler( StateComponentOpenSim3*, scone::StateComponent* );
+			SimTK::Real getValue( const SimTK::State& s ) const override;
+			void handleEvent( SimTK::State& s,
+				SimTK::Real accuracy,
+				bool& shouldTerminate ) const override;
 		private:
 			SimTK::ReferencePtr<StateComponentOpenSim3> m_modelComponent;
 			SimTK::ReferencePtr<scone::StateComponent> m_stateComponent;

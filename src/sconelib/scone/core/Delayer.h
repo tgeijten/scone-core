@@ -1,7 +1,7 @@
 /*
 ** Delayer.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -37,7 +37,7 @@ namespace scone
 
 			// remove all items from the front until front() + 1 < delayed time
 			double delayed_time = current_time - m_Delay;
-			while ( m_Data.size() > 2 && m_Data[ 1 ].first <= delayed_time )
+			while ( m_Data.size() > 2 && m_Data[1].first <= delayed_time )
 				m_Data.pop_front();
 		}
 
@@ -63,13 +63,13 @@ namespace scone
 			--it0;
 
 			// #todo: make this an ASSERT once we know it'll never happen
-			if ( ! ( it0->first <= delayed_time && delayed_time < it1->first ) )
+			if ( !( it0->first <= delayed_time && delayed_time < it1->first ) )
 				log::ErrorF( "Delayed<>::GetDelayed(): Failed condition: t0=%.6f <= delayed_time=%.6f < t1=%.6f", it0->first, delayed_time, it1->first );
 
 			double w = ( delayed_time - it0->first ) / ( it1->first - it0->first );
 			return GetWeightedAverage( w, it1->second, it0->second );
 		}
-			
+
 	private:
 		double m_Delay;
 		std::deque< std::pair< double, T > > m_Data;

@@ -1,7 +1,7 @@
 /*
 ** Measure.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -48,7 +48,7 @@ namespace scone
 		virtual void Reset( Model& model ) override;
 
 		const PropNode& GetReport() const { return report_; }
-	
+
 		virtual const String& GetName() const override;
 		Real GetWeight() { return weight; }
 		Real GetThreshold() { return threshold; }

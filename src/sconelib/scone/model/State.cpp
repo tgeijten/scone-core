@@ -1,7 +1,7 @@
 /*
 ** State.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -31,13 +31,13 @@ namespace scone
 	{
 		auto idx = FindIndex( name );
 		SCONE_ERROR_IF( idx == NoIndex, "Could not find state: " + name );
-		values_[ idx ] = value;
+		values_[idx] = value;
 	}
 
 	void State::TrySetValue( const String& name, Real value )
 	{
 		if ( auto idx = FindIndex( name ); idx != NoIndex )
-			values_[ idx ] = value;
+			values_[idx] = value;
 	}
 
 	void State::SetValues( const std::vector<Real>& v )
@@ -57,7 +57,7 @@ namespace scone
 	index_t State::FindIndexByPattern( const String& pattern, index_t idx ) const
 	{
 		for ( ; idx < names_.size(); ++idx )
-			if ( xo::pattern_match( names_[ idx ], pattern ) )
+			if ( xo::pattern_match( names_[idx], pattern ) )
 				return idx;
 		return NoIndex;
 	}

@@ -1,7 +1,7 @@
 /*
 ** Bezier.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights
 *reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
@@ -32,7 +32,7 @@ namespace scone
 
 	Bezier::Bezier( const std::vector< Real >& controlPoints )
 		: control_points( static_cast<int>( controlPoints.size() ) ),
-		  m_ControlPoints( controlPoints )
+		m_ControlPoints( controlPoints )
 	{
 		SCONE_CHECK_RANGE( control_points, 2, 99 );
 	}
@@ -45,15 +45,15 @@ namespace scone
 
 		// try initializing from distribution: control_point_y = 0.3~0.3<0,1>
 		if ( const auto* control_point_y =
-				 props.try_get_child( "control_point_y" ) )
+			props.try_get_child( "control_point_y" ) )
 			for ( size_t i = 0; i < control_points; i++ )
-				m_ControlPoints[ i ] =
-					par.get( stringf( "Y%d", i ), *control_point_y );
+				m_ControlPoints[i] =
+				par.get( stringf( "Y%d", i ), *control_point_y );
 		// else initialize control points if they are defined
 		else
 			for ( size_t i = 0; i < control_points; i++ )
-				m_ControlPoints[ i ] = par.try_get( stringf( "Y%d", i ), props,
-													stringf( "Y%d", i ), 0.0 );
+				m_ControlPoints[i] = par.try_get( stringf( "Y%d", i ), props,
+					stringf( "Y%d", i ), 0.0 );
 	}
 
 	Bezier::~Bezier() {}
@@ -61,12 +61,12 @@ namespace scone
 	Real Bezier::GetValue( Real x )
 	{
 		SCONE_ASSERT_MSG( x >= 0 && x <= 1,
-						  "Bezier curve expects 0 <= x <= 1" );
+			"Bezier curve expects 0 <= x <= 1" );
 
 		Real B = 0;
 		int n = int( m_ControlPoints.size() ) - 1; // n: degree
 		for ( int i = 0; i <= n; i++ )
-			B += bernstein( n, i, x ) * m_ControlPoints[ i ];
+			B += bernstein( n, i, x ) * m_ControlPoints[i];
 
 		return B;
 	}
@@ -74,13 +74,13 @@ namespace scone
 	Real Bezier::GetDerivativeValue( Real x )
 	{
 		SCONE_ASSERT_MSG( x >= 0 && x <= 1,
-						  "Bezier curve expects 0 <= x <= 1" );
+			"Bezier curve expects 0 <= x <= 1" );
 
 		Real B = 0;
 		int n = int( m_ControlPoints.size() ) - 1; // n: degree
 		for ( int i = 0; i <= n - 1; i++ )
 			B += bernstein( n - 1, i, x ) *
-				 ( m_ControlPoints[ i + 1 ] - m_ControlPoints[ i ] );
+			( m_ControlPoints[i + 1] - m_ControlPoints[i] );
 
 		return n * B;
 	}

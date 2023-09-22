@@ -1,7 +1,7 @@
 /*
 ** MimicMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -17,7 +17,7 @@
 
 namespace scone
 {
-	Storage<> read_storage( const xo::path& f ) { Storage<> sto; ReadStorage( sto, f ); return sto; } 
+	Storage<> read_storage( const xo::path& f ) { Storage<> sto; ReadStorage( sto, f ); return sto; }
 	static xo::memoize_thread_safe< Storage<>( const xo::path& ) > g_storage_cache( read_storage );
 
 	MimicMeasure::MimicMeasure( const PropNode& pn, Params& par, const Model& model, const Location& loc ) :
@@ -77,8 +77,8 @@ namespace scone
 		for ( auto& m : state_storage_map_ )
 		{
 			auto storage_value = frame.value( m.storage_idx_ );
-			auto e = m.weight_ * xo::squared( state[ m.state_idx_ ] - storage_value );
-			channel_errors_[ error_idx++ ].second = e;
+			auto e = m.weight_ * xo::squared( state[m.state_idx_] - storage_value );
+			channel_errors_[error_idx++].second = e;
 			error += e;
 		}
 
@@ -117,11 +117,11 @@ namespace scone
 
 	void MimicMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ "MimicMeasure.penalty" ] = mimic_result_.GetLatest();
+		frame["MimicMeasure.penalty"] = mimic_result_.GetLatest();
 		if ( flags.get<StoreDataTypes::DebugData>() )
 		{
 			for ( auto& c : channel_errors_ )
-				frame[ c.first + ".mimic_penalty" ] = c.second;
+				frame[c.first + ".mimic_penalty"] = c.second;
 		}
 	}
 

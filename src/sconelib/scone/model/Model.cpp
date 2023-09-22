@@ -1,7 +1,7 @@
 /*
 ** Model.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -225,7 +225,7 @@ namespace scone
 		if ( flags( StoreDataTypes::State ) )
 		{
 			for ( size_t i = 0; i < GetState().GetSize(); ++i )
-				frame[ GetState().GetName( i ) ] = GetState().GetValue( i );
+				frame[GetState().GetName( i )] = GetState().GetValue( i );
 		}
 
 		// store simulation statistics
@@ -233,9 +233,9 @@ namespace scone
 		{
 			auto dt = GetTime() - m_PrevStoreDataTime;
 			auto step_count = GetIntegrationStep() - m_PrevStoreDataStep;
-			frame[ "simulation_frequency" ] = dt > 0 ? step_count / dt : 0.0;
-			frame[ "simulation_step_size" ] = step_count > 0 ? dt / step_count : 0.0;
-			frame[ "simulation_step_count" ] = step_count;
+			frame["simulation_frequency"] = dt > 0 ? step_count / dt : 0.0;
+			frame["simulation_step_size"] = step_count > 0 ? dt / step_count : 0.0;
+			frame["simulation_step_count"] = step_count;
 		}
 
 		// store actuator data
@@ -256,11 +256,11 @@ namespace scone
 			for ( auto& d : GetDofs() )
 			{
 				auto mom = d->GetMuscleMoment() + d->GetLimitMoment();
-				frame[ d->GetName() + ".moment" ] = mom;
-				frame[ d->GetName() + ".moment_norm" ] = mom / GetMass();
-				frame[ d->GetName() + ".power" ] = mom * d->GetVel();
-				frame[ d->GetName() + ".power_norm" ] = mom * d->GetVel() / GetMass();
-				frame[ d->GetName() + ".acceleration" ] = d->GetAcc();
+				frame[d->GetName() + ".moment"] = mom;
+				frame[d->GetName() + ".moment_norm"] = mom / GetMass();
+				frame[d->GetName() + ".power"] = mom * d->GetVel();
+				frame[d->GetName() + ".power_norm"] = mom * d->GetVel() / GetMass();
+				frame[d->GetName() + ".acceleration"] = d->GetAcc();
 			}
 		}
 
@@ -276,13 +276,13 @@ namespace scone
 			auto cp = GetTotalContactPower();
 			auto gp = xo::dot_product( GetComVel(), GetMass() * GetGravity() );
 			auto external_power = jp + cp + mp + gp;
-			frame[ "total_body.power" ] = bp;
-			frame[ "total_muscle.power" ] = mp;
-			frame[ "total_joint_limit.power" ] = jp;
-			frame[ "total_contact.power" ] = cp;
-			frame[ "total_gravity.power" ] = gp;
-			frame[ "total_external.power" ] = external_power;
-			frame[ "total.power" ] = bp - external_power;
+			frame["total_body.power"] = bp;
+			frame["total_muscle.power"] = mp;
+			frame["total_joint_limit.power"] = jp;
+			frame["total_contact.power"] = cp;
+			frame["total_gravity.power"] = gp;
+			frame["total_external.power"] = external_power;
+			frame["total.power"] = bp - external_power;
 		}
 
 		// store controller / measure data
@@ -296,7 +296,7 @@ namespace scone
 		{
 			const auto& sf = m_SensorDelayStorage.Back();
 			for ( index_t i = 0; i < m_SensorDelayStorage.GetChannelCount(); ++i )
-				frame[ m_SensorDelayStorage.GetLabels()[ i ] ] = sf[ i ];
+				frame[m_SensorDelayStorage.GetLabels()[i]] = sf[i];
 		}
 
 		// store COP data
@@ -304,12 +304,12 @@ namespace scone
 		{
 			auto com = GetComPos();
 			auto com_u = GetComVel();
-			frame[ "com_x" ] = com.x;
-			frame[ "com_y" ] = com.y;
-			frame[ "com_z" ] = com.z;
-			frame[ "com_x_u" ] = com_u.x;
-			frame[ "com_y_u" ] = com_u.y;
-			frame[ "com_z_u" ] = com_u.z;
+			frame["com_x"] = com.x;
+			frame["com_y"] = com.y;
+			frame["com_z"] = com.z;
+			frame["com_x_u"] = com_u.x;
+			frame["com_y_u"] = com_u.y;
+			frame["com_z_u"] = com_u.z;
 
 			const auto mom = GetLinAngMom();
 			frame.SetVec3( "lin_mom", mom.first );
@@ -325,18 +325,18 @@ namespace scone
 				leg.GetContactForceMomentCop( force, moment, cop );
 				Vec3 grf = force / GetBW();
 
-				frame[ leg.GetName() + ".grf_norm_x" ] = grf.x;
-				frame[ leg.GetName() + ".grf_norm_y" ] = grf.y;
-				frame[ leg.GetName() + ".grf_norm_z" ] = grf.z;
-				frame[ leg.GetName() + ".grf_x" ] = force.x;
-				frame[ leg.GetName() + ".grf_y" ] = force.y;
-				frame[ leg.GetName() + ".grf_z" ] = force.z;
-				frame[ leg.GetName() + ".grm_x" ] = moment.x;
-				frame[ leg.GetName() + ".grm_y" ] = moment.y;
-				frame[ leg.GetName() + ".grm_z" ] = moment.z;
-				frame[ leg.GetName() + ".cop_x" ] = cop.x;
-				frame[ leg.GetName() + ".cop_y" ] = cop.y;
-				frame[ leg.GetName() + ".cop_z" ] = cop.z;
+				frame[leg.GetName() + ".grf_norm_x"] = grf.x;
+				frame[leg.GetName() + ".grf_norm_y"] = grf.y;
+				frame[leg.GetName() + ".grf_norm_z"] = grf.z;
+				frame[leg.GetName() + ".grf_x"] = force.x;
+				frame[leg.GetName() + ".grf_y"] = force.y;
+				frame[leg.GetName() + ".grf_z"] = force.z;
+				frame[leg.GetName() + ".grm_x"] = moment.x;
+				frame[leg.GetName() + ".grm_y"] = moment.y;
+				frame[leg.GetName() + ".grm_z"] = moment.z;
+				frame[leg.GetName() + ".cop_x"] = cop.x;
+				frame[leg.GetName() + ".cop_y"] = cop.y;
+				frame[leg.GetName() + ".cop_z"] = cop.z;
 			}
 		}
 
@@ -490,10 +490,10 @@ namespace scone
 	PropNode Model::GetSimulationReport() const
 	{
 		PropNode pn;
-		auto& perf_pn = pn[ "Simulation Performance" ];
-		perf_pn[ "simulation_frequency" ] = ( GetIntegrationStep() / GetTime() );
+		auto& perf_pn = pn["Simulation Performance"];
+		perf_pn["simulation_frequency"] = ( GetIntegrationStep() / GetTime() );
 		if ( auto sd = GetSimulationDuration(); sd > 0 )
-			perf_pn[ "simulation_duration" ] = xo::stringf( "%.3fs (%.4gx real-time)", sd, GetTime() / sd );
+			perf_pn["simulation_duration"] = xo::stringf( "%.3fs (%.4gx real-time)", sd, GetTime() / sd );
 		return pn;
 	}
 
@@ -518,7 +518,7 @@ namespace scone
 			sto.add_channel( "time", GetData().GetTimeData() );
 			xo::pattern_matcher match( GetSconeSetting<string>( "results.extract_channel_names" ) );
 			for ( index_t idx = 0; idx < GetData().GetChannelCount(); ++idx )
-				if ( const auto& label = GetData().GetLabels()[ idx ]; match( label ) )
+				if ( const auto& label = GetData().GetLabels()[idx]; match( label ) )
 					sto.add_channel( label, GetData().GetChannelData( idx ) );
 			std::ofstream( file.str() + ".channels.txt" ) << sto;
 		}
@@ -567,29 +567,29 @@ namespace scone
 		PropNode pn;
 
 		auto& model_pn = pn.add_child( "Model" );
-		model_pn[ "name" ] = GetName();
-		model_pn[ "mass" ] = GetMass();
-		model_pn[ "gravity" ] = GetGravity();
-		model_pn[ "dof count" ] = GetDofs().size();
-		model_pn[ "muscle count" ] = GetMuscles().size();
-		model_pn[ "body count" ] = GetBodies().size();
-		model_pn[ "leg count" ] = GetLegCount();
+		model_pn["name"] = GetName();
+		model_pn["mass"] = GetMass();
+		model_pn["gravity"] = GetGravity();
+		model_pn["dof count"] = GetDofs().size();
+		model_pn["muscle count"] = GetMuscles().size();
+		model_pn["body count"] = GetBodies().size();
+		model_pn["leg count"] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
 			auto& asym_pn = model_pn.add_child( "asymmetries" );
 			asym_pn.merge( objects );
 		}
 
 		for ( const auto& item : GetBodies() )
-			pn[ "Bodies" ].add_child( item->GetName(), item->GetInfo() );
+			pn["Bodies"].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetJoints() )
-			pn[ "Joints" ].add_child( item->GetName(), item->GetInfo() );
+			pn["Joints"].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetActuators() )
-			pn[ "Actuators" ].add_child( item->GetName(), item->GetInfo() );
+			pn["Actuators"].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetDofs() )
-			pn[ "Coordinates" ].add_child( item->GetName(), item->GetInfo() );
+			pn["Coordinates"].add_child( item->GetName(), item->GetInfo() );
 
 		if ( auto* c = GetController() )
 			if ( auto cpn = c->GetInfo(); !cpn.empty() )

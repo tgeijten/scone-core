@@ -1,7 +1,7 @@
 /*
 ** NoiseController.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -15,9 +15,9 @@
 namespace scone
 {
 	NoiseController::NoiseController( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-	Controller( props, par, model, loc ),
-	random_seed( props.get< unsigned int >( "random_seed", 123 ) ),
-	rng_( random_seed )
+		Controller( props, par, model, loc ),
+		random_seed( props.get< unsigned int >( "random_seed", 123 ) ),
+		rng_( random_seed )
 	{
 		INIT_PROP( props, base_noise, 0 );
 		INIT_PROP( props, proportional_noise, 0 );

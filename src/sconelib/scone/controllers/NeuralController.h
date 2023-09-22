@@ -1,7 +1,7 @@
 /*
 ** NeuralController.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -38,8 +38,8 @@ namespace scone
 		NeuralController( const PropNode& props, Params& par, Model& model, const Location& target_area );
 		virtual ~NeuralController() {}
 
-		size_t GetLayerSize( const string& layer ) const { return ( layer == "0" ) ? m_SensorNeurons.size() : m_InterNeurons[ layer ].size(); }
-		Neuron* GetNeuron( const string& layer, index_t idx ) { return ( layer == "0" ) ? dynamic_cast< Neuron* >( m_SensorNeurons[ idx ].get() ) : dynamic_cast< Neuron* >( m_InterNeurons[ layer ][ idx ].get() ); }
+		size_t GetLayerSize( const string& layer ) const { return ( layer == "0" ) ? m_SensorNeurons.size() : m_InterNeurons[layer].size(); }
+		Neuron* GetNeuron( const string& layer, index_t idx ) { return ( layer == "0" ) ? dynamic_cast<Neuron*>( m_SensorNeurons[idx].get() ) : dynamic_cast<Neuron*>( m_InterNeurons[layer][idx].get() ); }
 
 		const Model& GetModel() const { return model_; }
 		Model& GetModel() { return model_; }

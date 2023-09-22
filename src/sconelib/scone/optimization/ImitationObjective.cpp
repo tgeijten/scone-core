@@ -1,7 +1,7 @@
 /*
 ** ImitationObjective.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -26,7 +26,7 @@
 namespace scone
 {
 	ImitationObjective::ImitationObjective( const PropNode& pn, const path& find_file_folder ) :
-	ModelObjective( pn, find_file_folder )
+		ModelObjective( pn, find_file_folder )
 	{
 		file = FindFile( pn.get<path>( "file" ) );
 		INIT_PROP( pn, frame_delta, 1 );
@@ -36,13 +36,13 @@ namespace scone
 
 		// prepare data
 		ReadStorageSto( m_Storage, file );
-		model_->AddExternalResource(file);
+		model_->AddExternalResource( file );
 
 		// make sure data and model are compatible
 		auto state = model_->GetState();
 		SCONE_THROW_IF( state.GetSize() > m_Storage.GetChannelCount(), "File and model are incompatible for ImitationObjective" );
 		for ( index_t i = 0; i < state.GetSize(); ++i )
-			SCONE_THROW_IF( state.GetName( i ) != m_Storage.GetLabels()[ i ], "File and model are incompatible for ImitationObjective" );
+			SCONE_THROW_IF( state.GetName( i ) != m_Storage.GetLabels()[i], "File and model are incompatible for ImitationObjective" );
 
 		// find excitation channels
 		m_ExcitationChannels.reserve( model_->GetMuscles().size() );
@@ -57,7 +57,7 @@ namespace scone
 		m_SensorChannels.reserve( ds.GetChannelCount() );
 		for ( index_t ds_idx = 0; ds_idx < ds.GetChannelCount(); ++ds_idx )
 		{
-			auto& sensor_name = ds.GetLabels()[ ds_idx ];
+			auto& sensor_name = ds.GetLabels()[ds_idx];
 			m_SensorChannels.push_back( m_Storage.TryGetChannelIndex( sensor_name ) );
 			SCONE_THROW_IF( m_SensorChannels.back() == NoIndex, "Could not find sensor for " + sensor_name );
 		}
@@ -74,8 +74,8 @@ namespace scone
 
 		if ( !model.GetUserData().has_key( "IM_fra" ) )
 		{
-			model.GetUserData()[ "IM_fra" ] = 0;
-			model.GetUserData()[ "IM_res" ] = 0.0;
+			model.GetUserData()["IM_fra"] = 0;
+			model.GetUserData()["IM_res"] = 0.0;
 
 			// add sensor data
 			auto& ds = model.GetSensorDelayStorage();
@@ -84,7 +84,7 @@ namespace scone
 				auto sf = m_Storage.GetFrame( fidx );
 				ds.AddFrame( sf.GetTime() );
 				for ( index_t cidx = 0; cidx < m_SensorChannels.size(); ++cidx )
-					ds.Back()[ cidx ] = sf[ m_SensorChannels[ cidx ] ];
+					ds.Back()[cidx] = sf[m_SensorChannels[cidx]];
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace scone
 				// set state and compare output
 				model.SetStateValues( f.GetValues(), f.GetTime() );
 				for ( index_t cidx = 0; cidx < m_ExcitationChannels.size(); ++cidx )
-					result += abs( model.GetMuscles()[ cidx ]->GetExcitation() - f[ m_ExcitationChannels[ cidx ] ] );
+					result += abs( model.GetMuscles()[cidx]->GetExcitation() - f[m_ExcitationChannels[cidx]] );
 				++frame_count;
 			}
 		}
@@ -110,8 +110,8 @@ namespace scone
 		{
 			result = 100 * result / m_ExcitationChannels.size();
 			//log::trace( "t=", t, " frames=", frame_count, " start=", frame_start, " result=", result );
-			model.GetUserData()[ "IM_res" ] = result + model.GetUserData().get< double >( "IM_res" );
-			model.GetUserData()[ "IM_fra" ] = frame_start + frame_count;
+			model.GetUserData()["IM_res"] = result + model.GetUserData().get< double >( "IM_res" );
+			model.GetUserData()["IM_fra"] = frame_start + frame_count;
 		}
 	}
 

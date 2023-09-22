@@ -1,7 +1,7 @@
 /*
 ** types.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -20,7 +20,7 @@ namespace scone
 	SCONE_DECLARE_CLASS_AND_PTR( ImitationObjective );
 	SCONE_DECLARE_CLASS_AND_PTR( ModelObjective );
 	SCONE_DECLARE_CLASS_AND_PTR( FeedForwardController );
-	SCONE_DECLARE_CLASS_AND_PTR( TrackingController);
+	SCONE_DECLARE_CLASS_AND_PTR( TrackingController );
 	SCONE_DECLARE_CLASS_AND_PTR( ReflexController );
 	SCONE_DECLARE_CLASS_AND_PTR( MuscleReflex );
 	SCONE_DECLARE_CLASS_AND_PTR( Reflex );

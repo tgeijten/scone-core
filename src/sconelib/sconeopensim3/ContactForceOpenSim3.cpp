@@ -74,7 +74,7 @@ namespace scone
 		auto labels = m_osForce.getRecordLabels();
 		m_Labels.reserve( labels.size() );
 		for ( int i = 0; i < labels.size(); ++i )
-			m_Labels.push_back( labels[ i ] );
+			m_Labels.push_back( labels[i] );
 		m_Values.resize( labels.size() );
 
 		// attach contact force to bodies
@@ -140,11 +140,11 @@ namespace scone
 		{
 			OpenSim::Array<double> forces = m_osForce.getRecordValues( tkState );
 			for ( int i = 0; i < forces.size(); ++i )
-				m_Values[ i ] = forces[ i ];
+				m_Values[i] = forces[i];
 			m_LastNumDynamicsRealizations = num_dyn;
 
-			m_Force.set( -m_Values[ 0 ], -m_Values[ 1 ], -m_Values[ 2 ] );
-			m_Moment.set( -m_Values[ 3 ], -m_Values[ 4 ], -m_Values[ 5 ] );
+			m_Force.set( -m_Values[0], -m_Values[1], -m_Values[2] );
+			m_Moment.set( -m_Values[3], -m_Values[4], -m_Values[5] );
 			m_Point = GetPlaneCop( m_PlaneNormal, m_PlaneLocation, m_Force, m_Moment );
 		}
 	}

@@ -1,7 +1,7 @@
 /*
 ** ModelOpenSim3.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -56,7 +56,7 @@ namespace scone
 	{
 	public:
 		ControllerDispatcher( ModelOpenSim3& model ) : m_Model( model ) { };
-		virtual void computeControls( const SimTK::State& s, SimTK::Vector &controls ) const override;
+		virtual void computeControls( const SimTK::State& s, SimTK::Vector& controls ) const override;
 		virtual ControllerDispatcher* clone() const override { return new ControllerDispatcher( *this ); }
 		virtual const std::string& getConcreteClassName() const override { SCONE_THROW_NOT_IMPLEMENTED; }
 
@@ -167,12 +167,12 @@ namespace scone
 		{
 			// Find StateComponents inside of the model definition and add them
 			// into OpenSim's subsystem.
-			for (auto& cpn : props) {
+			for ( auto& cpn : props ) {
 				if ( auto fp = MakeFactoryProps( GetStateComponentFactory(), cpn, "StateComponent" ) ) {
 					auto stateComponent = CreateStateComponent( fp, par, *this );
 					// modelComponent takes ownership of the stateComponent
-					auto modelComponent = new OpenSim::StateComponentOpenSim3(stateComponent.release());
-					m_pOsimModel->addComponent(modelComponent);
+					auto modelComponent = new OpenSim::StateComponentOpenSim3( stateComponent.release() );
+					m_pOsimModel->addComponent( modelComponent );
 				}
 			}
 		}
@@ -242,7 +242,7 @@ namespace scone
 					if ( inc_pat( state_name ) && !ex_pat( state_name ) )
 					{
 						auto par_name = initial_state_offset_symmetric ? GetNameNoSide( state_name ) : state_name;
-						m_State[ i ] += par.get( par_name + ".offset", *initial_state_offset );
+						m_State[i] += par.get( par_name + ".offset", *initial_state_offset );
 					}
 				}
 			}
@@ -328,10 +328,10 @@ namespace scone
 			auto ea = xo::vec3radd( from_osim( cg_osim->getOrientation() ) );
 			auto ori = xo::quat_from_euler( ea, xo::euler_order::xyz );
 
-			if ( auto cs = dynamic_cast< OpenSim::ContactSphere* >( cg_osim ) )
+			if ( auto cs = dynamic_cast<OpenSim::ContactSphere*>( cg_osim ) )
 				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
 					name, bod, xo::sphere( float( cs->getRadius() ) ), loc, ori ) );
-			else if ( auto cp = dynamic_cast< OpenSim::ContactHalfSpace* >( cg_osim ) )
+			else if ( auto cp = dynamic_cast<OpenSim::ContactHalfSpace*>( cg_osim ) )
 				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
 					name, bod, xo::plane( xo::vec3f::neg_unit_x() ), loc, ori ) );
 			else if ( auto cm = dynamic_cast<OpenSim::ContactMesh*>( cg_osim ) )
@@ -355,7 +355,7 @@ namespace scone
 			{
 				AddMuscle( std::make_unique<MuscleOpenSim3>( *this, *osMus ), par );
 			}
-			else if ( auto* osCo = dynamic_cast< OpenSim::CoordinateActuator* >( &osAct ) )
+			else if ( auto* osCo = dynamic_cast<OpenSim::CoordinateActuator*>( &osAct ) )
 			{
 				// add corresponding dof to list of actuators
 				auto& dof = dynamic_cast<DofOpenSim3&>( *FindByName( m_Dofs, osCo->getCoordinate()->getName() ) );
@@ -452,7 +452,7 @@ namespace scone
 					os_prop.updValue<double>() = scenario_value;
 				else SCONE_ERROR( "Unsupported qualifier '" + prop_qualifier + "' for " + os_object.getName() + "." + prop_key + "" );
 			}
-			else if ( auto * vec3_prop = dynamic_cast<OpenSim::Property<SimTK::Vec3>*>( &os_prop ) )
+			else if ( auto* vec3_prop = dynamic_cast<OpenSim::Property<SimTK::Vec3>*>( &os_prop ) )
 			{
 				auto scenario_value = spot::try_get_par( par, prop_key, props, Vec3::zero() );
 				if ( prop_qualifier == "offset" )
@@ -461,7 +461,7 @@ namespace scone
 					vec3_prop->updValue() = to_osim( scenario_value );
 				else SCONE_ERROR( "Unsupported qualifier " + prop_qualifier + " for " + os_object.getName() + "." + prop_key + "" );
 			}
-			else if (os_prop.getTypeName() == "bool")
+			else if ( os_prop.getTypeName() == "bool" )
 			{
 				os_prop.updValue<bool>() = prop_val.get<bool>();
 			}
@@ -476,7 +476,7 @@ namespace scone
 
 	void ModelOpenSim3::SetProperties( const PropNode& properties_pn, Params& par )
 	{
-		for ( const auto& [ object_name, object_props ] : properties_pn )
+		for ( const auto& [object_name, object_props] : properties_pn )
 		{
 			ScopedParamSetPrefixer prefix( par, object_name + '.' );
 			auto& os_object = FindOpenSimObject( object_name );
@@ -512,7 +512,7 @@ namespace scone
 	std::pair<Vec3, Vec3> ModelOpenSim3::GetLinAngMom() const
 	{
 		auto cm = m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() );
-		return std::pair<Vec3, Vec3>( from_osim( cm[ 1 ] ), from_osim( cm[ 0 ] ) );
+		return std::pair<Vec3, Vec3>( from_osim( cm[1] ), from_osim( cm[0] ) );
 	}
 
 	Vec3 ModelOpenSim3::GetGravity() const
@@ -520,7 +520,7 @@ namespace scone
 		return from_osim( m_pOsimModel->getGravity() );
 	}
 
-	void ControllerDispatcher::computeControls( const SimTK::State& s, SimTK::Vector &controls ) const
+	void ControllerDispatcher::computeControls( const SimTK::State& s, SimTK::Vector& controls ) const
 	{
 		// see 'catch' statement below for explanation try {} catch {} is needed
 		try
@@ -558,7 +558,7 @@ namespace scone
 				for ( auto* act : m_Model.GetActuators() )
 				{
 					// OpenSim: addInControls is rather inefficient, that's why we don't use it
-					controls[ idx++ ] += act->GetClampedInput();
+					controls[idx++] += act->GetClampedInput();
 				}
 			}
 		}
@@ -689,7 +689,7 @@ namespace scone
 	Real ModelOpenSim3::GetTotalEnergyConsumption() const
 	{
 		if ( m_pProbe )
-			return m_pProbe->getProbeOutputs( GetTkState() )[ 0 ];
+			return m_pProbe->getProbeOutputs( GetTkState() )[0];
 		else return 0.0;
 	}
 
@@ -711,7 +711,7 @@ namespace scone
 
 	void ModelOpenSim3::ReadState( const path& file )
 	{
-		if ( file.extension() == ".sto")
+		if ( file.extension() == ".sto" )
 		{
 			// create a copy of the storage
 			auto store = g_StorageCache( file.str() );
@@ -721,17 +721,17 @@ namespace scone
 			// for all storage channels, check if there's a matching state
 			for ( int i = 0; i < storeLabels.getSize(); i++ )
 			{
-				index_t idx = m_State.FindIndex( storeLabels[ i ] );
+				index_t idx = m_State.FindIndex( storeLabels[i] );
 				if ( idx != NoIndex )
-					m_State[ idx ] = data[ store->getStateIndex( storeLabels[ i ] ) ];
+					m_State[idx] = data[store->getStateIndex( storeLabels[i] )];
 			}
 		}
 		else if ( file.extension() == ".zml" )
 		{
 			auto pn = xo::load_file( file );
-			for ( const auto& [key, value] : pn[ "values" ] )
+			for ( const auto& [key, value] : pn["values"] )
 				m_State.TrySetValue( key, value.get<Real>() );
-			for ( const auto& [key, value] : pn[ "velocities" ] )
+			for ( const auto& [key, value] : pn["velocities"] )
 				m_State.TrySetValue( key + "_u", value.get<Real>() );
 		}
 		CopyStateToTk();
@@ -763,8 +763,7 @@ namespace scone
 		{
 			bottom -= step_size;
 			GetOsimModel().setStateVariable( GetTkState(), initial_load_dof, bottom );
-		}
-		while ( abs( GetTotalContactForce() ) <= force_threshold && ( bottom - initial_state > -max_range ) );
+		} while ( abs( GetTotalContactForce() ) <= force_threshold && ( bottom - initial_state > -max_range ) );
 
 		// find middle ground until we are close enough
 		double force;
@@ -798,7 +797,7 @@ namespace scone
 		auto osnames = GetOsimModel().getStateVariableNames();
 		auto osvalues = GetOsimModel().getStateValues( GetTkState() );
 		for ( int i = 0; i < osnames.size(); ++i )
-			m_State.AddVariable( osnames[ i ], osvalues[ i ] );
+			m_State.AddVariable( osnames[i], osvalues[i] );
 	}
 
 	void ModelOpenSim3::CopyStateFromTk()
@@ -806,13 +805,13 @@ namespace scone
 		SCONE_ASSERT( m_State.GetSize() >= GetOsimModel().getNumStateVariables() );
 		auto osvalues = GetOsimModel().getStateValues( GetTkState() );
 		for ( int i = 0; i < osvalues.size(); ++i )
-			m_State.SetValue( i, osvalues[ i ] );
+			m_State.SetValue( i, osvalues[i] );
 	}
 
 	void ModelOpenSim3::CopyStateToTk()
 	{
 		SCONE_ASSERT( m_State.GetSize() >= GetOsimModel().getNumStateVariables() );
-		GetOsimModel().setStateValues( GetTkState(), &m_State.GetValues()[ 0 ] );
+		GetOsimModel().setStateValues( GetTkState(), &m_State.GetValues()[0] );
 
 		// set locked coordinates
 		auto& cs = GetOsimModel().updCoordinateSet();
@@ -879,11 +878,11 @@ namespace scone
 		// extract axes from system Jacobian
 		for ( auto coIdx = 0u; coIdx < m_Dofs.size(); ++coIdx )
 		{
-			DofOpenSim3& dof = static_cast<DofOpenSim3&>( *m_Dofs[ coIdx ] );
+			DofOpenSim3& dof = static_cast<DofOpenSim3&>( *m_Dofs[coIdx] );
 			auto mbIdx = dof.GetOsCoordinate().getJoint().getBody().getIndex();
 
 			for ( auto j = 0; j < 3; ++j )
-				dof.m_RotationAxis[ j ] = jsmat( mbIdx * 6 + j, coIdx );
+				dof.m_RotationAxis[j] = jsmat( mbIdx * 6 + j, coIdx );
 		}
 	}
 
@@ -892,7 +891,7 @@ namespace scone
 		OpenSim::Array<double> stateValues;
 		m_pOsimModel->getStateValues( GetTkState(), stateValues );
 		OpenSim::StateVector vec;
-		vec.setStates( GetTkState().getTime(), stateValues.getSize(), &stateValues[ 0 ] );
+		vec.setStates( GetTkState().getTime(), stateValues.getSize(), &stateValues[0] );
 		m_pOsimManager->getStateStorage().append( vec );
 	}
 

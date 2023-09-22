@@ -1,7 +1,7 @@
 /*
 ** ModelOpenSim4.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -254,7 +254,7 @@ namespace scone
 					if ( inc_pat( state_name ) && !ex_pat( state_name ) )
 					{
 						auto par_name = initial_state_offset_symmetric ? GetNameNoSide( state_name ) : state_name;
-						m_State[ i ] += par.get( par_name + ".offset", *initial_state_offset );
+						m_State[i] += par.get( par_name + ".offset", *initial_state_offset );
 					}
 				}
 			}
@@ -537,18 +537,18 @@ namespace scone
 
 	Vec3 ModelOpenSim4::GetLinMom() const
 	{
-		return from_osim( m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() )[ 1 ] );
+		return from_osim( m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() )[1] );
 	}
 
 	Vec3 ModelOpenSim4::GetAngMom() const
 	{
-		return from_osim( m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() )[ 0 ] );
+		return from_osim( m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() )[0] );
 	}
 
 	std::pair<Vec3, Vec3> ModelOpenSim4::GetLinAngMom() const
 	{
 		auto cm = m_pOsimModel->getMatterSubsystem().calcSystemCentralMomentum( GetTkState() );
-		return std::pair<Vec3, Vec3>( from_osim( cm[ 1 ] ), from_osim( cm[ 0 ] ) );
+		return std::pair<Vec3, Vec3>( from_osim( cm[1] ), from_osim( cm[0] ) );
 	}
 
 	Vec3 ModelOpenSim4::GetGravity() const
@@ -594,7 +594,7 @@ namespace scone
 				for ( auto* act : m_Model->GetActuators() )
 				{
 					// OpenSim: addInControls is rather inefficient, that's why we don't use it
-					controls[ idx++ ] += act->GetClampedInput();
+					controls[idx++] += act->GetClampedInput();
 				}
 			}
 		}
@@ -724,7 +724,7 @@ namespace scone
 	Real ModelOpenSim4::GetTotalEnergyConsumption() const
 	{
 		if ( m_pProbe )
-			return m_pProbe->getProbeOutputs( GetTkState() )[ 0 ];
+			return m_pProbe->getProbeOutputs( GetTkState() )[0];
 		else return 0.0;
 	}
 
@@ -772,18 +772,18 @@ namespace scone
 			// for all storage channels, check if there's a matching state
 			for ( int i = 0; i < storeLabels.getSize(); i++ )
 			{
-				index_t idx = FindStateIndex( storeLabels[ i ], store->getFileVersion() );
+				index_t idx = FindStateIndex( storeLabels[i], store->getFileVersion() );
 				if ( idx != NoIndex )
-					m_State[ idx ] = data[ store->getStateIndex( storeLabels[ i ] ) ];
+					m_State[idx] = data[store->getStateIndex( storeLabels[i] )];
 			}
 		}
 		else if ( file.extension() == ".zml" )
 		{
 			auto pn = xo::load_file( file );
-			for ( const auto& [key, value] : pn[ "values" ] )
+			for ( const auto& [key, value] : pn["values"] )
 				if ( auto idx = m_State.FindIndexByPattern( "/jointset/*/" + key + "/value" ); idx != NoIndex )
 					m_State.SetValue( idx, value.get<Real>() );
-			for ( const auto& [key, value] : pn[ "velocities" ] )
+			for ( const auto& [key, value] : pn["velocities"] )
 				if ( auto idx = m_State.FindIndexByPattern( "/jointset/*/" + key + "/speed" ); idx != NoIndex )
 					m_State.SetValue( idx, value.get<Real>() );
 		}
@@ -850,7 +850,7 @@ namespace scone
 		auto osnames = GetOsimModel().getStateVariableNames();
 		auto osvalues = GetOsimModel().getStateVariableValues( GetTkState() );
 		for ( int i = 0; i < osnames.size(); ++i )
-			m_State.AddVariable( osnames[ i ], osvalues[ i ] );
+			m_State.AddVariable( osnames[i], osvalues[i] );
 	}
 
 	void ModelOpenSim4::CopyStateFromTk()
@@ -858,14 +858,14 @@ namespace scone
 		SCONE_ASSERT( m_State.GetSize() >= GetOsimModel().getNumStateVariables() );
 		auto osvalues = GetOsimModel().getStateVariableValues( GetTkState() );
 		for ( int i = 0; i < osvalues.size(); ++i )
-			m_State.SetValue( i, osvalues[ i ] );
+			m_State.SetValue( i, osvalues[i] );
 	}
 
 	void ModelOpenSim4::CopyStateToTk()
 	{
 		SCONE_ASSERT( m_State.GetSize() >= GetOsimModel().getNumStateVariables() );
 		GetOsimModel().setStateVariableValues( GetTkState(),
-			SimTK::Vector( static_cast<int>( m_State.GetSize() ), &m_State.GetValues()[ 0 ] ) );
+			SimTK::Vector( static_cast<int>( m_State.GetSize() ), &m_State.GetValues()[0] ) );
 
 		// set locked coordinates
 		auto& cs = GetOsimModel().updCoordinateSet();
@@ -932,11 +932,11 @@ namespace scone
 		// extract axes from system Jacobian
 		for ( auto coIdx = 0u; coIdx < m_Dofs.size(); ++coIdx )
 		{
-			DofOpenSim4& dof = static_cast<DofOpenSim4&>( *m_Dofs[ coIdx ] );
+			DofOpenSim4& dof = static_cast<DofOpenSim4&>( *m_Dofs[coIdx] );
 			auto mbIdx = dof.GetOsCoordinate().getJoint().getParentFrame().getMobilizedBodyIndex();
 
 			for ( auto j = 0; j < 3; ++j )
-				dof.m_RotationAxis[ j ] = jsmat( mbIdx * 6 + j, coIdx );
+				dof.m_RotationAxis[j] = jsmat( mbIdx * 6 + j, coIdx );
 		}
 	}
 

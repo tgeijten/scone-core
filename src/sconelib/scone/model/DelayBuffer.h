@@ -41,7 +41,7 @@ namespace scone
 		std::map< size_t, DelayBuffer > buffers_;
 		std::vector< std::pair<Sensor*, DelayBufferChannel> > sensors_;
 	};
-	
+
 	struct SCONE_API DelayedActuatorGroup {
 		DelayedActuatorValue GetDelayedActuatorValue( Actuator& actuator, TimeInSeconds delay, TimeInSeconds step_size );
 		void UpdateActuatorInputs();

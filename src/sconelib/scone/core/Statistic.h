@@ -1,7 +1,7 @@
 /*
 ** Statistic.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -52,7 +52,7 @@ namespace scone
 
 			// update average
 			double dt = timestamp - m_PrevTime;
-			switch( m_InterpolationMode )
+			switch ( m_InterpolationMode )
 			{
 			case NoInterpolation: m_Total += dt * value; break;
 			case LinearInterpolation: m_Total += dt * ( m_PrevValue + value ) / 2.0; break;
@@ -86,7 +86,7 @@ namespace scone
 
 		void Reset()
 		{
-			m_PrevValue = m_Total = m_Highest = m_Lowest = T(0);
+			m_PrevValue = m_Total = m_Highest = m_Lowest = T( 0 );
 			m_PrevTime = m_StartTime = 0.0;
 			m_nSamples = 0;
 		}
@@ -96,7 +96,7 @@ namespace scone
 		T GetAverage() const
 		{
 			if ( m_nSamples == 0 )
-				return T(0);
+				return T( 0 );
 			if ( m_nSamples == 1 || m_PrevTime == m_StartTime )
 				return m_Initial; // only one sample was added or there was no dt
 			else return m_Total / ( m_PrevTime - m_StartTime );

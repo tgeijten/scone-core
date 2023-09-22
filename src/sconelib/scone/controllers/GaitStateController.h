@@ -1,7 +1,7 @@
 /*
 ** GaitStateController.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,8 +21,8 @@ namespace scone
 {
 	/// Finite State Machine controller that detects different phases of gait.
 	/**
-	Supported states are: ''EarlyStance'', ''LateStance'', ''LiftOff'', ''Swing'', ''Landing''. 
-	The current state of a leg is defined through its current relative sagittal foot position (''sagittal_pos'') and the normalized load (''leg_load''). 
+	Supported states are: ''EarlyStance'', ''LateStance'', ''LiftOff'', ''Swing'', ''Landing''.
+	The current state of a leg is defined through its current relative sagittal foot position (''sagittal_pos'') and the normalized load (''leg_load'').
 	Transitions between states are defined as follows (see also public attributes below):
 	\li ''Landing'' -> ''EarlyStance'' occurs if ''leg_load'' is above **stance_load_threshold**.
 	\li ''EarlyStance'' -> ''LateStance'' occurs if ''sagittal_pos'' is below **late_stance_threshold**.

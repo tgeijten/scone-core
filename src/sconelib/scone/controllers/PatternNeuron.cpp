@@ -1,7 +1,7 @@
 /*
 ** PatternNeuron.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -17,27 +17,27 @@
 namespace scone
 {
 	PatternNeuron::PatternNeuron( const PropNode& pn, Params& par, NeuralController& nc, int index, bool mirrored ) :
-	Neuron( pn, stringf( "CPG%d", index ), index, mirrored ? Side::Right : Side::Left, "linear" ),
-	mirrored_( mirrored ),
-	model_( nc.GetModel() )
+		Neuron( pn, stringf( "CPG%d", index ), index, mirrored ? Side::Right : Side::Left, "linear" ),
+		mirrored_( mirrored ),
+		model_( nc.GetModel() )
 	{
 		side_ = mirrored ? Side::Right : Side::Left;
 
-		period_ = par.get( "CPG.period", pn[ "period" ] );
+		period_ = par.get( "CPG.period", pn["period"] );
 		auto amount = pn.get< int >( "amount" );
 
 		ScopedParamSetPrefixer pf( par, "CPG." );
 
 		auto tname = "t" + to_str( index );
 		if ( pn.has_key( tname ) )
-			t0_ = par.get( tname, pn[ tname ] );
+			t0_ = par.get( tname, pn[tname] );
 		else t0_ = par.get( tname, ( index + 1 ) * period_ / ( amount + 1 ), period_ / ( amount + 1 ) );
 		if ( mirrored )
 			t0_ = fmod( t0_ + period_ / 2, period_ );
 
 		auto wname = "w" + to_str( index );
 		if ( pn.has_key( wname ) )
-			width_ = par.get( wname, pn[ wname ] );
+			width_ = par.get( wname, pn[wname] );
 		else width_ = par.try_get( wname, pn, "width", period_ / ( amount + 1 ) );
 
 		auto c = width_ / 2.35482;

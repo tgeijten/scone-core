@@ -1,7 +1,7 @@
 /*
 ** CompositeMeasure.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -35,9 +35,9 @@ namespace scone
 	CompositeMeasure {
 		dual_sided = 1
 		# this next measure is created for both ankle_angle_l and ankle_angle_r:
-		DofMeasure { 
+		DofMeasure {
 			weight = 0.1
-			dof = ankle_angle 
+			dof = ankle_angle
 			position { min = -60 max = 60 squared_penalty = 1 }
 		}
 		# this next measure is created for both knee_angle_l and knee_angle_r:

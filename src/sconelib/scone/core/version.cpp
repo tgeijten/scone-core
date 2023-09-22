@@ -12,15 +12,15 @@
 #if __has_include( "scone_version.h" )
 #	include "scone_version.h"
 #elif defined( SCONE_DEVELOPMENT_BUILD )
-	constexpr int SCONE_VERSION_MAJOR = 2;
-	constexpr int SCONE_VERSION_MINOR = 2;
-	constexpr int SCONE_VERSION_PATCH = 0;
-	constexpr const char* SCONE_VERSION_POSTFIX = "RC 1";
+constexpr int SCONE_VERSION_MAJOR = 2;
+constexpr int SCONE_VERSION_MINOR = 2;
+constexpr int SCONE_VERSION_PATCH = 0;
+constexpr const char* SCONE_VERSION_POSTFIX = "RC 1";
 #else
-	constexpr int SCONE_VERSION_MAJOR = 2;
-	constexpr int SCONE_VERSION_MINOR = 2;
-	constexpr int SCONE_VERSION_PATCH = 0;
-	constexpr const char* SCONE_VERSION_POSTFIX = "RC 1";
+constexpr int SCONE_VERSION_MAJOR = 2;
+constexpr int SCONE_VERSION_MINOR = 2;
+constexpr int SCONE_VERSION_PATCH = 0;
+constexpr const char* SCONE_VERSION_POSTFIX = "RC 1";
 #endif
 
 #if __has_include( "scone/../../repository_revision.h" )
@@ -28,9 +28,9 @@
 #endif
 
 #if defined( SCONE_REPOSITORY_REVISION )
-	constexpr int SCONE_VERSION_BUILD = SCONE_REPOSITORY_REVISION;
+constexpr int SCONE_VERSION_BUILD = SCONE_REPOSITORY_REVISION;
 #else
-	constexpr int SCONE_VERSION_BUILD = 0;
+constexpr int SCONE_VERSION_BUILD = 0;
 #endif
 
 namespace scone

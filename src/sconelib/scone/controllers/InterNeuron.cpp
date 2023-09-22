@@ -1,7 +1,7 @@
 /*
 ** InterNeuron.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -23,7 +23,7 @@
 namespace scone
 {
 	InterNeuron::InterNeuron( const PropNode& pn, Params& par, const string& layer, index_t idx, Side side, const string& act_func ) :
-	Neuron( pn, GetSidedName( layer + stringf( "_%d", idx ), side ), idx, side, act_func )
+		Neuron( pn, GetSidedName( layer + stringf( "_%d", idx ), side ), idx, side, act_func )
 	{
 		ScopedParamSetPrefixer ps( par, layer + stringf( "_%d.", idx ) );
 

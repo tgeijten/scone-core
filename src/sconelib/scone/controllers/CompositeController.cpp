@@ -1,7 +1,7 @@
 /*
 ** CompositeController.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,7 +16,7 @@
 namespace scone
 {
 	CompositeController::CompositeController( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-	Controller( props, par, model, loc )
+		Controller( props, par, model, loc )
 	{
 		for ( auto& cpn : props )
 			if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) )
@@ -33,10 +33,10 @@ namespace scone
 			for ( auto it1 = controllers_.begin(); it1 != controllers_.end(); ++it1 )
 				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 )
 				{
-					if ( (*it1)->GetName().empty() && (*it2)->GetName().empty() )
+					if ( ( *it1 )->GetName().empty() && ( *it2 )->GetName().empty() )
 						log::warning( "Multiple child controllers have no name; please name each child controller to prevent optimization parameters from getting mixed up" );
-					else if ( (*it1)->GetName() == (*it2)->GetName() )
-						log::warning( "Multiple child controllers are named " + xo::quoted( (*it1)->GetName() ) + "; please choose different names to prevent optimization parameters from getting mixed up" );
+					else if ( ( *it1 )->GetName() == ( *it2 )->GetName() )
+						log::warning( "Multiple child controllers are named " + xo::quoted( ( *it1 )->GetName() ) + "; please choose different names to prevent optimization parameters from getting mixed up" );
 				}
 		}
 	}

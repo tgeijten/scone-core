@@ -1,7 +1,7 @@
 /*
 ** BodyMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -14,9 +14,9 @@ namespace scone
 {
 
 	BodyMeasure::BodyMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc ),
-	body( *FindByLocation( model.GetBodies(), props.get< String >( "body" ), loc ) ),
-	range_count( 0 )
+		Measure( props, par, model, loc ),
+		body( *FindByLocation( model.GetBodies(), props.get< String >( "body" ), loc ) ),
+		range_count( 0 )
 	{
 		INIT_PROP( props, offset, Vec3::zero() );
 		INIT_PROP( props, direction, Vec3::zero() );
@@ -112,12 +112,12 @@ namespace scone
 	void BodyMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( !position.IsNull() )
-			frame[ body.GetName() + ".pos_penalty" ] = position.GetLatest();
+			frame[body.GetName() + ".pos_penalty"] = position.GetLatest();
 		if ( !velocity.IsNull() )
-			frame[ body.GetName() + ".vel_penalty" ] = velocity.GetLatest();
+			frame[body.GetName() + ".vel_penalty"] = velocity.GetLatest();
 		if ( !angular_velocity.IsNull() )
-			frame[ body.GetName() + ".ang_vel_penalty" ] = angular_velocity.GetLatest();
+			frame[body.GetName() + ".ang_vel_penalty"] = angular_velocity.GetLatest();
 		if ( !acceleration.IsNull() )
-			frame[ body.GetName() + ".acc_penalty" ] = acceleration.GetLatest();
+			frame[body.GetName() + ".acc_penalty"] = acceleration.GetLatest();
 	}
 }

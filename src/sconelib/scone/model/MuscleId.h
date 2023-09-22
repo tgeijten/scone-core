@@ -17,9 +17,9 @@ namespace scone
 			auto idx = str.find_last_of( "0123456789" );
 			if ( idx != String::npos && idx > 0 )
 			{
-				while ( idx > 0 && std::isdigit( base_[ idx - 1 ] ) )
+				while ( idx > 0 && std::isdigit( base_[idx - 1] ) )
 					--idx;
-				if ( idx > 0 && base_[ idx - 1 ] != '_' )
+				if ( idx > 0 && base_[idx - 1] != '_' )
 				{
 					xo::from_str( base_.substr( idx ), line_ );
 					base_ = base_.substr( 0, idx );

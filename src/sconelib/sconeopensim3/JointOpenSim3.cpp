@@ -1,7 +1,7 @@
 /*
 ** JointOpenSim3.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -48,7 +48,7 @@ namespace scone
 		matter.calcMobilizerReactionForces( state, forcesAtMInG ); // state should be at acceleration
 
 #if 1
-		return from_osim( forcesAtMInG[ child_body_idx ][ 1 ] );
+		return from_osim( forcesAtMInG[child_body_idx][1] );
 #else
 		const SimTK::MobilizedBody& mobod = matter.getMobilizedBody( child_body_idx );
 		const SimTK::MobilizedBody& parent = mobod.getParentMobilizedBody();
@@ -60,9 +60,9 @@ namespace scone
 		const SimTK::Rotation& R_GP = parent.getBodyTransform( state ).R();
 		SimTK::Rotation R_GF = R_GP * R_PF;  // F frame orientation in Ground.
 		SimTK::Vec3 p_MF_G = -( R_GF * p_FM ); // Re-express and negate shift vector. 
-		SimTK::SpatialVec forcesAtFInG = -SimTK::shiftForceBy( forcesAtMInG[ child_body_idx ], p_MF_G );
+		SimTK::SpatialVec forcesAtFInG = -SimTK::shiftForceBy( forcesAtMInG[child_body_idx], p_MF_G );
 
-		return from_osim( forcesAtFInG[ 1 ] );
+		return from_osim( forcesAtFInG[1] );
 #endif
 	}
 

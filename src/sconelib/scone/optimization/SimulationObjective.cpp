@@ -1,7 +1,7 @@
 /*
 ** SimulationObjective.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -19,7 +19,7 @@
 namespace scone
 {
 	SimulationObjective::SimulationObjective( const PropNode& pn, const path& find_file_folder ) :
-	ModelObjective( pn, find_file_folder )
+		ModelObjective( pn, find_file_folder )
 	{
 		// simulation objectives must have a measure
 		SCONE_THROW_IF( !model_->GetMeasure(), "No Measure defined in ModelObjective" );

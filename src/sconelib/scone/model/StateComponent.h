@@ -1,7 +1,7 @@
 /*
 ** StateComponent.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -29,8 +29,8 @@ namespace scone
 	class SCONE_API StateComponent : public HasName
 	{
 	public:
-	StateComponent( const PropNode& props, Params& par, Model& model )
-		: INIT_MEMBER_REQUIRED( props, name ), m_model( model ) {};
+		StateComponent( const PropNode& props, Params& par, Model& model )
+			: INIT_MEMBER_REQUIRED( props, name ), m_model( model ) {};
 
 		/// Name of the state component (required).
 		String name;

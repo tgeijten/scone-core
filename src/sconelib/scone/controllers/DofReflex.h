@@ -1,7 +1,7 @@
 /*
 ** DofReflex.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -33,14 +33,14 @@ namespace scone
 		bool mirror_left;
 
 		/// Target position [rad or m] for sensor DOF; default = 0.
-		Real P0; 
+		Real P0;
 		/// Position feedback gain; default = 0.
 		Real KP;
 		/// Allow this reflex to be negative; default = 1.
 		bool allow_neg_P;
 
 		/// Target velocity [rad or m] for sensor DOF; default = 0.
-		Real V0; 
+		Real V0;
 		/// Velocity feedback gain; default = 0.
 		Real KV;
 		/// Allow this reflex to be negative; default = 1.
@@ -50,10 +50,10 @@ namespace scone
 		Real C0;
 
 		/// Cut-off frequency of optional low-pass filter, no filtering if zero; default = 0.
-		Real filter_cutoff_frequency; 
+		Real filter_cutoff_frequency;
 
 		/// Apply this reflex only depending on the sign of the result: 1 = pos, -1 = neg, 0 = always.
-		int condition; 
+		int condition;
 
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 

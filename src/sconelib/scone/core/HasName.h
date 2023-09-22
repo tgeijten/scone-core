@@ -1,7 +1,7 @@
 /*
 ** HasName.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -21,7 +21,7 @@ namespace scone
 	{
 	public:
 		virtual const String& GetName() const = 0;
-		explicit operator const String&() const { return GetName(); }
+		explicit operator const String& ( ) const { return GetName(); }
 		inline virtual ~HasName() {}
 	};
 
@@ -48,7 +48,7 @@ namespace scone
 	template< typename T >
 	T& FindByName( std::vector<T>& cont, const String& name )
 	{
-		return const_cast<T&>( FindByName( const_cast< const std::vector<T>& >( cont ), name ) );
+		return const_cast<T&>( FindByName( const_cast<const std::vector<T>&>( cont ), name ) );
 	}
 
 	template< typename T >
@@ -84,7 +84,7 @@ namespace scone
 	index_t FindIndex( const std::vector<T>& cont, const T& item )
 	{
 		auto it = std::find( cont.begin(), cont.end(), item );
-		return it != cont.end() ? static_cast< index_t >( it - cont.begin() ) : NoIndex;
+		return it != cont.end() ? static_cast<index_t>( it - cont.begin() ) : NoIndex;
 	}
 
 	// #todo: move to elsewhere
@@ -93,6 +93,6 @@ namespace scone
 	{
 		auto it = std::find( cont.begin(), cont.end(), item );
 		SCONE_THROW_IF( it == cont.end(), "Could not find " + to_str( item ) );
-		return static_cast< index_t >( it - cont.begin() );
+		return static_cast<index_t>( it - cont.begin() );
 	}
 }

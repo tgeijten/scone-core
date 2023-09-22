@@ -1,7 +1,7 @@
 /*
 ** JointLoadMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -53,6 +53,6 @@ namespace scone
 	void JointLoadMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		// #todo: store joint load value
-		frame[ joint.GetName() + ".load_penalty" ] = GetLatest();
+		frame[joint.GetName() + ".load_penalty"] = GetLatest();
 	}
 }

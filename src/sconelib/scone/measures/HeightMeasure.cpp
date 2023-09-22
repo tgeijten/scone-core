@@ -1,7 +1,7 @@
 /*
 ** HeightMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -37,15 +37,15 @@ namespace scone
 		else m_pTargetBody = nullptr;
 
 		// init start height and initial height
-		m_InitialHeight = m_pTargetBody ? m_pTargetBody->GetComPos()[ 1 ] : model.GetComPos()[ 1 ];
+		m_InitialHeight = m_pTargetBody ? m_pTargetBody->GetComPos()[1] : model.GetComPos()[1];
 	}
 
 	bool HeightMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		double pos = m_pTargetBody ? m_pTargetBody->GetComPos()[ 1 ] : model.GetComPos()[ 1 ];
-		double vel = m_pTargetBody ? m_pTargetBody->GetComVel()[ 1 ] : model.GetComVel()[ 1 ];
+		double pos = m_pTargetBody ? m_pTargetBody->GetComPos()[1] : model.GetComPos()[1];
+		double vel = m_pTargetBody ? m_pTargetBody->GetComVel()[1] : model.GetComVel()[1];
 
 		// add sample
 		m_Height.AddSample( timestamp, pos );

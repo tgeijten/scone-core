@@ -1,7 +1,7 @@
 /*
 ** model_tools.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -49,7 +49,7 @@ namespace scone
 	{
 		PropNode pn;
 		for ( auto& ui : user_inputs )
-			pn[ ui->GetName() ] = ui->GetValue();
+			pn[ui->GetName()] = ui->GetValue();
 		return pn;
 	}
 
@@ -93,8 +93,8 @@ namespace scone
 		auto split_name = xo::split_str( dof.GetName(), "_" );
 		if ( split_name.size() >= 2 )
 		{
-			string& dof_base_name = split_name[ 0 ];
-			string& dof_type_name = split_name[ 1 ];
+			string& dof_base_name = split_name[0];
+			string& dof_type_name = split_name[1];
 			auto side = xo::str_get_side( j.GetName() );
 			auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
 			if ( auto di = dof_types.find( dof_type_name ); di != dof_types.end() )
@@ -110,8 +110,8 @@ namespace scone
 
 	string GetDofSourceName( const Dof& dof )
 	{
-		static const char* rot_postfix[ 3 ] = { "_rx", "_ry", "_rz" };
-		static const char* trans_postfix[ 3 ] = { "_tx", "_ty", "_tz" };
+		static const char* rot_postfix[3] = { "_rx", "_ry", "_rz" };
+		static const char* trans_postfix[3] = { "_tx", "_ty", "_tz" };
 		const auto& j = *dof.GetJoint();
 		auto side = xo::str_get_side( j.GetName() );
 		auto rotational = dof.IsRotational();
@@ -119,7 +119,7 @@ namespace scone
 		auto idx = GetAxisIndex( dof.GetLocalAxis() );
 		auto sign = GetAxisSign( dof.GetLocalAxis() );
 		String name = ( rotational && sign < 0 ) ? "-" : "";
-		name += base_name + ( rotational ? rot_postfix[ idx ] : trans_postfix[ idx ] ) + xo::side_postfix( side );
+		name += base_name + ( rotational ? rot_postfix[idx] : trans_postfix[idx] ) + xo::side_postfix( side );
 		return name;
 	}
 
@@ -135,6 +135,6 @@ namespace scone
 
 	Real GetAxisSign( const Vec3& dir )
 	{
-		return dir[ GetAxisIndex( dir ) ] < 0 ? -1 : 1;
+		return dir[GetAxisIndex( dir )] < 0 ? -1 : 1;
 	}
 }

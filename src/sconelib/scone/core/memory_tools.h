@@ -1,7 +1,7 @@
 /*
 ** memory_tools.h
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -26,10 +26,10 @@ namespace scone
 	using xo::s_ptr;
 
 	// dynamic cast a unique_ptr, throws on failure
-	template <typename To, typename From> 
-    std::unique_ptr< To > dynamic_unique_cast( std::unique_ptr< From >&& p )
+	template <typename To, typename From>
+	std::unique_ptr< To > dynamic_unique_cast( std::unique_ptr< From >&& p )
 	{
-		To& cast = dynamic_cast< To& >( *p ); // throws on failure, freeing p
+		To& cast = dynamic_cast<To&>( *p ); // throws on failure, freeing p
 		p.release(); // release ownership from p
 		return std::unique_ptr< To >( &cast ); // return pointer with ownership
 	}

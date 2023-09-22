@@ -1,7 +1,7 @@
 /*
 ** StepMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -16,8 +16,8 @@
 namespace scone
 {
 	StepMeasure::StepMeasure( const PropNode& props, Params& par,
-							  const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc )
+		const Model& model, const Location& loc ) :
+		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, stride_length, RangePenalty<Real>() );
 		INIT_PROP( props, stride_duration, RangePenalty<Real>() );
@@ -51,18 +51,18 @@ namespace scone
 	double StepMeasure::ComputeResult( const Model& model )
 	{
 		auto cycles = ExtractGaitCycles( stored_data_,
-										 load_threshold,
-										 min_stance_duration_threshold );
+			load_threshold,
+			min_stance_duration_threshold );
 
 		// calculate stride length / duration / velocity
 		for ( index_t idx = initiation_cycles; idx < cycles.size(); ++idx )
 		{
 			if ( !stride_length.IsNull() )
-				 stride_length.AddSample( cycles[ idx ].length() );
+				stride_length.AddSample( cycles[idx].length() );
 			if ( !stride_duration.IsNull() )
-				stride_duration.AddSample( cycles[ idx ].duration() );
+				stride_duration.AddSample( cycles[idx].duration() );
 			if ( !stride_velocity.IsNull() )
-				stride_velocity.AddSample( cycles[ idx ].velocity() );
+				stride_velocity.AddSample( cycles[idx].velocity() );
 		}
 
 		// calculate penalty

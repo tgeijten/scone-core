@@ -1,7 +1,7 @@
 /*
 ** BodyOrientationReflex.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -32,7 +32,7 @@ namespace scone
 		INIT_MEMBER( pn, axis_name, GetAxisName( GetAxis( axis ) ) ),
 		INIT_MEMBER( pn, mirror_left, false ),
 		u_p(), u_v(),
-		m_Mirror( mirror_left && loc.side_ == Side::Left ),
+		m_Mirror( mirror_left&& loc.side_ == Side::Left ),
 		m_SourceBody( *FindByLocation( model.GetBodies(), source, loc ) ),
 		m_DelayedPos( model.scone_version < xo::version( 2, 0, 4, 2348 ) ?
 			model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) :
@@ -68,7 +68,7 @@ namespace scone
 
 		if ( m_Mirror ) {
 			delta_pos = -delta_pos;
-			delta_vel= -delta_vel;
+			delta_vel = -delta_vel;
 		}
 
 		u_p = KP * delta_pos;
@@ -84,7 +84,7 @@ namespace scone
 
 	void BodyOrientationReflex::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[ GetReflexName( actuator_.GetName(), m_DelayedPos.GetName() ) ] = u_p;
-		frame[ GetReflexName( actuator_.GetName(), m_DelayedVel.GetName() ) ] = u_v;
+		frame[GetReflexName( actuator_.GetName(), m_DelayedPos.GetName() )] = u_p;
+		frame[GetReflexName( actuator_.GetName(), m_DelayedVel.GetName() )] = u_v;
 	}
 }

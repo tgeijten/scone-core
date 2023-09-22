@@ -27,7 +27,7 @@
 #if defined( _MSC_VER )
 #include <charconv>
 inline void set_exact( scone::PropNode& pn, double value ) {
-	char buf[ 32 ];
+	char buf[32];
 	auto res = std::to_chars( buf, buf + sizeof( buf ) - 1, value );
 	*res.ptr = '\0';
 	pn.set_value( buf );
@@ -87,11 +87,11 @@ namespace scone
 		muscle_excitation_map_.reserve( muscles.size() );
 		for ( index_t midx = 0; midx < muscles.size(); ++midx )
 		{
-			const auto& name = muscles[ midx ]->GetName();
+			const auto& name = muscles[midx]->GetName();
 			if ( include_( name ) && !exclude_( name ) ) {
 				auto cidx = storage_.TryGetChannelIndex( name + ".excitation" );
 				if ( cidx != NoIndex )
-					muscle_excitation_map_[ midx ] = cidx;
+					muscle_excitation_map_[midx] = cidx;
 				else log::warning( "Could not find excitation channel for ", name, " in ", file );
 			}
 		}
@@ -112,7 +112,7 @@ namespace scone
 
 			auto& state_values = state_storage_.emplace_back( state_channels_.size() );
 			for ( index_t state_idx = 0; state_idx < state_channels_.size(); ++state_idx )
-				state_values[ state_idx ] = f.GetValues()[ state_channels_[ state_idx ] ];
+				state_values[state_idx] = f.GetValues()[state_channels_[state_idx]];
 		}
 	}
 
@@ -132,12 +132,12 @@ namespace scone
 		// intermediate results are stored in the model
 		auto& mud = model.GetUserData();
 		if ( first_frame ) {
-			mud[ "RPL_err" ] = 0;
-			mud[ "RPL_smp" ] = 0;
-			mud[ "RPL_act" ].add_children( muscles.size(), "", "0" );
+			mud["RPL_err"] = 0;
+			mud["RPL_smp"] = 0;
+			mud["RPL_act"].add_children( muscles.size(), "", "0" );
 			if ( store_muscle_results )
 				for ( index_t idx = 0; idx < muscles.size(); ++idx )
-					mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ] = 0;
+					mud["RPL_mus"][muscles[idx]->GetName() + ".error"] = 0;
 		}
 
 		// intermediate values
@@ -147,10 +147,10 @@ namespace scone
 		size_t samples = 0;
 
 		// initialize activations
-		auto& act_pn = mud[ "RPL_act" ];
+		auto& act_pn = mud["RPL_act"];
 		std::vector<double> activations( muscles.size() );
 		for ( index_t idx = 0; idx < muscles.size(); ++idx )
-			activations[ idx ] = get_exact( act_pn[ idx ] );
+			activations[idx] = get_exact( act_pn[idx] );
 
 		// loop over data
 		auto t = model.GetTime() == 0.0 ? 0.0 : model.GetTime() + model.fixed_control_step_size;
@@ -159,12 +159,12 @@ namespace scone
 #if 1 // set to 0 to disable this optimization
 			auto state_storage_idx = xo::round_cast<index_t>( t / fixed_control_step_size );
 			SCONE_ASSERT( state_storage_idx < storage_indices_.size() );
-			const auto& f = storage_.GetFrame( storage_indices_[ state_storage_idx ] );
-			model.AdvancePlayback( state_storage_[ state_storage_idx ], t );
+			const auto& f = storage_.GetFrame( storage_indices_[state_storage_idx] );
+			model.AdvancePlayback( state_storage_[state_storage_idx], t );
 #else
 			const auto& f = storage_.GetClosestFrame( t );
 			for ( index_t state_idx = 0; state_idx < state_channels_.size(); ++state_idx )
-				state_values[ state_idx ] = f.GetValues()[ state_channels_[ state_idx ] ];
+				state_values[state_idx] = f.GetValues()[state_channels_[state_idx]];
 			model.AdvancePlayback( state_values, t );
 #endif
 
@@ -175,21 +175,21 @@ namespace scone
 				double c2 = muscle_deactivation_rate_;
 				double c1 = muscle_activation_rate_ - c2;
 				for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
-					auto u = muscles[ idx ]->GetExcitation();
-					activations[ idx ] = u - ( u - activations[ idx ] ) * std::exp( -c1 * u * dt - c2 * dt );
+					auto u = muscles[idx]->GetExcitation();
+					activations[idx] = u - ( u - activations[idx] ) * std::exp( -c1 * u * dt - c2 * dt );
 				}
 			}
 			else for ( index_t idx = 0; idx < muscles.size(); ++idx )
-				activations[ idx ] = muscles[ idx ]->GetExcitation();
+				activations[idx] = muscles[idx]->GetExcitation();
 
 			// always store new activation and org excitation
 			if ( store_data )
 			{
 				for ( const auto& [midx, cidx] : muscle_excitation_map_ )
 				{
-					const auto& mus = *muscles[ midx ];
-					model.GetCurrentFrame()[ mus.GetName() + ".activation_new" ] = activations[ midx ];
-					model.GetCurrentFrame()[ mus.GetName() + ".excitation_org" ] = f[ cidx ];
+					const auto& mus = *muscles[midx];
+					model.GetCurrentFrame()[mus.GetName() + ".activation_new"] = activations[midx];
+					model.GetCurrentFrame()[mus.GetName() + ".excitation_org"] = f[cidx];
 				}
 			}
 
@@ -199,20 +199,20 @@ namespace scone
 				double frame_error = 0.0;
 				for ( const auto& [midx, cidx] : muscle_excitation_map_ )
 				{
-					const Muscle& mus = *muscles[ midx ];
-					auto excitation_diff = mus.GetExcitation() - f[ cidx ];
-					auto activation_diff = activations[ midx ] - mus.GetActivation();
+					const Muscle& mus = *muscles[midx];
+					auto excitation_diff = mus.GetExcitation() - f[cidx];
+					auto activation_diff = activations[midx] - mus.GetActivation();
 					auto diff = use_muscle_activation ? activation_diff : excitation_diff;
 					auto error = use_squared_error ? xo::squared( diff ) : std::abs( diff );
 					frame_error += error;
 					if ( store_data )
 					{
-						model.GetCurrentFrame()[ mus.GetName() + ".excitation_diff" ] = excitation_diff;
-						model.GetCurrentFrame()[ mus.GetName() + ".activation_diff" ] = activation_diff;
-						model.GetCurrentFrame()[ mus.GetName() + ".error" ] = error;
+						model.GetCurrentFrame()[mus.GetName() + ".excitation_diff"] = excitation_diff;
+						model.GetCurrentFrame()[mus.GetName() + ".activation_diff"] = activation_diff;
+						model.GetCurrentFrame()[mus.GetName() + ".error"] = error;
 					}
 					if ( store_muscle_results )
-						errors[ midx ] += error;
+						errors[midx] += error;
 				}
 				total_error += frame_error;
 				++samples;
@@ -228,19 +228,19 @@ namespace scone
 			auto scale_factor = use_squared_error ? 1000 : 100;
 			total_error = scale_factor * total_error / muscles.size();
 			//log::trace( "t=", t, " frames=", frame_count, " start=", frame_start, " result=", result );
-			set_exact( mud[ "RPL_err" ], get_exact( mud[ "RPL_err" ] ) + total_error );
-			set_exact( mud[ "RPL_smp" ], get_exact( mud[ "RPL_smp" ] ) + samples );
+			set_exact( mud["RPL_err"], get_exact( mud["RPL_err"] ) + total_error );
+			set_exact( mud["RPL_smp"], get_exact( mud["RPL_smp"] ) + samples );
 			if ( store_muscle_results )
 				for ( index_t idx = 0; idx < muscles.size(); ++idx ) {
-					auto& rpl_mus_pn = mud[ "RPL_mus" ][ muscles[ idx ]->GetName() + ".error" ];
-					set_exact( rpl_mus_pn, get_exact( rpl_mus_pn ) + scale_factor * errors[ idx ] );
+					auto& rpl_mus_pn = mud["RPL_mus"][muscles[idx]->GetName() + ".error"];
+					set_exact( rpl_mus_pn, get_exact( rpl_mus_pn ) + scale_factor * errors[idx] );
 				}
 		}
 
 		if ( t > 0 && !model.HasSimulationEnded() ) {
 			// keep activations for next round
 			for ( index_t idx = 0; idx < muscles.size(); ++idx )
-				set_exact( act_pn[ idx ], activations[ idx ] );
+				set_exact( act_pn[idx], activations[idx] );
 		}
 	}
 
@@ -260,12 +260,12 @@ namespace scone
 	{
 		auto pn = xo::to_prop_node( GetResult( m ) );
 		auto& muscles = m.GetMuscles();
-		auto& mus_pn = m.GetUserData()[ "RPL_mus" ];
+		auto& mus_pn = m.GetUserData()["RPL_mus"];
 		auto samples = m.GetUserData().get< index_t >( "RPL_smp" );
 		auto errors = mus_pn.get<std::vector<double>>();
 		auto sidx = xo::sorted_indices( errors, std::greater<double>() );
 		for ( auto idx : sidx )
-			pn[ muscles[ idx ]->GetName() + ".error" ] = mus_pn[ idx ].get<double>() / samples;
+			pn[muscles[idx]->GetName() + ".error"] = mus_pn[idx].get<double>() / samples;
 		return pn;
 	}
 }

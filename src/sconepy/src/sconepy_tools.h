@@ -49,7 +49,7 @@ namespace scone
 		std::map< std::string, double > dict;
 		auto& s = model.GetState();
 		for ( size_t i = 0; i < s.GetSize(); ++i )
-			dict[ s.GetName( i ) ] = s.GetValue( i );
+			dict[s.GetName( i )] = s.GetValue( i );
 		return dict;
 	};
 	void set_state( Model& model, const std::map< std::string, double >& dict ) {
@@ -72,7 +72,7 @@ namespace scone
 		auto& dofs = model.GetDofs();
 		check_array_length( dofs.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < dofs.size(); ++i )
-			dofs[ i ]->SetPos( v( i ) );
+			dofs[i]->SetPos( v( i ) );
 	};
 
 	void set_dof_velocities( Model& model, const py::array_t<double>& values ) {
@@ -80,7 +80,7 @@ namespace scone
 		auto& dofs = model.GetDofs();
 		check_array_length( dofs.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < dofs.size(); ++i )
-			dofs[ i ]->SetVel( v( i ) );
+			dofs[i]->SetVel( v( i ) );
 	};
 
 	void init_state_from_dofs( Model& model ) {
@@ -92,13 +92,13 @@ namespace scone
 		auto mus = model.GetMuscles();
 		check_array_length( mus.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < mus.size(); ++i )
-			mus[ i ]->InitializeActivation( v( i ) );
+			mus[i]->InitializeActivation( v( i ) );
 	};
 
 	template< typename T, typename C, typename F > py::array_t<T> extract_array( const C& cont, F fn ) {
 		auto [v, p] = make_array<T>( std::size( cont ) );
 		for ( index_t i = 0; i < std::size( cont ); ++i )
-			p[ i ] = static_cast<T>( fn( cont[ i ] ) );
+			p[i] = static_cast<T>( fn( cont[i] ) );
 		return v;
 	};
 
@@ -145,8 +145,8 @@ namespace scone
 		else {
 			auto& act = model.GetActuators();
 			for ( index_t i = 0; i < act.size(); ++i ) {
-				act[ i ]->ClearInput();
-				act[ i ]->AddInput( v( i ) );
+				act[i]->ClearInput();
+				act[i]->AddInput( v( i ) );
 			}
 		}
 	};
@@ -175,8 +175,8 @@ namespace scone
 			if ( dag.actuators_.empty() )
 				create_delayed_actuators( model );
 			for ( index_t i = 0; i < dag.actuators_.size(); ++i ) {
-				dag.actuators_[ i ].first->ClearInput();
-				dag.actuators_[ i ].second.back() = v( i );
+				dag.actuators_[i].first->ClearInput();
+				dag.actuators_[i].second.back() = v( i );
 			}
 		}
 	};

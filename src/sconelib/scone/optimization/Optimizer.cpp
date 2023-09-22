@@ -1,7 +1,7 @@
 /*
 ** Optimizer.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -112,7 +112,7 @@ namespace scone
 	PropNode Optimizer::GetStatusPropNode() const
 	{
 		PropNode pn;
-		if ( !id_.empty() ) pn[ "id" ] = id_;
+		if ( !id_.empty() ) pn["id"] = id_;
 		return pn;
 	}
 
@@ -182,7 +182,7 @@ namespace scone
 		xo::error_code ec;
 		for ( auto& f : GetObjective().GetExternalResources() )
 			if ( !xo::copy_file( f, output_folder_ / f.filename(), true, &ec ) )
-				SCONE_ERROR( "Could not copy \"" + f.str() + 
+				SCONE_ERROR( "Could not copy \"" + f.str() +
 					"\" to \"" + ( output_folder_ / f.filename() ).str() + "\"\n\n" + ec.message() );
 
 		// now that all files are copied, we should use these during evaluation

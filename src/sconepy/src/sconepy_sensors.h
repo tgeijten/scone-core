@@ -131,7 +131,7 @@ py::array_t<T> get_delayed_sensor_array( scone::Model& model, SensorType t ) {
 	auto& v = get_delayed_sensor_values( model, t );
 	auto [a, p] = make_array<T>( v.size() );
 	for ( index_t i = 0; i < v.size(); ++i )
-		p[ i ] = static_cast<T>( v[ i ].GetValue() );
+		p[i] = static_cast<T>( v[i].GetValue() );
 	return a;
 }
 

@@ -1,7 +1,7 @@
 /*
 ** NeuralController.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -41,9 +41,9 @@
 namespace scone
 {
 	NeuralController::NeuralController( const PropNode& pn, Params& par, Model& model, const Location& locality ) :
-	Controller( pn, par, model, locality ),
-	model_( model ),
-	m_VirtualMusclesMemoize( GetVirtualMusclesFunc )
+		Controller( pn, par, model, locality ),
+		model_( model ),
+		m_VirtualMusclesMemoize( GetVirtualMusclesFunc )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -73,7 +73,7 @@ namespace scone
 				{ "dof", dof_mode },
 				{ "virtual", virtual_mode },
 				{ "virtual_dof", virtual_dof_mode },
-			} );
+				} );
 
 			activation_function_ = GetActivationFunction( pn.get< string >( "activation", "rectifier" ) );
 
@@ -147,7 +147,7 @@ namespace scone
 		int amount = pn.get< int >( "neurons" );
 		string act_func = pn.get< string >( "activation", "rectifier" );
 
-		auto& layer = m_InterNeurons[ layer_name ];
+		auto& layer = m_InterNeurons[layer_name];
 		for ( int i = 0; i < amount; ++i )
 		{
 			for ( auto side : { Side::Left, Side::Right } )
@@ -183,7 +183,7 @@ namespace scone
 
 		auto children = GetVirtualMusclesRecursiveFunc( mus, joint_idx + 1, apply_mirroring );
 
-		auto& joint = joints[ joint_idx ];
+		auto& joint = joints[joint_idx];
 		auto& dofs = joint->GetDofs();
 		if ( dofs.empty() )
 			return children;
@@ -191,7 +191,7 @@ namespace scone
 		MuscleParamList results;
 		for ( index_t dof_idx = 0; dof_idx < dofs.size(); ++dof_idx )
 		{
-			auto& dof = dofs[ dof_idx ];
+			auto& dof = dofs[dof_idx];
 			auto mom = mus->GetNormalizedMomentArm( *dof );
 			if ( mom != 0 )
 			{
@@ -262,18 +262,18 @@ namespace scone
 	void NeuralController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		for ( auto& neuron : m_PatternNeurons )
-			frame[ "PN." + neuron->GetName( false ) ] = neuron->output_;
+			frame["PN." + neuron->GetName( false )] = neuron->output_;
 		for ( auto& neuron : m_SensorNeurons )
-			frame[ "SN." + neuron->GetName( false ) ] = neuron->output_;
+			frame["SN." + neuron->GetName( false )] = neuron->output_;
 		for ( auto& layer : m_InterNeurons )
 			for ( auto& neuron : layer.second )
-				frame[ "IN." + neuron->GetName( false ) ] = neuron->output_;
+				frame["IN." + neuron->GetName( false )] = neuron->output_;
 		for ( auto& neuron : m_MotorNeurons )
 		{
 			auto prefix = "MN." + neuron->GetName( false ) + '.';
-			frame[ prefix + "input" ] = neuron->input_;
+			frame[prefix + "input"] = neuron->input_;
 			for ( auto& i : neuron->inputs_ )
-				frame[ prefix + i.neuron->GetName( false ) ] = i.gain * i.neuron->GetOutput();
+				frame[prefix + i.neuron->GetName( false )] = i.gain * i.neuron->GetOutput();
 		}
 	}
 
@@ -403,13 +403,13 @@ namespace scone
 			SCONE_THROW_IF( other_neuron == other.m_MotorNeurons.end(), "Could not find Neuron " + neuron->GetName() );
 
 			// measure difference in MotorNeuron offset
-			fitness += abs( neuron->offset_ - (*other_neuron)->offset_ );
+			fitness += abs( neuron->offset_ - ( *other_neuron )->offset_ );
 			++samples;
 
 			for ( auto& input : neuron->GetInputs() )
 			{
-				auto other_input = xo::find_if( (*other_neuron)->GetInputs(), [&]( const Neuron::Input& i ) { return input.neuron->GetName() == i.neuron->GetName(); } );
-				SCONE_THROW_IF( other_input == (*other_neuron )->GetInputs().end(), "Could not find Input " + input.neuron->GetName() + " for " + neuron->GetName() );
+				auto other_input = xo::find_if( ( *other_neuron )->GetInputs(), [&]( const Neuron::Input& i ) { return input.neuron->GetName() == i.neuron->GetName(); } );
+				SCONE_THROW_IF( other_input == ( *other_neuron )->GetInputs().end(), "Could not find Input " + input.neuron->GetName() + " for " + neuron->GetName() );
 
 				// measure difference in MotorNeuron input gain
 				fitness += abs( input.gain - other_input->gain );

@@ -1,7 +1,7 @@
 /*
 ** SensorDelayAdapter.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -17,10 +17,10 @@
 namespace scone
 {
 	SensorDelayAdapter::SensorDelayAdapter( Model& model, Sensor& source, TimeInSeconds default_delay ) :
-	Sensor(),
-	m_Model( model ),
-	m_InputSensor( source ),
-	m_Delay( default_delay )
+		Sensor(),
+		m_Model( model ),
+		m_InputSensor( source ),
+		m_Delay( default_delay )
 	{
 		m_StorageIdx = m_Model.GetSensorDelayStorage().AddChannel( source.GetName() );
 	}
@@ -46,7 +46,7 @@ namespace scone
 
 		Real value = 0.0;
 		for ( auto i = history_begin; i < history_end; ++i )
-			value += sto.GetFrame( i )[ m_StorageIdx ];
+			value += sto.GetFrame( i )[m_StorageIdx];
 		return value / ( history_end - history_begin );
 	}
 
@@ -54,7 +54,7 @@ namespace scone
 	{
 		Storage< Real >& storage = m_Model.GetSensorDelayStorage();
 		SCONE_ASSERT( !storage.IsEmpty() && storage.Back().GetTime() == m_Model.GetTime() );
-		storage.Back()[ m_StorageIdx ] = m_InputSensor.GetValue();
+		storage.Back()[m_StorageIdx] = m_InputSensor.GetValue();
 	}
 
 	String SensorDelayAdapter::GetName() const

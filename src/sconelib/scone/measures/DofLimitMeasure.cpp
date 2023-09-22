@@ -1,7 +1,7 @@
 /*
 ** DofLimitMeasure.cpp
 **
-** Copyright (C) 2013-2019 Thomas Geijtenbeek and contributors. All rights reserved.
+** Copyright (C) Thomas Geijtenbeek and contributors. All rights reserved.
 **
 ** This file is part of SCONE. For more information, see http://scone.software.
 */
@@ -15,7 +15,7 @@
 namespace scone
 {
 	DofLimitMeasure::DofLimitMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
-	Measure( props, par, model, loc )
+		Measure( props, par, model, loc )
 	{
 		if ( const PropNode* lp = props.try_get_child( "Limits" ) )
 		{
@@ -33,9 +33,9 @@ namespace scone
 	}
 
 	DofLimitMeasure::Limit::Limit( const PropNode& props, const Model& model ) :
-	dof( *FindByName( model.GetDofs(), props.get< String >( "dof" ) ) ),
-	parent( props.has_key( "dof_parent" ) ? &*FindByName( model.GetDofs(), props.get< String >( "dof_parent" ) ) : nullptr ),
-	penalty( Statistic<>::LinearInterpolation )
+		dof( *FindByName( model.GetDofs(), props.get< String >( "dof" ) ) ),
+		parent( props.has_key( "dof_parent" ) ? &*FindByName( model.GetDofs(), props.get< String >( "dof_parent" ) ) : nullptr ),
+		penalty( Statistic<>::LinearInterpolation )
 	{
 		range.min = Degree( props.get< Real >( "min_deg", 0.0 ) );
 		range.max = Degree( props.get< Real >( "max_deg", 0.0 ) );
@@ -106,6 +106,6 @@ namespace scone
 	void DofLimitMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		for ( auto& l : m_Limits )
-			frame[ l.dof.GetName() + ".limit_penalty" ] = l.penalty.GetLatest();
+			frame[l.dof.GetName() + ".limit_penalty"] = l.penalty.GetLatest();
 	}
 }

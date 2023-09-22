@@ -15,7 +15,7 @@ namespace scone
 		bool create_baseline = false;
 	};
 
-	SCONE_API void BenchmarkScenario( 
+	SCONE_API void BenchmarkScenario(
 		const PropNode& scenario_pn, const path& file, const path& results_dir, const BenchmarkOptions& opt );
 
 	struct SCONE_API Benchmark {
