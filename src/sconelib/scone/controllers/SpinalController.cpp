@@ -217,8 +217,10 @@ namespace scone
 				Connect( ia_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 
 			// connect IBIN to group members
-			if ( ib_group_ )
-				Connect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			if ( ib_group_ ) {
+				TryConnect( ib_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+				TryConnect( ib_group_, muscles_[ mi ].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, "_ant_weight" );
+			}
 			if ( ibi_group_ )
 				Connect( ibi_group_, muscles_[ mi ].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
 			if ( ibe_group_ )
