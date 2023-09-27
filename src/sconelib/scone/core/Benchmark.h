@@ -11,15 +11,16 @@ namespace scone
 	struct BenchmarkOptions {
 		size_t min_samples = 8;
 		double min_norm_std = 0.01;
-		bool log_history = true;
-		bool create_baseline = false;
+		path baseline_file;
+		path results_file;
 	};
 
 	SCONE_API void BenchmarkScenario(
-		const PropNode& scenario_pn, const path& file, const path& results_dir, const BenchmarkOptions& opt );
+		const PropNode& scenario_pn, const path& file, const BenchmarkOptions& opt );
 
 	struct SCONE_API Benchmark {
 		String name_;
+		xo::time sim_duration_;
 		xo::time time_;
 		xo::time baseline_;
 		double std_;

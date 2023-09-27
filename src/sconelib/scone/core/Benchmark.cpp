@@ -17,10 +17,30 @@
 
 namespace scone
 {
-	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const path& results_dir, const BenchmarkOptions& bo )
+	void BenchmarkScenario( const PropNode& scenario_pn, const path& file, const BenchmarkOptions& bo )
 	{
-		log::info( "" );
-		log::info( "BENCHMARK: ", file.parent_path().stem() / file.filename() );
+		string bench_name = file.stem().str();
+		log::info( "---\nBENCHMARK: ", file.parent_path().stem() / file.filename() );
+
+		// read baseline
+		bool has_baseline = false;
+		string baseline_result_str;
+		xo::flat_map<string, double> baseline_rtx;
+		if ( xo::file_exists( bo.baseline_file ) ) {
+			auto lines = xo::split_str( xo::load_string( bo.baseline_file ), "\r\n" );
+			SCONE_ASSERT( lines.size() > 0 );
+			auto headers = xo::split_str( lines.front(), " \t" );
+			SCONE_ASSERT( headers.size() > 3 );
+			for ( auto& line : lines ) {
+				auto values = xo::split_str( line, " \t" );
+				if ( values.size() == headers.size() && values.front() == bench_name ) {
+					has_baseline = true;
+					baseline_result_str = values[2];
+					for ( size_t i = 3; i < values.size(); ++i )
+						baseline_rtx[headers[i]] = std::stod( values[i] );
+				}
+			}
+		}
 
 		xo::scoped_thread_priority prio_raiser( xo::thread_priority::realtime );
 
@@ -31,10 +51,7 @@ namespace scone
 		if ( is_par_file )
 			par.import_values( file );
 
-		auto baseline_file = results_dir / xo::get_computer_name() / "baseline" / file.stem() + ".baseline";
-		bool has_baseline = xo::file_exists( baseline_file );
-		bool create_baseline = bo.create_baseline || !has_baseline;
-		auto min_samples = create_baseline ? 4 * bo.min_samples : bo.min_samples;
+		auto min_samples = bo.min_samples;
 		auto max_samples = min_samples * 10;
 
 		// run simulations
@@ -64,7 +81,7 @@ namespace scone
 					add_benchmark( timing.first, timing.second.first / timing.second.second );
 				add_benchmark( "EvalTotal", total_time );
 				add_benchmark( "EvalSim", ( total_time - create_model_time ) );
-				add_benchmark( "EvalSimModel", timings.front().second.first );
+				add_benchmark( "EvalEngine", timings.front().second.first );
 				duration = xo::time_from_seconds( model->GetTime() );
 				auto real_time_x = model->GetTime() / total_time.secondsd();
 
@@ -83,22 +100,6 @@ namespace scone
 			//xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
 		}
 
-		// read baseline
-		xo::flat_map<string, xo::time> baseline_medians;
-		if ( has_baseline )
-		{
-			xo::char_stream bstr( load_string( baseline_file ) );
-			while ( bstr.good() )
-			{
-				string bname;
-				double bmedian, bstd;
-				bstr >> bname >> bmedian >> bstd;
-				bool eval = xo::str_begins_with( bname, "Eval" );
-				if ( bstr.good() )
-					baseline_medians[bname] = eval ? xo::time_from_milliseconds( bmedian ) : xo::time_from_nanoseconds( bmedian );
-			}
-		}
-
 		// process
 		std::vector<Benchmark> benchmarks;
 		for ( const auto& [name, samples] : bm_components )
@@ -108,7 +109,7 @@ namespace scone
 			std::partial_sort_copy( samples.begin(), samples.end(), bmsortedbest.begin(), bmsortedbest.end() );
 			auto [mean, stdev] = xo::mean_std( bmsortedbest );
 			bm.time_ = xo::time_from_seconds( mean );
-			bm.baseline_ = baseline_medians[name];
+			bm.baseline_ = has_baseline ? duration / baseline_rtx[name] : duration;
 			bm.std_ = stdev;
 			benchmarks.push_back( bm );
 		}
@@ -116,9 +117,11 @@ namespace scone
 		std::sort( benchmarks.begin(), benchmarks.end(), [&]( auto&& a, auto&& b ) { return a.time_ > b.time_; } );
 
 		// report
-		string history_header = "SimulatorId     ";
-		string history_str = mo->GetModel().GetSimulatorId();
-		string baseline_str;
+		auto result_str = xo::to_str( result );
+		const auto simulator_id = mo->GetModel().GetSimulatorId();
+		const char* fmt = "%-32s\t%-20s\t%-8s";
+		string results_header = xo::stringf( fmt, "Benchmark", "SimulatorId", "Result" );
+		string results_string = xo::stringf( fmt, bench_name.c_str(), simulator_id.c_str(), result_str.c_str() );
 		for ( const auto& bm : benchmarks )
 		{
 			bool eval = xo::str_begins_with( bm.name_, "Eval" );
@@ -127,36 +130,26 @@ namespace scone
 
 			if ( eval )
 			{
-				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%5.2fx\t%+6.2fS\t%6.2f\t(%.2fx real-time)", bm.name_.c_str(),
+				log::message( l, xo::stringf( "%-32s\t%5.0fms\t%+5.0fms\t%5.3fx\t%+6.2fS\t%6.4f\t(%.2fx real-time)", bm.name_.c_str(),
 					bm.time_.milliseconds(), bm.diff().milliseconds(), bm.diff_factor(), diff_std, bm.std_, duration / bm.time_ ) );
-				history_str += "\t" + xo::to_str( duration / bm.time_ );
-				history_header += "\t" + bm.name_;
+				results_string += xo::stringf( "\t%12.3f", duration / bm.time_ );
+				results_header += xo::stringf( "\t%12s", bm.name_.c_str() );
 			}
 			else
-				log::message( l, xo::stringf( "%-32s\t%5.0fns\t%+5.0fns\t%5.2fx\t%+6.2fS\t%6.2f", bm.name_.c_str(),
-					bm.time_.nanosecondsd(), bm.diff().nanosecondsd(), bm.diff_factor(), diff_std, bm.std_ ) );
-
-			if ( create_baseline )
-			{
-				if ( eval )
-					baseline_str += xo::stringf( "%-32s\t%8.2f\t%8.2f\n", bm.name_.c_str(), bm.time_.milliseconds(), bm.std_ );
-				else
-					baseline_str += xo::stringf( "%-32s\t%8.0f\t%8.2f\n", bm.name_.c_str(), bm.time_.nanosecondsd(), bm.std_ );
-			}
-		}
-		log::info( "Simulation duration=", duration.secondsd(), " result=", result );
-
-		if ( bo.log_history ) {
-			auto history_file = results_dir / xo::get_computer_name() / file.stem() + ".history";
-			if ( !xo::file_exists( history_file ) )
-				xo::save_string( history_file, history_header + "\n" );
-			xo::append_string( history_file, history_str + "\n" );
+				log::info( xo::stringf( "%-32s\t%5.0fns", bm.name_.c_str(), bm.time_.nanosecondsd() ) );
 		}
 
-		if ( create_baseline )
-		{
-			xo::save_string( baseline_file, baseline_str );
-			log::info( "Results written to ", baseline_file );
+		log::info( "result=", result, " duration=", duration.secondsd() );
+		if ( has_baseline && baseline_result_str != result_str )
+			log::error( "Result is different from baseline: ", result_str, " != ", baseline_result_str );
+
+
+		if ( !bo.results_file.empty() ) {
+			path fixed_results_file = bo.results_file;
+			fixed_results_file.concat_stem( "_" + xo::replace_str( simulator_id, "Hyfydy-", "" ) );
+			if ( !xo::file_exists( fixed_results_file ) )
+				xo::save_string( fixed_results_file, results_header + "\n" );
+			xo::append_string( fixed_results_file, results_string + "\n" );
 		}
 	}
 }
