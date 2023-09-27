@@ -34,7 +34,7 @@ int main( int argc, const char* argv[] )
 		xo::pattern_matcher include = args.get<std::string>( "include", "bench*.scone" );
 		xo::pattern_matcher exclude = args.get<std::string>( "exclude", "" );
 		auto folder = scone::GetFolder( scone::SconeFolder::Scenarios ) / args.get<std::string>( 0, "Benchmarks" );
-		auto results_folder = folder / "_benchmark_results" / xo::get_computer_name();
+		auto results_folder = folder / "_benchmark_results" / xo::get_computer_name() + "-" + xo::get_compiler_id();
 		bool create_baseline = args.has_flag( "b" );
 		bool fast = args.has_flag( "fast" );
 
