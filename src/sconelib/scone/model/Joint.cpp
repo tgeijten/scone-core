@@ -68,6 +68,12 @@ namespace scone
 		pn["child"] = GetBody().GetName();
 		pn["pos_in_parent"] = GetPosInParent();
 		pn["pos_in_child"] = GetPosInChild();
+		if ( !m_Dofs.empty() ) {
+			auto& dof_pn = pn["coordinates"];
+			for ( auto* d : m_Dofs )
+				dof_pn.add_value( d->GetName() );
+		}
+		pn["pos_in_child"] = GetPosInChild();
 		return pn;
 	}
 
