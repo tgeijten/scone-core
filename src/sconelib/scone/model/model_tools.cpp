@@ -68,6 +68,18 @@ namespace scone
 		return j.GetParentBody().GetMass() > 0;
 	}
 
+	const Body* GetWeldedRoot( const Body& b )
+	{
+		if ( b.GetMass() == 0 )
+			return nullptr;
+		if ( auto* j = b.GetJoint() ) {
+			if ( !j->GetDofs().empty() )
+				return &b;
+			else return GetWeldedRoot( j->GetParentBody() );
+		}
+		else return nullptr;
+	}
+
 	struct dof_info {
 		string name;
 		bool mirror_left = false;
