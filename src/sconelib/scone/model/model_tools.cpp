@@ -64,8 +64,15 @@ namespace scone
 		return count;
 	}
 
-	bool IsRealJoint( const Joint& j ) {
+	bool IsRealJoint( const Joint& j )
+	{
 		return j.GetParentBody().GetMass() > 0;
+	}
+
+	bool IsWeldedBody( const Body& b )
+	{
+		auto* j = b.GetJoint();
+		return j && IsRealJoint( *j ) && j->GetDofs().empty() && b.GetMass() > 0;
 	}
 
 	const Body* GetWeldedRoot( const Body& b )

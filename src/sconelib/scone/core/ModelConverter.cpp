@@ -5,6 +5,7 @@
 #include "scone/model/Dof.h"
 #include "xo/numerical/bounds.h"
 #include "xo/utility/side.h"
+#include "xo/utility/optional.h"
 #include "scone/model/model_tools.h"
 #include "scone/core/Log.h"
 #include "string_tools.h"
@@ -24,9 +25,8 @@ namespace scone
 
 	PropNode ModelConverter::ConvertModel( Model& model )
 	{
+		// Set coordinates to 0 for correct joint orientations
 		model.SetNullState();
-
-		converted_bodies_.clear();
 
 		PropNode pn;
 		auto& model_pn = pn.add_child( "model" );
@@ -34,7 +34,11 @@ namespace scone
 		ConvertMaterials( model, model_pn );
 
 		for ( auto& b : model.GetBodies() )
-			ConvertBody( *b, model_pn );
+			MakeBodyInfo( *b );
+
+		StringSet converted_bodies;
+		for ( auto& b : model.GetBodies() )
+			ConvertBody( *b, model_pn, converted_bodies );
 
 		for ( auto& m : model.GetMuscles() )
 			ConvertMuscle( *m, model_pn );
@@ -45,61 +49,61 @@ namespace scone
 		for ( auto& d : model.GetDofs() )
 			ConvertDof( *d, model_pn );
 
+		// Restore original position
 		model.Reset();
 
 		return pn;
 	}
 
-	void ModelConverter::ConvertBody( const Body& b, PropNode& parent_pn )
+	void ModelConverter::ConvertBody( const Body& b, PropNode& model_pn, StringSet& converted ) const
 	{
-		if ( converted_bodies_.contains( b.GetName() ) )
+		if ( converted.contains( b.GetName() ) )
 			return;
 
 		// check if parent body is converted
-		auto* j = b.GetJoint();
-		if ( j && IsRealJoint( *j ) && !converted_bodies_.contains( j->GetParentBody().GetName() ) )
-			ConvertBody( j->GetParentBody(), parent_pn );
+		if ( auto* pb = b.GetParentBody() )
+			ConvertBody( *pb, model_pn, converted );
 
-		auto& body_pn = parent_pn.add_child( "body" );
-		body_pn["name"] = b.GetName();
-		body_pn["mass"] = b.GetMass();
-		body_pn["inertia"] = b.GetInertiaTensorDiagonal();
+		// check if this a weld body that should be compounded to its parent
+		if ( IsCompoundChild( b ) ) {
+			auto& pb = GetCompoundRoot( b );
+			auto& body_pn = FindBodyPropNode( pb, model_pn );
+			ConvertDisplayGeometry( b, body_pn );
+		}
+		else {
+			auto& body_pn = model_pn.add_child( "body" );
+			const auto& gb = GetGlobalBody( b );
+			body_pn["name"] = gb.name;
+			body_pn["mass"] = gb.mass;
+			body_pn["inertia"] = gb.inertia;
+			if ( gb.mass > 0 && gb.mass < body_mass_threshold_ )
+				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
-		if ( b.GetMass() > 0 && b.GetMass() < body_mass_threshold_ )
-			log::warning( b.GetName(), " mass is below threshold (", b.GetMass(), " < ", body_mass_threshold_, ")" );
-
-		// joint
-		if ( j && IsRealJoint( *j ) )
-			ConvertJoint( *j, body_pn );
-		else if ( !b.GetLocalComPos().is_null() ) {
-			body_pn["pos"] = b.GetLocalComPos();
-			if ( !b.GetOrientation().is_identity() )
-				body_pn["ori"] = b.GetOrientation();
+			// joint
+			auto* j = b.GetJoint();
+			if ( j && IsRealJoint( *j ) )
+				ConvertJoint( *j, body_pn );
+			else if ( !b.GetLocalComPos().is_null() ) {
+				// root body, add pos and ori
+				body_pn["pos"] = b.GetLocalComPos();
+				if ( !b.GetOrientation().is_identity() )
+					body_pn["ori"] = b.GetOrientation();
+			}
+			ConvertDisplayGeometry( b, body_pn );
 		}
 
-		// display geometry
-		for ( const auto& g : b.GetDisplayGeometries() ) {
-			auto& geom_pn = body_pn.add_child( "mesh" );
-			geom_pn["file"] = g.filename_;
-			geom_pn["pos"] = g.pos_ - b.GetLocalComPos();
-			if ( g.ori_ != Quat::identity() )
-				geom_pn["ori"] = g.ori_;
-			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
-				geom_pn["scale"] = g.scale_;
-		}
-
-		converted_bodies_.insert( b.GetName() );
+		converted.insert( b.GetName() );
 	}
 
-	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn )
+	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn ) const
 	{
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
 		auto& joint_pn = body_pn.add_child( "joint" );
 		joint_pn["name"] = j.GetName();
 		joint_pn["parent"] = j.GetParentBody().GetName();
-		joint_pn["pos_in_parent"] = fix( j.GetPosInParent() - bp.GetLocalComPos() );
-		joint_pn["pos_in_child"] = fix( j.GetPosInChild() - bc.GetLocalComPos() );
+		joint_pn["pos_in_parent"] = GetLocalBodyPos( j.GetPosInParent(), bp );
+		joint_pn["pos_in_child"] = GetLocalBodyPos( j.GetPosInChild(), bc );
 		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
 		if ( !ref_ori.is_identity() )
 			joint_pn["ref_ori"] = ref_ori;
@@ -134,7 +138,7 @@ namespace scone
 		joint_pn["limits"] = Bounds3Deg( limits );
 	}
 
-	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn )
+	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn ) const
 	{
 		auto& mus_pn = parent_pn.add_child( "point_path_muscle" );
 		mus_pn["name"] = m.GetName();
@@ -144,24 +148,37 @@ namespace scone
 		mus_pn["pennation_angle"] = m.GetPennationAngleAtOptimal();
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
-		for ( auto& [body, point] : mp ) {
+		for ( auto& [b, point] : mp ) {
 			auto& ppn = path_pn.add_child();
-			ppn["body"] = body->GetName();
-			ppn["pos"] = point - body->GetLocalComPos();
+			ppn["body"] = GetBodyName( *b );
+			ppn["pos"] = GetLocalBodyPos( point, *b );
 		}
 	}
 
-	void ModelConverter::ConvertContactGeometry( const ContactGeometry& cg, PropNode& parent_pn )
+	void ModelConverter::ConvertContactGeometry( const ContactGeometry& cg, PropNode& body_pn ) const
 	{
-		auto& cg_pn = parent_pn.add_child( "geometry" );
+		auto& cg_pn = body_pn.add_child( "geometry" );
 		cg_pn["name"] = cg.GetName();
 		cg_pn.append( to_prop_node( cg.GetShape() ) );
-		cg_pn["body"] = cg.GetBody().GetName();
-		cg_pn["pos"] = fix( cg.GetPos() - cg.GetBody().GetLocalComPos() );
+		cg_pn["body"] = GetBodyName( cg.GetBody() );
+		cg_pn["pos"] = GetLocalBodyPos( cg.GetPos(), cg.GetBody() );
 		cg_pn["ori"] = fix( Vec3( xo::vec3degd( xo::euler_xyz_from_quat( cg.GetOri() ) ) ) );
 	}
 
-	void ModelConverter::ConvertDof( const Dof& d, PropNode& parent_pn )
+	void ModelConverter::ConvertDisplayGeometry( const Body& b, PropNode& body_pn ) const
+	{
+		for ( const auto& g : b.GetDisplayGeometries() ) {
+			auto& geom_pn = body_pn.add_child( "mesh" );
+			geom_pn["file"] = g.filename_;
+			geom_pn["pos"] = GetLocalBodyPos( g.pos_, b );
+			if ( g.ori_ != Quat::identity() )
+				geom_pn["ori"] = g.ori_;
+			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
+				geom_pn["scale"] = g.scale_;
+		}
+	}
+
+	void ModelConverter::ConvertDof( const Dof& d, PropNode& parent_pn ) const
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
 		dof_pn["name"] = d.GetName();
@@ -172,7 +189,7 @@ namespace scone
 			dof_pn["default"] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
 	}
 
-	void ModelConverter::ConvertMaterials( const Model& m, PropNode& parent_pn )
+	void ModelConverter::ConvertMaterials( const Model& m, PropNode& parent_pn ) const
 	{
 		if ( !m.GetContactForces().empty() ) {
 			auto& cf = *m.GetContactForces().front();
@@ -186,6 +203,74 @@ namespace scone
 		auto& opt_pn = parent_pn.add_child( "model_options" );
 		opt_pn["joint_stiffness"] = joint_stiffness_;
 		opt_pn["joint_limit_stiffness"] = joint_limit_stiffness_;
+	}
+
+	PropNode& ModelConverter::FindBodyPropNode( const Body& b, PropNode& model_pn ) const
+	{
+		auto it = xo::find_if( model_pn, [&]( auto pn ) {
+			auto name = pn.second.try_get<string>( "name" ); return pn.first == "body" && name == b.GetName(); } );
+		SCONE_ERROR_IF( it == model_pn.end(), "Could not find node for body " + b.GetName() );
+		return it->second;
+	}
+
+	const ModelConverter::BodyInfo& ModelConverter::GetGlobalBody( const Body& b ) const
+	{
+		return global_bodies_[GetCompoundRoot( b ).GetName()];
+	}
+
+	Vec3 ModelConverter::GetLocalBodyPos( const Vec3& osim_pos, const Body& b ) const
+	{
+		return b.GetPosOfPointOnBody( osim_pos ) - GetGlobalBody( b ).com_world;
+	}
+
+	inline Vec3d translated_inertia( const Vec3d& in, Real m, const Vec3d& o ) {
+		return Vec3d(
+			in.y + m * ( o.x * o.x + o.z * o.z ),
+			in.x + m * ( o.y * o.y + o.z * o.z ),
+			in.z + m * ( o.x * o.x + o.y * o.y ) );
+	}
+
+	ModelConverter::BodyInfo ModelConverter::GetCompoundedMass( const BodyInfo& m1, const BodyInfo& m2 ) const
+	{
+		BodyInfo m( m1 );
+		m.mass = m1.mass + m2.mass;
+		m.com_world = m1.mass / m.mass * m1.com_world + m2.mass / m.mass * m2.com_world;
+		m.inertia = translated_inertia( m1.inertia, m1.mass, m.com_world - m1.com_world ) +
+			translated_inertia( m2.inertia, m2.mass, m.com_world - m2.com_world );
+		return m;
+	}
+
+	void ModelConverter::MakeBodyInfo( const Body& b )
+	{
+		if ( IsCompoundChild( b ) )
+		{
+			auto& crb = GetCompoundRoot( b );
+			auto it = global_bodies_.find( crb.GetName() );
+			if ( it == global_bodies_.end() )
+				it = global_bodies_.insert( { crb.GetName(), BodyInfo( crb ) } ).first;
+			auto& gpb = it->second;
+			auto new_gpb = GetCompoundedMass( gpb, BodyInfo( b ) );
+			log::info( "Compounded ", b.GetName(), " to ", new_gpb.name, "; com_ofs=", new_gpb.com_world - gpb.com_world );
+			gpb = new_gpb;
+		}
+		else if ( !global_bodies_.contains( b.GetName() ) )
+			global_bodies_.insert( { b.GetName() , BodyInfo( b ) } );
+	}
+
+	bool ModelConverter::IsCompoundChild( const Body& b ) const
+	{
+		auto* j = b.GetJoint();
+		return j && IsRealJoint( *j ) && j->GetDofs().empty()
+			&& compound_welded_bodies && b.GetMass() < compound_mass_threshold;
+	}
+
+	const Body& ModelConverter::GetCompoundRoot( const Body& b ) const
+	{
+		if ( !IsCompoundChild( b ) )
+			return b;
+		else if ( auto* j = b.GetJoint() )
+			return GetCompoundRoot( j->GetParentBody() );
+		else SCONE_ERROR( "Could not find compound root for body " + b.GetName() );
 	}
 }
 
