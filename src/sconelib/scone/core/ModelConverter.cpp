@@ -207,10 +207,10 @@ namespace scone
 
 	PropNode& ModelConverter::FindBodyPropNode( const Body& b, PropNode& model_pn ) const
 	{
-		auto it = xo::find_if( model_pn, [&]( auto pn ) {
-			auto name = pn.second.try_get<string>( "name" ); return pn.first == "body" && name == b.GetName(); } );
-		SCONE_ERROR_IF( it == model_pn.end(), "Could not find node for body " + b.GetName() );
-		return it->second;
+		for ( auto& [key, value] : model_pn )
+			if ( key == "body" && value.try_get<std::string>( "name" ) == b.GetName() )
+				return value;
+		SCONE_ERROR( "Could not find node for body " + b.GetName() );
 	}
 
 	const ModelConverter::BodyInfo& ModelConverter::GetGlobalBody( const Body& b ) const
