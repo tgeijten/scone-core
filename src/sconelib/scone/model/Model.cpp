@@ -54,6 +54,7 @@ namespace scone
 		max_individual_muscle_activation( props.try_get_child( "max_individual_muscle_activation" ) ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
+		planar_( props.try_get<bool>( "planar" ) ),
 		INIT_MEMBER( props, user_input_file, "" ),
 		INIT_MEMBER( props, scone_version, GetSconeVersion() ),
 		m_Profiler( GetProfilerEnabled() ),
@@ -600,8 +601,11 @@ namespace scone
 
 	bool Model::IsPlanar() const
 	{
+		if ( planar_ )
+			return *planar_;
+
+		// check for any rotational dof that is not along Z
 		for ( auto& d : GetDofs() ) {
-			// check for any rotational dof that is not along Z
 			if ( d->IsRotational() && !xo::equal( xo::abs( d->GetRotationAxis().z ), Real( 1 ), Real( 0.001 ) ) )
 				return false;
 		}

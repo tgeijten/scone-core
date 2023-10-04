@@ -269,6 +269,9 @@ namespace scone
 		/// Optional list of two-way neural delays, used by SpinalController.
 		xo::flat_map<String, TimeInSeconds> neural_delays;
 
+		/// Set to override automatic planar model detection; default = not set.
+		xo::optional<bool> planar_;
+
 		/// File containing user input values, only for model with user inputs; default = "".
 		path user_input_file;
 
