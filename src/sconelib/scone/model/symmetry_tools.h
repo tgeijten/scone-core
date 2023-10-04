@@ -7,9 +7,10 @@
 namespace scone
 {
 	template< typename T >
-	void CheckValues( const T& v1, const T& v2, const char* vname, PropNode& pn ) {
+	bool CheckValues( const T& v1, const T& v2, const char* vname, PropNode& pn ) {
 		if ( v1 != v2 )
 			pn.add_key_value( vname, to_str( v1 ) + " <> " + to_str( v2 ) );
+		return v1 == v2;
 	}
 	template< typename T >
 	void CheckMirrored( const T& v1, const T& v2, const String& vname, PropNode& pn ) {
@@ -20,11 +21,12 @@ namespace scone
 		PropNode pn;
 		auto path1 = m1.GetLocalMusclePath();
 		auto path2 = m2.GetLocalMusclePath();
-		CheckValues( path1.size(), path2.size(), "path_size", pn );
-		for ( auto&& [p1, p2] : xo::zip( path1, path2 ) ) {
-			if ( !IsMirrored( p1.first->GetName(), p2.first->GetName() ) )
-				pn.add_value( p1.first->GetName() + " <> " + p2.first->GetName() );
-			CheckMirrored( p1.second, p2.second, "path_point", pn );
+		if ( CheckValues( path1.size(), path2.size(), "path_size", pn ) ) {
+			for ( auto&& [p1, p2] : xo::zip( path1, path2 ) ) {
+				if ( !IsMirrored( p1.first->GetName(), p2.first->GetName() ) )
+					pn.add_value( p1.first->GetName() + " <> " + p2.first->GetName() );
+				CheckMirrored( p1.second, p2.second, "path_point", pn );
+			}
 		}
 		CheckValues( m1.GetMaxIsometricForce(), m2.GetMaxIsometricForce(), "max_isometric_force", pn );
 		CheckValues( m1.GetTendonSlackLength(), m2.GetTendonSlackLength(), "tendon_slack_length", pn );
