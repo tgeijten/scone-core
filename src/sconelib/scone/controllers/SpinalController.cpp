@@ -11,8 +11,6 @@
 
 namespace scone
 {
-	using xo::uint32;
-	using snel::group_id, snel::link_id;
 	using std::vector;
 	constexpr auto both_sides = { Side::Right, Side::Left };
 	static const char* axis_names[] = { "x", "y", "z" };
@@ -26,6 +24,8 @@ namespace scone
 		INIT_MEMBER_REQUIRED( pn, activation_ )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
+
+		const bool v2 = model.scone_version.is_at_least( 2, 2, 2, 2788 );
 
 		auto sides = get_sides( loc );
 		InitMuscleInfo( pn, model, loc );
@@ -121,7 +121,7 @@ namespace scone
 			// L -> IA / IA -> IA
 			if ( ia_group_ ) {
 				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
-				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
+				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_, v2 ? "_ant" : "" );
 			}
 			// VES -> IA
 			if ( ves_group_ )
@@ -132,7 +132,7 @@ namespace scone
 			if ( load_group_ )
 				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
 					TryConnect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_,
-						NeuronSide( load_group_, vi ) == mg.side_ ? "_weight" : "_com_weight" );
+						NeuronSide( load_group_, vi ) == mg.side_ ? "" : "_com" );
 
 			// IB -> IA
 			if ( pn.has_key( "IB_IA_weight" ) )
@@ -149,7 +149,6 @@ namespace scone
 			// IB interneurons
 			for ( auto ib_group : { ib_group_, ibi_group_, ibe_group_ } ) {
 				if ( ib_group ) {
-					auto group_suffix = "_" + GroupName( ib_group ) + "_weight";
 					// F+L -> IB
 					Connect( f_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
 					TryConnect( l_group_, mg.muscle_indices_, ib_group, mgi, par, pn, &mg.pn_ );
@@ -157,28 +156,28 @@ namespace scone
 					if ( load_group_ )
 						for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
 							TryConnect( load_group_, vi, ib_group, mgi, par, pn, &mg.pn_,
-								NeuronSide( load_group_, vi ) == mg.side_ ? "_weight" : "_com_weight" );
+								NeuronSide( load_group_, vi ) == mg.side_ ? "" : "_com" );
 					// VES -> IB
 					if ( ves_group_ )
 						for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
 							if ( NeuronSide( ves_group_, vi ) == mg.side_ )
 								TryConnect( ves_group_, vi, ib_group, mgi, par, pn, &mg.pn_ );
 					// IB -> IB / IBE -> IBE / IBI -> IBI
-					TryConnect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
-					TryConnect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
+					TryConnect( ib_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant" );
+					TryConnect( ib_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel" );
 					if ( contra_mg ) {
-						TryConnect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
-						TryConnect( ib_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+						TryConnect( ib_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com" );
+						TryConnect( ib_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant" );
 					}
 
 					// IBE -> IBI / IBI -> IBE
 					if ( ib_group == ibi_group_ || ib_group == ibe_group_ && ibi_group_ && ibe_group_ ) {
 						auto src_group = ( ib_group == ibi_group_ ) ? ibe_group_ : ibi_group_;
-						TryConnect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant_weight" );
-						TryConnect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel_weight" );
+						TryConnect( src_group, mg.ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_ant" );
+						TryConnect( src_group, mg.related_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_rel" );
 						if ( contra_mg ) {
-							TryConnect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com_weight" );
-							TryConnect( src_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant_weight" );
+							TryConnect( src_group, mg.contra_group_index_, ib_group, mgi, par, pn, &mg.pn_, "_com" );
+							TryConnect( src_group, contra_mg->ant_group_indices_, ib_group, mgi, par, pn, &mg.pn_, "_com_ant" );
 						}
 					}
 				}
@@ -210,16 +209,18 @@ namespace scone
 
 			// monosynaptic L connections
 			if ( l_group_ )
-				Connect( l_group_, mi, mn_group_, mi, par, pn, mg_pn );
+				TryConnect( l_group_, mi, mn_group_, mi, par, pn, mg_pn );
 
 			// connect IAIN to antagonists
-			if ( ia_group_ )
-				Connect( ia_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
+			if ( ia_group_ ) {
+				TryConnect( ia_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn, v2 ? "" : "_syn" );
+				TryConnect( ia_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, v2 ? "_ant" : "" );
+			}
 
 			// connect IBIN to group members
 			if ( ib_group_ ) {
 				TryConnect( ib_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
-				TryConnect( ib_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, "_ant_weight" );
+				TryConnect( ib_group_, muscles_[mi].ant_group_indices_.container(), mn_group_, mi, par, pn, mg_pn, "_ant" );
 			}
 			if ( ibi_group_ )
 				Connect( ibi_group_, muscles_[mi].group_indices_.container(), mn_group_, mi, par, pn, mg_pn );
