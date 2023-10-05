@@ -301,7 +301,7 @@ set (SCONELIB_FILES
 	${SIM_TOPOLOGY_FILES}
 	)
 
-if (DEFINED SNEL_INCLUDE_DIR)
+if (SCONE_SNEL)
 	list( APPEND SCONELIB_FILES ${CS_CONTROLLERS_SNEL_FILES} )
 endif()
 
@@ -324,7 +324,7 @@ if (SCONE_EXPERIMENTAL_FEATURES)
 	target_compile_definitions(sconelib PUBLIC SCONE_EXPERIMENTAL_FEATURES)
 endif()
 
-if (DEFINED SNEL_INCLUDE_DIR)
+if (SCONE_SNEL)
 	target_include_directories(sconelib PUBLIC ${SNEL_INCLUDE_DIR})
 	target_compile_definitions(sconelib PUBLIC SCONE_SNEL)
 endif()

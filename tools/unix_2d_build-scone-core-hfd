@@ -9,7 +9,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         -DSCONE_PYTHON=ON
         -DSCONE_OPENSIM_3=ON
         -DSCONE_HYFYDY=ON
-        -DSCONE_DEVELOPMENT_BUILD=ON
+        -DSCONE_SNEL=ON
+        -DHFD_BUILD_BLUEPRINT=ON
+        -DHFD_BUILD_SNEL=ON
     )
 else
     cmake_extra_args=(
@@ -17,8 +19,10 @@ else
         -DSCONE_PYTHON=ON
         -DSCONE_OPENSIM_3=ON
         -DSCONE_HYFYDY=ON
+        -DSCONE_SNEL=ON
+        -DHFD_BUILD_BLUEPRINT=ON
+        -DHFD_BUILD_SNEL=ON
         -DSCONE_CORE_CPACK=ON
-        -DSCONE_DEVELOPMENT_BUILD=ON
    )
 fi
 
