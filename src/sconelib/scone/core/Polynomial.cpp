@@ -10,15 +10,16 @@
 
 namespace scone
 {
-	Polynomial::Polynomial( size_t degree )
+	Polynomial::Polynomial( size_t d ) :
+		degree( d )
 	{
 		m_Coeffs.resize( degree + 1 );
 	}
 
-	Polynomial::Polynomial( const PropNode& props, Params& par )
+	Polynomial::Polynomial( const PropNode& props, Params& par ) :
+		degree( props.get_any< size_t >( { "order", "degree" } ) )
 	{
-		size_t d = props.get_any< size_t >( { "order", "degree" } );
-		m_Coeffs.resize( d + 1 );
+		m_Coeffs.resize( degree + 1 );
 		for ( size_t i = 0; i < m_Coeffs.size(); ++i )
 			SetCoefficient( i, par.get( stringf( "C%d", i ), props.get_child( stringf( "coefficient%d", i ) ) ) );
 	}
