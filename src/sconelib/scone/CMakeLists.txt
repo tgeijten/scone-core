@@ -149,7 +149,7 @@ set(CS_CONTROLLERS_COMPOSITE_FILES
 	controllers/SequentialController.cpp
 	controllers/SequentialController.h
 	)
-set(CS_CONTROLLERS_EXPERIMENTAL_FILES
+set(CS_CONTROLLERS_SNEL_FILES
 	controllers/SpinalController.cpp
 	controllers/SpinalController.h
 	)
@@ -301,8 +301,8 @@ set (SCONELIB_FILES
 	${SIM_TOPOLOGY_FILES}
 	)
 
-if (SCONE_EXPERIMENTAL_FEATURES)
-	list( APPEND SCONELIB_FILES ${CS_CONTROLLERS_EXPERIMENTAL_FILES} )
+if (DEFINED SNEL_INCLUDE_DIR)
+	list( APPEND SCONELIB_FILES ${CS_CONTROLLERS_SNEL_FILES} )
 endif()
 
 # congifure scone_version.h
@@ -322,7 +322,11 @@ set_target_properties(sconelib PROPERTIES PROJECT_LABEL sconelib )
 
 if (SCONE_EXPERIMENTAL_FEATURES)
 	target_compile_definitions(sconelib PUBLIC SCONE_EXPERIMENTAL_FEATURES)
+endif()
+
+if (DEFINED SNEL_INCLUDE_DIR)
 	target_include_directories(sconelib PUBLIC ${SNEL_INCLUDE_DIR})
+	target_compile_definitions(sconelib PUBLIC SCONE_SNEL)
 endif()
 
 if (SCONE_DEVELOPMENT_BUILD)

@@ -25,7 +25,6 @@
 #include "scone/controllers/BodyOrientationReflex.h"
 #include "scone/controllers/ComPivotReflex.h"
 #include "scone/controllers/ExternalController.h"
-#include "scone/controllers/SpinalController.h"
 
 #include "scone/core/PieceWiseConstantFunction.h"
 #include "scone/core/PieceWiseLinearFunction.h"
@@ -68,6 +67,10 @@
 #	include "scone/controllers/NeuralNetworkController.h"
 #endif
 
+#ifdef SCONE_SNEL
+#	include "scone/controllers/SpinalController.h"
+#endif
+
 namespace scone
 {
 	ControllerFactory& GetControllerFactory()
@@ -75,6 +78,9 @@ namespace scone
 		static ControllerFactory g_ControllerFactory = ControllerFactory()
 #ifdef SCONE_EXPERIMENTAL_FEATURES
 			.register_type<NN::NeuralNetworkController>( "NeuralNetworkController" )
+#endif
+#ifdef SCONE_SNEL
+			.register_type<SpinalController>()
 #endif
 			.register_type<FeedForwardController>()
 			.register_type<TrackingController>()
@@ -86,7 +92,6 @@ namespace scone
 			.register_type<CompositeController>()
 			.register_type<SequentialController>()
 			.register_type<NoiseController>()
-			.register_type<SpinalController>()
 			.register_type<ExternalController>();
 
 		return g_ControllerFactory;
