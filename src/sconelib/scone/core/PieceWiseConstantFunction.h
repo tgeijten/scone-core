@@ -28,7 +28,7 @@ namespace scone
 		const PropNode& control_point_y;
 
 		/// Parameter for the dt value of each control point.
-		const PropNode& control_point_dt;
+		const PropNode* control_point_dt;
 
 		virtual Real GetValue( Real x ) override;
 
