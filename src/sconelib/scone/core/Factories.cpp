@@ -25,6 +25,7 @@
 #include "scone/controllers/BodyOrientationReflex.h"
 #include "scone/controllers/ComPivotReflex.h"
 #include "scone/controllers/ExternalController.h"
+#include "scone/controllers/SpinalController.h"
 
 #include "scone/core/PieceWiseConstantFunction.h"
 #include "scone/core/PieceWiseLinearFunction.h"
@@ -65,7 +66,6 @@
 #	include "scone/optimization/MesOptimizer.h"
 #	include "scone/optimization/EvaOptimizer.h"
 #	include "scone/controllers/NeuralNetworkController.h"
-#	include "scone/controllers/SpinalController.h"
 #endif
 
 namespace scone
@@ -74,20 +74,20 @@ namespace scone
 	{
 		static ControllerFactory g_ControllerFactory = ControllerFactory()
 #ifdef SCONE_EXPERIMENTAL_FEATURES
-			.register_type< NN::NeuralNetworkController >( "NeuralNetworkController" )
-			.register_type< SpinalController >()
+			.register_type<NN::NeuralNetworkController>( "NeuralNetworkController" )
 #endif
-			.register_type< FeedForwardController >()
-			.register_type< TrackingController >()
-			.register_type< GaitStateController >()
-			.register_type< ReflexController >()
-			.register_type< PerturbationController >()
-			.register_type< MirrorController >()
-			.register_type< NeuralController >()
-			.register_type< CompositeController >()
-			.register_type< SequentialController >()
-			.register_type< NoiseController >()
-			.register_type< ExternalController >();
+			.register_type<FeedForwardController>()
+			.register_type<TrackingController>()
+			.register_type<GaitStateController>()
+			.register_type<ReflexController>()
+			.register_type<PerturbationController>()
+			.register_type<MirrorController>()
+			.register_type<NeuralController>()
+			.register_type<CompositeController>()
+			.register_type<SequentialController>()
+			.register_type<NoiseController>()
+			.register_type<SpinalController>()
+			.register_type<ExternalController>();
 
 		return g_ControllerFactory;
 	}
@@ -111,22 +111,22 @@ namespace scone
 	MeasureFactory& GetMeasureFactory()
 	{
 		static MeasureFactory g_MeasureFactory = MeasureFactory()
-			.register_type< HeightMeasure >()
-			.register_type< GaitMeasure >()
-			.register_type< GaitCycleMeasure >()
-			.register_type< EffortMeasure >()
-			.register_type< DofLimitMeasure >()
-			.register_type< DofMeasure >()
-			.register_type< MuscleMeasure >()
-			.register_type< BodyMeasure >()
-			.register_type< CompositeMeasure >()
-			.register_type< JumpMeasure >()
-			.register_type< JointLoadMeasure >()
-			.register_type< ReactionForceMeasure >()
-			.register_type< BalanceMeasure >()
-			.register_type< MimicMeasure >()
-			.register_type< StepMeasure >()
-			.register_type< SimulationMeasure >();
+			.register_type<HeightMeasure>()
+			.register_type<GaitMeasure>()
+			.register_type<GaitCycleMeasure>()
+			.register_type<EffortMeasure>()
+			.register_type<DofLimitMeasure>()
+			.register_type<DofMeasure>()
+			.register_type<MuscleMeasure>()
+			.register_type<BodyMeasure>()
+			.register_type<CompositeMeasure>()
+			.register_type<JumpMeasure>()
+			.register_type<JointLoadMeasure>()
+			.register_type<ReactionForceMeasure>()
+			.register_type<BalanceMeasure>()
+			.register_type<MimicMeasure>()
+			.register_type<StepMeasure>()
+			.register_type<SimulationMeasure>();
 
 		return g_MeasureFactory;
 	}
@@ -146,12 +146,12 @@ namespace scone
 	ReflexFactory& GetReflexFactory()
 	{
 		static ReflexFactory g_ReflexFactory = ReflexFactory()
-			.register_type< MuscleReflex >()
-			.register_type< DofReflex >()
-			.register_type< BodyPointReflex >()
-			.register_type< BodyOrientationReflex >()
-			.register_type< ComPivotReflex >()
-			.register_type< ConditionalMuscleReflex >();
+			.register_type<MuscleReflex>()
+			.register_type<DofReflex>()
+			.register_type<BodyPointReflex>()
+			.register_type<BodyOrientationReflex>()
+			.register_type<ComPivotReflex>()
+			.register_type<ConditionalMuscleReflex>();
 
 		return g_ReflexFactory;
 	}
@@ -164,16 +164,16 @@ namespace scone
 	FunctionFactory& GetFunctionFactory()
 	{
 		static FunctionFactory g_FunctionFactory = FunctionFactory()
-			.register_type< PieceWiseConstantFunction >()
-			.register_type< PieceWiseConstantFunction >( "PieceWiseConstant" )
-			.register_type< PieceWiseLinearFunction >()
-			.register_type< PieceWiseLinearFunction >( "PieceWiseLinear" )
-			.register_type< Polynomial >()
-			.register_type< SineWave >()
-			.register_type< Bezier >()
-			.register_type< RaisedCosine >()
-			.register_type< RaiseFallProfileFunction >()
-			.register_type< InterpolataryCubicSpline >();
+			.register_type<PieceWiseConstantFunction>()
+			.register_type<PieceWiseConstantFunction>( "PieceWiseConstant" )
+			.register_type<PieceWiseLinearFunction>()
+			.register_type<PieceWiseLinearFunction>( "PieceWiseLinear" )
+			.register_type<Polynomial>()
+			.register_type<SineWave>()
+			.register_type<Bezier>()
+			.register_type<RaisedCosine>()
+			.register_type<RaiseFallProfileFunction>()
+			.register_type<InterpolataryCubicSpline>();
 
 		return g_FunctionFactory;
 	}
@@ -186,13 +186,13 @@ namespace scone
 	OptimizerFactory& GetOptimizerFactory()
 	{
 		static OptimizerFactory g_OptimizerFactory = OptimizerFactory()
-			.register_type< CmaOptimizer >( "CmaOptimizer" )
-			.register_type< CmaOptimizer >( "CmaOptimizerSpot" )
+			.register_type<CmaOptimizer>( "CmaOptimizer" )
+			.register_type<CmaOptimizer>( "CmaOptimizerSpot" )
 #ifdef SCONE_EXPERIMENTAL_FEATURES
-			.register_type< MesOptimizer >()
-			.register_type< EvaOptimizer >()
+			.register_type<MesOptimizer>()
+			.register_type<EvaOptimizer>()
 #endif
-			.register_type< CmaPoolOptimizer >();
+			.register_type<CmaPoolOptimizer>();
 
 		return g_OptimizerFactory;
 	}
@@ -236,11 +236,11 @@ namespace scone
 	ObjectiveFactory& GetObjectiveFactory()
 	{
 		static ObjectiveFactory g_ObjectiveFactory = ObjectiveFactory()
-			.register_type< SimulationObjective >()
-			.register_type< ImitationObjective >()
-			.register_type< ReplicationObjective >()
-			.register_type< SimilarityObjective >()
-			.register_type< TestObjective >();
+			.register_type<SimulationObjective>()
+			.register_type<ImitationObjective>()
+			.register_type<ReplicationObjective>()
+			.register_type<SimilarityObjective>()
+			.register_type<TestObjective>();
 
 		return g_ObjectiveFactory;
 	}
