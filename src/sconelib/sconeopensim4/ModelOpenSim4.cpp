@@ -14,6 +14,7 @@
 #include "ModelOpenSim4.h"
 #include "BodyOpenSim4.h"
 #include "MuscleOpenSim4.h"
+#include "LigamentOpenSim4.h"
 #include "JointOpenSim4.h"
 #include "DofOpenSim4.h"
 #include "ConstantForce.h"
@@ -402,7 +403,7 @@ namespace scone
 			}
 		}
 
-		// Create ContactForce wrappers
+		// Create wrappers for forces
 		const auto& forces = m_pOsimModel->getForceSet();
 		for ( int i = 0; i < forces.getSize(); ++i )
 		{
@@ -412,6 +413,8 @@ namespace scone
 				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim4>( *this, *ssf ) );
 			else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &forces.get( i ) ) )
 				m_ContactForces.emplace_back( std::make_unique<ContactForceOpenSim4>( *this, *eff ) );
+			else if ( auto* lig = dynamic_cast<const OpenSim::Ligament*>( &forces.get( i ) ) )
+				m_Ligaments.emplace_back( std::make_unique<LigamentOpenSim4>( *this, *lig ) );
 		}
 
 		// create legs and connect stance_contact forces

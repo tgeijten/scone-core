@@ -11,6 +11,7 @@
 #include "Dof.h"
 #include "Joint.h"
 #include "Muscle.h"
+#include "Ligament.h"
 #include "UserInput.h"
 #include "SensorDelayAdapter.h"
 #include "State.h"
@@ -242,6 +243,10 @@ namespace scone
 		// store actuator data
 		for ( auto& m : GetActuators() )
 			m->StoreData( frame, flags );
+
+		// store ligament data
+		for ( auto& l : GetLigaments() )
+			l->StoreData( frame, flags );
 
 		// store body data
 		for ( auto& b : GetBodies() )
@@ -587,7 +592,10 @@ namespace scone
 			pn["Joints"].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetActuators() )
-			pn["Actuators"].add_child( item->GetName(), item->GetInfo() );
+			pn["Forces"].add_child( item->GetName(), item->GetInfo() );
+
+		for ( const auto& item : GetLigaments() )
+			pn["Forces"].add_child( item->GetName(), item->GetInfo() );
 
 		for ( const auto& item : GetDofs() )
 			pn["Coordinates"].add_child( item->GetName(), item->GetInfo() );

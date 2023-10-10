@@ -11,6 +11,8 @@ set(MODEL_OPENSIM_4_FILES
 	ModelOpenSim4.h
 	MuscleOpenSim4.cpp
 	MuscleOpenSim4.h
+	LigamentOpenSim4.cpp
+	LigamentOpenSim4.h
 	ConstantForce.cpp
 	ConstantForce.h
 	simbody_tools.h

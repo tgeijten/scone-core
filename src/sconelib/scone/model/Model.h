@@ -44,10 +44,6 @@ namespace scone
 		Model( const PropNode& props, Params& par );
 		virtual ~Model();
 
-		// muscle access
-		std::vector< Muscle* >& GetMuscles() { return m_MusclePtrs; }
-		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
-
 		// body access
 		std::vector< Body* >& GetBodies() { return m_BodyPtrs; }
 		const std::vector< Body* >& GetBodies() const { return m_BodyPtrs; }
@@ -62,6 +58,14 @@ namespace scone
 		// dof access
 		std::vector< Dof* >& GetDofs() { return m_DofPtrs; }
 		const std::vector< Dof* >& GetDofs() const { return m_DofPtrs; }
+
+		// muscle access
+		std::vector< Muscle* >& GetMuscles() { return m_MusclePtrs; }
+		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
+
+		// ligament access
+		std::vector< LigamentUP >& GetLigaments() { return m_Ligaments; }
+		const std::vector< LigamentUP >& GetLigaments() const { return m_Ligaments; }
 
 		// Actuator access
 		std::vector< Actuator* >& GetActuators() { return m_ActuatorPtrs; }
@@ -309,20 +313,21 @@ namespace scone
 		mutable xo::profiler m_Profiler;
 
 		// model components
-		std::vector< MuscleUP > m_Muscles;
 		std::vector< BodyUP > m_Bodies;
 		std::vector< JointUP > m_Joints;
 		std::vector< DofUP > m_Dofs;
+		std::vector< MuscleUP > m_Muscles;
+		std::vector< LigamentUP > m_Ligaments;
 		std::vector< Leg > m_Legs;
 		std::vector< ContactGeometryUP > m_ContactGeometries;
 		std::vector< ContactForceUP > m_ContactForces;
 
 		// non-owning model components
-		std::vector< Muscle* > m_MusclePtrs;
-		std::vector< Actuator* > m_ActuatorPtrs;
 		std::vector< Body* > m_BodyPtrs;
 		std::vector< Joint* > m_JointPtrs;
 		std::vector< Dof* > m_DofPtrs;
+		std::vector< Muscle* > m_MusclePtrs;
+		std::vector< Actuator* > m_ActuatorPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;
 
