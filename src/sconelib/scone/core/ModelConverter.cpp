@@ -10,6 +10,7 @@
 #include "scone/core/Log.h"
 #include "string_tools.h"
 #include "Angle.h"
+#include "scone/model/Ligament.h"
 
 namespace scone
 {
@@ -42,6 +43,11 @@ namespace scone
 
 		for ( auto& m : model.GetMuscles() )
 			ConvertMuscle( *m, model_pn );
+
+		if ( convert_ligaments ) {
+			for ( auto& m : model.GetLigaments() )
+				ConvertLigament( *m, model_pn );
+		}
 
 		for ( auto& cg : model.GetContactGeometries() )
 			ConvertContactGeometry( *cg, model_pn );
@@ -148,6 +154,21 @@ namespace scone
 		mus_pn["pennation_angle"] = m.GetPennationAngleAtOptimal();
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
+		for ( auto& [b, point] : mp ) {
+			auto& ppn = path_pn.add_child();
+			ppn["body"] = GetBodyName( *b );
+			ppn["pos"] = GetLocalBodyPos( point, *b );
+		}
+	}
+
+	void ModelConverter::ConvertLigament( const Ligament& m, PropNode& parent_pn ) const
+	{
+		auto& mus_pn = parent_pn.add_child( "point_path_ligament" );
+		mus_pn["name"] = m.GetName();
+		mus_pn["force_multiplier"] = m.GetPcsaForce();
+		mus_pn["resting_length"] = m.GetRestingLength();
+		auto& path_pn = mus_pn.add_child( "path" );
+		auto mp = m.GetLocalLigamentPath();
 		for ( auto& [b, point] : mp ) {
 			auto& ppn = path_pn.add_child();
 			ppn["body"] = GetBodyName( *b );

@@ -23,12 +23,14 @@ namespace scone
 		double body_mass_threshold_ = 0.2;
 		bool compound_welded_bodies = false;
 		double compound_mass_threshold = 10.0;
+		bool convert_ligaments = true;
 
 	private:
 		using StringSet = xo::flat_set<std::string>;
 		void ConvertBody( const Body& b, PropNode& model_pn, StringSet& converted ) const;
 		void ConvertJoint( const Joint& b, PropNode& parent_pn ) const;
-		void ConvertMuscle( const Muscle& j, PropNode& parent_pn ) const;
+		void ConvertMuscle( const Muscle& m, PropNode& parent_pn ) const;
+		void ConvertLigament( const Ligament& l, PropNode& parent_pn ) const;
 		void ConvertContactGeometry( const ContactGeometry& j, PropNode& body_pn ) const;
 		void ConvertDisplayGeometry( const Body& b, PropNode& model_pn ) const;
 		void ConvertDof( const Dof& d, PropNode& parent_pn ) const;
