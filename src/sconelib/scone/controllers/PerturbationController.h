@@ -29,13 +29,13 @@ namespace scone
 		/// Name of the body to which to apply the external perturbation to.
 		Body& body;
 
-		/// Local position at which to apply the perturbation; default = [ 0 0 0 ].
+		/// Local position [m^3] at which to apply the perturbation; default = [ 0 0 0 ].
 		Vec3 position_offset;
 
-		/// Perturbation force to apply; default = [ 0 0 0 ].
+		/// Perturbation force [N] to apply; default = [ 0 0 0 ].
 		Vec3 force;
 
-		/// Perturbation moment to apply; default = [ 0 0 0 ].
+		/// Perturbation moment [Nm] to apply; default = [ 0 0 0 ].
 		Vec3 moment;
 
 		/// Random seed used for the perturbation sequence; default = 5489.
@@ -44,7 +44,7 @@ namespace scone
 		/// Fixed time [s] between two perturbations; default 2.
 		xo::bounds< TimeInSeconds > interval;
 
-		/// Duration of the perturbation; default = 0.
+		/// Duration [s] of the perturbation; default = 0.
 		xo::bounds< TimeInSeconds > duration;
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override {}
