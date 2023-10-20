@@ -1,8 +1,9 @@
 /_output/
 /bin/
+/scenarios/UnitTests/Blueprints
 /scenarios/UnitTests/Hyfydy
 /scenarios/UnitTests/HyfydyExperimental
-/scenarios/UnitTests/Blueprints
+/scenarios/UnitTests/HyfydyResults
 /scenarios/Backup
 /resources/unittestdata/
 /install/
