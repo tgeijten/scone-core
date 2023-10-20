@@ -65,7 +65,9 @@ namespace scone
 
 		LuaModel lm( model );
 		LuaController lc( *this );
-		return update_( &lm, timestamp, &lc );
+		bool terminate = update_( &lm, timestamp, &lc );
+		terminate |= CompositeController::ComputeControls( model, timestamp );
+		return terminate;
 	}
 
 	String ScriptController::GetClassSignature() const
