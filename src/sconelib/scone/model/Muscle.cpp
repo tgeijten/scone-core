@@ -197,6 +197,9 @@ namespace scone
 		pn["tendon_slack_length"] = GetTendonSlackLength();
 		pn["pennation_angle_at_optimal"] = GetPennationAngleAtOptimal();
 		pn["max_contraction_velocity"] = GetMaxContractionVelocity();
+		auto& path_pn = pn["path"];
+		for ( auto& [b, p] : GetLocalMusclePath() )
+			path_pn[b->GetName()] = p;
 		return pn;
 	}
 
