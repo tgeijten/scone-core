@@ -89,7 +89,7 @@ namespace scone
 
 	void init_muscle_activations( Model& model, const py::array_t<double>& values ) {
 		auto v = values.unchecked<1>();
-		auto mus = model.GetMuscles();
+		auto& mus = model.GetMuscles();
 		check_array_length( mus.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < mus.size(); ++i )
 			mus[i]->InitializeActivation( v( i ) );
