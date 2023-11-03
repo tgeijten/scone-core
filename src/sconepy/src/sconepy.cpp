@@ -183,7 +183,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "measure", []( scone::Model& m ) { return m.GetMeasure(); }, py::return_value_policy::reference )
 		.def( "set_dof_positions", &scone::set_dof_positions )
 		.def( "set_dof_velocities", &scone::set_dof_velocities )
-		.def( "init_state_from_dofs", []( scone::Model& m ) { m.UpdateStateFromDofs(); } )
+		.def( "init_state_from_dofs", []( scone::Model& m ) { m.InitStateFromDofs(); } )
 		.def( "adjust_state_for_load", &scone::Model::AdjustStateForLoad )
 		.def( "set_actuator_inputs", &scone::set_actuator_inputs )
 		.def( "actuator_input_array", []( scone::Model& m ) { return scone::get_actuator_inputs( m, g_f32 ); } )

@@ -118,7 +118,7 @@ namespace scone
 		virtual const State& GetState() const = 0;
 		virtual void SetState( const State& state, TimeInSeconds timestamp ) = 0;
 		virtual void SetStateValues( const std::vector< Real >& state, TimeInSeconds timestamp ) = 0;
-		virtual void UpdateStateFromDofs() {}
+		virtual void InitStateFromDofs() {}
 		virtual void SetNullState();
 		virtual void SetNeutralState();
 		virtual void AdjustStateForLoad( Real load ) = 0;

@@ -847,7 +847,7 @@ namespace scone
 			StoreCurrentFrame();
 	}
 
-	void ModelOpenSim3::UpdateStateFromDofs()
+	void ModelOpenSim3::InitStateFromDofs()
 	{
 		CopyStateFromTk();
 		m_pOsimModel->getMultibodySystem().realize( GetTkState(), SimTK::Stage::Acceleration );

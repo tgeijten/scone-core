@@ -84,7 +84,7 @@ namespace scone
 	};
 
 	void init_state_from_dofs( Model& model ) {
-		model.UpdateStateFromDofs();
+		model.InitStateFromDofs();
 	};
 
 	void init_muscle_activations( Model& model, const py::array_t<double>& values ) {
