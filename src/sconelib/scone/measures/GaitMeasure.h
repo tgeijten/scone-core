@@ -11,6 +11,7 @@
 #include "scone/core/Statistic.h"
 #include "EffortMeasure.h"
 #include "DofLimitMeasure.h"
+#include "xo/utility/optional.h"
 
 namespace scone
 {
@@ -34,6 +35,9 @@ namespace scone
 
 		/// Relative COM height at which to terminate the simulation, as a factor of the initial COM height; default = 0.5
 		Real termination_height;
+
+		/// Time to continue after fall is detected [s]; default = 0
+		TimeInSeconds continue_after_fall;
 
 		/// Minimum velocity [m/s]; default = 0 m/s.
 		Real min_velocity;
@@ -73,6 +77,7 @@ namespace scone
 		std::vector< const Body* > m_BaseBodies;
 		Vec3 m_InitialComPos;
 		Real m_InitGaitDist;
+		xo::optional<TimeInSeconds> m_TerminationTime;
 
 		struct Step {
 			TimeInSeconds time;

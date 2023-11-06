@@ -23,6 +23,7 @@ namespace scone
 		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, termination_height, 0.5 );
+		INIT_PROP( props, continue_after_fall, 0.0 );
 		INIT_PROP( props, min_velocity, 0 );
 		INIT_PROP( props, max_velocity, 299792458.0 ); // default max velocity = speed of light
 		INIT_PROP( props, load_threshold, 0.1 );
@@ -64,8 +65,12 @@ namespace scone
 		SCONE_ASSERT( model.GetIntegrationStep() != model.GetPreviousIntegrationStep() );
 
 		// check termination
-		auto com_height = model.GetComHeight();
-		if ( com_height < termination_height * m_InitialComPos.y )
+		if ( !m_TerminationTime ) {
+			auto com_height = model.GetComHeight();
+			if ( com_height < termination_height * m_InitialComPos.y )
+				m_TerminationTime = timestamp + continue_after_fall;
+		}
+		if ( m_TerminationTime && timestamp >= *m_TerminationTime )
 			return true;
 
 		// update min_velocity measure on new step
