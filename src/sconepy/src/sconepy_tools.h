@@ -93,6 +93,12 @@ namespace scone
 		check_array_length( mus.size(), v.shape( 0 ) );
 		for ( index_t i = 0; i < mus.size(); ++i )
 			mus[i]->InitializeActivation( v( i ) );
+
+		// also init ExternalController values, because InitializeController() may be called via InitStateFromDofs() later
+		if ( auto* ec = dynamic_cast<ExternalController*>( model.GetController() ) ) {
+			for ( index_t i = 0; i < mus.size(); ++i )
+				ec->SetInput( i, v( i ) );
+		}
 	};
 
 	template< typename T, typename C, typename F > py::array_t<T> extract_array( const C& cont, F fn ) {
