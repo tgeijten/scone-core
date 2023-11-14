@@ -241,7 +241,8 @@ namespace scone
 
 	Vec3 ModelConverter::GetLocalBodyPos( const Vec3& osim_pos, const Body& b ) const
 	{
-		return b.GetPosOfPointOnBody( osim_pos ) - GetGlobalBody( b ).com_world;
+		auto& bi = GetGlobalBody( b );
+		return conjugate( bi.ori_world ) * ( b.GetPosOfPointOnBody( osim_pos ) - bi.com_world );
 	}
 
 	inline Vec3d translated_inertia( const Vec3d& in, Real m, const Vec3d& o ) {
