@@ -11,12 +11,13 @@
 #include "scone/model/Actuator.h"
 #include "scone/core/string_tools.h"
 #include "scone/core/profiler_config.h"
+#include "scone/core/random_tools.h"
 
 namespace scone
 {
 	NoiseController::NoiseController( const PropNode& props, Params& par, Model& model, const Location& loc ) :
 		Controller( props, par, model, loc ),
-		random_seed( props.get< unsigned int >( "random_seed", 123 ) ),
+		random_seed( GetRandomSeed( props, par ) ),
 		rng_( random_seed )
 	{
 		INIT_PROP( props, base_noise, 0 );
