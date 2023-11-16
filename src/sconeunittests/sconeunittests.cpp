@@ -65,7 +65,10 @@ int main( int argc, const char* argv[] )
 #endif
 		}
 
-		return xo::test::run_tests_async();
+		if ( args.has_flag( "sync" ) )
+			return xo::test::run_tests();
+		else
+			return xo::test::run_tests_async();
 	}
 	catch ( std::exception& e )
 	{
