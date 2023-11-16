@@ -37,6 +37,7 @@ set(CORE_MATH_FILES
 	core/InterpolataryCubicSpline.cpp
 	core/Bezier.h
 	core/Bezier.cpp
+	core/random_tools.h
 	)
 set(CORE_SYSTEM_FILES
 	core/FactoryProps.h
@@ -358,6 +359,9 @@ source_group("tools" FILES ${CORE_STORAGE_FILES})
 source_group("controllers" FILES ${CS_CONTROLLERS_FILES})
 source_group("controllers" FILES ${CS_SYSTEM_FILES})
 source_group("controllers" FILES ${CS_CONTROLLERS_EXPERIMENTAL_FILES})
+if (SCONE_SNEL)
+	source_group("controllers" FILES ${CS_CONTROLLERS_SNEL_FILES})
+endif()
 source_group("controllers\\State Control" FILES ${CS_CONTROLLERS_STATE_FILES})
 source_group("controllers\\Composite Control" FILES ${CS_CONTROLLERS_COMPOSITE_FILES})
 source_group("controllers\\ReflexController" FILES ${CS_CONTROLLERS_REFLEX_FILES})
