@@ -34,9 +34,9 @@ namespace scone
 				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 )
 				{
 					if ( ( *it1 )->GetName().empty() && ( *it2 )->GetName().empty() )
-						log::warning( "Multiple child controllers have no name; please name each child controller to prevent optimization parameters from getting mixed up" );
+						log::debug( "Multiple child controllers have no name and may use the same parameters" );
 					else if ( ( *it1 )->GetName() == ( *it2 )->GetName() )
-						log::warning( "Multiple child controllers are named " + xo::quoted( ( *it1 )->GetName() ) + "; please choose different names to prevent optimization parameters from getting mixed up" );
+						log::warning( "Multiple child controllers are named " + xo::quoted( ( *it1 )->GetName() ) + " and may use the same parameters" );
 				}
 		}
 	}
