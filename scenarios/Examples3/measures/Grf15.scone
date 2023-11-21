@@ -1,0 +1,8 @@
+ReactionForceMeasure {
+	name = GRF
+	signature = G15
+	start_time = 1
+	weight = 10
+	max = 1.5
+	abs_penalty = 1
+}

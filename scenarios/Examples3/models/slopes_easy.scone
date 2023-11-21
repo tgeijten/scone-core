@@ -1,0 +1,10 @@
+blueprint = {
+	path {
+		random_seed = 2
+		tiles = 9
+		pos = [ 0 0.2 0 ]
+		tile_dim = [ 1 0.1 1 ]
+		#slope = -8..8
+		slopes = [ 0 3 0 -6 3 -6 0 -8 ]
+	}
+}

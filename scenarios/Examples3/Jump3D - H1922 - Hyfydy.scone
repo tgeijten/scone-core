@@ -1,0 +1,39 @@
+CmaPoolOptimizer {
+	signature_prefix = DATE_TIME
+	
+	SimulationObjective {
+		max_duration = 3
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = models/H1622v2k.hfd
+			state_init_file = init/InitStateJump.zml
+			initial_state_offset = 0~0.05<-0.5,0.5>
+			initial_state_offset_exclude = "*_t?;*_u"
+			initial_state_offset_symmetric = 0
+			fixed_control_step_size = 0.01			
+			initial_load = 0.5
+			muscle_force_multiplier = 2
+		}
+		
+		# Controller for the Model
+		FeedForwardController {
+			symmetric = 0
+			
+			# 2nd degree polynomial ax^2 + bx + c
+			Polynomial {
+				degree = 2
+				coefficient0 = 0.3~0.01<0,1> # initial value for c
+				coefficient1 = 0~0.1<-10,10> # initial value for b
+				coefficient2 = 0~1<-10,10> # initial value for a
+			}
+		}
+		
+		# Fitness measure for jumping
+		JumpMeasure {
+			termination_height = 0
+			prepare_time = 0.25
+			terminate_on_peak = 0
+		}
+	}
+}

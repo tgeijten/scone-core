@@ -1,0 +1,17 @@
+CompositeMeasure {
+	name = DofLimits
+	signature = K1
+	symmetric = 1
+	DofMeasure {
+		weight = 0.1
+		dof = ankle_angle
+		position { min = -60 max = 60 squared_penalty = 1 }
+	}
+	DofMeasure {
+		weight = 0.02
+		threshold = 1
+		threshold_transition = 0.5
+		dof = knee_angle
+		force { min = 0 max = 0 abs_penalty = 1 }
+	}
+}

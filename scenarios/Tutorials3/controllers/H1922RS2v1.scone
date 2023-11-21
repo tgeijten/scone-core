@@ -1,0 +1,268 @@
+# Two-state 3D Gait controller
+# v8g: reduced pelvis_tilt dependency
+# v8f: ham,bfsh-sol F+; removed ham F+
+# v8e: vas V+
+# v8d: SWING: bfsh V+; ham V+
+# v8c: ham F+,V+; bfsh V+
+# v8b: vas-bfsh V-, L-
+# v4: using ves_delay for femur feedback
+# v3: using V reflexes for glut_med
+# v2: using ves_delay for pelvis_list feedback
+# v1: TSGv7 + glut_med/add_mag controllers
+
+$hip_delay = 0.01
+$knee_delay = 0.02
+$ankle_delay = 0.035
+$ves_delay = 0.1
+
+GaitStateController {
+	signature_postfix = RS2
+	auto_std_factor = 0.1
+	stance_load_threshold = ~0.2<0.001,1>
+	#swing_load_threshold = ~0.2<0.001,1>
+	leg_load_sensor_delay = 0
+	symmetric = 1
+	ConditionalControllers {
+		ConditionalController {
+			states = "EarlyStance LateStance Liftoff Swing Landing"
+			ReflexController {
+				MuscleReflex { target = tib_ant	KL = ~1.0<0,10>	L0 = ~0.7<0.5,2>	KF = ~0.5<-10,10>	delay = $ankle_delay }
+				MuscleReflex { target = soleus	KL = ~0.5<0,10>	L0 = ~1.05<0.5,2>	KF = ~1<-10,10>	delay = $ankle_delay }
+				MuscleReflex { target = gastroc	KL = ~0.5<0,10>	L0 = ~1.0<0.5,2>	KF = ~1<-10,10>	delay = $ankle_delay }
+				MuscleReflex { target = tib_ant	source = soleus		KL = ~-0.5<-10,0>	KF = ~-1.0<-2,0>	delay = $ankle_delay }
+				MuscleReflex { target = tib_ant	source = gastroc	KL = ~-0.2<-10,0>	KF = ~-1.0<-2,0>	delay = $ankle_delay }
+				MuscleReflex { target = soleus	source = tib_ant	KF = ~-0.2<-2,0>	delay = $ankle_delay }
+				MuscleReflex { target = gastroc	source = tib_ant	KF = ~-0.2<-2,0>	delay = $ankle_delay }
+			}
+		}
+		
+		# Stance reflexes
+		ConditionalController {
+			states = "EarlyStance LateStance"
+			ReflexController {
+				MuscleReflex {
+					target = vasti
+					delay = $knee_delay
+					KF = ~1<0,4>
+					KL = ~1<0,4>
+					L0 = ~0.5<0,2>
+					KV = ~0.05<0,2>
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = vasti
+					source = bifemsh
+					delay = $knee_delay
+					KL = ~-0.5<-2,0>
+					L0 = 1.1~0.01<0,2>
+					KV = ~-0.1<-2,0>
+					allow_neg_V = 0
+					allow_neg_L = 0
+				}
+				MuscleReflex {
+					target = iliopsoas
+					delay = $hip_delay
+					KL = ~1<0,4>
+					L0 = ~0.8<0,2>
+				}
+				MuscleReflex {
+					target = rect_fem
+					delay = $hip_delay
+					KL = ~1<0,4>
+					L0 = ~0.7<0,2>
+				}
+				MuscleReflex {
+					target = hamstrings
+					delay = $hip_delay
+					#KF = ~0.1<-2,2>
+					KL = ~1<0,4>
+					L0 = ~0.7<0,2>
+					KV = ~0.05<0,2>
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = hamstrings
+					source = gastroc
+					delay = $knee_delay
+					KF = ~0.5<0,4>
+					F0 = ~0.15<0,0.5>
+					allow_neg_F = 0
+				}
+				MuscleReflex {
+					target = bifemsh
+					delay = $knee_delay
+					KL = ~1<0,4>
+					L0 = ~0.95<0,2>
+					KV = ~0.05<0,2>
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = bifemsh
+					source = gastroc
+					delay = $knee_delay
+					KF = ~1<0,4>
+					F0 = ~0.15<0,0.5>
+					allow_neg_F = 0
+				}
+				MuscleReflex {
+					target = glut_max
+					delay = $hip_delay
+					KL = ~1<0,4>
+					L0 = ~0.6<0,2>
+				}
+				
+				# Root stability
+				DofReflex {
+					target = hamstrings
+					source = pelvis_tilt
+					delay = $ves_delay 
+					KP = ~0.5<-10,10>
+					#KV = ~0.1<-10,10>
+					P0 = -0.105 # theta_ref, not optimized
+				}
+				#DofReflex {
+					#target = glut_max
+					#source = pelvis_tilt
+					#delay = $ves_delay 
+					#KP = ~0.5<-10,10>
+					#KV = ~0.1<-10,10>
+					#P0 = -0.105 # theta_ref, not optimized
+				#}
+				#DofReflex {
+					#target = iliopsoas
+					#source = pelvis_tilt
+					#delay = $ves_delay 
+					#KP = ~-0.5<-10,10> # -k_p; -1.91 in paper
+					#KV = ~-0.1<-10,10> # -k_d; -0.25 in paper
+					#P0 = -0.105 # theta_ref, not optimized
+				#}
+				DofReflex {
+					target = rect_fem
+					source = pelvis_tilt
+					delay = $ves_delay 
+					KP = ~-0.5<-10,10> # -k_p; -1.91 in paper
+					#KV = ~-0.1<-10,10> # -k_d; -0.25 in paper
+					P0 = -0.105 # theta_ref, not optimized
+				}
+				
+				# add_mag / glut_med reflexes
+				MuscleReflex {
+					target = glut_med
+					delay = $hip_delay
+					KL = "~1.8<0,2>"
+					L0 = "~0.6<0,2>"
+					KV = "~0.2<0,2>"
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = add_mag
+					delay = $hip_delay
+					KL = "~1.4<0,2>"
+					L0 = "~0.6<0,2>"
+					KV = "~0.2<0,2>"
+					allow_neg_V = 1
+				}
+				DofReflex {
+					target = glut_med
+					source = pelvis_list
+					mirror_left = 1
+					delay = $ves_delay
+					KP = "~0.7<0,5>"
+					KV = "~0.05<0,1>"
+				}
+				DofReflex {
+					target = add_mag
+					source = pelvis_list
+					mirror_left = 1
+					delay = $ves_delay
+					KP = "~-0.5<-5,0>"
+					KV = "~-0.01<-1,0>"
+				}
+			}
+		}
+		
+		# Swing reflexes
+		ConditionalController {
+			states = "Liftoff Swing Landing"
+			ReflexController {
+				# hip flexors
+				MuscleReflex {
+					target = iliopsoas
+					delay = $hip_delay
+					KL = ~2<0,10>
+					L0 = ~1<0,2>
+				}
+				MuscleReflex {
+					target = rect_fem
+					delay = $hip_delay
+					KL = ~0.5<0,10>
+					L0 = ~1.1<0,2>
+				}
+				
+				# balance
+				DofReflex {
+					target = iliopsoas
+					source = pelvis_tilt
+					delay = $ves_delay 
+					KP = ~1.5<0,10>
+					#KV = ~0.1<0,10>
+					P0 = -0.105 # theta_ref, not optimized
+				}
+				
+				# antagonists
+				MuscleReflex {
+					target = iliopsoas
+					source = hamstrings
+					delay = $hip_delay
+					KL = ~-2<-10,10>
+					L0 = ~1<0,2>
+				}
+				
+				# posterior muscles
+				MuscleReflex {
+					target = hamstrings
+					delay = $hip_delay
+					KL = ~1<-10,10>
+					L0 = ~1<0,2>
+					KV = ~0.02<0,2>
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = bifemsh
+					delay = $knee_delay
+					KL = ~1<0,4>
+					L0 = ~0.95<0,2>
+					KV = ~0.02<0,2>
+					allow_neg_V = 1
+				}
+				MuscleReflex {
+					target = glut_max
+					delay = $hip_delay
+					KL = ~1<-10,10>
+					L0 = ~1<0,2>
+					#KF = ~0.4<-10,10> # 0.4 in paper
+				}
+				
+				# swing glut_med / add_mag
+				BodyOrientationReflex {
+					target = glut_med
+					source = femur_o
+					axis = [ 1 0 0 ]
+					delay = $ves_delay
+					KP = ~0.4<-3,3>
+					KV = ~0.2<-1,1>
+					C0 = -0.04~0.01<-1,1>
+				}
+				BodyOrientationReflex {
+					target = add_mag
+					source = femur_o
+					axis = [ 1 0 0 ]
+					delay = $ves_delay
+					KP = ~-0.6<-3,3>
+					KV = ~-0.25<-1,1>
+					C0 = -0.02~0.01<-1,1>
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,60 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-4
+	init { file = init/H0918GaitRS2Hfd2.par std_factor = 5 }
+	
+	SimulationObjective {
+		max_duration = 20
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = models/H0918v2j.hfd
+			
+			# Optimize initial state parameters
+			state_init_file = init/InitStateH0918Gait10ActA.zml
+			initialize_activations_from_controller = 1
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty"
+			initial_load = 1
+			fixed_control_step_size = 0.005
+			use_opensim_activation_dynamics = 1
+			zero_velocity_equilibration = 1
+			enable_external_forces = 1
+		}
+		
+		CompositeController {
+			# Controller for gait
+			<< controllers/H0918RS2v1.scone >>
+			
+			# Perturbation backwards every 4 seconds
+			PerturbationController {
+				name = PushBack
+				start_time = 3
+				duration = 0.1
+				interval = 4
+				force = [ -100 0 0 ]
+				body = torso
+				position_offset = [ 0 0.05 0 ]
+			}
+			
+			# Perturbation forwards every other 4 seconds
+			PerturbationController {
+				name = PushForward
+				start_time = 5
+				duration = 0.1
+				interval = 4
+				force = [ 100 0 0 ]
+				body = torso
+				position_offset = [ 0 0.05 0 ]
+			}
+		}
+		
+		# Measure for gait
+		CompositeMeasure {
+			<< measures/Gait10.scone >>
+			<< measures/EffortWangCubed2000.scone >>
+			<< measures/DofKnee1.scone >>
+			<< measures/Grf13.scone >>
+		}
+	}
+}

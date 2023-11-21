@@ -1,0 +1,33 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-3
+	
+	SimulationObjective {
+		max_duration = 30
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = models/H0918v2j.hfd
+			state_init_file = init/InitStateStand.zml
+			initial_load = 1
+			fixed_control_step_size = 0.005
+		}
+		
+		# CompositeController with multiple sub-controllers
+		CompositeController {
+			
+			# Controller for reflex based balance (different file)
+			<< controllers/ControllerReflexBalance.scone >>
+			
+			# Motor noise controller
+			NoiseController {
+				base_noise = 0.01
+				proportional_noise = 0.15
+				random_seed = 0
+			}
+		}
+		
+		# Measure for standing balance (different file)
+		<< measures/MeasureBalance.scone >>
+	}
+}

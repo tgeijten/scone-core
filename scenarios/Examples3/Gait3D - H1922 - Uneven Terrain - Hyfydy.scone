@@ -1,0 +1,41 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-5
+	
+	init { file = init/H1922GaitRS2Hfd2.par std_factor = 20 }
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		ModelHyfydy {
+			#model_file = models/H1922v2j.hfd
+			model_file = models/H1922v2k.hfd
+			<< models/slopes_easy.scone >>
+			
+			# Optimize initial state parameters
+			state_init_file = init/InitStateH0918Gait10ActA.zml
+			initialize_activations_from_controller = 1
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_t?;*_u"
+			initial_load = 1
+			use_omnidirectional_root_dofs = 1
+			fixed_control_step_size = 0.005
+		}
+		
+		# Controller for gait
+		CompositeController {
+			<< controllers/H1922RS2v1.scone >>
+			<< controllers/TorsoBO1v2.scone >>
+			NoiseController { base_noise = 0 proportional_noise = 0.01 random_seed = 0 }
+		}
+		
+		# Measure for gait
+		CompositeMeasure {
+			<< measures/Gait10Slope3D.scone >>
+			<< measures/EffortWangCubed2000.scone >>
+			<< measures/DofKnee1.scone >>
+			<< measures/Grf13.scone >>
+		}
+	}
+}

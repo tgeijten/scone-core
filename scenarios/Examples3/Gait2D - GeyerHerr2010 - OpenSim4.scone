@@ -1,0 +1,27 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-4
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		ModelOpenSim4 {
+			model_file = models/H0914v2j.osim
+			
+			# Optimize initial state parameters
+			state_init_file = init/InitStateGait10.zml
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			fixed_control_step_size = 0.005
+			
+			signature_postfix = OS4
+		}
+		
+		# Controller for gait, based on [Geyer & Herr 2010]
+		<< controllers/ControllerGH2010v11.scone >>
+		
+		# Measure for gait
+		<< measures/MeasureGait10v2.scone >>
+	}
+}
