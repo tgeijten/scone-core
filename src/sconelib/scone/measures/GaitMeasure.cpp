@@ -121,7 +121,7 @@ namespace scone
 			}
 		}
 
-		if ( model.GetTime() < duration )
+		if ( model.GetTime() < duration && m_TerminationTime )
 			step_time += duration - model.GetTime();
 
 		// set results
