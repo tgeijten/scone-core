@@ -122,6 +122,7 @@ namespace scone
 			"muscle_count", &LuaModel::muscle_count,
 			"body", &LuaModel::body,
 			"find_body", &LuaModel::find_body,
+			"find_body_index", &LuaModel::find_body_index,
 			"body_count", &LuaModel::body_count,
 			"ground_body", &LuaModel::ground_body,
 			"joint", &LuaModel::joint,

@@ -34,6 +34,13 @@ namespace scone
 		return *it;
 	}
 
+	template< typename T > int GetLuaIndex( std::vector<T>& vec, const std::string name ) {
+		auto it = std::find_if( vec.begin(), vec.end(), [&]( const T& item ) { return item->GetName() == name; } );
+		if ( it != vec.end() )
+			return static_cast<int>( it - vec.begin() ) + 1;
+		else return 0;
+	}
+
 	/// 3d vector type with components x, y, z
 	using LuaVec3 = Vec3d;
 	using LuaQuat = Quatd;
@@ -327,6 +334,8 @@ namespace scone
 		LuaBody body( int index ) { return *GetByLuaIndex( mod_.GetBodies(), index ); }
 		/// find a body with a specific name
 		LuaBody find_body( LuaString name ) { return *GetByLuaName( mod_.GetBodies(), name ); }
+		/// find a body index with a specific name
+		int find_body_index( LuaString name ) { return GetLuaIndex( mod_.GetBodies(), name ); }
 		/// number of bodies
 		int body_count() { return static_cast<int>( mod_.GetBodies().size() ); }
 		/// get the ground (static) body
