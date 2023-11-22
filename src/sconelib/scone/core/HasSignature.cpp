@@ -27,6 +27,6 @@ namespace scone
 
 	String HasSignature::GetSignature() const
 	{
-		return xo::concatenate_str( { signature_prefix, signature.empty() ? GetClassSignature() : signature, signature_postfix }, "." );
+		return xo::concat_str( { signature_prefix, signature.empty() ? GetClassSignature() : signature, signature_postfix }, "." );
 	}
 }

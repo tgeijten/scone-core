@@ -93,7 +93,7 @@ const std::string& find_vestibular_body_name( const scone::Model& model ) {
 	for ( auto& name : try_names )
 		if ( scone::HasElementWithName( model.GetBodies(), name ) )
 			return name;
-	SCONE_ERROR( "Could not find any of the following bodies: " + xo::concatenate_str( try_names, " " ) );
+	SCONE_ERROR( "Could not find any of the following bodies: " + xo::concat_str( try_names, " " ) );
 }
 
 const DelayedSensorValueVector& create_delayed_sensors( scone::Model& model, SensorType t ) {

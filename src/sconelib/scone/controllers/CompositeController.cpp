@@ -97,6 +97,6 @@ namespace scone
 			if ( xo::find( strset, s ) == strset.end() )
 				strset.emplace_back( s );
 		}
-		return xo::concatenate_str( strset, "." );
+		return xo::concat_str( strset, "." );
 	}
 }
