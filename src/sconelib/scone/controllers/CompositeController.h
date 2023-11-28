@@ -33,6 +33,14 @@ namespace scone
 
 		const std::vector< ControllerUP >& GetChildren() const { return controllers_; }
 		std::vector< ControllerUP >& GetChildren() { return controllers_; }
+		template< typename T > T* TryGetChild() {
+			for ( auto& c : controllers_ )
+				if ( auto* ct = dynamic_cast<T*>( c.get() ) )
+					return ct;
+			return nullptr;
+		}
+		
+		Controller* InsertChildController( ControllerUP child, index_t pos = 0 );
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;

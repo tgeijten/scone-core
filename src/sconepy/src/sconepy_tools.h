@@ -16,6 +16,7 @@
 #include "scone/model/Sensors.h"
 #include "scone/model/MuscleId.h"
 #include "scone/controllers/ExternalController.h"
+#include "scone/controllers/CompositeController.h"
 
 namespace fs = std::filesystem;
 
@@ -27,6 +28,35 @@ namespace scone
 		auto results = EvaluateScenario( scenario_pn, file, file );
 		log::info( results );
 	}
+
+	ExternalController* TryGetExternalController( Model& model ) {
+		auto* c = model.GetController();
+		if ( auto* ec = dynamic_cast<ExternalController*>( c ) )
+			return ec;
+		else if ( auto* cc = dynamic_cast<CompositeController*>( c ) )
+			if ( auto* ec = cc->TryGetChild<ExternalController>() )
+				return ec;
+		return nullptr;
+	}
+
+	bool CreateExternalController( Model& model ) {
+		PropNode cpn{ { "ExternalController", PropNode() } };
+		auto fp = FindFactoryProps( GetControllerFactory(), cpn, "Controller" );
+		spot::null_objective_info par;
+		if ( auto* con = model.GetController() )  {
+			if ( auto* cc = dynamic_cast<CompositeController*>( con ) )
+				cc->InsertChildController( CreateController( fp, par, model, Location() ) );
+			else {
+				log::warning( "Cannot create ExternalController because Model Controller is no CompositeController" );
+					return false;
+			}
+		}
+		else {
+			model.CreateController( fp, par );
+		}
+		return true;
+	}
+
 	ModelUP load_model( const std::string& file ) {
 		auto file_path = xo::path( file );
 		auto model_pn = xo::load_zml( file_path );
@@ -34,12 +64,7 @@ namespace scone
 		spot::null_objective_info par;
 		auto model = CreateModel( model_props, par, file_path.parent_path() );
 		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn to save config.scone
-		if ( !model->GetController() ) {
-			PropNode cpn{ { "ExternalController", PropNode() } };
-			auto fp = FindFactoryProps( GetControllerFactory(), cpn, "Controller" );
-			spot::null_objective_info par;
-			model->CreateController( fp, par );
-		}
+		CreateExternalController( *model );
 		return model;
 	}
 	bool is_supported( const std::string& type_id ) {
@@ -95,7 +120,7 @@ namespace scone
 			mus[i]->InitializeActivation( v( i ) );
 
 		// also init ExternalController values, because InitializeController() may be called via InitStateFromDofs() later
-		if ( auto* ec = dynamic_cast<ExternalController*>( model.GetController() ) ) {
+		if ( auto* ec = TryGetExternalController( model ) ) {
 			for ( index_t i = 0; i < mus.size(); ++i )
 				ec->SetInput( i, v( i ) );
 		}
@@ -144,7 +169,7 @@ namespace scone
 		auto v = values.unchecked<1>();
 		check_array_length( model.GetActuators().size(), v.shape( 0 ) );
 
-		if ( auto* ec = dynamic_cast<ExternalController*>( model.GetController() ) ) {
+		if ( auto* ec = TryGetExternalController( model ) ) {
 			for ( index_t i = 0; i < ec->GetActuatorCount(); ++i )
 				ec->SetInput( i, v( i ) );
 		}

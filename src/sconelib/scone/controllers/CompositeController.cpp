@@ -88,6 +88,12 @@ namespace scone
 		return pn;
 	}
 
+	Controller* CompositeController::InsertChildController( ControllerUP child, index_t pos )
+	{
+		auto it = controllers_.begin() + std::min( pos, controllers_.size() );
+		return &**controllers_.insert( it, std::move( child ) );
+	}
+
 	String CompositeController::GetClassSignature() const
 	{
 		std::vector< String > strset;
