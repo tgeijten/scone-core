@@ -1,7 +1,6 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-4
-	init { file = init/H0918GaitRS2Hfd.par std_factor = 2 }
 	
 	SimulationObjective {
 		max_duration = 20
@@ -11,7 +10,7 @@ CmaOptimizer {
 			model_file = models/H0918v2j.hfd
 			
 			# Optimize initial state parameters
-			state_init_file = init/InitStateGait10.zml
+			state_init_file = init/InitStateH0918Gait10ActA.zml
 			initialize_activations_from_controller = 1
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty"
@@ -22,7 +21,7 @@ CmaOptimizer {
 		
 		CompositeController {
 			# Controller for gait
-			<< controllers/H0918RS2v1.scone >>
+			<< controllers/H0918RS2v2.scone >>
 			
 			# Script Controller for Gyroscopic Balance Device
 			ScriptController {
