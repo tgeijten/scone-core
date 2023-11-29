@@ -6,7 +6,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelHyfydy {
-			model_file = models/H0914v2j.hfd
+			model_file = models/H0918v2j.hfd
 			state_init_file = init/InitStateJump.zml
 			fixed_control_step_size = 0.01
 		}

@@ -1,5 +1,5 @@
 # Some predefined variables we use later on
-$L0 = ~0.6
+$L0 = ~0.65
 $KL = ~1
 $KP = 0~0.1
 $KV = 0~0.1
@@ -17,6 +17,7 @@ ReflexController {
 	MuscleReflex { target = rect_fem L0 = $L0 KL = $KL delay = 0.010 }
 	MuscleReflex { target = hamstrings L0 = $L0 KL = $KL delay = 0.010 }
 	MuscleReflex { target = vasti L0 = $L0 KL = $KL delay = 0.020 }
+	MuscleReflex { target = bifemsh L0 = $L0 KL = $KL delay = 0.020 }
 	MuscleReflex { target = gastroc L0 = $L0 KL = $KL delay = 0.020 }
 	MuscleReflex { target = soleus L0 = $L0 KL = $KL delay = 0.035 }
 	MuscleReflex { target = tib_ant L0 = $L0 KL = $KL delay = 0.035 }
@@ -33,6 +34,8 @@ ReflexController {
 	BodyPointReflex { target = glut_max source = torso 
 		KP = $KP KV = $KV delay = $VDELAY offset = $OFS direction = $DIR }
 	BodyPointReflex { target = hamstrings source = torso 
+		KP = $KP KV = $KV delay = $VDELAY offset = $OFS direction = $DIR }
+	BodyPointReflex { target = bifemsh source = torso 
 		KP = $KP KV = $KV delay = $VDELAY offset = $OFS direction = $DIR }
 	BodyPointReflex { target = gastroc source = torso 
 		KP = $KP KV = $KV delay = $VDELAY offset = $OFS direction = $DIR }
