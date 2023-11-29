@@ -1,7 +1,6 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-4
-	init { file = init/H0918GaitRS2Hfd2.par std_factor = 2 }
 	
 	SimulationObjective {
 		max_duration = 20
@@ -22,7 +21,7 @@ CmaOptimizer {
 		}
 		
 		# Controller for gait
-		<< controllers/H0918RS2v1.scone >>
+		<< controllers/H0918RS2v2.scone >>
 		
 		# Measure for gait
 		CompositeMeasure {
