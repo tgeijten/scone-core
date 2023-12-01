@@ -21,7 +21,7 @@ CmaOptimizer {
 		
 		CompositeController {
 			# Controller for gait
-			<< controllers/H0918RS2v2.scone >>
+			<< controllers/H0918RS2v3.scone >>
 			
 			# Script Controller for Gyroscopic Balance Device
 			ScriptController {

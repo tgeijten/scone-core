@@ -1,0 +1,4 @@
+StepMeasure {
+    stride_duration { min = 1.15 max = 2 abs_penalty = 1 }
+    stride_length { min = 1.25 max = 2 abs_penalty = 1 }
+}
