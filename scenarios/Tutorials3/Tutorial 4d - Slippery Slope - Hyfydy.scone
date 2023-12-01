@@ -10,8 +10,7 @@ CmaOptimizer {
 			model_file = models/H0918v2j_slope.hfd
 			
 			# Optimize initial state parameters
-			state_init_file = init/InitStateGait10.zml
-			initialize_activations_from_controller = 1
+			state_init_file = init/InitStateH0918Gait10.zml
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty"
 			initial_load = 1
@@ -21,7 +20,7 @@ CmaOptimizer {
 		}
 		
 		# Controller for gait
-		<< controllers/H0918RS2v2.scone >>
+		<< controllers/H0918RS2v3.scone >>
 		
 		# Measure for gait
 		CompositeMeasure {
