@@ -1,0 +1,42 @@
+values {
+	pelvis_tilt = -0.120951
+	pelvis_list = 0.0561996
+	pelvis_rotation = 0.01309
+	pelvis_tx = 0
+	pelvis_ty = 0.94
+	pelvis_tz = 0
+	hip_flexion_r = 0.335278
+	hip_adduction_r = 0.0509636
+	hip_rotation_r = 0.169821
+	knee_angle_r = -0.277856
+	ankle_angle_r = 0.174533
+	hip_flexion_l = 0.182387
+	hip_adduction_l = 0.0509636
+	hip_rotation_l = -0.138056
+	knee_angle_l = -1.08577
+	ankle_angle_l = -0.402298
+	lumbar_extension = 0.0657989
+	lumbar_bending = -0.0204204
+	lumbar_rotation = -0.097913
+}
+velocities {
+	pelvis_tilt = -0.0872665
+	pelvis_list = 0
+	pelvis_rotation = 0
+	pelvis_tx = 1.08
+	pelvis_ty = 0.15
+	pelvis_tz = 0
+	hip_flexion_r = -1.36136
+	hip_adduction_r = 0
+	hip_rotation_r = 0
+	knee_angle_r = 0.261799
+	ankle_angle_r = 0.837758
+	hip_flexion_l = 3.35103
+	hip_adduction_l = 0
+	hip_rotation_l = 0
+	knee_angle_l = -3.15905
+	ankle_angle_l = 1.27409
+	lumbar_extension = 0
+	lumbar_bending = 0
+	lumbar_rotation = 0
+}

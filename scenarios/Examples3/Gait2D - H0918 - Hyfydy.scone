@@ -1,7 +1,7 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-4
-	init { file = init/H0918GaitRS2Hfd2.par std_factor = 2 }
+	init { file = init/H0918GaitRS2Hfd4.par std_factor = 2 use_best_as_mean = 1 }
 	
 	SimulationObjective {
 		max_duration = 20
@@ -12,7 +12,6 @@ CmaOptimizer {
 			
 			# Optimize initial state parameters
 			state_init_file = init/InitStateH0918Gait10ActA.zml
-			initialize_activations_from_controller = 1
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			initial_load = 1
@@ -22,14 +21,14 @@ CmaOptimizer {
 		}
 		
 		# Controller for gait
-		<< controllers/H0918RS2v1.scone >>
+		<< controllers/H0918RS2v3.scone >>
 		
 		# Measure for gait
 		CompositeMeasure {
 			<< measures/Gait10.scone >>
 			<< measures/EffortWangCubed2000.scone >>
 			<< measures/DofKnee1.scone >>
-			<< measures/Grf13.scone >>
+			<< measures/Grf14.scone >>
 		}
 	}
 }

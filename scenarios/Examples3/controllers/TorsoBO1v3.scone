@@ -1,0 +1,37 @@
+# Upper body posture reflex
+# v2: added lumbar_rotation
+# v1: initial version
+
+$ves_delay = 0.005
+
+ReflexController {
+	auto_std_factor = 0.05
+	name = lumbar_joints
+	dual_sided = 0
+	BodyOrientationReflex {
+		target = lumbar_extension
+		source = torso
+		delay = $ves_delay
+		KP = ~150<0,500>
+		KV = ~20<0,50>
+		P0 = -0.11~0.001<-0.5,0.5>
+	}
+	BodyOrientationReflex {
+		target = lumbar_bending
+		source = torso
+		axis = [ 1 0 0 ]
+		delay = $ves_delay
+		KP = ~150<0,500>
+		KV = ~20<0,50>
+		P0 = 0
+	}
+	BodyOrientationReflex {
+		target = lumbar_rotation
+		source = torso
+		axis = [ 0 1 0 ]
+		delay = $ves_delay
+		KP = ~150<0,500>
+		KV = ~30<0,50>
+		P0 = 0
+	}
+}
