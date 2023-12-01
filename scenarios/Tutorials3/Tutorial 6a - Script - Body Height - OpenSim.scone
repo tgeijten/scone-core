@@ -6,10 +6,10 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelOpenSim3 {
-			model_file = models/H0914v2j.osim
-			state_init_file = init/InitStateJump.zml
+			model_file = models/H0918v2j.osim
+			state_init_file = init/InitStateStand.zml
 			initial_load = 1
-			fixed_control_step_size = 0.005 # higher step sizes give better performance
+			fixed_control_step_size = 0.005 # larger step sizes give better performance
 		}
 		
 		# Controller based on lua script
@@ -21,7 +21,7 @@ CmaOptimizer {
 		ScriptMeasure {
 			minimize = 0 # let the optimizer know we want to maximize this measure
 			target_body = "calcn_r" # this parameter will be used in the script
-			script_file = "data/ScriptMeasureBodyHeight.lua"
+			script_file = "measures/ScriptMeasureBodyHeight.lua"
 		}
 	}
 }

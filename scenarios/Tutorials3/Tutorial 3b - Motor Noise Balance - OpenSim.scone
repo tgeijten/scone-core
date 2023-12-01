@@ -23,6 +23,7 @@ CmaOptimizer {
 			NoiseController {
 				base_noise = 0.01
 				proportional_noise = 0.15
+				random_seed = 0
 			}
 		}
 		

@@ -3,23 +3,24 @@ CmaOptimizer {
 	min_progress = 1e-4
 	
 	SimulationObjective {
-		max_duration = 30
+		max_duration = 20
 		
 		# Model used in simulation
 		ModelOpenSim3 {
-			model_file = models/H0914v2j.osim
+			model_file = models/H0918v2j.osim
 			
 			# Optimize initial state parameters
-			state_init_file = data/InitStateGait10.zml
-			initial_state_offset =	0~0.01<-0.5,0.5>
+			state_init_file = init/InitStateH0918Gait10.zml
+			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			initial_load = 1
 			fixed_control_step_size = 0.005
-			enable_external_forces = 1 # Required when applying external forces
+			enable_external_forces = 1
 		}
 		
 		CompositeController {
-			# Controller for gait, based on [Geyer & Herr 2010]
-			<< controllers/ControllerGH2010v11.scone >>
+			# Controller for gait
+			<< controllers/H0918RS2v3.scone >>
 			
 			# Perturbation backwards every 4 seconds
 			PerturbationController {
@@ -27,9 +28,9 @@ CmaOptimizer {
 				start_time = 3
 				duration = 0.1
 				interval = 4
-				force = [ -150 0 0 ]
+				force = [ -100 0 0 ]
 				body = torso
-				position_offset = [ -0.05 0.35 0 ]
+				position_offset = [ 0 0.05 0 ]
 			}
 			
 			# Perturbation forwards every other 4 seconds
@@ -38,13 +39,18 @@ CmaOptimizer {
 				start_time = 5
 				duration = 0.1
 				interval = 4
-				force = [ 150 0 0 ]
+				force = [ 100 0 0 ]
 				body = torso
-				position_offset = [ -0.05 0.35 0 ]
+				position_offset = [ 0 0.05 0 ]
 			}
 		}
 		
 		# Measure for gait
-		<< data/MeasureGait10Grf15.scone >>
+		CompositeMeasure {
+			<< measures/Gait10.scone >>
+			<< measures/EffortWangCubed2000.scone >>
+			<< measures/DofKnee1.scone >>
+			<< measures/Grf13.scone >>
+		}
 	}
 }

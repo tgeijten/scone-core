@@ -17,7 +17,7 @@ CmaOptimizer {
 			}
 			
 			# Optimize initial state parameters
-			state_init_file = data/InitStateGait10.zml
+			state_init_file = init/InitStateGait10.zml
 			initial_state_offset =	0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			fixed_control_step_size = 0.005
