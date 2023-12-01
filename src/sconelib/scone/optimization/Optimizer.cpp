@@ -91,7 +91,7 @@ namespace scone
 			if ( !init.locked )
 				r = info.import_mean_std( init.file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude, init.use_best_as_mean );
 			else r = info.import_locked( init.file );
-			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init_file );
+			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init.file );
 		}
 
 		// inject model build version if this is a model objective
