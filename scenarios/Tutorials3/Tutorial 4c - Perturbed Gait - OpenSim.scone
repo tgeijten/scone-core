@@ -7,7 +7,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelOpenSim3 {
-			model_file = models/H0918v2j.osim
+			model_file = models/H0918v3.osim
 			
 			# Optimize initial state parameters
 			state_init_file = init/InitStateH0918Gait10.zml

@@ -6,7 +6,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelOpenSim3 {
-			model_file = models/H0918v2j.osim
+			model_file = models/H0918v3.osim
 			state_init_file = init/InitStateStand.zml
 			initial_load = 1
 			fixed_control_step_size = 0.005 # larger step sizes give better performance

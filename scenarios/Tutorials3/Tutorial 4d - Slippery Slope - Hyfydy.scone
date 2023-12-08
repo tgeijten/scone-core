@@ -7,7 +7,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelHyfydy {
-			model_file = models/H0918v2j_slope.hfd
+			model_file = models/H0918v3_slope.hfd
 			
 			# Optimize initial state parameters
 			state_init_file = init/InitStateH0918Gait10.zml

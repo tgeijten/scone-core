@@ -8,7 +8,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelOpenSim3 {
-			model_file = models/H0914v2j.osim
+			model_file = models/H0914v3.osim
 			
 			# Override model properties
 			Properties {

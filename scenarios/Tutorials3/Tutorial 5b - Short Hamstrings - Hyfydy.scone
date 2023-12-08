@@ -8,7 +8,7 @@ CmaOptimizer {
 		
 		# Model used in simulation
 		ModelHyfydy {
-			model_file = models/H0914v2j.hfd
+			model_file = models/H0914v3.hfd
 			
 			# Override model properties
 			Properties {
