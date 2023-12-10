@@ -2,8 +2,8 @@ blueprint = {
 	path {
 		random_seed = 2
 		tiles = 10
-		pos = [ 0 0.07 0 ]
+		pos = [ 0 0.2 0 ]
 		tile_dim = [ 1 0.1 1 ]
-		slopes = [ 0 2 0 -4 2 0 -3 -2 -1 ]
+		slopes = [ 0 3 0 -6 3 0 -8 -4 -2 ]
 	}
 }

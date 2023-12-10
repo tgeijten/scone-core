@@ -5,7 +5,7 @@ CmaOptimizer {
 	init { file = init/H1922GaitRS2Hfd4.par std_factor = 20 }
 	
 	SimulationObjective {
-		max_duration = 10
+		max_duration = 12
 		
 		# Model used in simulation
 		ModelHyfydy {

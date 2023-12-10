@@ -3,16 +3,15 @@ CmaOptimizer {
 	min_progress = 1e-4
 	
 	SimulationObjective {
-		max_duration = 15
+		max_duration = 20
 		
 		# Model used in simulation
 		ModelHyfydy {
 			model_file = models/H0918v3.hfd
-			<< models/slopes_easy.scone >>
+			<< models/slopes_medium.scone >>
 			
 			# Optimize initial state parameters
-			state_init_file = init/InitStateH0918Gait10.zml
-			initialize_activations_from_controller = 1
+			state_init_file = init/InitStateH0918Gait10ActA.zml
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_tx;*_ty;*_u"
 			initial_load = 1

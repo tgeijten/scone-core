@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSimDocument Version="30000">
-	<Model name="H0918v2">
+	<Model name="H0918v3">
 		<credits>Planar model with 9 degrees-of-freedom and 18 muscles. Developed by Thomas Geijtenbeek for use in predictive simulations. Latest revision: 2023-03-06. Base model adapted from Delp1992. Hamstrings parameters adapted from Arnold2010. Quadriceps parameters derived from Arnold2010 and Rajagopal2016.</credits>
 		<publications>Geijtenbeek, T.: SCONE: Open Source Software for Biological Motion, Journal of Open Source Software 4(38), 2019.</publications>
 		<length_units>meters</length_units>
