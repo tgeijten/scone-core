@@ -1,7 +1,7 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-4
-	init { file = init/H0918GaitRS2Hfd4.par std_factor = 2 use_best_as_mean = 1 }
+	init { file = init/H0918GaitRS2Osim4.par std_factor = 2 use_best_as_mean = 1 }
 	
 	SimulationObjective {
 		max_duration = 20
@@ -13,7 +13,7 @@ CmaOptimizer {
 			# Optimize initial state parameters
 			state_init_file = init/InitStateH0918Gait10ActA.zml
 			initial_state_offset = 0~0.01<-0.5,0.5>
-			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			initial_state_offset_exclude = "*_tx*;*_ty*;*_u;*/speed"
 			initial_load = 1
 			fixed_control_step_size = 0.005
 		}
