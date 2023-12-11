@@ -132,7 +132,9 @@ if (SCONE_CORE_CPACK)
 
 	# install scenarios
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples2" DESTINATION "./scenarios")
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Examples3" DESTINATION "./scenarios")
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Tutorials2" DESTINATION "./scenarios")
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/Tutorials3" DESTINATION "./scenarios")
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scenarios/SconePy" DESTINATION "./scenarios")
 
 	# Windows install/packaging:
