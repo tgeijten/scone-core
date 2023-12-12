@@ -19,7 +19,7 @@ CmaOptimizer {
 		
 		CompositeController {
 			# Controller for gait, based on [Geyer & Herr 2010]
-			<< controllers/ControllerGH2010v11.scone >>
+			<< controllers/ControllerGH2010v12.scone >>
 			
 			# Mimick hyper-reflexia through F+ reflex in gastroc
 			ReflexController {

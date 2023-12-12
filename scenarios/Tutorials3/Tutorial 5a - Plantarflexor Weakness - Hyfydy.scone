@@ -12,10 +12,10 @@ CmaOptimizer {
 			
 			# Override model properties
 			Properties {
-				gastroc_l { max_isometric_force.factor = 0.4 }
-				gastroc_r { max_isometric_force.factor = 0.4 }
-				soleus_l { max_isometric_force.factor = 0.4 }
-				soleus_r { max_isometric_force.factor = 0.4 }
+				gastroc_l { max_isometric_force.factor = 0.3 }
+				gastroc_r { max_isometric_force.factor = 0.3 }
+				soleus_l { max_isometric_force.factor = 0.3 }
+				soleus_r { max_isometric_force.factor = 0.3 }
 			}
 			
 			# Optimize initial state parameters
@@ -28,7 +28,7 @@ CmaOptimizer {
 		}
 		
 		# Controller for gait, based on [Geyer & Herr 2010]
-		<< controllers/ControllerGH2010v11.scone >>
+		<< controllers/ControllerGH2010v12.scone >>
 		
 		# Measure for gait
 		<< measures/MeasureGait05Grf15.scone >>
