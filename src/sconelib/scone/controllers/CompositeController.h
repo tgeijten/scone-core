@@ -13,7 +13,15 @@
 namespace scone
 {
 	/// Controller consisting of multiple child controllers.
-	/// Child Controllers are inserted as children of this parameter, e.g. ''CompositeController { FeedForwardController { ... } ReflexController { ... } }''.
+	/// 
+	/** Child Controllers are inserted inside the CompositeController section:
+	\verbatim
+	CompositeController {
+		FeedForwardController { ... }
+		ReflexController { ... }
+	}
+	\endverbatim
+	*/
 	class SCONE_API CompositeController : public Controller
 	{
 	public:
