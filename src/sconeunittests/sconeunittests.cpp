@@ -34,7 +34,9 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/OpenSim3" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*OpenSim3*.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials2", "*OpenSim.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Tutorials3", "*OpenSim.scone" );
 				if ( !args.has_flag( "skip-tutorials" ) ) {
 					scone::add_scenario_tests( install_dir, "scenarios/Tutorials" );
 				}
@@ -45,6 +47,7 @@ int main( int argc, const char* argv[] )
 				//scone::add_scenario_tests( install_dir,  "scenarios/UnitTests/OpenSim4" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*OpenSim4*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*OpenSim4*.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*OpenSim4*.scone" );
 			}
 #endif
 #if SCONE_HYFYDY_ENABLED
@@ -53,7 +56,9 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Hyfydy", "*.scone", "", 1 );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*Hyfydy.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials2", "*Hyfydy.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Tutorials3", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Benchmarks", "*.par", "data", 1 );
 				scone::add_scenario_tests( scone::GetDataFolder(), "Benchmarks", "bench*.scone" );
 #	if SCONE_EXPERIMENTAL_FEATURES_ENABLED
