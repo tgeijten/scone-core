@@ -71,10 +71,11 @@ namespace scone
 			auto str = test_file.filename().str();
 			if ( include( str ) && !exclude( str ) )
 			{
-				xo::log::debug( "Adding test case: ", test_file.filename() );
+				auto test_name = test_file.parent_path().stem().str() + '/' + test_file.stem().str();
+				xo::log::debug( "Adding test case: ", test_name );
 				xo::create_directories( results_dir );
 				xo::path report_file = results_dir / test_file.stem() + ".zml";
-				xo::test::add_test_case( test_file.stem().str(), xo::test::scenario_test( test_file, report_file ) );
+				xo::test::add_test_case( test_name, xo::test::scenario_test( test_file, report_file ) );
 			}
 		}
 	}
