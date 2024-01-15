@@ -19,6 +19,11 @@ namespace scone
 	Body::~Body()
 	{}
 
+	Vec3 Body::GetLocalPosOfPoint( Vec3 world_point ) const
+	{
+		return -GetOrientation() * ( world_point - GetOriginPos() );
+	}
+
 	void Body::ClearExternalForceAndMoment()
 	{
 		SetExternalForce( Vec3::zero() );

@@ -37,6 +37,7 @@ namespace scone
 		virtual Vec3 GetLocalComPos() const = 0;
 		virtual Quat GetOrientation() const = 0;
 		virtual Vec3 GetPosOfPointOnBody( Vec3 point ) const = 0;
+		virtual Vec3 GetLocalPosOfPoint( Vec3 world_point ) const;
 
 		virtual Vec3 GetComVel() const = 0;
 		virtual Vec3 GetOriginVel() const = 0;

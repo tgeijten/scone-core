@@ -38,6 +38,13 @@ namespace scone
 	}
 
 	template< typename T >
+	T* TryFindPtrByName( std::vector<T*>& cont, const String& name )
+	{
+		auto it = TryFindByName( cont, name );
+		return it != cont.end() ? *it : nullptr;
+	}
+
+	template< typename T >
 	const T& FindByName( const std::vector<T>& cont, const String& name )
 	{
 		auto it = TryFindByName( cont, name );
