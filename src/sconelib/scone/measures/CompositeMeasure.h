@@ -65,6 +65,9 @@ namespace scone
 		/// Create symmetric measures for both sides; default = false.
 		bool dual_sided;
 
+		/// If set, the measure returns the first non-zero child measure, useful for tiered objective functions; default = false.
+		bool use_first_non_zero_result;
+
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:

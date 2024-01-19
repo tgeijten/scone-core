@@ -18,7 +18,8 @@ namespace scone
 {
 	CompositeMeasure::CompositeMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Measure( props, par, model, loc ),
-		dual_sided( props.get_any<bool>( { "dual_sided", "symmetric" }, false ) ) // symmetric is for back. comp.
+		dual_sided( props.get_any<bool>( { "dual_sided", "symmetric" }, false ) ), // symmetric is for back. comp.
+		INIT_MEMBER( props, use_first_non_zero_result, false )
 	{
 		auto create_measure = [&]( const FactoryProps& fp ) {
 			if ( dual_sided ) {
@@ -65,12 +66,17 @@ namespace scone
 		for ( MeasureUP& m : m_Measures )
 		{
 			double res_org = m->GetResult( model );
-			double res_final = m->GetWeightedResult( model );
-			total += res_final;
+			double res_weighted = m->GetWeightedResult( model );
+			if ( use_first_non_zero_result ) {
+				if ( total == 0.0 && res_weighted != 0.0 )
+					total = res_weighted;
+			}
+			else total += res_weighted;
+
 			bool hasweight = m->GetWeight() != 1;
 			bool hasofs = m->GetOffset() != 0;
 			bool hasthreshold = m->GetThreshold() != 0;
-			string value = stringf( "%g", res_final );
+			string value = stringf( "%g", res_weighted );
 			if ( hasweight || hasofs || hasthreshold )
 			{
 				value += " <- ";
@@ -96,7 +102,14 @@ namespace scone
 	{
 		double total = 0.0;
 		for ( MeasureUP& m : m_Measures )
-			total += m->GetCurrentWeightedResult( model );
+		{
+			auto res_weighted = m->GetCurrentWeightedResult( model );
+			if ( use_first_non_zero_result ) {
+				if ( res_weighted != 0.0 )
+					return res_weighted;
+			}
+			else total += res_weighted;
+		}
 		return total;
 	}
 
