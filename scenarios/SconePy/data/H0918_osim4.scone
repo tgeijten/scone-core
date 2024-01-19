@@ -1,6 +1,6 @@
 # Model used in simulation
 ModelOpenSim4 {
-	model_file = data/H0918M_osim4.osim
+	model_file = data/H0918v3.osim
 
 	# Set initial state
 	state_init_file = data/InitStateJump.zml

@@ -1,10 +1,11 @@
 # Model used in simulation
 ModelHyfydy {
-	model_file = H0918.hfd
+	model_file = H0918v3.hfd
 
 	# Set initial state
 	state_init_file = InitStateJump.zml
 	fixed_control_step_size = 0.005
 	initial_equilibration_activation = 0.05
+	zero_velocity_equilibration = 1
 	<< neural_delays_FEA_v4.zml >>
 }

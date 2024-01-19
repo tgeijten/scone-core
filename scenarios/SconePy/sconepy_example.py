@@ -109,9 +109,6 @@ if sconepy.is_supported('ModelHyfydy'):
 if sconepy.is_supported('ModelHyfydy'):
 	measure_performance('data/H0918_hfd.scone')
 
-if sconepy.is_supported('ModelHyfydy'):
-	measure_performance('data/H0918_hfd_v2.scone')
-
 if sconepy.is_supported('ModelOpenSim3'):
 	measure_performance('data/H0918_osim3.scone')
 
