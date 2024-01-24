@@ -315,9 +315,7 @@ namespace scone
 		for ( int idx = 0; idx < m_pOsimModel->getBodySet().getSize(); ++idx )
 			m_Bodies.emplace_back( std::make_unique<BodyOpenSim4>( *this, m_pOsimModel->getBodySet().get( idx ) ) );
 		m_RootBody = m_Bodies.empty() ? nullptr : &*m_Bodies.front();
-		m_BodyPtrs.reserve( m_Bodies.size() );
-		for ( auto& b : m_Bodies )
-			m_BodyPtrs.emplace_back( b.get() );
+		CopyUniquePtrVec( m_Bodies, m_BodyPtrs );
 
 		// Create wrappers for joints
 		m_Joints.reserve( m_pOsimModel->getJointSet().getSize() );
@@ -336,17 +334,13 @@ namespace scone
 				m_Joints.emplace_back( std::make_unique<JointOpenSim4>( **body_it, **parent_it, *this, joint_osim ) );
 			else log::warning( "Could not find bodies for joint: ", joint_osim.getName() );
 		}
-		m_JointPtrs.reserve( m_Joints.size() );
-		for ( auto& j : m_Joints )
-			m_JointPtrs.emplace_back( j.get() );
+		CopyUniquePtrVec( m_Joints, m_JointPtrs );
 
 		// create wrappers for dofs
 		m_Dofs.reserve( m_pOsimModel->getCoordinateSet().getSize() );
 		for ( int idx = 0; idx < m_pOsimModel->getCoordinateSet().getSize(); ++idx )
 			m_Dofs.emplace_back( std::make_unique<DofOpenSim4>( *this, m_pOsimModel->getCoordinateSet().get( idx ) ) );
-		m_DofPtrs.reserve( m_Dofs.size() );
-		for ( auto& d : m_Dofs )
-			m_DofPtrs.emplace_back( d.get() );
+		CopyUniquePtrVec( m_Dofs, m_DofPtrs );
 
 		// create contact geometries
 		m_ContactGeometries.reserve( m_pOsimModel->getContactGeometrySet().getSize() );
@@ -416,6 +410,7 @@ namespace scone
 			else if ( auto* lig = dynamic_cast<const OpenSim::Ligament*>( &forces.get( i ) ) )
 				m_Ligaments.emplace_back( std::make_unique<LigamentOpenSim4>( *this, *lig ) );
 		}
+		CopyUniquePtrVec( m_Ligaments, m_LigamentPtrs );
 
 		// create legs and connect stance_contact forces
 		for ( auto side : { Side::Left, Side::Right } )

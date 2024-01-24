@@ -50,6 +50,7 @@ namespace scone
 		bool HasRootBody() const { return m_RootBody != nullptr; }
 		const Body& GetRootBody() const { SCONE_ASSERT( m_RootBody );  return *m_RootBody; }
 		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
+		const Body& GetGroundBody() const { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 
 		// joint access
 		std::vector< Joint* >& GetJoints() { return m_JointPtrs; }
@@ -64,8 +65,8 @@ namespace scone
 		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
 
 		// ligament access
-		std::vector< LigamentUP >& GetLigaments() { return m_Ligaments; }
-		const std::vector< LigamentUP >& GetLigaments() const { return m_Ligaments; }
+		std::vector< Ligament* >& GetLigaments() { return m_LigamentPtrs; }
+		const std::vector< Ligament* >& GetLigaments() const { return m_LigamentPtrs; }
 
 		// Actuator access
 		std::vector< Actuator* >& GetActuators() { return m_ActuatorPtrs; }
@@ -327,6 +328,7 @@ namespace scone
 		std::vector< Joint* > m_JointPtrs;
 		std::vector< Dof* > m_DofPtrs;
 		std::vector< Muscle* > m_MusclePtrs;
+		std::vector< Ligament* > m_LigamentPtrs;
 		std::vector< Actuator* > m_ActuatorPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;

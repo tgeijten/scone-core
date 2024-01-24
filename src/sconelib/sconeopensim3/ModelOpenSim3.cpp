@@ -289,9 +289,7 @@ namespace scone
 			m_Bodies.emplace_back( std::make_unique<BodyOpenSim3>( *this, m_pOsimModel->getBodySet().get( idx ) ) );
 		m_GroundBody = m_Bodies.empty() ? nullptr : m_Bodies.front().get();
 		m_RootBody = m_Bodies.empty() ? nullptr : m_Bodies.front().get();
-		m_BodyPtrs.reserve( m_Bodies.size() );
-		for ( auto& b : m_Bodies )
-			m_BodyPtrs.emplace_back( b.get() );
+		CopyUniquePtrVec( m_Bodies, m_BodyPtrs );
 
 		// Create wrappers for joints
 		m_Joints.reserve( m_pOsimModel->getJointSet().getSize() );
@@ -305,17 +303,13 @@ namespace scone
 			SCONE_ASSERT( body_it != m_Bodies.end() && parent_it != m_Bodies.end() );
 			m_Joints.emplace_back( std::make_unique<JointOpenSim3>( **body_it, **parent_it, *this, joint_osim ) );
 		}
-		m_JointPtrs.reserve( m_Joints.size() );
-		for ( auto& j : m_Joints )
-			m_JointPtrs.emplace_back( j.get() );
+		CopyUniquePtrVec( m_Joints, m_JointPtrs );
 
 		// create wrappers for dofs
 		m_Dofs.reserve( m_pOsimModel->getCoordinateSet().getSize() );
 		for ( int idx = 0; idx < m_pOsimModel->getCoordinateSet().getSize(); ++idx )
 			m_Dofs.emplace_back( std::make_unique<DofOpenSim3>( *this, m_pOsimModel->getCoordinateSet().get( idx ) ) );
-		m_DofPtrs.reserve( m_Dofs.size() );
-		for ( auto& d : m_Dofs )
-			m_DofPtrs.emplace_back( d.get() );
+		CopyUniquePtrVec( m_Dofs, m_DofPtrs );
 
 		// create contact geometries
 		m_ContactGeometries.reserve( m_pOsimModel->getContactGeometrySet().getSize() );

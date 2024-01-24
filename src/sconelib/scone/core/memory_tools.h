@@ -9,6 +9,7 @@
 #pragma once
 
 #include "xo/utility/pointer_types.h"
+#include <vector>
 
 // class and unique pointer type forward declaration
 #define SCONE_DECLARE_CLASS_AND_PTR( _class_ ) \
@@ -32,5 +33,13 @@ namespace scone
 		To& cast = dynamic_cast<To&>( *p ); // throws on failure, freeing p
 		p.release(); // release ownership from p
 		return std::unique_ptr< To >( &cast ); // return pointer with ownership
+	}
+
+	template <typename T>
+	void CopyUniquePtrVec( const std::vector<std::unique_ptr<T>>& src, std::vector<T*>& trg ) {
+		trg.clear();
+		trg.reserve( src.size() );
+		for ( auto& p : src )
+			trg.emplace_back( p.get() );
 	}
 }
