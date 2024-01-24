@@ -172,7 +172,9 @@ namespace scone
 		distances.insert( xo::dot_product( direction, model.GetComPos() ) );
 		distances.insert( xo::dot_product( direction, m_BaseBodies[0]->GetComPos() ) );
 		distances.insert( xo::dot_product( direction, m_BaseBodies[1]->GetComPos() ) );
-		return ( distances[0] + distances[1] ) / 2;
+		auto dist = ( distances[0] + distances[1] ) / 2;
+		auto ground_dist = xo::dot_product( direction, model.GetGroundBody().GetOriginPos() );
+		return dist - ground_dist;
 	}
 
 	Real GaitMeasure::GetStepDuration( index_t step ) const

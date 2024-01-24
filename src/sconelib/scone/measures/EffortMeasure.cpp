@@ -52,7 +52,7 @@ namespace scone
 		m_Wang2012BasalEnergy = 1.51 * model.GetMass();
 		m_Uchida2016BasalEnergy = 1.2 * model.GetMass();
 		m_AerobicFactor = 1.5; // 1.5 is for aerobic conditions, 1.0 for anaerobic. may need to add as option later
-		m_InitComPos = model.GetComPos();
+		m_InitComPos = model.GetComPos() - model.GetGroundBody().GetOriginPos();
 		SetSlowTwitchRatios( props, model );
 		for ( auto& mus : model.GetMuscles() )
 			m_MuscleNames.push_back( name_ + "." + mus->GetName() + ".penalty" );
@@ -86,7 +86,7 @@ namespace scone
 		if ( use_cost_of_transport )
 		{
 			auto tot_effort = m_Effort.GetTotal();
-			auto delta_com = model.GetComPos() - m_InitComPos;
+			auto delta_com = model.GetComPos() - model.GetGroundBody().GetOriginPos() - m_InitComPos;
 			double distance = std::max( min_distance, omnidirectional ? xo::length( delta_com ) : std::abs( delta_com.x ) );
 			report_.set( "effort", tot_effort );
 			report_.set( "distance", distance );
