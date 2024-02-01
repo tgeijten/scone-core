@@ -13,12 +13,12 @@ namespace scone
 	/** Runs the script defined in the file defined by ''script_file'', which is relative to the folder of the scone scenario.
 	See also LuaModel, LuaBody, LuaDof, LuaActuator, LuaMuscle, LuaFrame. Example of a Lua measure script:
 	\verbatim
-	function init( model )
+	function init( model, par )
 		-- This function is called at the start of the simulation
 		-- 'model' can be used to initialize the measure parameters (see LuaModel)
 	end
 
-	function update( model )
+	function update( model, time )
 		-- This function is called at each simulation timestep
 		-- Use it to update the internal variables of the measure (if needed)
 		return false -- change to 'return true' to terminate the simulation early
