@@ -108,8 +108,14 @@ namespace scone
 				if ( xo::contains( idxVec[axisIdx], myIdx ) )
 					return from_osim( st.getAxes()[axisIdx] );
 		}
-		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) )
-			return Vec3::unit_z();
+		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) ) {
+			SimTK::Vec3 ori;
+			pinJoint->getOrientation( ori );
+			SimTK::Rotation rot;
+			rot.setRotationToBodyFixedXYZ( ori );
+			auto axis = rot * SimTK::Vec3( 0, 0, 1 );
+			return from_osim( axis );
+		}
 
 		return Vec3::zero();
 	}

@@ -115,8 +115,11 @@ namespace scone
 				if ( xo::contains( idxVec[axisIdx], myIdx ) )
 					return from_osim( st.getAxes()[axisIdx] );
 		}
-		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) )
+		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) ) {
+			// #todo: this is incorrect, the axis must be rotated according to the joint orientation
+			// #OpenSim: It is unclear how to do this in OpenSim4
 			return Vec3::unit_z();
+		}
 
 		return Vec3::zero();
 	}
