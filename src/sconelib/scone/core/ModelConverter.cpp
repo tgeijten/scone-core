@@ -108,10 +108,10 @@ namespace scone
 		auto& joint_pn = body_pn.add_child( "joint" );
 		joint_pn["name"] = j.GetName();
 		joint_pn["parent"] = j.GetParentBody().GetName();
-		joint_pn["pos_in_parent"] = GetLocalBodyPos( j.GetPosInParent(), bp );
-		joint_pn["pos_in_child"] = GetLocalBodyPos( j.GetPosInChild(), bc );
+		joint_pn["pos_in_parent"] = fix( GetLocalBodyPos( j.GetPosInParent(), bp ) );
+		joint_pn["pos_in_child"] = fix( GetLocalBodyPos( j.GetPosInChild(), bc ) );
 		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
-		if ( !ref_ori.is_identity() )
+		if ( !xo::is_identity( ref_ori, 1e-9 ) )
 			joint_pn["ref_ori"] = ref_ori;
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
@@ -191,7 +191,7 @@ namespace scone
 		for ( const auto& g : b.GetDisplayGeometries() ) {
 			auto& geom_pn = body_pn.add_child( "mesh" );
 			geom_pn["file"] = g.filename_;
-			geom_pn["pos"] = GetLocalBodyPos( g.pos_, b );
+			geom_pn["pos"] = fix( GetLocalBodyPos( g.pos_, b ) );
 			if ( g.ori_ != Quat::identity() )
 				geom_pn["ori"] = g.ori_;
 			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
