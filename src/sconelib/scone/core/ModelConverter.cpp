@@ -103,9 +103,10 @@ namespace scone
 
 	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn ) const
 	{
+		bool pin_joint = use_pint_joints_ && j.GetDofs().size() == 1;
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
-		auto& joint_pn = body_pn.add_child( "joint" );
+		auto& joint_pn = body_pn.add_child( pin_joint ? "pin_joint" : "joint" );
 		joint_pn["name"] = j.GetName();
 		joint_pn["parent"] = j.GetParentBody().GetName();
 		joint_pn["pos_in_parent"] = fix( GetLocalBodyPos( j.GetPosInParent(), bp ) );
@@ -117,9 +118,11 @@ namespace scone
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
 				auto axis = dof->GetLocalAxis();
-				auto axis_idx = GetAxisIndex( axis );
-				auto sign = GetAxisSign( axis );
+				index_t axis_idx = pin_joint ? 0 : GetAxisIndex( axis );
+				double sign = pin_joint ? 1 : GetAxisSign( axis );
 				auto dof_info = dof->GetInfo();
+				if ( pin_joint )
+					joint_pn["axis"] = axis;
 				if ( dof_info.has_key( "limit_stiffness" ) ) {
 					// convert stiffness and damping
 					if ( use_stiffness_from_limit_force_ ) {
@@ -141,7 +144,9 @@ namespace scone
 				}
 			}
 		}
-		joint_pn["limits"] = Bounds3Deg( limits );
+		if ( pin_joint )
+			joint_pn["limits"] = limits[0];
+		else joint_pn["limits"] = limits;
 	}
 
 	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn ) const
@@ -203,7 +208,7 @@ namespace scone
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
 		dof_pn["name"] = d.GetName();
-		dof_pn["source"] = GetDofSourceName( d );
+		dof_pn["source"] = GetDofSourceName( d, use_pint_joints_ );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn["range"] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )

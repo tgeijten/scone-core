@@ -27,7 +27,7 @@ namespace scone
 	SCONE_API bool IsWeldedBody( const Body& b );
 	SCONE_API const Body* GetWeldedRoot( const Body& b );
 	SCONE_API string GetDofSourceNameLookUp( const Dof& dof );
-	SCONE_API string GetDofSourceName( const Dof& dof );
+	SCONE_API string GetDofSourceName( const Dof& dof, bool enable_pin_joint );
 
 	/// Derive axis index (X=0, Y=1, Z=2)
 	SCONE_API index_t GetAxisIndex( const Vec3& dir );

@@ -24,6 +24,7 @@ namespace scone
 		bool compound_welded_bodies = false;
 		double compound_mass_threshold = 10.0;
 		bool convert_ligaments = true;
+		bool use_pint_joints_ = false;
 
 	private:
 		using StringSet = xo::flat_set<std::string>;

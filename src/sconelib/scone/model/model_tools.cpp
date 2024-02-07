@@ -127,16 +127,17 @@ namespace scone
 		return "?";
 	}
 
-	string GetDofSourceName( const Dof& dof )
+	string GetDofSourceName( const Dof& dof, bool enable_pin_joint )
 	{
-		static const char* rot_postfix[3] = { "_rx", "_ry", "_rz" };
-		static const char* trans_postfix[3] = { "_tx", "_ty", "_tz" };
+		static const char* rot_postfix[] = { "_rx", "_ry", "_rz", "_r" };
+		static const char* trans_postfix[] = { "_tx", "_ty", "_tz", "_t" };
 		const auto& j = *dof.GetJoint();
+		bool pin_joint = enable_pin_joint && j.GetDofs().size() == 1;
 		auto side = xo::str_get_side( j.GetName() );
 		auto rotational = dof.IsRotational();
 		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
-		auto idx = GetAxisIndex( dof.GetLocalAxis() );
-		auto sign = GetAxisSign( dof.GetLocalAxis() );
+		auto idx = pin_joint ? 3 : GetAxisIndex( dof.GetLocalAxis() );
+		auto sign = pin_joint ? 1 : GetAxisSign( dof.GetLocalAxis() );
 		String name = ( rotational && sign < 0 ) ? "-" : "";
 		name += base_name + ( rotational ? rot_postfix[idx] : trans_postfix[idx] ) + xo::side_postfix( side );
 		return name;
