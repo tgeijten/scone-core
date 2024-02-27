@@ -3,6 +3,7 @@ folders {
 	scenarios { type = folder label = "Scenario folder" default = "" description = "Default location for SCONE scenarios" }
 	results { type = folder label = "Results folder" default = "" description = "Default location for optimization results" }
 	geometry { type = folder label = "Geometry folder" default = "" description = "Default location for model geometry" }
+	geometry_extra { type = folder label = "Additional geometry" default = "" description = "Additional locations to look for model geometry" }
 }
 
 data {
