@@ -17,6 +17,7 @@
 #include "Dof.h"
 #include "Joint.h"
 #include "Body.h"
+#include "xo/container/container_tools.h"
 
 using std::vector;
 using std::pair;
@@ -66,7 +67,8 @@ namespace scone
 
 	bool IsRealJoint( const Joint& j )
 	{
-		return j.GetParentBody().GetMass() > 0;
+		auto trans_dofs = xo::count_if( j.GetDofs(), [&]( auto&& d ) { return !d->IsRotational(); } );
+		return j.GetParentBody().GetMass() > 0 || trans_dofs == 0;
 	}
 
 	bool IsWeldedBody( const Body& b )
