@@ -22,18 +22,18 @@ namespace scone
 		SCONE_ERROR_IF( controllers_.size() - 1 != trans_pn.size(),
 			"Wrong number of transition_intervals, expected " + to_str( controllers_.size() - 1 ) );
 
-		double time = 0.0;
-		transition_times.push_back( time );
-		for ( index_t idx = 0; idx < trans_pn.size(); ++idx )
-		{
+		start_times_.push_back( 0.0 );
+		for ( index_t idx = 0; idx < trans_pn.size(); ++idx ) {
 			transition_intervals.push_back( par.get( xo::stringf( "transition%d", idx + 1 ), trans_pn[idx] ) );
-			transition_times.push_back( transition_times.back() + transition_intervals.back() );
+			start_times_.push_back( start_times_.back() + transition_intervals.back() );
 		}
+		SCONE_ASSERT( start_times_.size() == controllers_.size() );
 	}
 
 	bool SequentialController::ComputeControls( Model& model, double timestamp )
 	{
 		active_idx_ = GetActiveIdx( timestamp );
+		timestamp -= start_times_[active_idx_];
 		return controllers_[active_idx_]->UpdateControls( model, timestamp );
 	}
 
@@ -46,13 +46,15 @@ namespace scone
 
 	bool SequentialController::PerformAnalysis( const Model& model, double timestamp )
 	{
-		return controllers_[GetActiveIdx( timestamp )]->UpdateAnalysis( model, timestamp );
+		auto idx = GetActiveIdx( timestamp );
+		timestamp -= start_times_[idx];
+		return controllers_[idx]->UpdateAnalysis( model, timestamp );
 	}
 
 	xo::index_t SequentialController::GetActiveIdx( double timestamp )
 	{
-		auto it = std::upper_bound( transition_times.begin(), transition_times.end(), timestamp );
-		return index_t( xo::clamped<int>( int( it - transition_times.begin() - 1 ), 0, int( controllers_.size() ) - 1 ) );
+		auto it = std::upper_bound( start_times_.begin(), start_times_.end(), timestamp );
+		return index_t( xo::clamped<int>( int( it - start_times_.begin() - 1 ), 0, int( controllers_.size() ) - 1 ) );
 	}
 
 	String SequentialController::GetClassSignature() const
