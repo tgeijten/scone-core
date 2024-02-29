@@ -348,6 +348,13 @@ namespace scone
 		/// number of joints
 		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
 
+		/// store a user value that can be accessed in other scripts
+		void set_user_value( LuaString name, LuaNumber value ) { mod_.GetUserValue( name ) = value; }
+		/// retrieve a specific user value that has previously been set
+		LuaNumber get_user_value( LuaString name ) { return mod_.GetUserValue( name ); }
+		/// check a specific user value exists
+		bool has_user_value( LuaString name ) { return mod_.HasUserValue( name ); }
+
 		Model& mod_;
 	};
 

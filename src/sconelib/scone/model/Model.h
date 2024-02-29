@@ -170,6 +170,9 @@ namespace scone
 		PropNode& GetUserData() { return m_UserData; }
 		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
 		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[id]; }
+		const Real& GetUserValue( const String& id ) const { return m_UserValueData.at( id ); }
+		Real& GetUserValue( const String& id ) { return m_UserValueData[id]; }
+		bool HasUserValue( const String& id ) { return m_UserValueData.contains( id ); }
 
 		// Model info
 		virtual PropNode GetInfo() const;
@@ -346,7 +349,8 @@ namespace scone
 		Storage< Real > m_SensorDelayStorage;
 		Storage< Real, TimeInSeconds > m_Data;
 		PropNode m_UserData;
-		std::map<String, std::any> m_UserAnyData;
+		std::map<String, std::any> m_UserAnyData; // must be map for persistance
+		xo::flat_map<String, Real> m_UserValueData;
 		TimeInSeconds m_PrevStoreDataTime;
 		int m_PrevStoreDataStep;
 		xo::timer m_SimulationTimer;
