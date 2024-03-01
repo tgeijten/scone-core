@@ -127,7 +127,10 @@ namespace scone
 			"ground_body", &LuaModel::ground_body,
 			"joint", &LuaModel::joint,
 			"find_joint", &LuaModel::find_joint,
-			"joint_count", &LuaModel::joint_count
+			"joint_count", &LuaModel::joint_count,
+			"set_custom_value", &LuaModel::set_custom_value,
+			"get_custom_value", &LuaModel::get_custom_value,
+			"has_custom_value", &LuaModel::has_custom_value
 			);
 
 		lua.new_usertype<LuaController>( "LuaController", sol::constructors<>(),
