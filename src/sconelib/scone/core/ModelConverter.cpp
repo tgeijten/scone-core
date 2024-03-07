@@ -199,7 +199,7 @@ namespace scone
 			geom_pn["pos"] = fix( GetLocalBodyPos( g.pos_, b ) );
 			if ( g.ori_ != Quat::identity() )
 				geom_pn["ori"] = g.ori_;
-			if ( g.scale_ != Vec3::diagonal( 1.0 ) )
+			if ( g.scale_ != Vec3::one() )
 				geom_pn["scale"] = g.scale_;
 		}
 	}

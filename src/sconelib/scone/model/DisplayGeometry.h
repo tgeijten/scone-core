@@ -11,7 +11,7 @@ namespace scone
 {
 	struct DisplayGeometry
 	{
-		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ), const xo::color& c = xo::color::null() ) :
+		DisplayGeometry( const xo::path& file, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::one(), const xo::color& c = xo::color::null() ) :
 			filename_( file ),
 			shape_(),
 			pos_( p ),
@@ -19,7 +19,7 @@ namespace scone
 			scale_( s ),
 			color_( c )
 		{}
-		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::diagonal( 1.0 ), const xo::color& c = xo::color::null() ) :
+		DisplayGeometry( const xo::shape& sh, const Vec3& p, const Quat& q = Quat(), const Vec3& s = Vec3::one(), const xo::color& c = xo::color::null() ) :
 			filename_(),
 			shape_( sh ),
 			pos_( p ),
