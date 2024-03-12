@@ -252,8 +252,8 @@ namespace scone
 
 	inline Vec3d translated_inertia( const Vec3d& in, Real m, const Vec3d& o ) {
 		return Vec3d(
-			in.y + m * ( o.x * o.x + o.z * o.z ),
 			in.x + m * ( o.y * o.y + o.z * o.z ),
+			in.y + m * ( o.x * o.x + o.z * o.z ),
 			in.z + m * ( o.x * o.x + o.y * o.y ) );
 	}
 
