@@ -12,6 +12,7 @@ namespace scone
 
 		lua.new_usertype<LuaFrame>( "LuaFrame", sol::constructors<>(),
 			"set_value", &LuaFrame::set_value,
+			"set_vec3", &LuaFrame::set_vec3,
 			"set_bool", &LuaFrame::set_bool,
 			"time", &LuaFrame::time
 			);
