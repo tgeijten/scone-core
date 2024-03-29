@@ -84,7 +84,8 @@ namespace scone
 		}
 
 		// IA interneurons
-		ia_group_ = AddMuscleGroupNeurons( "IA", pn, par );
+		if ( pn.has_key( "IA_bias" ) )
+			ia_group_ = AddMuscleGroupNeurons( "IA", pn, par );
 
 		// IB interneurons
 		if ( pn.has_key( "IB_bias" ) )
@@ -354,7 +355,7 @@ namespace scone
 		// setup muscle info list
 		for ( auto& mus : model.GetMuscles() ) {
 			if ( loc.GetSide() == Side::None || loc.GetSide() == mus->GetSide() ) {
-				auto& musinf = muscles_.emplace_back( mus->GetName(), xo::index_of( mus, model.GetMuscles() ), NeuralDelay( *mus ) );
+				auto& musinf = muscles_.emplace_back( mus->GetName(), xo::index_of( mus, model.GetMuscles() ), 0.0 );
 
 				// add to muscle groups
 				for ( auto& mg : muscle_groups_ ) {
@@ -363,9 +364,11 @@ namespace scone
 						musinf.group_indices_.insert( uint32( xo::index_of( mg, muscle_groups_ ) ) );
 					}
 				}
-				// remove if muscle does not belong to any group
-				if ( muscles_.back().group_indices_.empty() )
-					muscles_.pop_back();
+				if ( !muscles_.back().group_indices_.empty() ) {
+					// finalize initialization when a muscle is part of a group
+					muscles_.back().delay_ = NeuralDelay( *mus );
+				}
+				else muscles_.pop_back(); // remove muscle not belonging to any group
 			}
 		}
 
