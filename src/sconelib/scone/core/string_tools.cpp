@@ -61,15 +61,4 @@ namespace scone
 		xo::replace_str( str, "SCONE_VERSION", to_str( GetSconeVersion().build_ ) );
 		return str;
 	}
-
-	const char* GetAxisName( index_t axis )
-	{
-		static const char* axis_names[] = { "X", "Y", "Z" };
-		return axis < 3 ? axis_names[axis] : "";
-	}
-
-	const char* GetAxisName( const Vec3& dir )
-	{
-		return GetAxisName( GetAxisIndex( dir ) );
-	}
 }

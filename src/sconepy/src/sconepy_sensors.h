@@ -8,6 +8,7 @@
 #include "scone/model/Dof.h"
 #include "scone/model/Sensors.h"
 #include "scone/model/MuscleId.h"
+#include "scone/model/model_tools.h"
 #include "sconepy_tools.h"
 #include "xo/geometry/quat.h"
 

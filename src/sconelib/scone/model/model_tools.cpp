@@ -138,14 +138,25 @@ namespace scone
 		auto side = xo::str_get_side( j.GetName() );
 		auto rotational = dof.IsRotational();
 		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
-		auto idx = pin_joint ? 3 : GetAxisIndex( dof.GetLocalAxis() );
-		auto sign = pin_joint ? 1 : GetAxisSign( dof.GetLocalAxis() );
+		auto idx = pin_joint ? 3 : GetDominantComponentIndex( dof.GetLocalAxis() );
+		auto sign = pin_joint ? 1 : GetDominantComponentSign( dof.GetLocalAxis() );
 		String name = ( rotational && sign < 0 ) ? "-" : "";
 		name += base_name + ( rotational ? rot_postfix[idx] : trans_postfix[idx] ) + xo::side_postfix( side );
 		return name;
 	}
 
-	index_t GetAxisIndex( const Vec3& dir )
+	const char* GetAxisName( index_t axis )
+	{
+		static const char* axis_names[] = { "X", "Y", "Z" };
+		return axis < 3 ? axis_names[axis] : "";
+	}
+
+	const char* GetDominantComponentName( const Vec3& dir )
+	{
+		return GetAxisName( GetDominantComponentIndex( dir ) );
+	}
+
+	index_t GetDominantComponentIndex( const Vec3& dir )
 	{
 		auto x = std::abs( dir.x ), y = std::abs( dir.y ), z = std::abs( dir.z );
 		if ( x > y && x > z )
@@ -155,8 +166,8 @@ namespace scone
 		else return 2;
 	}
 
-	Real GetAxisSign( const Vec3& dir )
+	Real GetDominantComponentSign( const Vec3& dir )
 	{
-		return dir[GetAxisIndex( dir )] < 0 ? -1 : 1;
+		return dir[GetDominantComponentIndex( dir )] < 0 ? -1 : 1;
 	}
 }

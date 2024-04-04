@@ -15,6 +15,8 @@
 #include "xo/geometry/quat.h"
 #include "xo/container/container_algorithms.h"
 #include "scone/core/string_tools.h"
+#include "scone/core/Log.h"
+#include "model_tools.h"
 #include <numeric>
 
 namespace scone
@@ -152,7 +154,7 @@ namespace scone
 		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComPivotPosSensor::GetName() const {
-		return "com-" + pivot_body_.GetName() + ".CP" + GetAxisName( dir_ );
+		return "com-" + pivot_body_.GetName() + ".CP" + GetDominantComponentName( dir_ );
 	}
 	Real ComPivotPosSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
@@ -164,7 +166,7 @@ namespace scone
 		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComPivotVelSensor::GetName() const {
-		return "com-" + pivot_body_.GetName() + ".CV" + GetAxisName( dir_ );
+		return "com-" + pivot_body_.GetName() + ".CV" + GetDominantComponentName( dir_ );
 	}
 	Real ComPivotVelSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
@@ -176,7 +178,7 @@ namespace scone
 		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComSupportPosSensor::GetName() const {
-		return GetSidedName( "com_support", side_ ) + ".CSP" + GetAxisName( dir_ );
+		return GetSidedName( "com_support", side_ ) + ".CSP" + GetDominantComponentName( dir_ );
 	}
 	Real ComSupportPosSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );
@@ -190,7 +192,7 @@ namespace scone
 		SCONE_ERROR_IF( !model_.HasRootBody(), "Model has no root body" );
 	}
 	String ComSupportVelSensor::GetName() const {
-		return GetSidedName( "com_support", side_ ) + ".CSV" + GetAxisName( dir_ );
+		return GetSidedName( "com_support", side_ ) + ".CSV" + GetDominantComponentName( dir_ );
 	}
 	Real ComSupportVelSensor::GetValue() const {
 		auto dir = normalized( projected_xz( model_.GetRootBody().GetOrientation() * dir_ ) );

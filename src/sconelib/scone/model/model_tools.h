@@ -29,7 +29,11 @@ namespace scone
 	SCONE_API string GetDofSourceNameLookUp( const Dof& dof );
 	SCONE_API string GetDofSourceName( const Dof& dof, bool enable_pin_joint );
 
-	/// Derive axis index (X=0, Y=1, Z=2)
-	SCONE_API index_t GetAxisIndex( const Vec3& dir );
-	SCONE_API Real GetAxisSign( const Vec3& dir );
+	/// Get axis name ("X", "Y", "Z" or "")
+	SCONE_API const char* GetAxisName( index_t axis );
+	SCONE_API const char* GetDominantComponentName( const Vec3& dir );
+
+	/// Get dominant component (X=0, Y=1, Z=2)
+	SCONE_API index_t GetDominantComponentIndex( const Vec3& dir );
+	SCONE_API Real GetDominantComponentSign( const Vec3& dir );
 }

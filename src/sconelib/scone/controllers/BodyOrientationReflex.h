@@ -28,8 +28,8 @@ namespace scone
 		Vec3 axis;
 		/// Name of the axis, should be provided when using multiple; default = [ 0 0 1 ]
 		String axis_name;
-		/// Mirror the dof value for left sided reflexes, useful for pelvis_list, pelvis_rotation, etc.; default = 0.
-		bool mirror_left;
+		/// Use rotation vector instead of YZX Euler angle components; default = 0.
+		bool use_rotation_vector;
 
 		/// Target orientation [rad] around axis, derived as YZX Euler angle; default = 0.
 		Real P0;
@@ -53,7 +53,7 @@ namespace scone
 	private:
 		Real u_p;
 		Real u_v;
-		bool m_Mirror;
+		//bool m_Mirror;
 		Body& m_SourceBody;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;

@@ -118,8 +118,8 @@ namespace scone
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
 				auto axis = dof->GetLocalAxis();
-				index_t axis_idx = pin_joint ? 0 : GetAxisIndex( axis );
-				double sign = pin_joint ? 1 : GetAxisSign( axis );
+				index_t axis_idx = pin_joint ? 0 : GetDominantComponentIndex( axis );
+				double sign = pin_joint ? 1 : GetDominantComponentSign( axis );
 				auto dof_info = dof->GetInfo();
 				if ( pin_joint )
 					joint_pn["axis"] = axis;

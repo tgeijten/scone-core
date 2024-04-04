@@ -33,8 +33,4 @@ namespace scone
 
 	/// Replace DATE_TIME, SCONE_VERSION, etc. with actual values
 	SCONE_API String& ReplaceStringTags( String& str );
-
-	/// Get axis name (X, Y or Z)
-	SCONE_API const char* GetAxisName( index_t axis );
-	SCONE_API const char* GetAxisName( const Vec3& dir );
 }

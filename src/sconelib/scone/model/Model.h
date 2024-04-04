@@ -201,14 +201,15 @@ namespace scone
 				m_Sensors.push_back( std::move( sensor ) );
 				return dynamic_cast<SensorT&>( *m_Sensors.back() ); // return new sensor
 			}
-			else return dynamic_cast<SensorT&>( **it ); // return found element
+			else return dynamic_cast<SensorT&>( **it ); // return found element, drop the new sensor
 		}
 
 		// create delayed sensors (old system)
 		SensorDelayAdapter& AcquireSensorDelayAdapter( Sensor& source );
 		Storage< Real >& GetSensorDelayStorage() { return m_SensorDelayStorage; }
-		template< typename SensorT, typename... Args > SensorDelayAdapter& AcquireDelayedSensor( Args&&... args )
-		{ return AcquireSensorDelayAdapter( AcquireSensor< SensorT >( std::forward< Args >( args )... ) ); }
+		template< typename SensorT, typename... Args > SensorDelayAdapter& AcquireDelayedSensor( Args&&... args ) {
+			return AcquireSensorDelayAdapter( AcquireSensor< SensorT >( std::forward< Args >( args )... ) );
+		}
 
 		// get delayed sensor, recommended approach
 		DelayedSensorValue GetDelayedSensor( Sensor& sensor, TimeInSeconds two_way_delay );

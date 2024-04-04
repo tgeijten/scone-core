@@ -14,6 +14,7 @@
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/model/Actuator.h"
 #include "scone/core/string_tools.h"
+#include "scone/model/model_tools.h"
 #include "xo/system/version.h"
 
 namespace scone
@@ -28,13 +29,12 @@ namespace scone
 	BodyOrientationReflex::BodyOrientationReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
 		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
-		INIT_MEMBER( pn, axis, Vec3::unit_z() ),
+		axis( normalized( pn.get<Vec3>( "axis", Vec3::unit_z() ) ) ),
 		INIT_MEMBER( pn, axis_name, GetAxisName( GetAxis( axis ) ) ),
-		INIT_MEMBER( pn, mirror_left, false ),
+		INIT_MEMBER( pn, use_rotation_vector, model.scone_version < xo::version( 2, 0, 4, 2348 ) ),
 		u_p(), u_v(),
-		m_Mirror( mirror_left&& loc.side_ == Side::Left ),
 		m_SourceBody( *FindByLocation( model.GetBodies(), source, loc ) ),
-		m_DelayedPos( model.scone_version < xo::version( 2, 0, 4, 2348 ) ?
+		m_DelayedPos( use_rotation_vector ?
 			model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) :
 			model.AcquireDelayedSensor< BodyEulerOriSensor >( m_SourceBody, GetAxis( axis ), loc.side_ ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyAngularVelocitySensor >( m_SourceBody, axis, axis_name, loc.side_ ) )
@@ -65,11 +65,6 @@ namespace scone
 
 		auto delta_pos = P0 - pos;
 		auto delta_vel = V0 - vel;
-
-		if ( m_Mirror ) {
-			delta_pos = -delta_pos;
-			delta_vel = -delta_vel;
-		}
 
 		u_p = KP * delta_pos;
 		if ( !allow_neg_P && u_p < 0.0 )
