@@ -156,6 +156,21 @@ namespace scone
 		return GetAxisName( GetDominantComponentIndex( dir ) );
 	}
 
+	string GetVectorIdentifier( const Vec3& dir )
+	{
+		if ( auto idx = GetAxisIndex( dir ); idx != no_index )
+			return GetAxisName( idx ); // a pure component name, hurray
+		else return stringf( "%f_%f_%f", dir.x, dir.y, dir.z ); // no pure component
+	}
+
+	index_t GetAxisIndex( const Vec3& v )
+	{
+		if ( v == Vec3::unit_x() ) return 0;
+		else if ( v == Vec3::unit_y() ) return 1;
+		else if ( v == Vec3::unit_z() ) return 2;
+		else return no_index;
+	}
+
 	index_t GetDominantComponentIndex( const Vec3& dir )
 	{
 		auto x = std::abs( dir.x ), y = std::abs( dir.y ), z = std::abs( dir.z );

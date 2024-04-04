@@ -19,24 +19,17 @@
 
 namespace scone
 {
-	index_t GetAxis( const Vec3& v ) {
-		if ( v == Vec3::unit_x() ) return 0;
-		else if ( v == Vec3::unit_y() ) return 1;
-		else if ( v == Vec3::unit_z() ) return 2;
-		else return no_index;
-	}
-
 	BodyOrientationReflex::BodyOrientationReflex( const PropNode& pn, Params& par, Model& model, ReflexController& rc, const Location& loc ) :
 		Reflex( pn, par, model, rc, loc ),
 		INIT_MEMBER_REQUIRED( pn, source ),
 		axis( normalized( pn.get<Vec3>( "axis", Vec3::unit_z() ) ) ),
-		INIT_MEMBER( pn, axis_name, GetAxisName( GetAxis( axis ) ) ),
+		INIT_MEMBER( pn, axis_name, GetVectorIdentifier( axis ) ),
 		INIT_MEMBER( pn, use_rotation_vector, model.scone_version < xo::version( 2, 0, 4, 2348 ) ),
 		u_p(), u_v(),
 		m_SourceBody( *FindByLocation( model.GetBodies(), source, loc ) ),
 		m_DelayedPos( use_rotation_vector ?
 			model.AcquireDelayedSensor< BodyOrientationSensor >( m_SourceBody, axis, axis_name, loc.side_ ) :
-			model.AcquireDelayedSensor< BodyEulerOriSensor >( m_SourceBody, GetAxis( axis ), loc.side_ ) ),
+			model.AcquireDelayedSensor< BodyEulerOriSensor >( m_SourceBody, GetAxisIndex( axis ), loc.side_ ) ),
 		m_DelayedVel( model.AcquireDelayedSensor< BodyAngularVelocitySensor >( m_SourceBody, axis, axis_name, loc.side_ ) )
 	{
 		String par_name = model.scone_version >= xo::version( 2, 0, 6 ) ? GetParName( pn, loc ) : target + '-' + GetNameNoSide( source );

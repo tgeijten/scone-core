@@ -33,7 +33,11 @@ namespace scone
 	SCONE_API const char* GetAxisName( index_t axis );
 	SCONE_API const char* GetDominantComponentName( const Vec3& dir );
 
-	/// Get dominant component (X=0, Y=1, Z=2)
+	/// Get the name of a vector, either X, Y, Z or some numbers
+	SCONE_API string GetVectorIdentifier( const Vec3& dir );
+
+	/// Get dominant component (X=0, Y=1, Z=2, otherwise no_index)
+	SCONE_API index_t GetAxisIndex( const Vec3& v );
 	SCONE_API index_t GetDominantComponentIndex( const Vec3& dir );
 	SCONE_API Real GetDominantComponentSign( const Vec3& dir );
 }
