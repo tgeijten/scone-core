@@ -15,9 +15,14 @@
 namespace scone
 {
 	/// Measure for how well a simulation mimics data from predefined motion file.
-	/** This measure only considers variable that are part of the model state,
+	/** The measure computes the mean squared error (MSE) between the simulated state and the
+	states in a .sto file. Only variables are considered that are part of the model state,
 	which includes DOFs, DOF velocities, muscle activation (*.activation), and muscle fiber length (*.fiber_length)
-	Variables that are derived from the state are not included in the measure. Example:
+	Variables that are derived from the state are not included in the measure.
+
+	When using a Hyfydy model with OpenSim state data, make sure to add ''include_dofs_in_state = 1'' to ModelHfd.
+	
+	Example:
 	\verbatim
 	# Measure for mimicking 2D gait
 	MimicMeasure {
