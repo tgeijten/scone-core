@@ -308,6 +308,8 @@ namespace scone
 		LuaNumber mass() { return mod_.GetMass(); }
 		/// get the gravitational pull [m/s^2]
 		LuaVec3 gravity() { return mod_.GetGravity(); }
+		/// get the gravitational pull [m/s^2]
+		void set_gravity( LuaVec3 g ) { return mod_.SetGravity( g ); }
 
 		/// get the actuator at index (starting at 1)
 		LuaActuator actuator( int index ) { return *GetByLuaIndex( mod_.GetActuators(), index ); }

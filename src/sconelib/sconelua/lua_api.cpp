@@ -112,6 +112,7 @@ namespace scone
 			"com_vel", &LuaModel::com_vel,
 			"mass", &LuaModel::mass,
 			"gravity", &LuaModel::gravity,
+			"set_gravity", &LuaModel::set_gravity,
 			"actuator", &LuaModel::actuator,
 			"find_actuator", &LuaModel::find_actuator,
 			"actuator_count", &LuaModel::actuator_count,
