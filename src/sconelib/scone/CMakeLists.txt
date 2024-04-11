@@ -27,6 +27,8 @@ set(CORE_MATH_FILES
 	core/PieceWiseLinearFunction.h
 	core/Polynomial.h
 	core/Polynomial.cpp
+	core/ConstantFunction.h
+	core/ConstantFunction.cpp
 	core/SineWave.h
 	core/SineWave.cpp
 	core/RaisedCosine.h
