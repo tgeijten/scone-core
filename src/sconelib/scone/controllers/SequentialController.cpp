@@ -56,12 +56,4 @@ namespace scone
 		auto it = std::upper_bound( start_times_.begin(), start_times_.end(), timestamp );
 		return index_t( xo::clamped<int>( int( it - start_times_.begin() - 1 ), 0, int( controllers_.size() ) - 1 ) );
 	}
-
-	String SequentialController::GetClassSignature() const
-	{
-		String s = "C";
-		for ( auto& c : controllers_ )
-			s += '.' + c->GetSignature();
-		return s;
-	}
 }

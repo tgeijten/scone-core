@@ -55,7 +55,6 @@ namespace scone
 	protected:
 		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
 		index_t GetActiveIdx( double timestamp );
-		virtual String GetClassSignature() const override;
 		std::vector< TimeInSeconds > start_times_;
 		index_t active_idx_;
 	};
