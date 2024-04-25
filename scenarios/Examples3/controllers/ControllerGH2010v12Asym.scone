@@ -1,0 +1,156 @@
+# Gait controller adapted from [Geyer & Herr 2010] by Thomas Geijtenbeek 
+# Version history
+# 9: Updated initial values to better fit H0914 model
+# 8: Moved 'symmetric' property to GaitStateController
+# 7: Changed C0 ranges to <-10,10>; fixes issue for negative C0 on glut_max during Liftoff
+# 6: Fixed sign on glut_max during LiftOff
+GaitStateController {
+	signature_postfix = "GH2010"
+	auto_std_factor = 0.05
+	stance_load_threshold = ~0.2<0.001,1> # was 0.1
+	leg_load_sensor_delay = 0
+	symmetric = 0
+	ConditionalControllers {
+		# TA stretch reflexes [Geyer & Herr 2010]
+		ConditionalController {
+			states = "EarlyStance LateStance Liftoff Swing Landing"
+			ReflexController {
+				MuscleReflex {
+					target = tib_ant
+					delay = 0.020
+					KL = ~1.1<-10,10> # 1.1 in paper
+					L0 = ~0.71<0.5,2> # 0.71 in paper
+				}
+				MuscleReflex {
+					target = tib_ant
+					source = soleus
+					delay = 0.020
+					KF = ~-0.3<-10,10> # -0.3 in paper
+				}
+			}
+		}
+		
+		# GAS and SOL F+ reflexes [Geyer & Herr 2010]
+		ConditionalController {
+			states = "EarlyStance LateStance Liftoff"
+			ReflexController {
+				MuscleReflex {
+					target = soleus
+					delay = 0.020
+					KF = ~1.2<-10,10> # 1.2 in paper
+				}
+				MuscleReflex {
+					target = gastroc
+					delay = 0.020
+					KF = ~1.1<-10,10> # 1.1 in paper
+				}
+			}
+		}
+		
+		# Stance reflexes
+		ConditionalController {
+			states = "EarlyStance LateStance"
+			ReflexController {
+				Reflexes {
+					# F+ VAS
+					ConditionalMuscleReflex {
+						target = vasti
+						delay = 0.010
+						KF = ~1.15<-10,10> # G_VAS
+						C0 = ~0.09<-1,1> # S_0,VAS; 0.09 in paper
+						dof = knee_angle
+						pos_max = ~-0.175<-1,0>
+					}
+					# Root stability
+					DofReflex {
+						target = hamstrings
+						source = pelvis_tilt
+						delay = 0.005
+						KP = ~1.91<-10,10> # k_p; 1.91 in paper
+						KV = ~0.25<-10,10> # k_d; 0.25 in paper
+						P0 = -0.105 # theta_ref, not optimized because of C0
+						C0 = ~0.05<-1,1> # S_0,BAL; 0.05 in paper
+					}
+					DofReflex {
+						target = glut_max
+						source = pelvis_tilt
+						delay = 0.005
+						KP = ~1.91<-10,10> # k_p; 1.91 in paper
+						KV = ~0.25<-10,10> # k_d; 0.25 in paper
+						P0 = -0.105 # theta_ref, not optimized because of C0
+						C0 = ~-0.1<-1,1> # S_0,BAL; 0.05 in paper
+					}
+					DofReflex {
+						target = iliopsoas
+						source = pelvis_tilt
+						delay = 0.005
+						KP = ~-1.91<-10,10> # -k_p; -1.91 in paper
+						KV = ~-0.55<-10,10> # -k_d; -0.25 in paper
+						P0 = -0.105 # theta_ref, not optimized because of C0
+						C0 = ~0.05<-1,1> # S_0,BAL; 0.05 in paper
+					}
+				}
+			}
+		}
+		
+		# Double support reflexes
+		ConditionalController {
+			states = "Liftoff"
+			ReflexController {
+				MuscleReflex {
+					target = iliopsoas
+					delay = 0.005
+					C0 = ~0.35<-1,1> # DELTA_S; 0.25 in paper
+				}
+				MuscleReflex {
+					target = glut_max
+					delay = 0.005
+					C0 = ~-0.5<-1,1> # DELTA_S; -0.25 in paper
+				}
+			}
+		}
+		
+		# Swing reflexes
+		ConditionalController {
+			states = "Swing Landing"
+			ReflexController {
+				# HFL excitation [Geyer & Herr 2010]
+				MuscleReflex {
+					target = iliopsoas
+					delay = 0.005
+					KL = ~0.5<-10,10> # G_HFL; 0.35 in paper
+					L0 = ~0.4<0,2> # l_off_HFL
+					allow_neg_L = 0
+				}
+				DofReflex {
+					target = iliopsoas
+					source = pelvis_tilt
+					delay = 0.005
+					KP = ~1.15<-10,10> # k_lean; 1.15 in paper
+					#KV = ~0.1<-10,10> # not in [GH2010]; 0.25 in paper
+					P0 = ~-0.105<-1,1> # theta_ref; -0.105 in paper
+				}
+				# late-swing HFL inhibition [Geyer & Herr 2010]
+				MuscleReflex {
+					target = iliopsoas
+					source = hamstrings
+					delay = 0.005
+					KL = ~-5<-10,10> # -4 in paper
+					L0 = ~0.85<0,2> # 0.85 in paper
+					allow_neg_L = 0
+				}
+				# late-swing HAM and GLU reflexes [Geyer & Herr 2010]
+				MuscleReflex {
+					target = hamstrings
+					delay = 0.005
+					KF = ~0.35<-10,10> # 0.65 in paper
+				}
+				MuscleReflex {
+					target = glut_max
+					delay = 0.005
+					KF = ~0.35<-10,10> # 0.4 in paper
+				}
+			}
+		}
+	}
+}

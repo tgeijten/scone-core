@@ -1,0 +1,43 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	min_progress = 1e-4
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = models/H0914v3.hfd
+			
+			# Optimize initial state parameters
+			state_init_file = init/InitStateH0918Gait10ActA.zml
+			initial_state_offset = 0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			fixed_control_step_size = 0.005
+			use_opensim_activation_dynamics = 1
+			zero_velocity_equilibration = 1
+			
+			# scale individual body segments
+			BodyModifier { include = femur_r scale = [ 1 1.2 1 ] }
+			BodyModifier { include = tibia_r scale = [ 1 0.75 1 ] }
+			BodyModifier { include = femur_l scale = [ 1 0.9 1 ] }
+			BodyModifier { include = tibia_l scale = [ 1 1.1 1 ] }
+			BodyModifier { include = torso scale = [ 1.1 0.9 1.1 ] }
+			
+			# make vasti, gastroc and soleus 10% weaker
+			MuscleModifier {
+				include = "vasti*;gastroc*;soleus*"
+				max_isometric_force { factor = 0.9 }
+			}
+			
+			# set the total model mass
+			ModelModifier { mass = 65 }
+		}
+		
+		# Controller for gait, based on [Geyer & Herr 2010]
+		<< controllers/ControllerGH2010v12Asym.scone >>
+		
+		# Measure for gait
+		<< measures/MeasureGait10v3.scone >>
+	}
+}
