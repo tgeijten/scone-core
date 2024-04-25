@@ -63,6 +63,9 @@ namespace scone
 		/// Use initial heading for target direction; default = 0
 		bool use_initial_heading;
 
+		/// Minimum velocity used for penalty normalization (advanced); default = 0.1 m/s.
+		Real min_norm_velocity;
+
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		void AddStep( const Model& model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
@@ -88,6 +91,7 @@ namespace scone
 		Real m_PrevGaitDist;
 		PropNode m_Report;
 
+		Real GetNormalizedVelocity( Real p );
 		Real GetGaitDist( const Model& model );
 		Real GetStepDuration( index_t step ) const;
 		bool HasNewFootContact( const Model& model );

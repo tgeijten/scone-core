@@ -32,6 +32,7 @@ namespace scone
 		INIT_PROP( props, base_bodies, "" );
 		INIT_PROP( props, direction, Vec3::unit_x() );
 		INIT_PROP( props, use_initial_heading, false );
+		INIT_PROP( props, min_norm_velocity, 0.1 );
 
 		if ( use_initial_heading && model.HasRootBody() )
 			direction = xo::projected_xz( model.GetRootBody().GetOrientation() * Vec3::unit_x() );
@@ -106,7 +107,7 @@ namespace scone
 			double dt = step > 0 ? steps_[step].time - steps_[step - 1].time : steps_[step].time;
 			double step_vel = steps_[step].length / dt;
 			double step_penalty = Range< double >( min_velocity, max_velocity ).GetRangeViolation( step_vel );
-			double norm_vel = xo::clamped( 1.0 - ( fabs( step_penalty ) / min_velocity ), -1.0, 1.0 );
+			double norm_vel = GetNormalizedVelocity( step_penalty );
 
 			log::TraceF( "%.3f: step=%d vel=%.3f (%.3f/%.3f) penalty=%.3f norm_vel=%.3f %s",
 				steps_[step].time, step, step_vel, steps_[step].length, dt, step_penalty, norm_vel, step < start_step ? "" : "*" );
@@ -135,7 +136,7 @@ namespace scone
 	{
 		double step_vel = steps_.empty() ? 0 : steps_.back().length / GetStepDuration( steps_.size() - 1 );
 		double step_penalty = Range< double >( min_velocity, max_velocity ).GetRangeViolation( step_vel );
-		double norm_vel = xo::clamped( 1.0 - ( fabs( step_penalty ) / min_velocity ), -1.0, 1.0 );
+		double norm_vel = GetNormalizedVelocity( step_penalty );
 		return norm_vel;
 	}
 
@@ -161,6 +162,13 @@ namespace scone
 
 		steps_.emplace_back( Step{ model.GetTime(), step_length } );
 		m_PrevGaitDist = gait_dist;
+	}
+
+	Real GaitMeasure::GetNormalizedVelocity( Real p )
+	{
+		auto min_abs_target_vel = std::min( fabs( min_velocity ), fabs( max_velocity ) );
+		auto norm_vel = std::max( min_abs_target_vel, min_norm_velocity );
+		return xo::clamped( 1.0 - ( fabs( p ) / norm_vel ), -1.0, 1.0 );
 	}
 
 	Real GaitMeasure::GetGaitDist( const Model& model )
