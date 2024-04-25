@@ -1,0 +1,34 @@
+CmaOptimizer {
+	signature_prefix = DATE_TIME
+	
+	SimulationObjective {
+		max_duration = 2
+		
+		# Model used in simulation
+		ModelHyfydy {
+			model_file = models/H0906.hfd
+			state_init_file = init/InitStateJump.zml
+			fixed_control_step_size = 0.01
+			initial_load = 0.5
+		}
+		
+		# Controller for the Model
+		FeedForwardController {
+			symmetric = 1
+			
+			# 2nd degree polynomial ax^2 + bx + c
+			Polynomial {
+				degree = 2
+				coefficient0 = 0~1<-100,100> # initial value for c
+				coefficient1 = 0~1<-100,100> # initial value for b
+				coefficient2 = 0~10<-1000,1000> # initial value for a
+			}
+		}
+		
+		# Fitness measure for jumping
+		JumpMeasure {
+			termination_height = 0.75
+			prepare_time = 0.25
+		}
+	}
+}

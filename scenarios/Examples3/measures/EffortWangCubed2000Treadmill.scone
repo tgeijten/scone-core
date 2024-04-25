@@ -1,0 +1,13 @@
+EffortMeasure {
+	name = Effort
+	weight = 0.001
+	measure_type = Wang2012
+	use_cost_of_transport = 0
+}
+EffortMeasure {
+	name = MuscleActivation
+	weight = 20
+	measure_type = CubedMuscleActivation
+	use_average_per_muscle = 1
+	use_cost_of_transport = 0
+}
