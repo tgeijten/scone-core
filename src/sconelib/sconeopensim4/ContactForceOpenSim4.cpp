@@ -30,7 +30,7 @@ namespace scone
 		m_PlaneLocation()
 	{
 		std::vector<std::string> geom_names;
-		Real sphere_radius = 1.0;
+		Real sphere_radius = 0.0;
 		bool incorporate_sphere_radius_in_stiffness = false;
 		if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &osForce ) )
 		{
@@ -46,6 +46,9 @@ namespace scone
 		{
 			auto ssfnc = const_cast<OpenSim::SmoothSphereHalfSpaceForce&>( *ssf ); // hack for OpenSim bug
 			//geom_names = make_string_list( ssfnc.getContactParametersSet().get( 0 ).getGeometry() );
+			for ( const auto& cg : model.GetContactGeometries() )
+				if ( std::holds_alternative<xo::sphere>( cg->GetShape() ) )
+					geom_names.push_back( cg->GetName() ); // add all spheres, since we can't access the geometry directly
 			m_StaticFriction = ssfnc.get_static_friction();
 			m_DynamicFriction = ssfnc.get_dynamic_friction();
 			m_Stiffness = ssfnc.get_stiffness();
@@ -71,13 +74,13 @@ namespace scone
 			if ( auto cgit = TryFindByName( cgvec, name ); cgit != cgvec.end() )
 			{
 				auto& cg = **cgit;
-				if ( auto p = std::get_if< xo::plane >( &cg.GetShape() ) )
+				if ( auto p = std::get_if<xo::plane>( &cg.GetShape() ) )
 				{
 					// initialize plane normal / pos, needed for cop computation
 					m_PlaneNormal = cg.GetOri() * Vec3( p->normal_ );
 					m_PlaneLocation = cg.GetPos();
 				}
-				if ( auto s = std::get_if< xo::sphere >( &cg.GetShape() ); s && sphere_radius == 0.0 )
+				if ( auto s = std::get_if<xo::sphere>( &cg.GetShape() ); s && sphere_radius == 0.0 )
 					sphere_radius = s->radius_; // track sphere radius to compute HCF stiffness
 
 				m_Geometries.push_back( &cg );
@@ -86,8 +89,11 @@ namespace scone
 		}
 
 		// correct stiffness based on sphere radius
-		if ( incorporate_sphere_radius_in_stiffness )
-			m_Stiffness = std::pow( 4.0 / 3.0 * std::sqrt( sphere_radius ) * m_Stiffness, 2.0 / 3.0 );
+		if ( incorporate_sphere_radius_in_stiffness && sphere_radius != 0.0 ) {
+			auto new_stiffness = std::pow( 4.0 / 3.0 * std::sqrt( sphere_radius ) * m_Stiffness, 2.0 / 3.0 );
+			log::trace( "Setting contact stiffness from ", m_Stiffness, " to ", new_stiffness, " based on radius ", sphere_radius );
+			m_Stiffness = new_stiffness;
+		}
 
 		auto labels = m_osForce.getRecordLabels();
 		m_Labels.reserve( labels.size() );
