@@ -34,7 +34,7 @@ namespace scone
 		bool correct_stiffness = false;
 		if ( auto* hcf = dynamic_cast<const OpenSim::HuntCrossleyForce*>( &osForce ) )
 		{
-			auto hcfnc = const_cast<OpenSim::HuntCrossleyForce&>( *hcf ); // hack for OpenSim bug
+			auto& hcfnc = const_cast<OpenSim::HuntCrossleyForce&>( *hcf ); // hack for OpenSim bug
 			geom_names = make_string_list( hcfnc.getContactParametersSet().get( 0 ).getGeometry() );
 			m_StaticFriction = hcfnc.getStaticFriction();
 			m_DynamicFriction = hcfnc.getDynamicFriction();
@@ -44,7 +44,7 @@ namespace scone
 		}
 		else if ( auto* eff = dynamic_cast<const OpenSim::ElasticFoundationForce*>( &osForce ) )
 		{
-			auto effnc = const_cast<OpenSim::ElasticFoundationForce&>( *eff ); // hack for OpenSim bug
+			auto& effnc = const_cast<OpenSim::ElasticFoundationForce&>( *eff ); // hack for OpenSim bug
 			geom_names = make_string_list( effnc.getContactParametersSet().get( 0 ).getGeometry() );
 			m_StaticFriction = effnc.getStaticFriction();
 			m_DynamicFriction = effnc.getDynamicFriction();
