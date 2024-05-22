@@ -16,20 +16,37 @@
 namespace scone
 {
 	CompositeController::CompositeController( const PropNode& props, Params& par, Model& model, const Location& loc ) :
-		Controller( props, par, model, loc )
+		Controller( props, par, model, loc ),
+		INIT_MEMBER( props, child_names, std::vector<String>() )
 	{
-		for ( auto& cpn : props )
-			if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) )
-				controllers_.emplace_back( CreateController( fp, par, model, loc ) );
-
-		if ( Controllers = props.try_get_child( "Controllers" ) )
-			for ( auto& cpn : *Controllers )
-				if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) )
+		auto child_count = child_names.size();
+		
+		do
+		{
+			// directly added controllers
+			for ( auto& cpn : props ) {
+				if ( child_count > 0 && controllers_.size() == child_count )
+					break;
+				if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) ) {
+					ScopedParamSetPrefixer pp( par, child_count > 0 ? child_names[controllers_.size() % child_count] : "" );
 					controllers_.emplace_back( CreateController( fp, par, model, loc ) );
+				}
+			}
+
+			// controllers in Controllers section (old-style)
+			if ( Controllers = props.try_get_child( "Controllers" ) ) {
+				if ( child_count > 0 && controllers_.size() == child_count )
+					break;
+				for ( auto& cpn : *Controllers )
+					if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) ) {
+						ScopedParamSetPrefixer pp( par, child_count > 0 ? child_names[controllers_.size() % child_count] : "" );
+						controllers_.emplace_back( CreateController( fp, par, model, loc ) );
+					}
+			}
+		} while ( controllers_.size() > 0 && controllers_.size() < child_count );
 
 		// show error if child controllers have identical names
-		if ( controllers_.size() > 1 )
-		{
+		if ( controllers_.size() > 1 && child_names.empty() ) {
 			for ( auto it1 = controllers_.begin(); it1 != controllers_.end(); ++it1 )
 				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 )
 				{

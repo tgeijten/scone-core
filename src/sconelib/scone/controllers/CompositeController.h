@@ -37,6 +37,9 @@ namespace scone
 
 		const PropNode* Controllers;
 
+		/// prefixes to add to child controller parameter names, so that the same controller can easily be used multiple times; default = empty.
+		std::vector<String> child_names;
+
 		virtual PropNode GetInfo() const override;
 
 		const std::vector< ControllerUP >& GetChildren() const { return controllers_; }
