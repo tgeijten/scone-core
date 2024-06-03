@@ -236,6 +236,7 @@ namespace scone
 			auto dt = GetTime() - m_PrevStoreDataTime;
 			auto step_count = GetIntegrationStep() - m_PrevStoreDataStep;
 			frame["simulation_frequency"] = dt > 0 ? step_count / dt : 0.0;
+			frame["simulation_frequency_average"] = GetTime() > 0.0 ? GetIntegrationStep() / GetTime() : 0.0;
 			frame["simulation_step_size"] = step_count > 0 ? dt / step_count : 0.0;
 			frame["simulation_step_count"] = step_count;
 		}
@@ -573,7 +574,9 @@ namespace scone
 		PropNode pn;
 
 		auto& model_pn = pn.add_child( "Model" );
-		model_pn["name"] = GetName();
+		if ( !m_ModelInfo.has_key( "name" ) )
+			model_pn["name"] = GetName();
+		model_pn.append( m_ModelInfo );
 		model_pn["mass"] = GetMass();
 		model_pn["gravity"] = GetGravity();
 		model_pn["dof count"] = GetDofs().size();

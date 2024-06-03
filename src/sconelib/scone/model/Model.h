@@ -361,6 +361,7 @@ namespace scone
 		// model properties
 		std::vector< UserInputUP > m_UserInputs;
 		ModelFeatures m_Features;
+		PropNode m_ModelInfo;
 
 		// simulation settings
 		double fixed_step_size;
