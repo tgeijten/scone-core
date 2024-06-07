@@ -122,6 +122,7 @@ namespace scone
 		virtual void InitStateFromDofs() {}
 		virtual void SetNullState();
 		virtual void SetNeutralState();
+		virtual void SetDefaultState();
 		virtual void AdjustStateForLoad( Real load ) = 0;
 
 		// Reset the model and controllers to the initial state

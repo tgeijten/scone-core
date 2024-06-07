@@ -460,6 +460,17 @@ namespace scone
 			dof->SetPos( dof->GetRange().GetCenter() );
 			dof->SetVel( 0 );
 		}
+		InitStateFromDofs();
+	}
+
+	void Model::SetDefaultState()
+	{
+		for ( auto& dof : GetDofs() )
+		{
+			dof->SetPos( dof->GetDefaultPos() );
+			dof->SetVel( 0 );
+		}
+		InitStateFromDofs();
 	}
 
 	void Model::Reset()
