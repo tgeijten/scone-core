@@ -31,11 +31,14 @@ namespace scone
 		/// Offset [m] of the point of the body to measure, relative to origin; default = [ 0 0 0 ].
 		Vec3 offset;
 
-		/// Direction vector [m3] in which to measure (global coordinate frame), or zero when measuring magnitude (default);
+		/// Direction vector [3] in which to measure (global coordinate frame), or zero when measuring magnitude (default);
 		Vec3 direction;
 
 		/// Measure the magnitude instead of dot product; default = true if direction equals zero
 		bool magnitude;
+
+		/// Magnitude scaling [3]; default = [ 1 1 1 ]
+		Vec3 scale;
 
 		/// Offset is measured relative to model COM; default = false.
 		bool relative_to_model_com;
@@ -61,6 +64,9 @@ namespace scone
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	private:
+		Real GetPenaltyValue( const Vec3 v ) const  {
+			return magnitude ? length( scaled( v, scale ) ) : dot_product( direction, v );
+		}
 		int range_count;
 	};
 }

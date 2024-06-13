@@ -12,7 +12,6 @@
 
 namespace scone
 {
-
 	BodyMeasure::BodyMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Measure( props, par, model, loc ),
 		body( *FindByLocation( model.GetBodies(), props.get< String >( "body" ), loc ) ),
@@ -22,6 +21,7 @@ namespace scone
 		INIT_PROP( props, direction, Vec3::zero() );
 		INIT_PROP( props, relative_to_model_com, false );
 		INIT_PROP( props, magnitude, direction.is_null() );
+		INIT_PROP( props, scale, Vec3::one() );
 		INIT_PROP( props, position, RangePenalty<Real>() );
 		INIT_PROP( props, velocity, RangePenalty<Real>() );
 		INIT_PROP( props, angular_velocity, RangePenalty<Real>() );
@@ -78,27 +78,27 @@ namespace scone
 		{
 			auto pos = body.GetPosOfPointOnBody( offset );
 			if ( relative_to_model_com ) pos -= model.GetComPos();
-			position.AddSample( timestamp, magnitude ? length( pos ) : dot_product( direction, pos ) );
+			position.AddSample( timestamp, GetPenaltyValue( pos ) );
 		}
 
 		if ( !velocity.IsNull() )
 		{
 			auto vel = body.GetLinVelOfPointOnBody( offset );
 			if ( relative_to_model_com ) vel -= model.GetComVel();
-			velocity.AddSample( timestamp, magnitude ? length( vel ) : dot_product( direction, vel ) );
+			velocity.AddSample( timestamp, GetPenaltyValue( vel ) );
 		}
 
 		if ( !angular_velocity.IsNull() )
 		{
 			auto vel = body.GetAngVel();
-			angular_velocity.AddSample( timestamp, magnitude ? length( vel ) : dot_product( direction, vel ) );
+			angular_velocity.AddSample( timestamp, GetPenaltyValue( vel ) );
 		}
 
 		if ( !acceleration.IsNull() )
 		{
 			auto acc = body.GetLinAccOfPointOnBody( offset );
 			if ( relative_to_model_com ) acc -= model.GetComAcc();
-			acceleration.AddSample( timestamp, magnitude ? length( acc ) : dot_product( direction, acc ) );
+			acceleration.AddSample( timestamp, GetPenaltyValue( acc ) );
 		}
 
 		return false;
