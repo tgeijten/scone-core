@@ -12,6 +12,7 @@ data {
 	joint { type = bool label = "Output joint reation force" default = 1 }
 	actuator { type = bool label = "Output actuator input" default = 1 }
 	muscle { type = bool label = "Output muscle properties" default = 1 }
+	muscle_detail { type = bool label = "Output detailed muscle properties" default = 0 }
 	muscle_dof { type = bool label = "Output muscle moments and powers" default = 0 }
 	grf { type = bool label = "Output ground reaction force" default = 1 }
 	contact { type = bool label = "Output contact forces and moments" default = 0 }

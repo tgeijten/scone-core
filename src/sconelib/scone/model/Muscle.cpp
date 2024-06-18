@@ -142,40 +142,42 @@ namespace scone
 		return false;
 	}
 
-	void Muscle::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
+	void Muscle::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		Actuator::StoreData( frame, flags );
 
 		if ( flags( StoreDataTypes::ActuatorInput ) || flags( StoreDataTypes::MuscleProperties ) )
 			frame[GetName() + ".excitation"] = GetExcitation();
 
-		if ( flags( StoreDataTypes::MuscleProperties ) )
-		{
+		if ( flags( StoreDataTypes::MuscleProperties ) || flags( StoreDataTypes::MusclePropertiesDetailed ) ) {
 			const auto& name = GetName();
 			if ( !flags( StoreDataTypes::State ) ) // activation is also part of state
 				frame[name + ".activation"] = GetActivation();
 
-			// tendon / mtu properties
-			frame[name + ".tendon_length"] = GetTendonLength();
-			frame[name + ".tendon_length_norm"] = GetNormalizedTendonLength() - 1;
-			frame[name + ".mtu_length"] = GetLength();
-			frame[name + ".mtu_velocity"] = GetVelocity();
-			frame[name + ".mtu_force"] = GetForce();
-			frame[name + ".mtu_force_norm"] = GetNormalizedForce();
-			frame[name + ".mtu_power"] = GetForce() * GetVelocity();
-
-			// fiber properties
-			frame[name + ".cos_pennation_angle"] = GetCosPennationAngle();
-			frame[name + ".force_length_multiplier"] = GetActiveForceLengthMultipler();
-			frame[name + ".passive_fiber_force_norm"] = GetPassiveFiberForce() / GetMaxIsometricForce();
+			// basic muscle properties
 			frame[name + ".fiber_length_norm"] = GetNormalizedFiberLength();
 			frame[name + ".fiber_velocity_norm"] = GetNormalizedFiberVelocity();
+			frame[name + ".tendon_length_norm"] = GetNormalizedTendonLength() - 1;
+			frame[name + ".mtu_force_norm"] = GetNormalizedForce();
+
+			// detailed muscle properties
+			if ( flags( StoreDataTypes::MusclePropertiesDetailed ) ) {
+				// tendon / mtu properties
+				frame[name + ".tendon_length"] = GetTendonLength();
+				frame[name + ".mtu_length"] = GetLength();
+				frame[name + ".mtu_velocity"] = GetVelocity();
+				frame[name + ".mtu_force"] = GetForce();
+				frame[name + ".mtu_power"] = GetForce() * GetVelocity();
+
+				// fiber properties
+				frame[name + ".cos_pennation_angle"] = GetCosPennationAngle();
+				frame[name + ".force_length_multiplier"] = GetActiveForceLengthMultipler();
+				frame[name + ".passive_fiber_force_norm"] = GetPassiveFiberForce() / GetMaxIsometricForce();
+			}
 		}
 
-		if ( flags( StoreDataTypes::MuscleDofMomentPower ) )
-		{
-			for ( auto& d : GetDofs() )
-			{
+		if ( flags( StoreDataTypes::MuscleDofMomentPower ) ) {
+			for ( auto& d : GetDofs() ) {
 				auto name = GetName() + "." + d->GetName();
 				auto ma = GetMomentArm( *d );
 				auto mom = GetForce() * ma;

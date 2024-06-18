@@ -20,6 +20,7 @@ namespace scone
 		JointReactionForce,
 		ActuatorInput,
 		MuscleProperties,
+		MusclePropertiesDetailed,
 		MuscleDofMomentPower,
 		GroundReactionForce,
 		ContactForce,

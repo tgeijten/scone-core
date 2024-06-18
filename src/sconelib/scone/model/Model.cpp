@@ -107,6 +107,7 @@ namespace scone
 		flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( "data.joint" ) );
 		flags.set( StoreDataTypes::ActuatorInput, GetSconeSetting<bool>( "data.actuator" ) );
 		flags.set( StoreDataTypes::MuscleProperties, GetSconeSetting<bool>( "data.muscle" ) );
+		flags.set( StoreDataTypes::MusclePropertiesDetailed, GetSconeSetting<bool>( "data.muscle_detail" ) );
 		flags.set( StoreDataTypes::MuscleDofMomentPower, GetSconeSetting<bool>( "data.muscle_dof" ) );
 		flags.set( StoreDataTypes::GroundReactionForce, GetSconeSetting<bool>( "data.grf" ) );
 		flags.set( StoreDataTypes::ContactForce, GetSconeSetting<bool>( "data.contact" ) );

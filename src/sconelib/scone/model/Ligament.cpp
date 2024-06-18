@@ -66,26 +66,27 @@ namespace scone
 		return m_Dofs;
 	}
 
-	void Ligament::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
+	void Ligament::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		if ( flags( StoreDataTypes::MuscleProperties ) )
-		{
+		if ( flags( StoreDataTypes::MuscleProperties ) ) {
 			const auto& name = GetName();
 
-			// tendon / mtu properties
-			frame[name + ".length"] = GetLength();
+			// basic ligament properties
 			frame[name + ".length_norm"] = GetNormalizedLength();
-			frame[name + ".velocity"] = GetVelocity();
 			frame[name + ".velocity_norm"] = GetNormalizedVelocity();
-			frame[name + ".force"] = GetForce();
 			frame[name + ".force_norm"] = GetNormalizedForce();
-			frame[name + ".power"] = GetForce() * GetVelocity();
+
+			// detailed ligament properties
+			if ( flags( StoreDataTypes::MusclePropertiesDetailed ) ) {
+				frame[name + ".length"] = GetLength();
+				frame[name + ".velocity"] = GetVelocity();
+				frame[name + ".force"] = GetForce();
+				frame[name + ".power"] = GetForce() * GetVelocity();
+			}
 		}
 
-		if ( flags( StoreDataTypes::MuscleDofMomentPower ) )
-		{
-			for ( auto& d : GetDofs() )
-			{
+		if ( flags( StoreDataTypes::MuscleDofMomentPower ) ) {
+			for ( auto& d : GetDofs() ) {
 				auto name = GetName() + "." + d->GetName();
 				auto ma = GetMomentArm( *d );
 				auto mom = GetForce() * ma;
