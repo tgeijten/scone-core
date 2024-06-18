@@ -28,7 +28,7 @@ namespace scone
 		if ( symmetric_ ) {
 			auto name_side = GetSideFromName( name );
 			auto name_no_side = GetNameNoSide( name );
-			if ( name_side == Side::None || name_side == side_ )
+			if ( name_side == Side::None || name_side == side_ || side_ == Side::None )
 				return name_no_side;
 			else return name_no_side + "_o";
 		}
