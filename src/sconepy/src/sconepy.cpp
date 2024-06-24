@@ -1,6 +1,7 @@
 #include "sconepy.h"
 #include "sconepy_tools.h"
 #include "sconepy_sensors.h"
+#include <pybind11/operators.h>
 
 #include "scone/core/version.h"
 #include "xo/system/log_sink.h"
@@ -10,6 +11,8 @@
 #include "scone/model/Actuator.h"
 #include "scone/model/Dof.h"
 #include "scone/model/Joint.h"
+#include "scone/core/Angle.h"
+#include "scone/core/Quat.h"
 
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
@@ -34,19 +37,38 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "is_array_dtype_float64", []() -> bool { return !g_f32; } );
 
 	py::class_<scone::Vec3>( m, "Vec3" )
+		.def( py::init<>() )
+		.def( py::init<scone::Real, scone::Real, scone::Real>() )
 		.def_readwrite( "x", &scone::Vec3::x )
 		.def_readwrite( "y", &scone::Vec3::y )
 		.def_readwrite( "z", &scone::Vec3::z )
+		.def( py::self + scone::Vec3() )
+		.def( py::self - scone::Vec3() )
+		.def( py::self * scone::Real() )
+		.def( scone::Real() * py::self )
+		.def( py::self / scone::Real() )
+		.def( -py::self )
+		.def( "length", []( const scone::Vec3& v ) { return xo::length( v ); } )
+		.def( "normalize", []( scone::Vec3& v ) { return xo::normalize( v ); } )
+		.def( "normalized", []( const scone::Vec3& v ) { return xo::normalized( v ); } )
+		.def( "dot", []( const scone::Vec3& v1, const scone::Vec3& v2 ) { return xo::dot_product( v1, v2 ); } )
 		.def( "array", []( scone::Vec3& v ) { return to_array( std::vector{ v.x, v.y, v.z }, g_f32 ); } )
-		.def( "__repr__", []( const scone::Vec3& v ) { return xo::stringf( "<sconepy.Vec3( %f, %f, %f)>", v.x, v.y, v.z ); } )
+		.def( "__repr__", []( const scone::Vec3& v ) { return xo::stringf( "<sconepy.Vec3(%f, %f, %f)>", v.x, v.y, v.z ); } )
 		.def( "__str__", []( const scone::Vec3& v ) { return xo::stringf( "[ %f %f %f ]", v.x, v.y, v.z ); } )
 		;
 
 	py::class_<scone::Quat>( m, "Quat" )
+		.def( py::init<>() )
+		.def( py::init<scone::Real, scone::Real, scone::Real, scone::Real>() )
+		.def( py::init( []( scone::Real x, scone::Real y, scone::Real z ) { return xo::quat_from_euler_xyz( scone::Vec3Deg( x, y, z ) ); } ) )
 		.def_readwrite( "w", &scone::Quat::w )
 		.def_readwrite( "x", &scone::Quat::x )
 		.def_readwrite( "y", &scone::Quat::y )
 		.def_readwrite( "z", &scone::Quat::z )
+		.def( "__mul__", []( const scone::Quat& q, const scone::Vec3& v ) { return q * v; }, py::is_operator() )
+		.def( py::self * scone::Quat() )
+		.def( -py::self )
+		.def( "normalize", []( scone::Quat& q ) { return xo::normalize( q ); } )
 		.def( "array", []( scone::Quat& q ) { return to_array( std::vector{ q.w, q.x, q.y, q.z }, g_f32 ); } )
 		.def( "to_euler_xyz", []( scone::Quat& q ) { return euler_xyz_from_quat( q ); } )
 		.def( "to_euler_xzy", []( scone::Quat& q ) { return euler_xzy_from_quat( q ); } )
@@ -55,6 +77,8 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "to_euler_zxy", []( scone::Quat& q ) { return euler_zxy_from_quat( q ); } )
 		.def( "to_euler_zyx", []( scone::Quat& q ) { return euler_zyx_from_quat( q ); } )
 		.def( "to_rotation_vector", []( scone::Quat& q ) { return rotation_vector_from_quat( q ); } )
+		.def( "__repr__", []( const scone::Quat& q ) { return xo::stringf( "<sconepy.Quat(%f, %f, %f, %f)>", q.w, q.x, q.y, q.z ); } )
+		.def( "__str__", []( const scone::Quat& q ) { return xo::stringf( "[ %f %f %f %f ]", q.w, q.x, q.y, q.z ); } )
 		;
 
 	py::class_<scone::Body>( m, "Body" )
