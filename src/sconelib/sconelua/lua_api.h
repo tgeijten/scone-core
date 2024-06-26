@@ -361,7 +361,28 @@ namespace scone
 	};
 
 	/// Controller type for use in lua scripting.
-	/// See ScriptController and ScriptMeasure for details on scripting.
+	/** The LuaController can be used to control any SCONE Controller that is defined inside the ScriptController.
+	For example, if the ScriptController is defined as follows:
+
+	\verbatim
+	ScriptController {
+		script_file = my_script.lua
+
+		ReflexController { name = Reflex1 ... }
+		ReflexController { name = Reflex2 ... }
+	}
+	\endverbatim
+
+	The ReflexController instances can now be enabled and disabled in the update function of ''my_script.lua'':
+	\verbatim
+	function update( model, time, controller )
+		controller:set_child_enabled(1, true) -- enable first ReflexController
+		controller:set_child_enabled(2, true) -- disable second ReflexController
+
+		return false -- return true to terminate the simulation early
+	end
+	\endverbatim
+	*/
 	struct LuaController
 	{
 		LuaController( Controller& c ) : cont_( c ), comp_cont_( dynamic_cast<CompositeController*>( &c ) ) {}
