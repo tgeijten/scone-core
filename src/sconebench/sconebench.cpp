@@ -43,7 +43,8 @@ int main( int argc, const char* argv[] )
 		xo::create_directories( results_folder );
 		auto baseline_files = xo::find_files( results_folder, "*benchbase*" );
 		scone::BenchmarkOptions bopt;
-		bopt.min_samples = args.get<size_t>( "min_samples", create_baseline ? 48 : 12 );
+		int nsamples = args.has_flag( "p" ) ? 48 : 12;
+		bopt.min_samples = args.get<size_t>( "min_samples", create_baseline ? 48 : nsamples );
 		bopt.min_norm_std = args.get<double>( "min_norm_std", fast ? 0.05 : 0.01 );
 		auto extension = create_baseline ? ".benchbase" : ".bench";
 		bopt.results_file = results_folder / xo::get_date_time_str( "%Y%m%d_%H%M%S") + extension;
