@@ -247,9 +247,9 @@ namespace scone
 		double disc = vel.y * vel.y - 2 * g * y0;
 
 		if ( disc > 0 )
-			t = ( -vel.y - sqrt( vel.y * vel.y - 2 * g * y0 ) ) / g; // polynomial has two roots
+			t = ( -vel.y - std::sqrt( vel.y * vel.y - 2 * g * y0 ) ) / g; // polynomial has two roots
 		else
-			t = ( -vel.y - sqrt( vel.y * vel.y + 2 * g * y0 ) ) / g; // polynomial has one or complex root
+			t = ( -vel.y - std::sqrt( vel.y * vel.y + 2 * g * y0 ) ) / g; // polynomial has one or complex root
 
 		return pos.x + t * vel.x;
 	}

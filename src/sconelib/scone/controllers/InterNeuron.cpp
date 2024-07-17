@@ -40,7 +40,7 @@ namespace scone
 			double dist = 0.0;
 			for ( auto& i : inputs_ )
 				dist += xo::squared( i.neuron->GetOutput( i.offset ) - i.offset - offset );
-			dist = sqrt( dist );
+			dist = std::sqrt( dist );
 
 			return output_ = offset_ + gaussian_width( dist, width_ );
 		}
