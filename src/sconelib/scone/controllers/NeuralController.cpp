@@ -221,7 +221,7 @@ namespace scone
 		// square root & normalize
 		double total_gain = 0.0;
 		for ( auto& vm : result )
-			total_gain += ( vm.correlation = sqrt( vm.correlation ) );
+			total_gain += ( vm.correlation = std::sqrt( vm.correlation ) );
 
 		for ( auto& vm : result )
 			vm.correlation /= total_gain;
