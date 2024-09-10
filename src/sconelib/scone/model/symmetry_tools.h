@@ -7,25 +7,35 @@
 namespace scone
 {
 	template< typename T >
-	bool CheckValues( const T& v1, const T& v2, const char* vname, PropNode& pn ) {
+	bool CheckValues( const T& v1, const T& v2, const string& vname, PropNode& pn ) {
 		if ( v1 != v2 )
 			pn.add_key_value( vname, to_str( v1 ) + " <> " + to_str( v2 ) );
 		return v1 == v2;
 	}
-	template< typename T >
-	void CheckMirrored( const T& v1, const T& v2, const String& vname, PropNode& pn ) {
-		if ( !IsMirrored( v1, v2, 1e-6 ) )
-			pn.add_key_value( vname, to_str( v1 ) + " <> " + to_str( v2 ) );
+	bool CheckReal( Real v1, Real v2, const string& vname, PropNode& pn, Real e = 1e-6 ) {
+		auto diff = std::abs( v1 - v2 );
+		bool equal = diff <= e;
+		if ( !equal )
+			pn.add_key_value( vname, stringf( "%g (%.8f <> %.8f)", diff, v1, v2 ) );
+			//pn.add_key_value( vname, to_str( v1 ) + " <> " + to_str( v2 ) );
+		return equal;
+	}
+	void CheckMirrored( const Vec3& v1, const Vec3& v2, const String& vname, PropNode& pn ) {
+		//if ( !IsMirrored( v1, v2, 1e-6 ) )
+		//	pn.add_key_value( vname, to_str( v1 ) + " <> " + to_str( v2 ) );
+		CheckReal( v1.x, v2.x, vname + ".x", pn );
+		CheckReal( v1.y, v2.y, vname + ".y", pn );
+		CheckReal( v1.z, -v2.z, vname + ".z", pn );
 	}
 	PropNode CheckSymmetry( const Muscle& m1, const Muscle& m2 ) {
 		PropNode pn;
 		auto path1 = m1.GetLocalMusclePath();
 		auto path2 = m2.GetLocalMusclePath();
 		if ( CheckValues( path1.size(), path2.size(), "path_size", pn ) ) {
-			for ( auto&& [p1, p2] : xo::zip( path1, path2 ) ) {
-				if ( !IsMirrored( p1.first->GetName(), p2.first->GetName() ) )
-					pn.add_value( p1.first->GetName() + " <> " + p2.first->GetName() );
-				CheckMirrored( p1.second, p2.second, "path_point", pn );
+			for ( index_t i = 0; i < path1.size(); ++i ) {
+				if ( !IsMirrored( path1[i].first->GetName(), path2[i].first->GetName() ) )
+					pn.add_value( path1[i].first->GetName() + " <> " + path2[i].first->GetName() );
+				CheckMirrored( path1[i].second, path2[i].second, xo::stringf( "path_point[%d]", i ), pn );
 			}
 		}
 		CheckValues( m1.GetMaxIsometricForce(), m2.GetMaxIsometricForce(), "max_isometric_force", pn );
