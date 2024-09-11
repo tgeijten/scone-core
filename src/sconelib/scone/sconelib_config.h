@@ -62,7 +62,7 @@ namespace scone
 #endif
 
 #if SCONE_HYFYDY_ENABLED
-		TryRegisterSconeHfd();
+		sconehfd::TryRegisterSconeHfd();
 #endif
 
 #if SCONE_LUA_ENABLED

@@ -137,9 +137,9 @@ int main( int argc, char* argv[] )
 #if SCONE_HYFYDY_ENABLED
 			else if ( licenseArg.isSet() ) {
 				if ( licenseArg.getValue() == hyfydyOptions[0] )
-					std::cout << std::endl << "Hardware ID: " << scone::GetHardwareId() << std::endl;
+					std::cout << std::endl << "Hardware ID: " << sconehfd::GetHardwareId() << std::endl;
 				else if ( licenseArg.getValue() == hyfydyOptions[1] )
-					scone::AddLicenseInteractive();
+					sconehfd::AddLicenseInteractive();
 			}
 #endif
 		}
