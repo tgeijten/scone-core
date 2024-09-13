@@ -9,38 +9,41 @@
 #pragma once
 
 #ifdef SCONE_OPENSIM_3
-#include "sconeopensim3/sconeopensim3.h"
-#define SCONE_OPENSIM_3_ENABLED 1
+#	include "sconeopensim3/sconeopensim3.h"
+#	define SCONE_OPENSIM_3_ENABLED 1
 #else
-#define SCONE_OPENSIM_3_ENABLED 0
+#	define SCONE_OPENSIM_3_ENABLED 0
 #endif
 
 #ifdef SCONE_OPENSIM_4
-#include "sconeopensim4/sconeopensim4.h"
-#define SCONE_OPENSIM_4_ENABLED 1
+#	include "sconeopensim4/sconeopensim4.h"
+#	define SCONE_OPENSIM_4_ENABLED 1
 #else
-#define SCONE_OPENSIM_4_ENABLED 0
+#	define SCONE_OPENSIM_4_ENABLED 0
 #endif
 
 #ifdef SCONE_HYFYDY
-#include "sconehfd/sconehfd.h"
-#define SCONE_HYFYDY_ENABLED 1
+#	include "sconehfd/sconehfd_f32.h"
+#	define SCONE_HYFYDY_ENABLED 1
+#	ifdef SCONE_HYFYDY_DBL 
+#		include "sconehfd/sconehfd_f64.h"
+#	endif
 #else
-#define SCONE_HYFYDY_ENABLED 0
+#	define SCONE_HYFYDY_ENABLED 0
 #endif
 
 #ifdef SCONE_LUA
-#include "sconelua/sconelua.h"
-#define SCONE_LUA_ENABLED 1
+#	include "sconelua/sconelua.h"
+#	define SCONE_LUA_ENABLED 1
 #else
-#define SCONE_LUA_ENABLED 0
+#	define SCONE_LUA_ENABLED 0
 #endif
 
 #ifdef SCONE_USER_EXTENSIONS
-#include "sconeuser/sconeuser.h"
-#define SCONE_USER_EXTENSIONS_ENABLED 1
+#	include "sconeuser/sconeuser.h"
+#	define SCONE_USER_EXTENSIONS_ENABLED 1
 #else
-#define SCONE_USER_EXTENSIONS_ENABLED 0
+#	define SCONE_USER_EXTENSIONS_ENABLED 0
 #endif
 
 #include "xo/serialization/serialize.h"
@@ -62,7 +65,10 @@ namespace scone
 #endif
 
 #if SCONE_HYFYDY_ENABLED
-		sconehfd::TryRegisterSconeHfd();
+		sconehfd_f32::TryRegisterSconeHfd();
+#	ifdef SCONE_HYFYDY_DBL 
+		sconehfd_f64::TryRegisterSconeHfd();
+#	endif
 #endif
 
 #if SCONE_LUA_ENABLED
