@@ -243,6 +243,8 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/Muscle.h
 	model/Ligament.cpp
 	model/Ligament.h
+	model/Spring.h
+	model/Spring.cpp
 	model/State.cpp
 	model/State.h
 	model/ContactGeometry.h

@@ -21,6 +21,7 @@
 #include "Sensor.h"
 #include "ModelFeatures.h"
 #include "DelayBuffer.h"
+#include "Spring.h"
 
 #include "scone/controllers/Controller.h"
 #include "scone/core/HasExternalResources.h"
@@ -67,6 +68,10 @@ namespace scone
 		// ligament access
 		std::vector< Ligament* >& GetLigaments() { return m_LigamentPtrs; }
 		const std::vector< Ligament* >& GetLigaments() const { return m_LigamentPtrs; }
+
+		// spring access
+		std::vector< Spring* >& GetSprings() { return m_SpringPtrs; }
+		const std::vector< Spring* >& GetSprings() const { return m_SpringPtrs; }
 
 		// Actuator access
 		std::vector< Actuator* >& GetActuators() { return m_ActuatorPtrs; }
@@ -325,6 +330,7 @@ namespace scone
 		std::vector< DofUP > m_Dofs;
 		std::vector< MuscleUP > m_Muscles;
 		std::vector< LigamentUP > m_Ligaments;
+		std::vector< SpringUP > m_Springs;
 		std::vector< Leg > m_Legs;
 		std::vector< ContactGeometryUP > m_ContactGeometries;
 		std::vector< ContactForceUP > m_ContactForces;
@@ -335,6 +341,7 @@ namespace scone
 		std::vector< Dof* > m_DofPtrs;
 		std::vector< Muscle* > m_MusclePtrs;
 		std::vector< Ligament* > m_LigamentPtrs;
+		std::vector< Spring* > m_SpringPtrs;
 		std::vector< Actuator* > m_ActuatorPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;
