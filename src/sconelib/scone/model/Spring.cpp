@@ -13,4 +13,9 @@ namespace scone
 	{
 		return GetChildBody().GetPosOfPointOnBody( GetPosInChild() );
 	}
+
+	bool Spring::IsActive() const
+	{
+		return !( GetParentBody().IsStatic() && GetChildBody().IsStatic() );
+	}
 }

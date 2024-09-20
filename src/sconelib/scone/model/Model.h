@@ -105,6 +105,9 @@ namespace scone
 		Real GetMeasureResult() { return GetMeasure() ? GetMeasure()->GetWeightedResult( *this ) : 0; }
 		Real GetCurrentMeasureResult() { return GetMeasure() ? GetMeasure()->GetCurrentWeightedResult( *this ) : 0; }
 
+		// Model interaction
+		virtual Spring* GetInteractionSpring() { return nullptr; }
+
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }
 		const Leg& GetLeg( size_t idx ) const { return m_Legs[idx]; }

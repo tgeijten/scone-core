@@ -79,6 +79,7 @@ namespace scone
 		const Joint* GetJoint() const { return m_Joint; }
 		const Body* GetParentBody() const;
 		bool IsChildOf( const Body& parent ) const;
+		bool IsStatic() const { return GetMass() == 0.0; }
 
 		Side GetSide() const { return GetSideFromName( GetName() ); }
 

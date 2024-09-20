@@ -34,6 +34,7 @@ namespace scone
 
 		virtual Vec3 GetParentPos() const;
 		virtual Vec3 GetChildPos() const;
+		virtual bool IsActive() const;
 
 		virtual void SetParent( const Body& b, const Vec3& pos ) = 0;
 		virtual void SetChild( const Body& b, const Vec3& pos ) = 0;
