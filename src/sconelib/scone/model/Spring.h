@@ -42,6 +42,7 @@ namespace scone
 		virtual void SetStiffness( Real kp ) = 0;
 		virtual void SetDamping( Real kd ) = 0;
 
-		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override = 0;
+		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
+		virtual void SetStateFromData( const Storage<Real>::Frame& frame );
 	};
 }

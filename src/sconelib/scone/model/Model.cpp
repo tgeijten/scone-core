@@ -348,10 +348,16 @@ namespace scone
 			}
 		}
 
+		// store contact forces
 		if ( flags( StoreDataTypes::ContactForce ) )
 		{
 			for ( auto& force : GetContactForces() )
 				force->StoreData( frame, flags );
+		}
+
+		// store interaction spring state
+		if ( auto* spr = GetInteractionSpring() ) {
+			spr->StoreData( frame, flags );
 		}
 	}
 

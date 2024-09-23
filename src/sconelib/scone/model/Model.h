@@ -107,6 +107,7 @@ namespace scone
 
 		// Model interaction
 		virtual Spring* GetInteractionSpring() { return nullptr; }
+		virtual const Spring* GetInteractionSpring() const { return nullptr; }
 
 		// leg access
 		size_t GetLegCount() const { return m_Legs.size(); }

@@ -69,6 +69,10 @@ namespace scone
 				return Vec3( m_Values[idx], m_Values[idx + 1], m_Values[idx + 2] );
 			}
 
+			Vec3 GetVec3( const String& label ) const {
+				return GetVec3( m_Store.TryGetChannelIndex( label + "_x" ) );
+			}
+
 		private:
 			Storage< ValueT, TimeT >& m_Store;
 			TimeT m_Time;
