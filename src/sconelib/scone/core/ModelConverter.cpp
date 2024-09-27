@@ -82,6 +82,8 @@ namespace scone
 			body_pn["name"] = gb.name;
 			body_pn["mass"] = gb.mass;
 			body_pn["inertia"] = gb.inertia;
+			if ( keep_body_origin_ && !b.GetLocalComPos().is_null() )
+				body_pn["com_pos"] = b.GetLocalComPos();
 			if ( gb.mass > 0 && gb.mass < body_mass_threshold_ )
 				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
@@ -246,8 +248,11 @@ namespace scone
 
 	Vec3 ModelConverter::GetLocalBodyPos( const Vec3& osim_pos, const Body& b ) const
 	{
-		auto& bi = GetGlobalBody( b );
-		return conjugate( bi.ori_world ) * ( b.GetPosOfPointOnBody( osim_pos ) - bi.com_world );
+		if ( !keep_body_origin_ ) {
+			auto& bi = GetGlobalBody( b );
+			return conjugate( bi.ori_world ) * ( b.GetPosOfPointOnBody( osim_pos ) - bi.com_world );
+		}
+		else return osim_pos;
 	}
 
 	inline Vec3d translated_inertia( const Vec3d& in, Real m, const Vec3d& o ) {
