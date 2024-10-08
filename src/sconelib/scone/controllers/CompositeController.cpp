@@ -111,6 +111,22 @@ namespace scone
 		return &**controllers_.insert( it, std::move( child ) );
 	}
 
+	int CompositeController::TrySetControlParameter( const String& name, Real value )
+	{
+		int result = 0;
+		for ( auto& c : controllers_ )
+			result += c->TrySetControlParameter( name, value );
+		return result;
+	}
+
+	std::vector<String> CompositeController::GetControlParameters() const
+	{
+		std::vector<String> results;
+		for ( auto& c : controllers_ )
+			xo::append( results, c->GetControlParameters() );
+		return results;
+	}
+
 	String CompositeController::GetClassSignature() const
 	{
 		std::vector< String > strset;

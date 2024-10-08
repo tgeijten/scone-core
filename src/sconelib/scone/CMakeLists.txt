@@ -87,6 +87,7 @@ set(CORE_TOOL_FILES
 	core/ModelConverter.cpp
 	core/ModelConverter.h
 	core/CachedVar.h
+	core/ValuePtrMap.h
 	)
 set(CS_CONTROLLERS_FILES
 	controllers/Controller.cpp

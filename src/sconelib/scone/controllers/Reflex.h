@@ -14,6 +14,7 @@
 #include "scone/core/PropNode.h"
 #include "scone/model/Location.h"
 #include "scone/optimization/Params.h"
+#include "scone/core/ValuePtrMap.h"
 
 namespace scone
 {
@@ -39,11 +40,16 @@ namespace scone
 		virtual void ComputeControls( double timestamp );
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override {}
 
+		int TrySetControlParameter( const String& name, Real value );
+		std::vector<String> GetControlParameters() const;
+
 	protected:
 		/// clamp control value between min_control_value and max_control_value and add to target actuator
 		Real AddTargetControlValue( Real u );
 		Actuator& actuator_;
 		static String GetReflexName( const String& target, const String& source );
 		static String GetParName( const PropNode& props, const Location& loc );
+
+		ValuePtrMap<Real> controls_;
 	};
 }

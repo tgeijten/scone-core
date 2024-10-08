@@ -56,6 +56,10 @@ namespace scone
 		virtual const String& GetName() const override { return name_; }
 		virtual PropNode GetInfo() const { return PropNode(); }
 
+		// Set control parameter value, returns number of parameters set
+		virtual int TrySetControlParameter( const String& name, Real value ) { return 0; }
+		virtual std::vector<String> GetControlParameters() const { return {}; }
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) { return false; }
 		virtual bool PerformAnalysis( const Model& model, double timestamp ) { return false; }

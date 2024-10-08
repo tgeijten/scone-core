@@ -63,7 +63,7 @@ namespace scone
 		virtual String GetClassSignature() const override;
 
 		u_ptr< class lua_script > script_;
-		std::function<void( struct LuaModel*, struct LuaParams*, double )> init_;
+		std::function<void( struct LuaModel*, struct LuaParams*, double, struct LuaController* )> init_;
 		std::function<bool( struct LuaModel*, double, struct LuaController* )> update_;
 		std::function<double( struct LuaFrame* )> store_;
 	};

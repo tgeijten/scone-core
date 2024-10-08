@@ -308,6 +308,22 @@ namespace scone
 		}
 	}
 
+	int GaitStateController::TrySetControlParameter( const String& name, Real value )
+	{
+		int result = 0;
+		for ( auto& cc : m_ConditionalControllers )
+			result += cc->controller->TrySetControlParameter( name, value );
+		return result;
+	}
+
+	std::vector<String> GaitStateController::GetControlParameters() const
+	{
+		std::vector<String> results;
+		for ( auto& cc : m_ConditionalControllers )
+			xo::append( results, cc->controller->GetControlParameters() );
+		return results;
+	}
+
 	String GaitStateController::GetConditionName( const ConditionalController& cc ) const
 	{
 		String s = m_LegStates[cc.leg_index]->leg.GetName();

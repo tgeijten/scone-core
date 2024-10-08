@@ -30,6 +30,20 @@ namespace scone
 		SCONE_THROW_NOT_IMPLEMENTED;
 	}
 
+	int Reflex::TrySetControlParameter( const String& name, Real value )
+	{
+		return controls_.try_set( name, value ) ? 1 : 0;
+	}
+
+	std::vector<String> Reflex::GetControlParameters() const
+	{
+		std::vector<String> vec;
+		vec.reserve( controls_.size() );
+		for ( const auto& p : controls_.data() )
+			vec.emplace_back( p.first );
+		return vec;
+	}
+
 	Real Reflex::AddTargetControlValue( Real u )
 	{
 		xo::clamp( u, min_control_value, max_control_value );

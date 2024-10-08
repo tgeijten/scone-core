@@ -71,4 +71,20 @@ namespace scone
 		for ( auto& r : m_Reflexes )
 			r->StoreData( frame, flags );
 	}
+
+	int ReflexController::TrySetControlParameter( const String& name, Real value )
+	{
+		int result = 0;
+		for ( auto& r : m_Reflexes )
+			result += r->TrySetControlParameter( name, value );
+		return result;
+	}
+
+	std::vector<String> ReflexController::GetControlParameters() const
+	{
+		std::vector<String> results;
+		for ( auto& r : m_Reflexes )
+			xo::append( results, r->GetControlParameters() );
+		return results;
+	}
 }

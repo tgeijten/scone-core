@@ -408,6 +408,11 @@ namespace scone
 		/// check if controller at index is enabled (starting at 1)
 		bool is_child_enabled( int index ) { return !GetByLuaIndex( children(), index )->IsDisabled(); }
 
+		/// set the value of a control parameter, returns the number of parameters that were set
+		int set_control_parameter( LuaString name, LuaNumber value ) { return cont_.TrySetControlParameter( name, value ); }
+
+		std::vector<std::string> get_control_parameters() { return cont_.GetControlParameters(); }
+
 		Controller& cont_;
 		CompositeController* comp_cont_;
 
@@ -428,6 +433,12 @@ namespace scone
 		/// get or create an optimization parameter from a string
 		LuaNumber create_from_string( LuaString name, const std::string& value ) {
 			return par_.get( name, xo::to_prop_node( value ) );
+		}
+		/// get a parameter value, returns 0.0 if not exist
+		LuaNumber get( LuaString name ) {
+			if ( auto p = par_.try_get( name ); p )
+				return *p;
+			else SCONE_ERROR( "Could not find parameter: " + string( name ) );
 		}
 
 		Params& par_;

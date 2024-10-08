@@ -142,12 +142,15 @@ namespace scone
 			"enable", &LuaController::enable,
 			"enabled", &LuaController::enabled,
 			"set_child_enabled", &LuaController::set_child_enabled,
-			"is_child_enabled", &LuaController::is_child_enabled
+			"is_child_enabled", &LuaController::is_child_enabled,
+			"set_control_parameter", &LuaController::set_control_parameter,
+			"get_control_parameters", &LuaController::get_control_parameters
 			);
 
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),
 			"create_from_mean_std", &LuaParams::create_from_mean_std,
-			"create_from_string", &LuaParams::create_from_string
+			"create_from_string", &LuaParams::create_from_string,
+			"get", &LuaParams::get
 			);
 
 		lua.new_usertype<LuaScone>( "scone", sol::constructors<>(),

@@ -77,6 +77,9 @@ namespace scone
 		virtual String GetClassSignature() const override;
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 
+		int TrySetControlParameter( const String& name, Real value ) override;
+		std::vector<String> GetControlParameters() const override;
+
 	protected:
 		struct LegState
 		{

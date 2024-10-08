@@ -53,6 +53,9 @@ namespace scone
 		
 		Controller* InsertChildController( ControllerUP child, index_t pos = 0 );
 
+		int TrySetControlParameter( const String& name, Real value ) override;
+		std::vector<String> GetControlParameters() const override;
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
