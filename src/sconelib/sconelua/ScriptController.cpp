@@ -57,6 +57,8 @@ namespace scone
 			LuaFrame lf( frame );
 			store_( &lf );
 		}
+
+		CompositeController::StoreData( frame, flags );
 	}
 
 	bool ScriptController::ComputeControls( Model& model, double timestamp )
