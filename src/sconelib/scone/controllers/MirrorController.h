@@ -9,7 +9,6 @@
 #pragma once
 
 #include "scone/controllers/Controller.h"
-#include "scone/core/Factories.h"
 
 namespace scone
 {

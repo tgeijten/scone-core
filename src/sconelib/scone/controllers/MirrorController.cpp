@@ -1,4 +1,5 @@
 #include "MirrorController.h"
+#include "scone/core/Factories.h"
 
 namespace scone
 {
