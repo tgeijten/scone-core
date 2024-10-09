@@ -11,6 +11,7 @@
 #include "scone/core/StringMap.h"
 #include "scone/core/Statistic.h"
 #include "scone/core/Vec3.h"
+#include "scone/model/Muscle.h"
 #include "xo/string/dictionary.h"
 
 namespace scone

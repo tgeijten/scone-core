@@ -8,7 +8,6 @@
 
 #include "EffortMeasure.h"
 #include "scone/model/Model.h"
-#include "scone/model/Muscle.h"
 #include "scone/model/Dof.h"
 #include "scone/core/profiler_config.h"
 #include "scone/core/math.h"
