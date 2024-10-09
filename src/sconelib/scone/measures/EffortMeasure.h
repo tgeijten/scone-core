@@ -24,6 +24,7 @@ namespace scone
 		Uchida2016, ///< Use metabolic energy measure as defined in [Uchida et al. 2016].
 		SquaredMuscleStress, ///< Use the summed squared muscle stress as a measure
 		CubedMuscleStress, ///< Use the summed squared muscle stress as a measure
+		MuscleActivation, ///< Use the summed squared muscle muscle activation
 		SquaredMuscleActivation, ///< Use the summed squared muscle muscle activation
 		CubedMuscleActivation, ///< Use the summed cubed muscle muscle activation
 		MechnicalWork, ///< mechanical work of muscles = sum of muscle moment * dof velocity
@@ -111,8 +112,12 @@ namespace scone
 		void SetSlowTwitchRatios( const PropNode& props, const Model& model );
 		double GetSquaredMuscleStress( const Model& model ) const;
 		double GetCubedMuscleStress( const Model& model ) const;
-		double GetSquaredMuscleActivation( const Model& model ) const;
-		double GetCubedMuscleActivation( const Model& model ) const;
+		template<int Order> Real GetMuscleActivation( const Model& model ) const {
+			double sum = 0.0;
+			for ( auto& m : model.GetMuscles() )
+				sum += xo::power<Order>( m->GetActivation() );
+			return sum;
+		}
 		double GetMechnicalWork( const Model& model ) const;
 		double GetMotorTorque( const Model& model ) const;
 	};

@@ -24,6 +24,7 @@ namespace scone
 		{ EffortMeasureType::Uchida2016, "Uchida2016" },
 		{ EffortMeasureType::SquaredMuscleStress, "SquaredMuscleStress" },
 		{ EffortMeasureType::CubedMuscleStress, "CubedMuscleStress" },
+		{ EffortMeasureType::MuscleActivation, "MuscleActivation" },
 		{ EffortMeasureType::SquaredMuscleActivation, "SquaredMuscleActivation" },
 		{ EffortMeasureType::CubedMuscleActivation, "CubedMuscleActivation" },
 		{ EffortMeasureType::MechnicalWork, "MechnicalWork" },
@@ -116,8 +117,9 @@ namespace scone
 		case EffortMeasureType::Uchida2016: return GetUchida2016( model );
 		case EffortMeasureType::SquaredMuscleStress: return GetSquaredMuscleStress( model );
 		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
-		case EffortMeasureType::SquaredMuscleActivation: return GetSquaredMuscleActivation( model );
-		case EffortMeasureType::CubedMuscleActivation: return GetCubedMuscleActivation( model );
+		case EffortMeasureType::MuscleActivation: return GetMuscleActivation<1>( model );
+		case EffortMeasureType::SquaredMuscleActivation: return GetMuscleActivation<2>( model );
+		case EffortMeasureType::CubedMuscleActivation: return GetMuscleActivation<3>( model );
 		case EffortMeasureType::MechnicalWork: return GetMechnicalWork( model );
 		case EffortMeasureType::MotorTorque: return GetMotorTorque( model );
 		default: SCONE_THROW( "Invalid energy measure" );
@@ -303,22 +305,6 @@ namespace scone
 		return sum;
 	}
 
-	double EffortMeasure::GetSquaredMuscleActivation( const Model& model ) const
-	{
-		double sum = 0.0;
-		for ( auto& m : model.GetMuscles() )
-			sum += xo::squared( m->GetActivation() );
-		return sum;
-	}
-
-	double EffortMeasure::GetCubedMuscleActivation( const Model& model ) const
-	{
-		double sum = 0.0;
-		for ( auto& m : model.GetMuscles() )
-			sum += xo::cubed( m->GetActivation() );
-		return sum;
-	}
-
 	// Implementation of mechanical work, Afschrift et al. 2016, "Mechanical effort predicts the selection of ankle ..." 
 	double EffortMeasure::GetMechnicalWork( const Model& model ) const
 	{
@@ -349,6 +335,7 @@ namespace scone
 		case EffortMeasureType::Uchida2016: s += "U"; break;
 		case EffortMeasureType::SquaredMuscleStress: s += "S2"; break;
 		case EffortMeasureType::CubedMuscleStress: s += "S3"; break;
+		case EffortMeasureType::MuscleActivation: s += "A"; break;
 		case EffortMeasureType::SquaredMuscleActivation: s += "A2"; break;
 		case EffortMeasureType::CubedMuscleActivation: s += "A3"; break;
 		case EffortMeasureType::MechnicalWork: s += "MW"; break;
