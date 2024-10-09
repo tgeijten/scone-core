@@ -58,6 +58,8 @@ namespace scone
 
 			const std::vector< ValueT >& GetValues() const { return m_Values; }
 
+			void Set( const String& label, Real v ) { ( *this )[label] = v; }
+
 			void SetVec3( const String& label, const Vec3& vec ) {
 				( *this )[label + "_x"] = vec.x;
 				( *this )[label + "_y"] = vec.y;
