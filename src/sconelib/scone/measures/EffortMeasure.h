@@ -11,7 +11,6 @@
 #include "scone/core/StringMap.h"
 #include "scone/core/Statistic.h"
 #include "scone/core/Vec3.h"
-#include "scone/model/Muscle.h"
 #include "xo/string/dictionary.h"
 
 namespace scone
@@ -113,12 +112,6 @@ namespace scone
 		void SetSlowTwitchRatios( const PropNode& props, const Model& model );
 		double GetSquaredMuscleStress( const Model& model ) const;
 		double GetCubedMuscleStress( const Model& model ) const;
-		template<int Order> Real GetMuscleActivation( const Model& model ) const {
-			double sum = 0.0;
-			for ( auto& m : model.GetMuscles() )
-				sum += xo::power<Order>( m->GetActivation() );
-			return sum;
-		}
 		double GetMechnicalWork( const Model& model ) const;
 		double GetMotorTorque( const Model& model ) const;
 	};

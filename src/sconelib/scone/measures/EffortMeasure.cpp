@@ -9,6 +9,7 @@
 #include "EffortMeasure.h"
 #include "scone/model/Model.h"
 #include "scone/model/Dof.h"
+#include "scone/model/Muscle.h"
 #include "scone/core/profiler_config.h"
 #include "scone/core/math.h"
 #include "xo/string/pattern_matcher.h"
@@ -104,6 +105,13 @@ namespace scone
 			*result /= model.GetMuscles().size();
 
 		return *result;
+	}
+
+	template<int Order> Real GetMuscleActivation( const Model& model ) {
+		double sum = 0.0;
+		for ( auto& m : model.GetMuscles() )
+			sum += xo::power<Order>( m->GetActivation() );
+		return sum;
 	}
 
 	double EffortMeasure::GetCurrentEffort( const Model& model ) const
