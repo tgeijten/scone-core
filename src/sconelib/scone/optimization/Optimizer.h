@@ -120,9 +120,6 @@ namespace scone
 		ObjectiveUP m_Objective;
 		virtual String GetClassSignature() const override;
 
-		// current status
-		double m_BestFitness;
-
 		OutputMode output_mode_;
 		mutable std::deque<PropNode> status_queue_; // #todo: move this to reporter
 		mutable std::mutex status_queue_mutex_;

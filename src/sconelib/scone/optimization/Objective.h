@@ -24,6 +24,8 @@ namespace scone
 	{
 	public:
 		Objective( const PropNode& props, const path& external_resource_dir );
+		Objective( const Objective& ) = delete;
+		Objective& operator=( const Objective& ) = delete;
 		virtual ~Objective();
 
 		// write results and return all files written

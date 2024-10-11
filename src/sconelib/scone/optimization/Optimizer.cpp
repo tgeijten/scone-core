@@ -39,7 +39,6 @@ namespace scone
 		thread_priority( (int)xo::thread_priority::lowest ),
 		m_LastFileOutputGen( 0 ),
 		m_Objective( CreateObjective( FindFactoryProps( GetObjectiveFactory(), props, "Objective" ), scenario_dir ) ),
-		m_BestFitness( m_Objective->info().worst_fitness() ),
 		output_mode_( no_output ),
 		scenario_pn_copy_( scenario_pn )
 	{
