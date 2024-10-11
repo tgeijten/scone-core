@@ -38,9 +38,10 @@ namespace scone
 		Model& GetModel() { return *model_; }
 
 	protected:
-		FactoryProps model_props;
-		FactoryProps controller_props;
-		FactoryProps measure_props;
+		PropNode objective_pn_;
+		FactoryProps model_factory_props_;
+		FactoryProps controller_factory_props_;
+		FactoryProps measure_factory_props_;
 
 		ModelUP model_;
 		String signature_; // cached variable, because we need to create a model to get the signature

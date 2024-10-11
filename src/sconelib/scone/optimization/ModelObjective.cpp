@@ -18,19 +18,25 @@ namespace scone
 {
 	ModelObjective::ModelObjective( const PropNode& props, const path& find_file_folder ) :
 		Objective( props, find_file_folder ),
+		objective_pn_( props ),
 		evaluation_step_size_( XO_IS_DEBUG_BUILD ? 0.01 : 0.25 )
 	{
 		// create internal model using the ORIGINAL prop_node to flag unused model props and create par_info_
-		model_props = FindFactoryProps( GetModelFactory(), props, "Model" );
-		model_ = CreateModel( model_props, info_, GetExternalResourceDir() );
+		auto model_fp = FindFactoryProps( GetModelFactory(), props, "Model" );
+		model_ = CreateModel( model_fp, info_, GetExternalResourceDir() );
 
-		// create a controller that's defined OUTSIDE the model prop_node
-		if ( controller_props = TryFindFactoryProps( GetControllerFactory(), props, "Controller" ) )
-			model_->CreateController( controller_props, info_ );
+		// create a controller that's defined OUTSIDE the model prop_node, using the ORIGINAL prop_node for flagging
+		if ( auto controller_fp = TryFindFactoryProps( GetControllerFactory(), props, "Controller" ) )
+			model_->CreateController( controller_fp, info_ );
 
-		// create a measure that's defined OUTSIDE the model prop_node
-		if ( measure_props = TryFindFactoryProps( GetMeasureFactory(), props, "Measure" ) )
-			model_->CreateMeasure( measure_props, info_ );
+		// create a measure that's defined OUTSIDE the model prop_node, using the ORIGINAL prop_node for flagging
+		if ( auto measure_fp = TryFindFactoryProps( GetMeasureFactory(), props, "Measure" ) )
+			model_->CreateMeasure( measure_fp, info_ );
+
+		// now set FactoryProps for future use, using the COPY objective_pn_, since props may have been destructed
+		model_factory_props_ = FindFactoryProps( GetModelFactory(), objective_pn_, "Model" );
+		controller_factory_props_ = TryFindFactoryProps( GetControllerFactory(), objective_pn_, "Controller" );
+		measure_factory_props_ = TryFindFactoryProps( GetMeasureFactory(), objective_pn_, "Measure" );
 
 		// update the minimize flag in objective_info
 		if ( model_->GetMeasure() )
@@ -69,14 +75,14 @@ namespace scone
 
 	ModelUP ModelObjective::CreateModelFromParams( Params& par ) const
 	{
-		auto model = CreateModel( model_props, par, GetExternalResourceDir() );
+		auto model = CreateModel( model_factory_props_, par, GetExternalResourceDir() );
 		model->SetSimulationEndTime( GetDuration() );
 
-		if ( controller_props ) // A controller was defined OUTSIDE the model prop_node
-			model->CreateController( controller_props, par );
+		if ( controller_factory_props_ ) // A controller was defined OUTSIDE the model prop_node
+			model->CreateController( controller_factory_props_, par );
 
-		if ( measure_props ) // A measure was defined OUTSIDE the model prop_node
-			model->CreateMeasure( measure_props, par );
+		if ( measure_factory_props_ ) // A measure was defined OUTSIDE the model prop_node
+			model->CreateMeasure( measure_factory_props_, par );
 
 		return model;
 	}
