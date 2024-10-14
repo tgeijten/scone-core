@@ -16,6 +16,8 @@
 #include <deque>
 #include <mutex>
 #include "ParInitSettings.h"
+#include <thread>
+#include <future>
 
 namespace scone
 {
@@ -89,9 +91,8 @@ namespace scone
 
 		Objective& GetObjective() { return *m_Objective; }
 		const Objective& GetObjective() const { return *m_Objective; }
-		virtual void Run() = 0;
 
-		// get the results output folder (creates it if it doesn't exist)
+		// get the results output folder
 		const path& GetOutputFolder() const;
 
 		virtual bool IsMinimizing() const { return m_Objective->info().minimize(); }
@@ -115,10 +116,17 @@ namespace scone
 		bool output_objective_result_files;
 
 		void PrepareOutputFolder();
+		void Run();
+		void RunBackground();
+		size_t GetCurrentStep() const;
+		bool WaitToFinish( int timeout_ms = -1 ) const;
+		bool IsFinished() const;
+		void Terminate();
 
 	protected:
 		ObjectiveUP m_Objective;
 		virtual String GetClassSignature() const override;
+		virtual void RunImpl() = 0;
 
 		OutputMode output_mode_;
 		mutable std::deque<PropNode> status_queue_; // #todo: move this to reporter
@@ -130,6 +138,8 @@ namespace scone
 		u_ptr< xo::log::file_sink > log_sink_;
 
 		PropNode scenario_pn_copy_; // copy for creating props in output folder
+
+		std::future<void> future_;
 	};
 
 	template< typename T >

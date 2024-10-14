@@ -24,8 +24,6 @@ namespace scone
 		EsOptimizer& operator=( const EsOptimizer& ) = delete;
 		virtual ~EsOptimizer() = default;
 
-		virtual void Run() override { SCONE_THROW( "Please use a subclass of EsOptimzer" ); }
-
 		/// Lambda parameter (population size); default = automatic.
 		int lambda_;
 
@@ -46,8 +44,9 @@ namespace scone
 
 		int max_attempts;
 
-	private: // non-copyable and non-assignable
+	protected: // non-copyable and non-assignable
 		virtual String GetClassSignature() const override;
+		virtual void RunImpl() override { SCONE_THROW( "Please use a subclass of EsOptimzer" ); }
 	};
 
 	class SCONE_API EsOptimizerReporter : public spot::reporter

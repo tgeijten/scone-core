@@ -60,11 +60,8 @@ namespace scone
 			add_reporter( std::move( p ) );
 	}
 
-	void MesOptimizer::Run()
+	void MesOptimizer::RunImpl()
 	{
-		// create output folder
-		PrepareOutputFolder();
-
 		// create file reporter
 		add_reporter( MakeSpotFileReporter( *this ) );
 

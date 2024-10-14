@@ -28,6 +28,7 @@
 #include <mutex>
 #include <sstream>
 #include <limits>
+#include "spot/optimizer.h"
 
 namespace scone
 {
@@ -100,7 +101,12 @@ namespace scone
 	}
 
 	Optimizer::~Optimizer()
-	{}
+	{
+		if ( future_.valid() && future_.wait_for( std::chrono::seconds( 0 ) ) != std::future_status::ready ) {
+			log::warning( "Terminating Optimization" );
+			Terminate();
+		}
+	}
 
 	const path& Optimizer::GetOutputFolder() const
 	{
@@ -186,5 +192,44 @@ namespace scone
 
 		// now that all files are copied, we should use these during evaluation
 		GetObjective().SetExternalResourceDir( GetOutputFolder() );
+	}
+
+	void Optimizer::Run()
+	{
+		PrepareOutputFolder();
+		RunImpl();
+	}
+
+	void Optimizer::RunBackground()
+	{
+		SCONE_ERROR_IF( future_.valid(), "Optimizer already started" );
+		PrepareOutputFolder();
+		future_ = std::async( [this]() { RunImpl(); } );
+	}
+
+	size_t Optimizer::GetCurrentStep() const
+	{
+		if ( auto so = dynamic_cast<const spot::optimizer*>( this ) )
+			return so->current_step();
+		else return 0;
+	}
+
+	bool Optimizer::WaitToFinish( int timeout_ms ) const
+	{
+		SCONE_ERROR_IF( !future_.valid(), "Optimization has not started" );
+		return future_.wait_for( std::chrono::milliseconds( timeout_ms ) ) == std::future_status::ready;
+	}
+
+	bool Optimizer::IsFinished() const
+	{
+		return ( future_.valid() && future_.wait_for( std::chrono::seconds( 0 ) ) == std::future_status::ready );
+	}
+
+	void Optimizer::Terminate()
+	{
+		if ( auto so = dynamic_cast<spot::optimizer*>( this ) ) {
+			so->interrupt();
+			future_.wait();
+		}
 	}
 }

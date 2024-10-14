@@ -13,6 +13,8 @@
 #include "scone/model/Joint.h"
 #include "scone/core/Angle.h"
 #include "scone/core/Quat.h"
+#include "scone/optimization/Optimizer.h"
+#include "sconepy_scenario.h"
 
 PYBIND11_MODULE( sconepy, m ) {
 	static xo::log::console_sink console_sink( xo::log::level::trace );
@@ -28,6 +30,7 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
 	m.def( "load_model", &scone::load_model );
+	m.def( "load_scenario", &scone::load_scenario, py::arg(), py::arg() = std::map<std::string, std::string>() );
 	m.def( "is_supported", &scone::is_supported );
 	m.def( "replace_string_tags", &scone::ReplaceStringTags );
 
@@ -241,5 +244,24 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )
 		.def( "set_store_data", &scone::Model::SetStoreData )
 		.def( "write_results", &scone::write_results )
+		;
+
+	py::class_<scone::sconepy_scenario>( m, "Scenario" )
+		.def( "set", &scone::sconepy_scenario::set )
+		.def( "set_multiple", &scone::sconepy_scenario::set_multiple )
+		.def( "create_optimizer", &scone::sconepy_scenario::create_optimizer )
+		.def( "start_optimization", &scone::sconepy_scenario::start_optimization )
+		;
+
+	py::class_<scone::Optimizer>( m, "Optimizer" )
+		.def( "run", &scone::Optimizer::Run )
+		.def( "run_background", &scone::Optimizer::RunBackground )
+		.def( "output_folder", []( scone::Optimizer& opt ) { return opt.GetOutputFolder().str(); } )
+		.def( "current_step", &scone::Optimizer::GetCurrentStep )
+		.def( "fitness", &scone::Optimizer::GetBestFitness )
+		.def( "wait", &scone::Optimizer::WaitToFinish )
+		.def( "finished", &scone::Optimizer::IsFinished )
+		.def( "terminate", &scone::Optimizer::Terminate )
+		.def( "enable_console_output", &scone::set_optimizer_console_output )
 		;
 }

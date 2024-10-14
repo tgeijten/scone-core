@@ -19,10 +19,12 @@ namespace scone
 		EvaOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir );
 		virtual void SetOutputMode( OutputMode m ) override;
 		virtual ~EvaOptimizer() = default;
-		virtual void Run() override;
 		virtual double GetBestFitness() const override { return best_fitness(); }
 
 		/// Maximum number of errors allowed during evaluation, use a negative value equates to ''lambda - max_errors''; default = 0
 		int max_errors; // for documentation only, copies value to spot::max_errors_ during construction
+
+	protected:
+		virtual void RunImpl() override;
 	};
 }

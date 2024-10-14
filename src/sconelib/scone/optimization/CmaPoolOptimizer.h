@@ -31,7 +31,6 @@ namespace scone
 		CmaPoolOptimizer( const PropNode& pn, const PropNode& scenario_pn, const path& scenario_dir );
 		virtual ~CmaPoolOptimizer() {}
 
-		virtual void Run() override;
 		virtual void SetOutputMode( OutputMode m ) override;
 
 		/// Maximum total number of optimizations; default = 6.
@@ -52,6 +51,7 @@ namespace scone
 		virtual double GetBestFitness() const override { return best_fitness(); }
 
 	protected:
+		virtual void RunImpl() override;
 		std::vector< PropNode > props_;
 	};
 

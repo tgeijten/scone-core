@@ -32,11 +32,8 @@ namespace scone
 		auto flag_parameters = CmaOptimizer( pn, scenario_pn, scenario_dir );
 	}
 
-	void CmaPoolOptimizer::Run()
+	void CmaPoolOptimizer::RunImpl()
 	{
-		// create output folder
-		PrepareOutputFolder();
-
 		// fill the pool
 		for ( int i = 0; i < optimizations; ++i )
 		{

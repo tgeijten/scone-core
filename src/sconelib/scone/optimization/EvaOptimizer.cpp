@@ -63,11 +63,8 @@ namespace scone
 			add_reporter( std::move( p ) );
 	}
 
-	void EvaOptimizer::Run()
+	void EvaOptimizer::RunImpl()
 	{
-		// create output folder
-		PrepareOutputFolder();
-
 		// create file reporter
 		add_reporter( MakeSpotFileReporter( *this ) );
 

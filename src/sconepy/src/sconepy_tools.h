@@ -17,6 +17,7 @@
 #include "scone/model/MuscleId.h"
 #include "scone/controllers/ExternalController.h"
 #include "scone/controllers/CompositeController.h"
+#include "scone/optimization/Optimizer.h"
 
 namespace fs = std::filesystem;
 
@@ -60,16 +61,18 @@ namespace scone
 	ModelUP load_model( const std::string& file ) {
 		auto file_path = xo::path( file );
 		auto model_pn = xo::load_zml( file_path );
-		auto model_props = FindFactoryProps( GetModelFactory(), model_pn, "Model" );
+		auto model_factory_props_ = FindFactoryProps( GetModelFactory(), model_pn, "Model" );
 		spot::null_objective_info par;
-		auto model = CreateModel( model_props, par, file_path.parent_path() );
-		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn to save config.scone
+		auto model = CreateModel( model_factory_props_, par, file_path.parent_path() );
+		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn so we can save config.scone to results folder
 		CreateExternalController( *model );
 		return model;
 	}
+
 	bool is_supported( const std::string& type_id ) {
 		return GetModelFactory().has_type( type_id );
 	}
+
 	std::map< std::string, double > get_state( const Model& model ) {
 		std::map< std::string, double > dict;
 		auto& s = model.GetState();
@@ -77,15 +80,21 @@ namespace scone
 			dict[s.GetName( i )] = s.GetValue( i );
 		return dict;
 	};
+
 	void set_state( Model& model, const std::map< std::string, double >& dict ) {
 		State s = model.GetState();
 		for ( auto& [key, value] : dict )
 			s.SetValue( key, value );
 		model.SetState( s, 0.0 );
 	};
+
 	void log_measure_report( const Model& model ) {
 		if ( model.GetMeasure() )
 			log::info( model.GetMeasure()->GetReport() );
+	}
+
+	void set_optimizer_console_output( Optimizer& opt ) {
+		opt.SetOutputMode( Optimizer::console_output );
 	}
 
 	void check_array_length( size_t expected, size_t received ) {
