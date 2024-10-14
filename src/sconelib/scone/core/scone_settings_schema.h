@@ -32,7 +32,7 @@ results {
 }
 
 optimizer {
-	evaluator { type = number label = "Evaluate sync=0, batch=1, async=2, pool=3" default = 2 }
+	evaluator { type = number label = "Evaluate sync=0, batch=1, async=2, pool=3" default = 3 }
 	max_threads { type = number label = "Max optimization threads (0=hardware)" default = 0 }
 	thread_priority{ type = number label = "thread priority: 0-6 (default=2)" default = 2 }
 	output_fitness_history { type = bool default = 1 label = "Output fitness history to history.txt" }
