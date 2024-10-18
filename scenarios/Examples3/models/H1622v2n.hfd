@@ -449,16 +449,16 @@ model {
 		height = 0.37
 		body = femur_r
 		pos { x = 0 y = -0.04 z = 0.01 }
-		ori { x = -3 y = 0 z = 0 }
+		ori { x = 2 y = 0 z = 0 }
 	}
 	geometry {
 		name = lower_leg_r
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_r
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = 0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = upper_leg_l
@@ -467,16 +467,16 @@ model {
 		height = 0.37
 		body = femur_l
 		pos { x = 0 y = -0.04 z = -0.01 }
-		ori { x = 3 y = 0 z = 0 }
+		ori { x = -2 y = 0 z = 0 }
 	}
 	geometry {
-		name = lower_leg_l
+		rame = lower_leg_l
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_l
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = -0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = lower_trunk
@@ -537,7 +537,4 @@ model {
 	dof { name = hip_rotation_l source = -hip_ry_l range = -45..45 }
 	dof { name = knee_angle_l source = knee_rz_l range = -120..10 }
 	dof { name = ankle_angle_l source = ankle_rz_l range = -60..25 }
-	dof { name = lumbar_extension source = lumbar_joint_rz range = -90..90 }
-	dof { name = lumbar_bending source = lumbar_joint_rx range = -90..90 }
-	dof { name = lumbar_rotation source = lumbar_joint_ry range = -90..90 }
 }

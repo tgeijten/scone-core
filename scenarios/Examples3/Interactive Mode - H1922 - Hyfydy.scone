@@ -1,0 +1,30 @@
+# INSTRUCTIONS for Interactive Mode:
+#
+# 1. Press the red RECORD button on the play control to start the simulation
+# 2. CLICK anywhere on the model and DRAG to pull it
+# 3. The simulation automatically STOPS after 60 seconds and goes into playback mode
+# 4. RELOAD the scenario (Ctrl+R) to activate the record button again
+#
+# Please be gentle :-)
+#
+
+ModelHyfydyPrecise {
+	# Amount of time to record
+	simulation_end_time = 60
+	
+	# Model used in the simulation
+	model_file = models/H1922v2n_im.hfd
+	state_init_file = init/InitStateSit2.zml
+	initial_load = 1
+	
+	# Model settings
+	zero_velocity_equilibration = 1
+	use_swing_twist_joint_limits = 1
+	integration_accuracy = 0.001
+	
+	# Setting this enables interaction
+	enable_interaction = 1
+	
+	# Controller
+	FeedForwardController { Constant { value = 0.02 } }
+}

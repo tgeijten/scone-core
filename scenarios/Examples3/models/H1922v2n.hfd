@@ -457,16 +457,16 @@ model {
 		height = 0.37
 		body = femur_r
 		pos { x = 0 y = -0.04 z = 0.01 }
-		ori { x = -3 y = 0 z = 0 }
+		ori { x = 2 y = 0 z = 0 }
 	}
 	geometry {
 		name = lower_leg_r
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_r
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = 0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = upper_leg_l
@@ -475,16 +475,16 @@ model {
 		height = 0.37
 		body = femur_l
 		pos { x = 0 y = -0.04 z = -0.01 }
-		ori { x = 3 y = 0 z = 0 }
+		ori { x = -2 y = 0 z = 0 }
 	}
 	geometry {
-		name = lower_leg_l
+		rame = lower_leg_l
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_l
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = -0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = lower_trunk

@@ -14,26 +14,60 @@ model {
 		name = ground
 		mass = 0
 		inertia { x = 0 y = 0 z = 0 }
+		mesh {
+			pos { x = 1 y = 0.84 z = 0 } ori { x = 90 y = 0 z = 0 }
+			shape { type = cylinder radius = 0.02 height = 1.2 }
+			color [ 0.3 0.3 0.3 1 ]
+		}
 	}
 	body {
 		name = treadmill
 		mass = 0
 		inertia { x = 0 y = 0 z = 0 }
+		lin_vel { x = -1 y = 0 z = 0 }
 		geometry {
 			type = box
 			pos { x = 0 y = 0.1 z = 0 }
-			dim { x = 6 y = 0.1 z = 1 }
+			dim { x = 2 y = 0.1 z = 1.2 }
+		}
+		geometry {
+			type = capsule
+			radius = 0.02
+			height = 1
+			pos { x = 1 y = 0.84 z = 0 } ori { x = 90 y = 0 z = 0 }
 		}
 		mesh {
 			pos { x = 0 y = 0.1 z = 0 }
-			shape { type = box dim { x = 6 y = 0.1 z = 1 } }
+			shape { type = box dim { x = 2 y = 0.1 z = 1.2 } }
 			color [ 0.3 0.3 0.3 1 ]
 		}
-		mesh { pos [ -2 0.1 0 ] ori [ 90 0 0 ] shape { type = cylinder radius = 0.0304 height = 1.03 } }
-		mesh { pos [ -1 0.1 0 ] ori [ 90 0 0 ] shape { type = cylinder radius = 0.0304 height = 1.03 } }
-		mesh { pos [ 0 0.1 0 ] ori [ 90 0 0 ] shape { type = cylinder radius = 0.0304 height = 1.03 } }
-		mesh { pos [ 1 0.1 0 ] ori [ 90 0 0 ] shape { type = cylinder radius = 0.0304 height = 1.03 } }
-		mesh { pos [ 2 0.1 0 ] ori [ 90 0 0 ] shape { type = cylinder radius = 0.0304 height = 1.03 } }
+		mesh {
+			pos [ -1 0.1 0 ] ori [ 90 0 0 ]
+			shape { type = cylinder radius = 0.05 height = 1.2 }
+			color [ 0.3 0.3 0.3 1 ]
+		}
+		mesh {
+			pos { x = 1.2 y = 0.1 z = 0 }
+			shape { type = box dim { x = 0.4 y = 0.2 z = 1.3 } }
+			color [ 0.2 0.2 0.2 1 ]
+		}
+		mesh {
+			pos { x = 1.06 y = 0.5 z = 0.60 }
+			ori [ 0 0 10 ]
+			shape { type = box dim { x = 0.08 y = 0.8 z = 0.02 } }
+			color [ 0.2 0.2 0.2 1 ]
+		}
+		mesh {
+			pos { x = 1.06 y = 0.5 z = -0.60 }
+			ori [ 0 0 10 ]
+			shape { type = box dim { x = 0.08 y = 0.8 z = 0.02 } }
+			color [ 0.2 0.2 0.2 1 ]
+		}
+		mesh {
+			pos { x = 0 y = 0.05 z = 0 }
+			shape { type = box dim { x = 2.09 y = 0.1 z = 1.3 } }
+			color [ 0.2 0.2 0.2 1 ]
+		}
 	}
 	body {
 		name = pelvis
@@ -477,16 +511,16 @@ model {
 		height = 0.37
 		body = femur_r
 		pos { x = 0 y = -0.04 z = 0.01 }
-		ori { x = -3 y = 0 z = 0 }
+		ori { x = 2 y = 0 z = 0 }
 	}
 	geometry {
 		name = lower_leg_r
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_r
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = 0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = upper_leg_l
@@ -495,16 +529,16 @@ model {
 		height = 0.37
 		body = femur_l
 		pos { x = 0 y = -0.04 z = -0.01 }
-		ori { x = 3 y = 0 z = 0 }
+		ori { x = -2 y = 0 z = 0 }
 	}
 	geometry {
-		name = lower_leg_l
+		rame = lower_leg_l
 		type = capsule
-		radius = 0.04
+		radius = 0.044
 		height = 0.35
 		body = tibia_l
-		pos { x = 0 y = -0.05 z = 0 }
-		ori { x = 0 y = 0 z = 3 }
+		pos { x = -0.005 y = -0.05 z = -0.003 }
+		ori { x = 0 y = 0 z = -1.5 }
 	}
 	geometry {
 		name = lower_trunk

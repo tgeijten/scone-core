@@ -1,0 +1,8 @@
+GaitMeasure {
+	name = Gait
+	weight = 100
+	threshold = 0.05
+	termination_height = 0.5
+	continue_after_fall = 0.6
+	min_velocity = 0.8
+}

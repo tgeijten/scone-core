@@ -1,14 +1,13 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
-	min_progress = 1e-5	
-	init { file = init/H1922GaitRS2Hfd4.par std_factor = 2 }
+	init { file = init/H1922GaitRS2Hfd5.par std_factor = 5 }
 	
 	SimulationObjective {
 		max_duration = 20
 		
 		# Model used in simulation
 		ModelHyfydy {
-			model_file = models/H1922v2k_tm.hfd
+			model_file = models/H1922v2n_tm.hfd
 			
 			# Optimize initial state parameters
 			state_init_file = init/InitStateH1922Gait0.zml
@@ -18,17 +17,14 @@ CmaOptimizer {
 			initial_load = 1
 			use_omnidirectional_root_dofs = 1
 			fixed_control_step_size = 0.005
+			move_static_bodies = 0			
 		}
 		
 		# Controller for gait
 		CompositeController {
 			<< controllers/H1922RS2v3.scone >>
 			<< controllers/TorsoBO1v3.scone >>
-			ScriptController {
-				name = Treadmill
-				script_file = controllers/ScriptControllerTreadmill.lua
-			}
-			NoiseController { base_noise = 0 proportional_noise = 0.01 random_seed = 0 }
+			NoiseController { base_noise = 0 proportional_noise = 0.02 random_seed = 0 }
 		}
 		
 		# Measure for gait
