@@ -22,18 +22,20 @@ namespace scone
 		Actuator();
 		virtual ~Actuator();
 
-		virtual double AddInput( double v ) { return m_ActuatorControlValue += v; }
-		virtual double GetInput() const { return m_ActuatorControlValue; }
-		virtual double GetClampedInput() const { return xo::clamped( GetInput(), GetMinInput(), GetMaxInput() ); }
+		virtual double AddInput( double v ) { return m_ActuatorInput += v; }
+
+		double GetInput() const { return m_ActuatorInput; }
+		virtual double GetAdaptedInput() const { return xo::clamped( GetInput(), GetMinInput(), GetMaxInput() ); }
+
 		virtual Real GetMinInput() const = 0;
 		virtual Real GetMaxInput() const = 0;
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const;
 
-		virtual void ClearInput() { m_ActuatorControlValue = 0.0; }
+		virtual void ClearInput() { m_ActuatorInput = 0.0; }
 
 	protected:
-		double m_ActuatorControlValue;
+		double m_ActuatorInput;
 	};
 }

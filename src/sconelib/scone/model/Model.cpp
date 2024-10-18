@@ -53,6 +53,7 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, min_muscle_activation, 0.01 ),
 		INIT_PAR_MEMBER( props, par, max_muscle_activation, 1.0 ),
 		max_individual_muscle_activation( props.try_get_child( "max_individual_muscle_activation" ) ),
+		INIT_PAR_MEMBER( props, par, muscle_input_soft_limits, ( std::pair<Real, Real>( 0.0, 1.0 ) ) ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
 		planar_( props.try_get<bool>( "planar" ) ),
@@ -76,6 +77,9 @@ namespace scone
 
 		if ( scone_version > GetSconeVersion() )
 			log::warning( "This scenario was created for using a newer version of SCONE (", scone_version, ")" );
+
+		if ( muscle_input_soft_limits.second < muscle_input_soft_limits.first )
+			SCONE_ERROR( "Invalid values for muscle_input_soft_limits" );
 
 		// old-style initialization (for backwards compatibility)
 		if ( auto sio = props.try_get_child( "state_init_optimization" ) )

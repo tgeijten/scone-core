@@ -283,6 +283,9 @@ namespace scone
 		/// Maximum individual muscle activation, allows for optimization of individual max activation; default = not set.
 		const PropNode* max_individual_muscle_activation;
 
+		/// Pair of values determining the RELATIVE lower and upper soft limit for muscle input; default = [0.0 1.0].
+		std::pair<Real, Real> muscle_input_soft_limits;
+
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;
 

@@ -12,7 +12,7 @@
 namespace scone
 {
 	Actuator::Actuator() :
-		m_ActuatorControlValue( 0.0 )
+		m_ActuatorInput( 0.0 )
 	{}
 
 	Actuator::~Actuator()

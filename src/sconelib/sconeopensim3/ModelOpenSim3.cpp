@@ -552,7 +552,7 @@ namespace scone
 				for ( auto* act : m_Model.GetActuators() )
 				{
 					// OpenSim: addInControls is rather inefficient, that's why we don't use it
-					controls[idx++] += act->GetClampedInput();
+					controls[idx++] += act->GetAdaptedInput();
 				}
 			}
 		}

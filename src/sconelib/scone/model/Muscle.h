@@ -15,9 +15,9 @@
 #include "scone/core/Storage.h"
 
 #include "Actuator.h"
+#include "Side.h"
 
 #include <vector>
-#include "Side.h"
 
 namespace scone
 {
@@ -29,6 +29,8 @@ namespace scone
 
 		virtual Real GetMinInput() const override { return m_MinActivation; }
 		virtual Real GetMaxInput() const override { return m_MaxActivation; }
+
+		virtual double GetAdaptedInput() const override;
 
 		virtual const Body& GetOriginBody() const = 0;
 		virtual const Body& GetInsertionBody() const = 0;
@@ -94,6 +96,9 @@ namespace scone
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const override;
+
+		Real GetClampedInput() const { return xo::clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation ); }
+		Real GetSoftLimitInput( Real lb, Real ub ) const { return xo::smooth_clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation, lb, ub ); }
 
 	protected:
 		void InitBodyJointDofs( const Body* b );
