@@ -10,11 +10,11 @@
 
 ModelHyfydyPrecise {
 	# Amount of time to record
-	simulation_end_time = 60
+	simulation_end_time = 10
 	
 	# Model used in the simulation
-	model_file = models/H1922v2n_im.hfd
-	state_init_file = init/InitStateSit2.zml
+	model_file = models/H3022v2n_im.hfd
+	state_init_file = init/InitStateH3022Sit2.zml
 	initial_load = 1
 	
 	# Model settings
