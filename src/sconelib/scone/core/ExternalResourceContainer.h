@@ -9,8 +9,6 @@
 namespace scone
 {
 	struct ExternalResource {
-		ExternalResource( const path& p, bool copy ) : filename_( p ), copy_to_output_( copy ), pn_ptr_( nullptr ) {};
-		ExternalResource( const path& p, PropNode* pn ) : filename_( p ), copy_to_output_( false ), pn_ptr_( pn ) {};
 		path filename_;
 		bool copy_to_output_ = true;
 		const PropNode* pn_ptr_ = nullptr;
@@ -19,14 +17,15 @@ namespace scone
 	class SCONE_API ExternalResourceContainer
 	{
 	public:
-		void Add( const xo::path& p, bool file );
+		void Add( const xo::path& p, bool copy = true );
 		void Add( const path& p, const PropNode* pn );
 		void Add( const ExternalResourceContainer& other );
 		bool Contains( const path& p ) const;
-		bool WriteTo( const path& target, xo::error_code* ec ) const;
-		const std::vector<ExternalResource>& GetVec() const { return external_resources_; }
+		bool IsEmpty() const { return data_.empty(); }
+		bool WriteTo( const path& target_dir, xo::error_code* ec = nullptr ) const;
+		const std::vector<ExternalResource>& GetVec() const { return data_; }
 
 	private:
-		std::vector<ExternalResource> external_resources_;
+		std::vector<ExternalResource> data_;
 	};
 }

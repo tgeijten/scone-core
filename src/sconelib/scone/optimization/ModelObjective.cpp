@@ -47,7 +47,7 @@ namespace scone
 
 		signature_ = model_->GetSignature();
 
-		AddExternalResources( *model_ );
+		external_resources_.Add( model_->GetExternalResources() );
 	}
 
 	result<fitness_t> ModelObjective::evaluate( const SearchPoint& point, const xo::stop_token& st ) const

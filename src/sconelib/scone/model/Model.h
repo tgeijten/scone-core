@@ -24,7 +24,7 @@
 #include "Spring.h"
 
 #include "scone/controllers/Controller.h"
-#include "scone/core/HasExternalResources.h"
+#include "scone/core/ExternalResourceContainer.h"
 #include "scone/core/HasName.h"
 #include "scone/core/HasSignature.h"
 #include "scone/core/Storage.h"
@@ -39,7 +39,7 @@
 namespace scone
 {
 	/// Simulation model.
-	class SCONE_API Model : public HasName, public HasSignature, public HasData, public HasExternalResources
+	class SCONE_API Model : public HasName, public HasSignature, public HasData
 	{
 	public:
 		Model( const PropNode& props, Params& par );
@@ -312,6 +312,9 @@ namespace scone
 		DelayedSensorGroup& GetDelayedSensorGroup() { return m_DelayedSensors; }
 		DelayedActuatorGroup& GetDelayedActuatorGroup() { return m_DelayedActuators; }
 
+		const ExternalResourceContainer& GetExternalResources() const { return m_ExternalResources; }
+		void AddExternalResource( const path& f, bool copy = true ) const { m_ExternalResources.Add( f, copy ); }
+
 	protected:
 		virtual String GetClassSignature() const override;
 		void UpdateSensorDelayAdapters();
@@ -377,6 +380,7 @@ namespace scone
 		std::vector< UserInputUP > m_UserInputs;
 		ModelFeatures m_Features;
 		PropNode m_ModelInfo;
+		mutable ExternalResourceContainer m_ExternalResources;
 
 		// simulation settings
 		double fixed_step_size;

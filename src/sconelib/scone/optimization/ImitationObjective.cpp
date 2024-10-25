@@ -62,7 +62,7 @@ namespace scone
 			SCONE_THROW_IF( m_SensorChannels.back() == NoIndex, "Could not find sensor for " + sensor_name );
 		}
 
-		AddExternalResources( *model_ );
+		external_resources_.Add( model_->GetExternalResources() );
 	}
 
 	ImitationObjective::~ImitationObjective()

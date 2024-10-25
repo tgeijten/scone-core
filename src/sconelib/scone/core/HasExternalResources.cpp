@@ -17,13 +17,13 @@ namespace scone
 	void HasExternalResources::AddExternalResource( const xo::path& p, bool file ) const
 	{
 		if ( !Contains( p ) )
-			external_resources_.emplace_back( p, file );
+			external_resources_.push_back( ExternalResource{ p, file, nullptr } );
 	}
 
 	void HasExternalResources::AddPropNodeResource( const path& p, const PropNode* pn ) const
 	{
 		if ( !Contains( p ) )
-			external_resources_.emplace_back( p, pn );
+			external_resources_.emplace_back( ExternalResource{ p, false, pn } );
 	}
 
 	void HasExternalResources::AddExternalResources( const HasExternalResources& other ) const

@@ -12,7 +12,7 @@
 #include "scone/core/HasSignature.h"
 #include "spot/objective.h"
 #include "scone/core/system_tools.h"
-#include "scone/core/HasExternalResources.h"
+#include "scone/core/ExternalResourceContainer.h"
 
 namespace scone
 {
@@ -20,7 +20,7 @@ namespace scone
 	using spot::result;
 
 	/// Base class for Objectives.
-	class SCONE_API Objective : public HasSignature, public HasExternalResources, public spot::objective
+	class SCONE_API Objective : public HasSignature, public spot::objective
 	{
 	public:
 		Objective( const PropNode& props, const path& external_resource_dir );
@@ -30,11 +30,15 @@ namespace scone
 
 		// write results and return all files written
 		virtual std::vector< path > WriteResults( const path& file_base ) { return std::vector< path >(); }
+
 		const path& GetExternalResourceDir() const { return external_resource_dir_; }
 		void SetExternalResourceDir( const path& dir ) { external_resource_dir_ = dir; }
 
+		const ExternalResourceContainer& GetExternalResources() const { return external_resources_; }
+		void AddExternalResource( const path& f, bool copy = true ) { external_resources_.Add( f, copy ); }
+
 	protected:
-		// this is where external resources of the objective reside
-		path external_resource_dir_;
+		path external_resource_dir_; // folder to look for external resources
+		ExternalResourceContainer external_resources_;
 	};
 }

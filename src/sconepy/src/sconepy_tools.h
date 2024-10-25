@@ -225,7 +225,7 @@ namespace scone
 	xo::path from_fs( const fs::path& p ) { return xo::path( p.string() ); }
 
 	void write_results( const Model& m, std::string dir, std::string filename ) {
-		SCONE_ASSERT( !m.GetExternalResourceVec().empty() );
+		SCONE_ASSERT( !m.GetExternalResources().IsEmpty() );
 		auto xo_target_dir = GetFolder( SconeFolder::Results ) / dir;
 		auto target_dir = to_fs( xo_target_dir );
 		if ( !fs::exists( target_dir ) )
@@ -233,7 +233,7 @@ namespace scone
 			// setup output folder
 			fs::create_directories( target_dir );
 			xo::save_file( m.GetUserData().get_child( g_scenario_user_data_key ), from_fs( target_dir ) / "config.scone" );
-			m.CopyTo( xo_target_dir );
+			m.GetExternalResources().WriteTo( xo_target_dir );
 			//for ( auto& p : m.GetFileResources() )
 			//	fs::copy( to_fs( p ), target_dir, fs::copy_options::overwrite_existing );
 		}

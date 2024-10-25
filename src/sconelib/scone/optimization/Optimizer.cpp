@@ -185,7 +185,7 @@ namespace scone
 
 		// copy all objective resources to output folder
 		xo::error_code ec;
-		if ( !GetObjective().CopyTo( output_folder_, &ec ) )
+		if ( !GetObjective().GetExternalResources().WriteTo( output_folder_, &ec ) )
 			SCONE_ERROR( ec.message() );
 
 		// now that all files are copied, we should use these during evaluation

@@ -6,34 +6,34 @@
 
 namespace scone
 {
-	
-	void ExternalResourceContainer::Add( const xo::path& p, bool file )
+
+	void ExternalResourceContainer::Add( const xo::path& p, bool copy )
 	{
 		if ( !Contains( p ) )
-			external_resources_.emplace_back( p, file );
+			data_.push_back( ExternalResource{ p, copy, nullptr } );
 	}
 
 	void ExternalResourceContainer::Add( const path& p, const PropNode* pn )
 	{
 		if ( !Contains( p ) )
-			external_resources_.emplace_back( p, pn );
+			data_.emplace_back( ExternalResource{ p, false, pn } );
 	}
 
 	void ExternalResourceContainer::Add( const ExternalResourceContainer& other )
 	{
-		for ( const auto& p : other.external_resources_ )
+		for ( const auto& p : other.data_ )
 			if ( !Contains( p.filename_ ) )
-				external_resources_.emplace_back( p );
+				data_.emplace_back( p );
 	}
 
 	bool ExternalResourceContainer::Contains( const path& p ) const
 	{
-		return xo::contains_if( external_resources_, [&]( const auto& e ) { return e.filename_ == p; } );
+		return xo::contains_if( data_, [&]( const auto& e ) { return e.filename_ == p; } );
 	}
 
 	bool ExternalResourceContainer::WriteTo( const path& target, xo::error_code* ec ) const
 	{
-		for ( auto& f : external_resources_ ) {
+		for ( auto& f : data_ ) {
 			if ( f.copy_to_output_ ) {
 				xo::error_code copy_ec;
 				if ( !xo::copy_file( f.filename_, target / f.filename_.filename(), true, &copy_ec ) ) {

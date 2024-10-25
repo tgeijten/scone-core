@@ -67,7 +67,7 @@ namespace scone
 
 		// prepare data
 		ReadStorageSto( storage_, file );
-		AddExternalResource( file );
+		external_resources_.Add( file );
 
 		SCONE_THROW_IF( storage_.IsEmpty(), file.str() + " contains no data" );
 		if ( stop_time == 0 || stop_time > storage_.Back().GetTime() )

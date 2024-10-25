@@ -12,17 +12,11 @@
 #include "types.h"
 #include "PropNode.h"
 #include "xo/filesystem/path.h"
+#include "ExternalResourceContainer.h"
 #include <vector>
 
 namespace scone
 {
-	struct ExternalResource {
-		ExternalResource( const path& p, bool copy ) : filename_( p ), copy_to_output_( copy ), pn_ptr_( nullptr ) {};
-		ExternalResource( const path& p, PropNode* pn ) : filename_( p ), copy_to_output_( false ), pn_ptr_( pn ) {};
-		path filename_;
-		bool copy_to_output_ = true;
-		const PropNode* pn_ptr_ = nullptr;
-	};
 	using ExternalResourceVec = std::vector<ExternalResource>;
 
 	class SCONE_API HasExternalResources
