@@ -19,6 +19,17 @@ namespace scone
 			data_.emplace_back( ExternalResource{ p, false, pn } );
 	}
 
+	void ExternalResourceContainer::Add( const path& f, const PropNode* pn, const std::vector<path>& included_files )
+	{
+		// add file or PropNode resource, depending on whether files are included 
+		if ( !included_files.empty() ) {
+			Add( f, pn );
+			for ( auto& inc : included_files )
+				Add( inc, false );
+		}
+		else Add( f, true );
+	}
+
 	void ExternalResourceContainer::Add( const ExternalResourceContainer& other )
 	{
 		for ( const auto& p : other.data_ )

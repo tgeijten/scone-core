@@ -19,7 +19,9 @@ namespace scone
 	public:
 		void Add( const xo::path& p, bool copy = true );
 		void Add( const path& p, const PropNode* pn );
+		void Add( const path& f, const PropNode* pn, const std::vector<path>& included_files );
 		void Add( const ExternalResourceContainer& other );
+
 		bool Contains( const path& p ) const;
 		bool IsEmpty() const { return data_.empty(); }
 		bool WriteTo( const path& target_dir, xo::error_code* ec = nullptr ) const;
