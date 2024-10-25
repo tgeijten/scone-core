@@ -88,6 +88,8 @@ set(CORE_TOOL_FILES
 	core/ModelConverter.h
 	core/CachedVar.h
 	core/ValuePtrMap.h
+	core/ExternalResourceContainer.h
+	core/ExternalResourceContainer.cpp
 	)
 set(CS_CONTROLLERS_FILES
 	controllers/Controller.cpp
