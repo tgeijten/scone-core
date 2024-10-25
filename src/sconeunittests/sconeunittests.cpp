@@ -56,7 +56,7 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Hyfydy", "*.scone", "", 1 );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*Hyfydy.scone" );
-				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*Hyfydy.scone" );
+				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*Hyfydy.scone", "Interactive*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Tutorials3", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Benchmarks", "*.par", "data", 1 );
