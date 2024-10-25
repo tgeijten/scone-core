@@ -79,6 +79,7 @@ namespace scone
 			auto result = info.import_mean_std( init_file,
 				use_init_file_std, init_file_std_factor, init_file_std_offset,
 				init_file_include, init_file_exclude, use_init_file_best_as_mean );
+			GetObjective().AddExternalResource( init_file );
 			log::debug( "Imported ", result.first, " of ", info.dim(), ", skipped ", result.second, " parameters from ", init_file );
 		}
 
@@ -180,8 +181,6 @@ namespace scone
 
 		// prepare output folder, and initialize
 		xo::save_file( scenario_pn_copy_, output_folder_ / "config.scone" );
-		if ( use_init_file && !init_file.empty() )
-			xo::copy_file( init_file, output_folder_ / init_file.filename(), true );
 
 		// copy all objective resources to output folder
 		xo::error_code ec;
