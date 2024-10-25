@@ -234,8 +234,6 @@ namespace scone
 			fs::create_directories( target_dir );
 			xo::save_file( m.GetUserData().get_child( g_scenario_user_data_key ), from_fs( target_dir ) / "config.scone" );
 			m.GetExternalResources().WriteTo( xo_target_dir );
-			//for ( auto& p : m.GetFileResources() )
-			//	fs::copy( to_fs( p ), target_dir, fs::copy_options::overwrite_existing );
 		}
 		m.WriteResults( xo_target_dir / filename );
 	};
