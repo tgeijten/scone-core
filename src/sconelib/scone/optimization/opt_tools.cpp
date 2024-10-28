@@ -120,6 +120,11 @@ namespace scone
 	spot::evaluator& GetSpotEvaluator()
 	{
 		auto eval = GetSconeSetting<int>( "optimizer.evaluator" );
+#if !defined(_MSC_VER)
+		// pool evaluator has issues with Linux and macOS
+		if ( eval == 3 )
+			eval = 2; 
+#endif
 		auto max_threads = GetSconeSetting<int>( "optimizer.max_threads" );
 		auto thread_prio = static_cast<xo::thread_priority>( GetSconeSetting<int>( "optimizer.thread_priority" ) );
 		if ( eval == 0 )
