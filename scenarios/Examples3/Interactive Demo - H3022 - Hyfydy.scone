@@ -10,7 +10,7 @@
 
 ModelHyfydyPrecise {
 	# Amount of time to record
-	simulation_end_time = 10
+	simulation_end_time = 60
 	
 	# Model used in the simulation
 	model_file = models/H3022v2n_im.hfd
