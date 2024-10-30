@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "scone/core/platform.h"
 #include "Body.h"
 #include "scone/core/Vec3.h"
 #include "scone/core/Quat.h"
@@ -16,26 +17,11 @@
 
 namespace scone
 {
-	class ContactGeometry : public HasName
+	class SCONE_API ContactGeometry : public HasName
 	{
 	public:
-		ContactGeometry( const String& name, const Body& b, const xo::shape& s, const Vec3& p, const Quat& q ) :
-			m_Name( name ),
-			m_Body( b ),
-			m_Shape( s ),
-			m_Pos( p ),
-			m_Ori( q ),
-			m_FileName()
-		{}
-
-		ContactGeometry( const String& name, const Body& b, const xo::path& f, const Vec3& p, const Quat& q ) :
-			m_Name( name ),
-			m_Body( b ),
-			m_Shape(),
-			m_Pos( p ),
-			m_Ori( q ),
-			m_FileName( f )
-		{}
+		ContactGeometry( const String& name, const Body& b, const xo::shape& s, const Vec3& p, const Quat& q );
+		ContactGeometry( const String& name, const Body& b, const xo::path& f, const Vec3& p, const Quat& q );
 
 		virtual const String& GetName() const override { return m_Name; }
 
@@ -45,6 +31,7 @@ namespace scone
 		bool HasFileName() const { return !m_FileName.empty(); }
 		const Vec3& GetPos() const { return m_Pos; }
 		const Quat& GetOri() const { return m_Ori; }
+		PropNode GetInfo() const;
 
 	private:
 		const String& m_Name;

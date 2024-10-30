@@ -251,6 +251,7 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/State.cpp
 	model/State.h
 	model/ContactGeometry.h
+	model/ContactGeometry.cpp
 	model/DisplayGeometry.h
 	model/StateComponent.h
 	model/UserInput.h
