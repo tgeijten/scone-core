@@ -3,47 +3,63 @@
 # This file is part of SCONE. For more information, see http://scone.software.
 
 import sys
+import os
 import platform
 import pathlib
 import importlib.util
 
 # if sys.version_info < (3,9) or sys.version_info >= (3,10):
-#     raise Exception('sconepy only supports Python 3.9 -- current version: ' + platform.python_version() )
+#     raise Exception("sconepy only supports Python 3.9 -- current version: " + platform.python_version() )
 
-path_to_sconepy = ''
+path_to_sconepy = ""
 
 def try_find_sconepy(pathlist):
     global path_to_sconepy
     if path_to_sconepy:
         return; # already found
     for path in pathlist:
-        if sorted(pathlib.Path(path).glob('sconepy*.*')):
-            path_to_sconepy = str(path)
-            return;
+        if path:
+            if sorted(pathlib.Path(path).glob("sconepy*.*")):
+                path_to_sconepy = str(path)
+                return;
 
-if importlib.util.find_spec('sconepy') is None:
-    if sys.platform.startswith('win'):
-        try_find_sconepy([
-            'C:/Program Files/SCONE/bin',
-            'D:/Build/scone-studio/vc2019-x64/bin/Release'
+# search for sconepy in os-specific paths
+if importlib.util.find_spec("sconepy") is None:
+    path_list = []
+
+    if sys.platform.startswith("win"):
+        if scone_install := os.getenv("SCONE_PATH"):
+            path_list.append(scone_install + "/bin")
+        path_list.extend([
+            os.getenv("LOCALAPPDATA") + "/SCONE/bin",
+            os.getenv("ProgramFiles") + "/SCONE/bin",
             ])
-    elif sys.platform.startswith('linux'):
-        try_find_sconepy([
-            '/opt/scone-core/lib',
-            pathlib.Path.home() / 'scone-core/lib',
-            '/opt/scone/lib',
-            pathlib.Path.home() / 'scone/lib'
+    elif sys.platform.startswith("linux"):
+        if scone_install := os.getenv("SCONE_PATH"):
+            path_list.append(scone_install + "/lib")
+        path_list.extend([
+            "/opt/scone-core/lib",
+            pathlib.Path.home() / "scone-core/lib",
+            "/opt/scone/lib",
+            pathlib.Path.home() / "scone/lib"
             ])
-    elif sys.platform.startswith('darwin'):
-        try_find_sconepy([
-            '/Applications/SCONE.app/Contents/MacOS/lib',
-            pathlib.Path.home() / 'SCONE.app/Contents/MacOS/lib'
+    elif sys.platform.startswith("darwin"):
+        if scone_install := os.getenv("SCONE_PATH"):
+            path_list.append(scone_install + "/lib")
+        path_list.extend([
+            "/Applications/SCONE.app/Contents/MacOS/lib",
+            pathlib.Path.home() / "SCONE.app/Contents/MacOS/lib"
             ])
 
+    # find sconepy in path_list
+    try_find_sconepy(path_list)
+
+    # check if we succeeded
     if path_to_sconepy:
-        print('sconepy found at', path_to_sconepy)
+        print("Found SconePy at", path_to_sconepy)
         sys.path.append(path_to_sconepy)
     else:
-        raise Exception('Could not find sconepy')
+        print("Could not find SconePy in", path_list)
+        raise Exception("Could not find SconePy in " + path_list)
 
 import sconepy
