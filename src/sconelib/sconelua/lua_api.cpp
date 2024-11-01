@@ -78,6 +78,24 @@ namespace scone
 			"set_motor_damping", &LuaJoint::set_motor_damping
 			);
 
+		lua.new_usertype<LuaSpring>( "LuaSpring", sol::constructors<>(),
+			"parent_body", &LuaSpring::parent_body,
+			"child_body", &LuaSpring::child_body,
+			"pos_in_parent", &LuaSpring::pos_in_parent,
+			"pos_in_child", &LuaSpring::pos_in_child,
+			"rest_length", &LuaSpring::rest_length,
+			"stiffness", &LuaSpring::stiffness,
+			"damping", &LuaSpring::damping,
+			"parent_pos", &LuaSpring::parent_pos,
+			"child_pos", &LuaSpring::child_pos,
+			"is_active", &LuaSpring::is_active,
+			"set_parent", & LuaSpring::set_parent,
+			"set_child", & LuaSpring::set_child,
+			"set_rest_length", & LuaSpring::set_rest_length,
+			"set_stiffness", & LuaSpring::set_stiffness,
+			"set_damping", & LuaSpring::set_damping
+			);
+
 		lua.new_usertype<LuaMuscle>( "LuaMuscle", sol::constructors<>(),
 			"name", &LuaMuscle::name,
 			"add_input", &LuaMuscle::add_input,
@@ -130,6 +148,7 @@ namespace scone
 			"joint", &LuaModel::joint,
 			"find_joint", &LuaModel::find_joint,
 			"joint_count", &LuaModel::joint_count,
+			"get_interaction_spring", &LuaModel::get_interaction_spring,
 			"set_custom_value", &LuaModel::set_custom_value,
 			"get_custom_value", &LuaModel::get_custom_value,
 			"has_custom_value", &LuaModel::has_custom_value

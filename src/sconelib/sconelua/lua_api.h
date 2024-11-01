@@ -41,6 +41,11 @@ namespace scone
 		else return 0;
 	}
 
+	template< typename T > T& GetRef( T* obj, const std::string& error_msg ) {
+		SCONE_ERROR_IF( !obj, error_msg );
+		return *obj;
+	}
+
 	/// 3d vector type with components x, y, z
 	using LuaVec3 = Vec3d;
 	using LuaQuat = Quatd;
@@ -207,6 +212,7 @@ namespace scone
 	struct LuaBody
 	{
 		LuaBody( Body& b ) : bod_( b ) {}
+		LuaBody( const Body& b ) : bod_( const_cast<Body&>( b ) ) {}
 
 		/// get the name of the body
 		LuaString name() { return bod_.GetName().c_str(); }
@@ -288,6 +294,32 @@ namespace scone
 		Joint& joint_;
 	};
 
+	/// Spring type for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaSpring
+	{
+		LuaSpring( Spring& spr ) : spr_( spr ) {}
+
+		LuaBody parent_body() { return LuaBody( spr_.GetParentBody() ); }
+		LuaBody child_body() { return LuaBody( spr_.GetChildBody() ); }
+		LuaVec3 pos_in_parent() { return spr_.GetPosInParent(); }
+		LuaVec3 pos_in_child() { return spr_.GetPosInChild(); }
+		LuaNumber rest_length() { return spr_.GetRestLength(); }
+		LuaNumber stiffness() { return spr_.GetStiffness(); }
+		LuaNumber damping() { return spr_.GetDamping(); }
+		LuaVec3 parent_pos() { return spr_.GetParentPos(); }
+		LuaVec3 child_pos() { return spr_.GetChildPos(); }
+		bool is_active() { return spr_.IsActive(); }
+
+		void set_parent( LuaBody b, LuaVec3 pos ) { spr_.SetParent( b.bod_, pos ); }
+		void set_child( LuaBody b, LuaVec3 pos ) { spr_.SetChild( b.bod_, pos ); }
+		void set_rest_length( LuaNumber l ) { spr_.SetRestLength( l ); }
+		void set_stiffness( LuaNumber s ) { spr_.SetStiffness( s ); }
+		void set_damping( LuaNumber d ) { spr_.SetDamping( d ); }
+
+		Spring& spr_;
+	};
+
 	/// Model type for use in lua scripting.
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaModel
@@ -350,6 +382,9 @@ namespace scone
 		/// number of joints
 		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
 
+		/// get the model interaction spring
+		LuaSpring get_interaction_spring() { return GetRef( mod_.GetInteractionSpring(), "Model has no interaction spring" ); }
+
 		/// store a custom value that can be accessed in other scripts
 		void set_custom_value( LuaString name, LuaNumber value ) { mod_.GetUserValue( name ) = value; }
 		/// retrieve a specific custom value that has previously been set
@@ -411,6 +446,7 @@ namespace scone
 		/// set the value of a control parameter, returns the number of parameters that were set
 		int set_control_parameter( LuaString name, LuaNumber value ) { return cont_.TrySetControlParameter( name, value ); }
 
+		/// get all available control parameters
 		std::vector<std::string> get_control_parameters() { return cont_.GetControlParameters(); }
 
 		Controller& cont_;
