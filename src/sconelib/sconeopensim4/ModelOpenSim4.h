@@ -129,8 +129,8 @@ namespace scone
 		virtual void InitStateFromDofs() override;
 		virtual void AdjustStateForLoad( Real load ) override;
 
-		static String GetOpenSimBuildVersion();
-		virtual String GetSimulatorId() const { return "OpenSim-" + GetOpenSimBuildVersion(); }
+		static String GetOpenSimVersionId();
+		virtual String GetSimulatorId() const { return GetOpenSimVersionId(); }
 
 	private:
 		void InitStateFromTk();

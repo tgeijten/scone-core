@@ -914,7 +914,7 @@ namespace scone
 		CopyStateFromTk();
 	}
 
-	String ModelOpenSim4::GetOpenSimBuildVersion() { return OpenSim::GetVersion(); }
+	String ModelOpenSim4::GetOpenSimVersionId() { return "OpenSim-" + OpenSim::GetVersion(); }
 
 	TimeInSeconds ModelOpenSim4::GetSimulationStepSize()
 	{

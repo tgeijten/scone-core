@@ -15,7 +15,7 @@ namespace scone
 
 		// Register ModelOpenSim4
 		GetModelFactory().register_type< ModelOpenSim4 >( "ModelOpenSim4" );
-		xo::log::info( "Successfully initialized OpenSim4 version ", ModelOpenSim4::GetOpenSimBuildVersion() );
+		xo::log::info( "Successfully initialized ", ModelOpenSim4::GetOpenSimVersionId() );
 	}
 
 	void ConvertModelOpenSim4( const xo::path& inputFile, const xo::path& outputFile )

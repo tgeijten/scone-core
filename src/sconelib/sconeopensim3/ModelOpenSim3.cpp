@@ -856,7 +856,7 @@ namespace scone
 		CopyStateFromTk();
 	}
 
-	String ModelOpenSim3::GetOpenSimBuildVersion() { return "3.3-2021-01-28"; } // API doesn't provide a version :-(
+	String ModelOpenSim3::GetOpenSimVersionId() { return "OpenSim-3.3-2021-01-28"; } // API doesn't provide a version :-(
 
 	TimeInSeconds ModelOpenSim3::GetSimulationStepSize()
 	{

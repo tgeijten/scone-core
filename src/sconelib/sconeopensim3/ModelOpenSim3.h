@@ -129,8 +129,8 @@ namespace scone
 		void InitializeOpenSimMuscleActivations( double override_activation = 0.0 );
 		void InitializeController();
 
-		static String GetOpenSimBuildVersion();
-		virtual String GetSimulatorId() const { return "OpenSim-" + GetOpenSimBuildVersion(); }
+		static String GetOpenSimVersionId();
+		virtual String GetSimulatorId() const { return GetOpenSimVersionId(); }
 
 	private:
 		void InitStateFromTk();

@@ -12,6 +12,6 @@ namespace scone
 		GetModelFactory().register_type< ModelOpenSim3 >( "OpenSim3Model" );
 		GetModelFactory().register_type< ModelOpenSim3 >( "OpenSimModel" );
 		GetModelFactory().register_type< ModelOpenSim3 >( "ModelOpenSim3" );
-		xo::log::info( "Successfully initialized OpenSim3 version ", ModelOpenSim3::GetOpenSimBuildVersion() );
+		xo::log::info( "Successfully initialized ", ModelOpenSim3::GetOpenSimVersionId() );
 	}
 }
