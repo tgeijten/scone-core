@@ -12,6 +12,7 @@
 #include "RangePenalty.h"
 #include "scone/core/Angle.h"
 #include "scone/model/Dof.h"
+#include "scone/core/Quat.h"
 
 namespace scone
 {
@@ -28,7 +29,13 @@ namespace scone
 		/// Body to which to apply the penalty to.
 		const Body& body;
 
-		/// Offset [m] of the point of the body to measure, relative to origin; default = [ 0 0 0 ].
+		/// Target position [m^3] of the point, relative to global origin or com pos; default = [ 0 0 0 ].
+		Vec3 target_position;
+
+		/// Target orientation, relative to global origin; default = [ 0 0 0 ].
+		Quat target_orientation;
+
+		/// Offset [m^3] of the point of the body to measure, relative to origin; default = [ 0 0 0 ].
 		Vec3 offset;
 
 		/// Direction vector [3] in which to measure (global coordinate frame), or zero when measuring magnitude (default);
@@ -49,6 +56,9 @@ namespace scone
 		/// Penalty for when the point position [m] is out of range.
 		RangePenalty<Real> position;
 
+		/// Penalty for when the body orientation [rad] is out of range.
+		RangePenalty<Real> orientation;
+
 		/// Penalty for when the point velocity [m/s] is out of range.
 		RangePenalty<Real> velocity;
 
@@ -57,6 +67,9 @@ namespace scone
 
 		/// Penalty for when the point acceleration [m/s%%^%%2] is out of range.
 		RangePenalty<Real> acceleration;
+
+		/// Penalty for when the angular acceleration [m/s%%^%%2] is out of range.
+		RangePenalty<Real> angular_acceleration;
 
 	protected:
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;

@@ -18,14 +18,18 @@ namespace scone
 		range_count( 0 )
 	{
 		INIT_PROP( props, offset, Vec3::zero() );
+		INIT_PROP( props, target_position, Vec3::zero() );
+		INIT_PROP( props, target_orientation, Quat::identity() );
 		INIT_PROP( props, direction, Vec3::zero() );
 		INIT_PROP( props, relative_to_model_com, false );
 		INIT_PROP( props, magnitude, direction.is_null() );
 		INIT_PROP( props, scale, Vec3::one() );
 		INIT_PROP( props, position, RangePenalty<Real>() );
+		INIT_PROP( props, orientation, RangePenalty<Real>() );
 		INIT_PROP( props, velocity, RangePenalty<Real>() );
 		INIT_PROP( props, angular_velocity, RangePenalty<Real>() );
 		INIT_PROP( props, acceleration, RangePenalty<Real>() );
+		INIT_PROP( props, angular_acceleration, RangePenalty<Real>() );
 
 		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() );
 	}
@@ -38,6 +42,12 @@ namespace scone
 			penalty += position.GetResult();
 			if ( range_count > 1 )
 				report_.set( name_ + ".pos_penalty", stringf( "%g", position.GetResult() ) );
+		}
+		if ( !orientation.IsNull() )
+		{
+			penalty += orientation.GetResult();
+			if ( range_count > 1 )
+				report_.set( name_ + ".ori_penalty", stringf( "%g", orientation.GetResult() ) );
 		}
 		if ( !velocity.IsNull() )
 		{
@@ -78,7 +88,16 @@ namespace scone
 		{
 			auto pos = body.GetPosOfPointOnBody( offset );
 			if ( relative_to_model_com ) pos -= model.GetComPos();
+			if ( !target_position.is_null() ) pos -= target_position;
 			position.AddSample( timestamp, GetPenaltyValue( pos ) );
+		}
+
+		if ( !orientation.IsNull() )
+		{
+			auto ori = body.GetOrientation();
+			auto delta = -ori * target_orientation;
+			auto rot_vec = xo::rotation_vector_from_quat( delta );
+			orientation.AddSample( timestamp, GetPenaltyValue( rot_vec ) );
 		}
 
 		if ( !velocity.IsNull() )
@@ -101,6 +120,12 @@ namespace scone
 			acceleration.AddSample( timestamp, GetPenaltyValue( acc ) );
 		}
 
+		if ( !angular_acceleration.IsNull() )
+		{
+			auto acc = body.GetAngAcc();
+			angular_acceleration.AddSample( timestamp, GetPenaltyValue( acc ) );
+		}
+
 		return false;
 	}
 
@@ -111,13 +136,16 @@ namespace scone
 
 	void BodyMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
+		String name = GetName().empty() ? body.GetName() : GetName() + "." + body.GetName();
 		if ( !position.IsNull() )
-			frame[body.GetName() + ".pos_penalty"] = position.GetLatest();
+			frame[name + ".pos_penalty"] = position.GetLatest();
+		if ( !orientation.IsNull() )
+			frame[name + ".ori_penalty"] = orientation.GetLatest();
 		if ( !velocity.IsNull() )
-			frame[body.GetName() + ".vel_penalty"] = velocity.GetLatest();
+			frame[name + ".vel_penalty"] = velocity.GetLatest();
 		if ( !angular_velocity.IsNull() )
-			frame[body.GetName() + ".ang_vel_penalty"] = angular_velocity.GetLatest();
+			frame[name + ".ang_vel_penalty"] = angular_velocity.GetLatest();
 		if ( !acceleration.IsNull() )
-			frame[body.GetName() + ".acc_penalty"] = acceleration.GetLatest();
+			frame[name + ".acc_penalty"] = acceleration.GetLatest();
 	}
 }
