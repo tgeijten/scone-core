@@ -68,14 +68,14 @@ namespace scone
 		/// Number of iterations after which to stop the optimization; default = 100000.
 		size_t max_generations;
 
+		/// Window size used for measuring progress; default = 500.
+		size_t window_size;
+
 		/// Minimum progress after which to stop the optimization; default = 1e-5.
 		double min_progress;
 
-		/// Minimum number of samples after which progress is measured; default = 200.
+		/// Minimum number of samples after which progress is measured; default = window_size.
 		size_t min_progress_samples;
-
-		/// Window size used for measureing progress; default = 500.
-		size_t window_size;
 
 		/// The minimum relative improvement needed for file output; default = 0.05.
 		Real min_improvement_for_file_output;
