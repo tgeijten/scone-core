@@ -75,6 +75,7 @@ namespace scone
 		pn["name"] = GetName();
 		pn["mass"] = GetMass();
 		pn["inertia"] = GetInertiaTensorDiagonal();
+		pn["com_offset"] = GetLocalComPos();
 
 		for ( const auto& cg : GetModel().GetContactGeometries() ) {
 			if ( &cg->GetBody() == this )
