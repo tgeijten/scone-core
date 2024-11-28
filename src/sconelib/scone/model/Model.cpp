@@ -495,7 +495,7 @@ namespace scone
 		SCONE_ASSERT( !m_InitialStateValues.empty() );
 		SetStateValues( m_InitialStateValues, 0.0 );
 		m_ShouldTerminate = false;
-		m_SensorDelayStorage.Clear();
+		m_SensorDelayStorage.ClearData();
 		m_Data.Clear();
 		m_PrevStoreDataTime = 0;
 		m_PrevStoreDataStep = 0;

@@ -113,7 +113,11 @@ namespace scone
 			return *this;
 		};
 
+		// clear everything
 		void Clear() { m_Labels.clear(); m_LabelIndexMap.clear(); m_Data.clear(); m_InterpolationCache.clear(); }
+
+		// clear data but keep columns
+		void ClearData() { m_Data.clear(); m_InterpolationCache.clear(); }
 
 		Storage CopySlice( size_t start, size_t size, size_t stride ) const {
 			SCONE_ASSERT( stride > 0 );

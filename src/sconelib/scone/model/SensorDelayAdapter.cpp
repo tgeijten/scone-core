@@ -53,7 +53,7 @@ namespace scone
 	void SensorDelayAdapter::UpdateStorage()
 	{
 		Storage< Real >& storage = m_Model.GetSensorDelayStorage();
-		SCONE_ASSERT( !storage.IsEmpty() && storage.Back().GetTime() == m_Model.GetTime() );
+		SCONE_ASSERT( !storage.IsEmpty() && storage.Back().GetTime() == m_Model.GetTime() && m_StorageIdx < storage.GetChannelCount() );
 		storage.Back()[m_StorageIdx] = m_InputSensor.GetValue();
 	}
 
