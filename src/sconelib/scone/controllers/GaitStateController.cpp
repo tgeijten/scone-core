@@ -80,7 +80,7 @@ namespace scone
 		for ( auto& leg : model.GetLegs() )
 		{
 			ScopedParamSetPrefixer prefixer( par, symmetric ? "" : leg.GetName() + '.' );
-			m_LegStates.push_back( LegStateUP( new LegState( model, leg, props, par ) ) );
+			m_LegStates.push_back( LegState( model, leg, props, par ) );
 			//log::TraceF( "leg %d leg_length=%.5f", m_LegStates.back()->leg.GetIndex(), m_LegStates.back()->leg_length );
 		}
 
@@ -102,8 +102,8 @@ namespace scone
 						continue; // skip this leg
 
 					// create new conditional controller
-					m_ConditionalControllers.push_back( ConditionalControllerUP( new ConditionalController() ) );
-					ConditionalController& cc = *m_ConditionalControllers.back();
+					m_ConditionalControllers.push_back( ConditionalController() );
+					ConditionalController& cc = m_ConditionalControllers.back();
 
 					// initialize state_mask based on names in instance_states_str
 					auto instance_states = xo::split_str( instance_states_str, " " );
@@ -143,12 +143,12 @@ namespace scone
 			UpdateControllerStates( model, timestamp );
 		}
 
-		for ( ConditionalControllerUP& cc : m_ConditionalControllers )
+		for ( ConditionalController& cc : m_ConditionalControllers )
 		{
-			if ( cc->active )
+			if ( cc.active )
 			{
 				//log::Trace( "Updating Controls of " + GetConditionName( *cc ) );
-				cc->controller->UpdateControls( model, timestamp - cc->active_since );
+				cc.controller->UpdateControls( model, timestamp - cc.active_since );
 			}
 		}
 
@@ -162,7 +162,7 @@ namespace scone
 		// update statuses
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
 		{
-			LegState& ls = *m_LegStates[idx];
+			LegState& ls = m_LegStates[idx];
 			ls.leg_load = ls.load_sensor.GetValue( leg_load_sensor_delay );
 			ls.allow_stance_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) > ls.stance_load_threshold;
 			ls.allow_swing_transition = ls.load_sensor.GetValue( leg_load_sensor_delay ) <= ls.swing_load_threshold;
@@ -185,8 +185,8 @@ namespace scone
 		// update states
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
 		{
-			LegState& ls = *m_LegStates[idx];
-			LegState& mir_ls = *m_LegStates[idx ^ 1];
+			LegState& ls = m_LegStates[idx];
+			LegState& mir_ls = m_LegStates[idx ^ 1];
 			GaitState new_state = ls.state;
 
 			switch ( ls.state )
@@ -263,15 +263,15 @@ namespace scone
 	void GaitStateController::UpdateControllerStates( Model& model, double timestamp )
 	{
 		// update controller states
-		for ( ConditionalControllerUP& cc : m_ConditionalControllers )
+		for ( ConditionalController& cc : m_ConditionalControllers )
 		{
-			bool activate = cc->state_mask.test( m_LegStates[cc->leg_index]->state );
+			bool activate = cc.state_mask.test( m_LegStates[cc.leg_index].state );
 
 			// activate or deactivate controller
-			if ( activate != cc->active )
+			if ( activate != cc.active )
 			{
-				cc->active = activate;
-				cc->active_since = timestamp;
+				cc.active = activate;
+				cc.active_since = timestamp;
 			}
 		}
 	}
@@ -281,8 +281,8 @@ namespace scone
 #ifdef SCONE_VERBOSE_SIGNATURES
 		String s = "G";
 		std::map< String, int > controllers;
-		for ( const ConditionalControllerUP& cc : m_ConditionalControllers )
-			controllers[cc->controller->GetSignature()] += 1;
+		for ( const ConditionalController& cc : m_ConditionalControllers )
+			controllers[cc.controller->GetSignature()] += 1;
 		for ( auto it = controllers.begin(); it != controllers.end(); ++it )
 			s += to_str( it->second / m_LegStates.size() ) + it->first;
 		return s;
@@ -295,16 +295,16 @@ namespace scone
 	{
 		// store states
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[m_LegStates[idx]->leg.GetName() + ".state"] = m_LegStates[idx]->state;
+			frame[m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
 
 		// store sagittal pos
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[m_LegStates[idx]->leg.GetName() + ".sag_pos"] = m_LegStates[idx]->sagittal_pos;
+			frame[m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
 
 		for ( auto& cc : m_ConditionalControllers )
 		{
-			if ( cc->active )
-				cc->controller->StoreData( frame, flags );
+			if ( cc.active )
+				cc.controller->StoreData( frame, flags );
 		}
 	}
 
@@ -312,7 +312,7 @@ namespace scone
 	{
 		int result = 0;
 		for ( auto& cc : m_ConditionalControllers )
-			result += cc->controller->TrySetControlParameter( name, value );
+			result += cc.controller->TrySetControlParameter( name, value );
 		return result;
 	}
 
@@ -320,13 +320,21 @@ namespace scone
 	{
 		std::vector<String> results;
 		for ( auto& cc : m_ConditionalControllers )
-			xo::append( results, cc->controller->GetControlParameters() );
+			xo::append( results, cc.controller->GetControlParameters() );
 		return results;
+	}
+
+	void GaitStateController::Reset( Model& model )
+	{
+		for ( auto& ls : m_LegStates )
+			ls.Reset();
+		for ( auto& cc : m_ConditionalControllers )
+			cc.Reset();
 	}
 
 	String GaitStateController::GetConditionName( const ConditionalController& cc ) const
 	{
-		String s = m_LegStates[cc.leg_index]->leg.GetName();
+		String s = m_LegStates[cc.leg_index].leg.GetName();
 		for ( int i = 0; i < StateCount; ++i )
 		{
 			if ( cc.state_mask.test( i ) )

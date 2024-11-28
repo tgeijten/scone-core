@@ -80,10 +80,15 @@ namespace scone
 		int TrySetControlParameter( const String& name, Real value ) override;
 		std::vector<String> GetControlParameters() const override;
 
+		void Reset( Model& model ) override;
+
 	protected:
 		struct LegState
 		{
 			LegState( Model& m, Leg& l, const PropNode& props, Params& par );
+			void Reset() {
+				state = TimedValue<GaitState>( UnknownState );
+			}
 
 			// leg structure
 			const Leg& leg;
@@ -91,7 +96,7 @@ namespace scone
 
 			// current state
 			const String& GetStateName() { return m_StateNames.GetString( state ); }
-			TimedValue< GaitState > state;
+			TimedValue<GaitState> state;
 
 			// current status
 			Real leg_load;
@@ -115,11 +120,10 @@ namespace scone
 		virtual void UpdateLegStates( Model& model, double timestamp );
 		void UpdateControllerStates( Model& model, double timestamp );
 
-		static StringMap< GaitState > m_StateNames;
+		static StringMap<GaitState> m_StateNames;
 
 	private:
-		typedef std::unique_ptr< LegState > LegStateUP;
-		std::vector< LegStateUP > m_LegStates;
+		std::vector<LegState> m_LegStates;
 
 		// struct that defines if a controller is active (bitset denotes state(s), leg target should be part of controller)
 		SCONE_DECLARE_STRUCT_AND_PTR( ConditionalController );
@@ -133,8 +137,12 @@ namespace scone
 			ControllerUP controller;
 			String GetConditionName() const { return stringf( "L%dS%s", leg_index, state_mask.to_string().c_str() ); }
 			bool TestLegPhase( size_t leg_idx, GaitState state ) { return state_mask.test( size_t( state ) ); }
+			void Reset() {
+				active = false;
+				active_since = 0.0;
+			}
 		};
 		String GetConditionName( const ConditionalController& cc ) const;
-		std::vector< ConditionalControllerUP > m_ConditionalControllers;
+		std::vector<ConditionalController> m_ConditionalControllers;
 	};
 }
