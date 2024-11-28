@@ -133,15 +133,22 @@ namespace scone
 	{
 		static const char* rot_postfix[] = { "_rx", "_ry", "_rz", "_r" };
 		static const char* trans_postfix[] = { "_tx", "_ty", "_tz", "_t" };
-		const auto& j = *dof.GetJoint();
-		bool pin_joint = enable_pin_joint && j.GetDofs().size() == 1;
-		auto side = xo::str_get_side( j.GetName() );
-		auto rotational = dof.IsRotational();
-		auto base_name = xo::str_remove_side( IsRealJoint( j ) ? j.GetName() : j.GetBody().GetName() );
+		const auto* j = dof.GetJoint();
+		bool pin_joint = enable_pin_joint && j && j->GetDofs().size() == 1;
+
+		bool negative = dof.IsRotational() && !pin_joint && GetDominantComponentSign( dof.GetLocalAxis() ) < 0;
+		String name = negative ? "-" : "";
+
+		if ( j )
+			name += xo::str_remove_side( IsRealJoint( *j ) ? j->GetName() : j->GetBody().GetName() );
+		else name += "unknown"; // #todo: somehow add body name here
+
 		auto idx = pin_joint ? 3 : GetDominantComponentIndex( dof.GetLocalAxis() );
-		auto sign = pin_joint ? 1 : GetDominantComponentSign( dof.GetLocalAxis() );
-		String name = ( rotational && sign < 0 ) ? "-" : "";
-		name += base_name + ( rotational ? rot_postfix[idx] : trans_postfix[idx] ) + xo::side_postfix( side );
+		name += dof.IsRotational() ? rot_postfix[idx] : trans_postfix[idx];
+
+		auto side = j ? xo::str_get_side( j->GetName() ) : xo::side::none;
+		name += xo::side_postfix( side );
+
 		return name;
 	}
 
