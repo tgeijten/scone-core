@@ -559,10 +559,19 @@ namespace scone
 		return files;
 	}
 
-	Real Model::GetComHeight( const Vec3& up ) const
+	Real Model::GetComHeight() const
 	{
 		auto com = GetComPos();
 		return com.y - GetProjectedOntoGround( com ).y;
+	}
+
+	Real Model::GetComHeightWrtFeet() const
+	{
+		auto com = GetComPos();
+		Vec3 foot_com = Vec3::zero();
+		for ( auto& l : GetLegs() )
+			foot_com += l.GetFootBody().GetComPos() / Real( GetLegCount() );
+		return com.y - foot_com.y;
 	}
 
 	Real Model::GetTotalContactForce() const

@@ -23,6 +23,7 @@ namespace scone
 		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, termination_height, 0.5 );
+		INIT_PROP( props, use_height_wrt_feet, false );
 		INIT_PROP( props, continue_after_fall, 0.0 );
 		INIT_PROP( props, min_velocity, 0 );
 		INIT_PROP( props, max_velocity, 299792458.0 ); // default max velocity = speed of light
@@ -55,7 +56,7 @@ namespace scone
 		SCONE_ERROR_IF( m_BaseBodies.size() < 2, "Could not find base bodies. Please set the base_bodies parameter, or make sure the Model has properly defined legs." );
 
 		m_InitGaitDist = m_PrevGaitDist = GetGaitDist( model );
-		m_InitialComPos = model.GetComPos();
+		m_InitComHeight = use_height_wrt_feet ? model.GetComHeightWrtFeet() : model.GetComHeight();
 	}
 
 	bool GaitMeasure::UpdateMeasure( const Model& model, double timestamp )
@@ -67,8 +68,8 @@ namespace scone
 
 		// check termination
 		if ( !m_TerminationTime ) {
-			auto com_height = model.GetComHeight();
-			if ( com_height < termination_height * m_InitialComPos.y )
+			auto com_height = use_height_wrt_feet ? model.GetComHeightWrtFeet() : model.GetComHeight();
+			if ( com_height < termination_height * m_InitComHeight )
 				m_TerminationTime = timestamp + continue_after_fall;
 		}
 		if ( m_TerminationTime && timestamp >= *m_TerminationTime )

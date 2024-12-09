@@ -36,6 +36,9 @@ namespace scone
 		/// Relative COM height at which to terminate the simulation, as a factor of the initial COM height; default = 0.5
 		Real termination_height;
 
+		/// Measure height with respect to feet instead of ground
+		bool use_height_wrt_feet;
+
 		/// Time to continue after fall is detected [s]; default = 0
 		TimeInSeconds continue_after_fall;
 
@@ -78,7 +81,7 @@ namespace scone
 
 	private:
 		std::vector< const Body* > m_BaseBodies;
-		Vec3 m_InitialComPos;
+		Real m_InitComHeight;
 		Real m_InitGaitDist;
 		xo::optional<TimeInSeconds> m_TerminationTime;
 
