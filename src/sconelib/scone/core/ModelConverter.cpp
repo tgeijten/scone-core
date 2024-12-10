@@ -21,7 +21,7 @@ namespace scone
 	ModelConverter::ModelConverter( const PropNode& pn ) :
 		INIT_MEMBER( pn, joint_stiffness_, 1e6 ),
 		INIT_MEMBER( pn, joint_limit_stiffness_, 500 ),
-		INIT_MEMBER( pn, body_mass_threshold_, 0.2 )
+		INIT_MEMBER( pn, body_mass_threshold_, 0.1 )
 	{}
 
 	PropNode ModelConverter::ConvertModel( Model& model )
@@ -84,7 +84,7 @@ namespace scone
 			body_pn["inertia"] = gb.inertia;
 			if ( keep_body_origin_ && !b.GetLocalComPos().is_null() )
 				body_pn["com_pos"] = b.GetLocalComPos();
-			if ( gb.mass > 0 && gb.mass < body_mass_threshold_ )
+			if ( use_body_mass_threshold_ && gb.mass > 0 && gb.mass < body_mass_threshold_ )
 				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
 			// joint

@@ -20,6 +20,7 @@ namespace scone
 		bool use_stiffness_from_limit_force_ = true;
 		bool use_limits_from_dof_range_ = false;
 		double joint_limit_damping_angle_ = 5.0;
+		bool use_body_mass_threshold_ = true;
 		double body_mass_threshold_ = 0.1;
 		bool compound_welded_bodies = false;
 		double compound_mass_threshold = 10.0;
