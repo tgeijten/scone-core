@@ -20,3 +20,4 @@
 /.vs/
 /.dir-locals.el
 *~
+__pycache__/
