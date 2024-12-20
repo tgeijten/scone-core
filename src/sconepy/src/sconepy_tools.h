@@ -221,14 +221,17 @@ namespace scone
 		}
 	};
 
-	void set_control_parameter( Model& model, const String& name, double value ) {
-		model.GetController()->TrySetControlParameter( name, value );
+	int set_control_parameter( Model& model, const String& name, double value ) {
+		if ( auto* c = model.GetController() )
+			return c->TrySetControlParameter( name, value );
+		else return 0;
 	};
 
 	double get_control_parameter( Model& model, const String& name ) {
-		if ( auto v = model.GetController()->TryGetControlParameter( name ) )
-			return *v;
-		else SCONE_ERROR( "Could not find control parameter " + name );
+		if ( auto* c = model.GetController() )
+			if ( auto v = c->TryGetControlParameter( name ) )
+				return *v;
+		SCONE_ERROR( "Could not find control parameter " + name );
 	};
 
 	std::vector<String> get_control_parameter_names( Model& model ) {
