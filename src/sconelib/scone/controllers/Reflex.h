@@ -41,6 +41,7 @@ namespace scone
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override {}
 
 		int TrySetControlParameter( const String& name, Real value );
+		xo::optional<Real> TryGetControlParameter( const String& name );
 		std::vector<String> GetControlParameters() const;
 
 	protected:

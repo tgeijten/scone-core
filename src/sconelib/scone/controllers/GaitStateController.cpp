@@ -316,6 +316,14 @@ namespace scone
 		return result;
 	}
 
+	xo::optional<Real> GaitStateController::TryGetControlParameter( const String& name )
+	{
+		for ( auto& cc : m_ConditionalControllers )
+			if ( auto v = cc.controller->TryGetControlParameter( name ) )
+				return *v;
+		return {};
+	}
+
 	std::vector<String> GaitStateController::GetControlParameters() const
 	{
 		std::vector<String> results;

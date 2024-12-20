@@ -58,6 +58,7 @@ namespace scone
 
 		// Set control parameter value, returns number of parameters set
 		virtual int TrySetControlParameter( const String& name, Real value ) { return 0; }
+		virtual xo::optional<Real> TryGetControlParameter( const String& name ) { return {}; }
 		virtual std::vector<String> GetControlParameters() const { return {}; }
 
 	protected:

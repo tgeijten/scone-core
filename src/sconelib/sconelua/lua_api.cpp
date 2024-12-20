@@ -163,7 +163,9 @@ namespace scone
 			"set_child_enabled", &LuaController::set_child_enabled,
 			"is_child_enabled", &LuaController::is_child_enabled,
 			"set_control_parameter", &LuaController::set_control_parameter,
-			"get_control_parameters", &LuaController::get_control_parameters
+			"get_control_parameter", &LuaController::get_control_parameter,
+			"get_control_parameters", &LuaController::get_control_parameters,
+			"create_control_parameter", &LuaController::create_control_parameter
 			);
 
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),

@@ -119,6 +119,14 @@ namespace scone
 		return result;
 	}
 
+	xo::optional<Real> CompositeController::TryGetControlParameter( const String& name )
+	{
+		for ( auto& c : controllers_ )
+			if ( auto v = c->TryGetControlParameter( name ) )
+				return *v;
+		return {};
+	}
+
 	std::vector<String> CompositeController::GetControlParameters() const
 	{
 		std::vector<String> results;

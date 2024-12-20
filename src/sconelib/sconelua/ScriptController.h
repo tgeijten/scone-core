@@ -50,7 +50,6 @@ namespace scone
 	public:
 		ScriptController( const PropNode& props, Params& par, Model& model, const Location& loc );
 		virtual ~ScriptController();
-		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 		/// filename of the Lua script, path is relative to the .scone file
 		path script_file;
@@ -58,9 +57,18 @@ namespace scone
 		/// Array of files used by the Lua script; files included by 'require' should be added here as ''external_files = [ file1, file2 ]''
 		ArrayOfFiles external_files;
 
+		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
+
+		int TrySetControlParameter( const String& name, Real value ) override;
+		xo::optional<Real> TryGetControlParameter( const String& name ) override;
+		std::vector<String> GetControlParameters() const override;
+		bool CreateControlParameter( const String& name, Real value );
+
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
+
+		xo::flat_map<String, Real> control_parameters_;
 
 		u_ptr< class lua_script > script_;
 		std::function<void( struct LuaModel*, struct LuaParams*, double, struct LuaController* )> init_;

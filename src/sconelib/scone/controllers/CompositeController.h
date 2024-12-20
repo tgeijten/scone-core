@@ -54,6 +54,7 @@ namespace scone
 		Controller* InsertChildController( ControllerUP child, index_t pos = 0 );
 
 		int TrySetControlParameter( const String& name, Real value ) override;
+		xo::optional<Real> TryGetControlParameter( const String& name ) override;
 		std::vector<String> GetControlParameters() const override;
 
 	protected:

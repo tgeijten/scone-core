@@ -80,6 +80,14 @@ namespace scone
 		return result;
 	}
 
+	xo::optional<Real> ReflexController::TryGetControlParameter( const String& name )
+	{
+		for ( auto& r : m_Reflexes )
+			if ( auto v = r->TryGetControlParameter( name ) )
+				return *v;
+		return {};
+	}
+
 	std::vector<String> ReflexController::GetControlParameters() const
 	{
 		std::vector<String> results;

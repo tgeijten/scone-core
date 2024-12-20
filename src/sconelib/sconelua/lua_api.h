@@ -10,6 +10,7 @@
 #include "scone/core/Log.h"
 #include "scone/core/Storage.h"
 #include "scone/controllers/CompositeController.h"
+#include "ScriptController.h"
 
 #include "xo/geometry/vec3_type.h"
 #include "xo/string/string_cast.h"
@@ -446,8 +447,22 @@ namespace scone
 		/// set the value of a control parameter, returns the number of parameters that were set
 		int set_control_parameter( LuaString name, LuaNumber value ) { return cont_.TrySetControlParameter( name, value ); }
 
+		/// set the value of a control parameter, returns the number of parameters that were set
+		LuaNumber get_control_parameter( LuaString name ) {
+			if ( auto v = cont_.TryGetControlParameter( name ) )
+				return *v;
+			else SCONE_ERROR( "Could not find control parameter: " + String( name ) );
+		}
+
 		/// get all available control parameters
 		std::vector<std::string> get_control_parameters() { return cont_.GetControlParameters(); }
+
+		/// set the value of a control parameter, returns the number of parameters that were set
+		bool create_control_parameter( LuaString name, LuaNumber value ) {
+			if ( auto* sc = dynamic_cast<ScriptController*>( &cont_ ) )
+				return sc->CreateControlParameter( name, value );
+			else SCONE_ERROR( "Control parameters can only be created in the parent controller" );
+		}
 
 		Controller& cont_;
 		CompositeController* comp_cont_;

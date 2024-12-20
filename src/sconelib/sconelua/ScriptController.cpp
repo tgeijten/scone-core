@@ -62,6 +62,39 @@ namespace scone
 		CompositeController::StoreData( frame, flags );
 	}
 
+	int ScriptController::TrySetControlParameter( const String& name, Real value )
+	{
+		int result = 0;
+		if ( auto it = control_parameters_.find( name ); it != control_parameters_.end() ) {
+			it->second = value;
+			result++;
+		}
+		result += CompositeController::TrySetControlParameter( name, value );
+		return result;
+	}
+
+	xo::optional<Real> ScriptController::TryGetControlParameter( const String& name )
+	{
+		if ( auto it = control_parameters_.find( name ); it != control_parameters_.end() )
+			return it->second;
+		else return CompositeController::TryGetControlParameter( name );
+	}
+
+	std::vector<String> ScriptController::GetControlParameters() const
+	{
+		std::vector<String> results = CompositeController::GetControlParameters();
+		for ( auto& [name, value] : control_parameters_ )
+			results.emplace_back( name );
+		return results;
+	}
+
+	bool ScriptController::CreateControlParameter( const String& name, Real value )
+	{
+		// #todo: check if it already exists?
+		control_parameters_[name] = value;
+		return true;
+	}
+
 	bool ScriptController::ComputeControls( Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
