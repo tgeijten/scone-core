@@ -240,6 +240,9 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "current_measure", &scone::Model::GetCurrentMeasureResult )
 		.def( "final_measure", &scone::Model::GetMeasureResult )
 		.def( "log_measure_report", []( scone::Model& m ) { return scone::log_measure_report( m ); } )
+		.def( "set_control_parameter", &scone::set_control_parameter )
+		.def( "get_control_parameter", &scone::get_control_parameter )
+		.def( "get_control_parameter_names", &scone::get_control_parameter_names )
 		.def( "integration_step", &scone::Model::GetIntegrationStep )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )
 		.def( "set_store_data", &scone::Model::SetStoreData )
@@ -249,6 +252,7 @@ PYBIND11_MODULE( sconepy, m ) {
 	py::class_<scone::sconepy_scenario>( m, "Scenario" )
 		.def( "set", &scone::sconepy_scenario::set )
 		.def( "set_multiple", &scone::sconepy_scenario::set_multiple )
+		.def( "get", &scone::sconepy_scenario::get )
 		.def( "create_optimizer", &scone::sconepy_scenario::create_optimizer )
 		.def( "start_optimization", &scone::sconepy_scenario::start_optimization )
 		;

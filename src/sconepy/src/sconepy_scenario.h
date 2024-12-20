@@ -18,6 +18,12 @@ namespace scone
 			pn_.set_query( key, value );
 		}
 
+		string get( const std::string& key ) {
+			if ( auto* pn = pn_.try_get_query( key ) )
+				return pn->get_str();
+			else return "";
+		}
+
 		void set_multiple( const std::map<std::string, std::string> args ) {
 			for ( const auto& [key, value] : args )
 				set( key, value );
