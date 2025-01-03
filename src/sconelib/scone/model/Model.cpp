@@ -164,6 +164,17 @@ namespace scone
 		return GetTwoWayNeuralDelay( MuscleId( component.GetName() ).base_ );
 	}
 
+	TimeInSeconds Model::TryGetTwoWayNeuralDelay( const String& name ) const
+	{
+		auto it = neural_delays.find( name );
+		return it != neural_delays.end() ? it->second : 0.0;
+	}
+
+	TimeInSeconds Model::TryGetTwoWayNeuralDelay( const HasName& component ) const
+	{
+		return TryGetTwoWayNeuralDelay( MuscleId( component.GetName() ).base_ );
+	}
+
 	String Model::GetClassSignature() const
 	{
 		String sig = GetName();

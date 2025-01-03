@@ -16,6 +16,8 @@
 #include "xo/string/string_cast.h"
 #include "xo/geometry/quat_type.h"
 #include "xo/geometry/quat.h"
+#include "scone/model/SensorDelayAdapter.h"
+#include "scone/model/Sensors.h"
 
 namespace sol { class state; }
 
@@ -118,6 +120,18 @@ namespace scone
 		LuaNumber max_input() { return act_.GetMaxInput(); }
 
 		Actuator& act_;
+	};
+
+	/// Sensor type for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaSensor
+	{
+		LuaSensor( SensorDelayAdapter& s ) : sensor_( s ) {}
+
+		/// get the delayed value of the sensor
+		LuaNumber value( LuaNumber delay ) { return sensor_.GetValue( delay ); }
+
+		SensorDelayAdapter& sensor_;
 	};
 
 	/// Dof (degree-of-freedom) type for use in lua scripting.
@@ -392,6 +406,22 @@ namespace scone
 		LuaNumber get_custom_value( LuaString name ) { return mod_.GetUserValue( name ); }
 		/// check a specific custom value exists
 		bool has_custom_value( LuaString name ) { return mod_.HasUserValue( name ); }
+
+		/// get neural delay for a specific muscle of dof name, returns zero if not found in the neural_delays section of the model
+		LuaNumber find_two_way_neural_delay( LuaString name ) { return mod_.TryGetTwoWayNeuralDelay( name ); }
+
+		/// create a sensor for delayed muscle force
+		LuaSensor create_muscle_force_sensor( LuaString name ) {
+			return mod_.AcquireDelayedSensor<MuscleForceSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+		/// create a sensor for delayed muscle length
+		LuaSensor create_muscle_length_sensor( LuaString name ) {
+			return mod_.AcquireDelayedSensor<MuscleLengthSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+		/// create a sensor for delayed muscle velocity
+		LuaSensor create_muscle_velocity_sensor( LuaString name ) {
+			return mod_.AcquireDelayedSensor<MuscleVelocitySensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+		/// create a sensor for delayed muscle activation
+		LuaSensor create_muscle_activation_sensor( LuaString name ) {
+			return mod_.AcquireDelayedSensor<MuscleActivationSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
 
 		Model& mod_;
 	};

@@ -30,6 +30,7 @@ namespace scone
 
 	Real SensorDelayAdapter::GetValue() const
 	{
+		// 2025-01-03: this method is not used in any of the unit tests
 		return GetValue( m_Delay );
 	}
 
@@ -59,6 +60,7 @@ namespace scone
 
 	String SensorDelayAdapter::GetName() const
 	{
+		// 2025-01-03: this method is not used in any of the unit tests
 		return m_InputSensor.GetName();
 	}
 }

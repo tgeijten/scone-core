@@ -25,6 +25,10 @@ namespace scone
 			"max_input", &LuaActuator::max_input
 			);
 
+		lua.new_usertype<LuaSensor>( "LuaSensor", sol::constructors<>(),
+			"value", &LuaSensor::value
+			);
+
 		lua.new_usertype<LuaDof>( "LuaDof", sol::constructors<>(),
 			"name", &LuaDof::name,
 			"position", &LuaDof::position,
@@ -151,7 +155,12 @@ namespace scone
 			"get_interaction_spring", &LuaModel::get_interaction_spring,
 			"set_custom_value", &LuaModel::set_custom_value,
 			"get_custom_value", &LuaModel::get_custom_value,
-			"has_custom_value", &LuaModel::has_custom_value
+			"has_custom_value", &LuaModel::has_custom_value,
+			"find_two_way_neural_delay", &LuaModel::find_two_way_neural_delay,
+			"create_muscle_force_sensor", &LuaModel::create_muscle_force_sensor,
+			"create_muscle_length_sensor", &LuaModel::create_muscle_length_sensor,
+			"create_muscle_velocity_sensor", &LuaModel::create_muscle_velocity_sensor,
+			"create_muscle_activation_sensor", &LuaModel::create_muscle_activation_sensor
 			);
 
 		lua.new_usertype<LuaController>( "LuaController", sol::constructors<>(),
