@@ -204,6 +204,11 @@ namespace scone
 		return m_osMus.getActiveForceLengthMultiplier( m_Model.GetTkState() );
 	}
 
+	Real MuscleOpenSim4::GetForceVelocityMultipler() const
+	{
+		return m_osMus.getForceVelocityMultiplier( m_Model.GetTkState() );
+	}
+
 	Real MuscleOpenSim4::GetMaxContractionVelocity() const
 	{
 		return m_osMus.getMaxContractionVelocity();

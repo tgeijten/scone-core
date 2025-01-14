@@ -180,6 +180,7 @@ namespace scone
 				// fiber properties
 				frame[name + ".cos_pennation_angle"] = GetCosPennationAngle();
 				frame[name + ".force_length_multiplier"] = GetActiveForceLengthMultipler();
+				frame[name + ".force_velocity_multiplier"] = GetForceVelocityMultipler();
 				frame[name + ".passive_fiber_force_norm"] = GetPassiveFiberForce() / GetMaxIsometricForce();
 			}
 		}
