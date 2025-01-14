@@ -19,8 +19,8 @@ namespace scone
 	xo_smart_enum_class( penalty_mode, average, lowest, highest, sum );
 
 	/// Helper type to compute penalty if a value is outside a specific Range. The penalty corresponds to
-	/// ''abs_penalty * | _E_ | + squared_penalty * _E%%^%%2'',
-	/// where _E_ is the amount a value is out of the specified Range.
+	/// ''abs_penalty * |E| + squared_penalty * E%%^%%2'',
+	/// where E is the amount a value is out of the specified Range.
 	template< typename T > class RangePenalty : public Range<T>
 	{
 	public:
@@ -74,7 +74,7 @@ namespace scone
 		/// Squared penalty factor when value out of range; default = 0.
 		Real squared_penalty;
 
-		/// Use the peek range violation instead of average range violation; default = 0.
+		/// Mode to use when measuring the penalty: ''average'', ''highest'', ''lowest'' or ''sum''; default = ''average''.
 		penalty_mode mode_;
 
 	private:
