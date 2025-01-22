@@ -223,13 +223,13 @@ namespace scone
 			else if ( integration_method == "RungeKutta3" )
 				m_pTkIntegrator = std::make_unique<SimTK::RungeKutta3Integrator>( m_pOsimModel->getMultibodySystem() );
 			else if ( integration_method == "SemiExplicitEuler" )
-				m_pTkIntegrator = std::make_unique<SimTK::SemiExplicitEulerIntegrator>( m_pOsimModel->getMultibodySystem(), max_step_size );
+				m_pTkIntegrator = std::make_unique<SimTK::SemiExplicitEulerIntegrator>( m_pOsimModel->getMultibodySystem(), max_integration_step_size );
 			else if ( integration_method == "SemiExplicitEuler2" )
 				m_pTkIntegrator = std::make_unique<SimTK::SemiExplicitEuler2Integrator>( m_pOsimModel->getMultibodySystem() );
 			else SCONE_THROW( "Invalid integration method: " + xo::quoted( integration_method ) );
 
 			m_pTkIntegrator->setAccuracy( integration_accuracy );
-			m_pTkIntegrator->setMaximumStepSize( max_step_size );
+			m_pTkIntegrator->setMaximumStepSize( max_integration_step_size );
 			m_pTkIntegrator->resetAllStatistics();
 		}
 

@@ -104,7 +104,7 @@ namespace scone
 		INIT_PROP( props, use_fixed_control_step_size, true );
 		INIT_PROP( props, fixed_control_step_size, 0.001 );
 		INIT_PROP( props, fixed_measure_step_size, fixed_control_step_size );
-		INIT_PROP( props, max_step_size, scone_version >= version( 2, 0, 0 ) ? fixed_control_step_size : 0.001 );
+		INIT_PROP( props, max_integration_step_size, scone_version >= version( 2, 0, 0 ) ? fixed_control_step_size : 0.001 );
 		fixed_step_size = std::min( fixed_control_step_size, fixed_measure_step_size );
 		fixed_control_step_interval = static_cast<int>( std::round( fixed_control_step_size / fixed_step_size ) );
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );

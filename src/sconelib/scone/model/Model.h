@@ -265,7 +265,7 @@ namespace scone
 		double fixed_measure_step_size;
 
 		/// Maximum integration step size; default = fixed_control_step_size.
-		double max_step_size;
+		double max_integration_step_size;
 
 		/// Initial load [BW] at which to place the model initially; default = 0.2;
 		Real initial_load;
