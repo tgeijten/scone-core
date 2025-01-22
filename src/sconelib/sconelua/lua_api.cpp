@@ -103,11 +103,11 @@ namespace scone
 			"parent_pos", &LuaSpring::parent_pos,
 			"child_pos", &LuaSpring::child_pos,
 			"is_active", &LuaSpring::is_active,
-			"set_parent", & LuaSpring::set_parent,
-			"set_child", & LuaSpring::set_child,
-			"set_rest_length", & LuaSpring::set_rest_length,
-			"set_stiffness", & LuaSpring::set_stiffness,
-			"set_damping", & LuaSpring::set_damping
+			"set_parent", &LuaSpring::set_parent,
+			"set_child", &LuaSpring::set_child,
+			"set_rest_length", &LuaSpring::set_rest_length,
+			"set_stiffness", &LuaSpring::set_stiffness,
+			"set_damping", &LuaSpring::set_damping
 			);
 
 		lua.new_usertype<LuaMuscle>( "LuaMuscle", sol::constructors<>(),
@@ -131,9 +131,12 @@ namespace scone
 			"normalized_force", &LuaMuscle::normalized_force,
 			"active_fiber_force", &LuaMuscle::active_fiber_force,
 			"active_force_length_multiplier", &LuaMuscle::active_force_length_multiplier,
+			"force_velocity_multiplier", &LuaMuscle::force_velocity_multiplier,
 			"passive_fiber_force", &LuaMuscle::passive_fiber_force,
 			"max_isometric_force", &LuaMuscle::max_isometric_force,
 			"mass", &LuaMuscle::mass,
+			"moment_arm", &LuaMuscle::moment_arm,
+			"moment_arm_3d", &LuaMuscle::moment_arm_3d,
 			"create_delayed_force_sensor", &LuaMuscle::create_delayed_force_sensor,
 			"create_delayed_length_sensor", &LuaMuscle::create_delayed_length_sensor,
 			"create_delayed_velocity_sensor", &LuaMuscle::create_delayed_velocity_sensor,

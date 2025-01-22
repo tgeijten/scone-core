@@ -37,6 +37,7 @@ namespace scone
 		virtual const Model& GetModel() const = 0;
 
 		virtual Real GetMomentArm( const Dof& dof ) const = 0;
+		virtual Vec3 GetMomentArm3D( const Joint& joint ) const = 0;
 		virtual Real GetNormalizedMomentArm( const Dof& dof ) const;
 		virtual Real GetMoment( const Dof& dof ) const;
 

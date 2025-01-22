@@ -192,86 +192,6 @@ namespace scone
 		Dof& dof_;
 	};
 
-	/// Muscle type for use in lua scripting.
-	/// See ScriptController and ScriptMeasure for details on scripting.
-	struct LuaMuscle
-	{
-		LuaMuscle( Muscle& m ) : mus_( m ) {}
-
-		/// get the name of the muscle
-		LuaString name() { return mus_.GetName().c_str(); }
-		/// add a value to the normalized actuator input
-		void add_input( LuaNumber value ) { mus_.AddInput( value ); }
-		/// get the current actuator input
-		LuaNumber input() { return mus_.GetInput(); }
-		/// get the normalized excitation level [0..1] of the muscle
-		LuaNumber excitation() { return mus_.GetExcitation(); }
-		/// get the normalized activation level [0..1] of the muscle
-		LuaNumber activation() { return mus_.GetActivation(); }
-		/// get the fiber length [m] of the contractile element
-		LuaNumber fiber_length() { return mus_.GetFiberLength(); }
-		/// get the normalized fiber length of the contractile element
-		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
-		/// get the optimal fiber length [m]
-		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
-		/// get the fiber lengthening velocity [m/s]
-		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
-		/// get the normalized fiber lengthening velocity [m/s]
-		LuaNumber normalized_fiber_velocity() { return mus_.GetNormalizedFiberVelocity(); }
-		/// get the maximum fiber contraction velocity [m/s]
-		LuaNumber max_contraction_velocity() { return mus_.GetMaxContractionVelocity(); }
-		/// get the tendon length [m]
-		LuaNumber tendon_length() { return mus_.GetTendonLength(); }
-		/// get the normalized fiber length of the contractile element
-		LuaNumber normalized_tendon_length() { return mus_.GetNormalizedTendonLength(); }
-		/// get the optimal fiber length [m]
-		LuaNumber tendon_slack_length() { return mus_.GetTendonSlackLength(); }
-		/// get the muscle-tendon-unit length [m]
-		LuaNumber muscle_tendon_length() { return mus_.GetLength(); }
-		/// get the muscle-tendon-unit lengthening velocity [m/s]
-		LuaNumber muscle_tendon_velocity() { return mus_.GetVelocity(); }
-		/// get the current muscle force [N]
-		LuaNumber force() { return mus_.GetForce(); }
-		/// get the normalized muscle force [0..1]
-		LuaNumber normalized_force() { return mus_.GetNormalizedForce(); }
-		/// get the active fiber force [N]
-		LuaNumber active_fiber_force() { return mus_.GetActiveFiberForce(); }
-		/// get the active fiber force-length multiplier
-		LuaNumber active_force_length_multiplier() { return mus_.GetActiveForceLengthMultipler(); }
-		/// get the passive fiber force [N]
-		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
-		/// get the maximum isometric force [N]
-		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
-		/// get the muscle mass [kg], based on a specific tension of 250000
-		LuaNumber mass() { return mus_.GetMass(); }
-
-		/// create a sensor for delayed muscle force
-		LuaDelayedSensor create_delayed_force_sensor( LuaNumber delay )
-		{ return get_delayed_sensor<MuscleForceSensor>( delay ); }
-		/// create a sensor for delayed muscle length
-		LuaDelayedSensor create_delayed_length_sensor( LuaNumber delay )
-		{ return get_delayed_sensor<MuscleLengthSensor>( delay ); }
-		/// create a sensor for delayed muscle velocity
-		LuaDelayedSensor create_delayed_velocity_sensor( LuaNumber delay )
-		{ return get_delayed_sensor<MuscleVelocitySensor>( delay ); }
-		/// create a sensor for delayed muscle activation
-		LuaDelayedSensor create_delayed_activation_sensor( LuaNumber delay )
-		{ return get_delayed_sensor<MuscleActivationSensor>( delay ); }
-
-		/// create an actuator with neural delay
-		LuaDelayedActuator create_delayed_actuator( LuaNumber delay )
-		{ return model().GetDelayedActuator( mus_, 2 * delay ); }
-
-		Muscle& mus_;
-
-	private:
-		// access non-const model, needed for creating delayed sensors and actuators
-		Model& model() { return const_cast<Model&>( mus_.GetModel() ); }
-		template<typename T> DelayedSensorValue get_delayed_sensor( LuaNumber delay ) {
-			return model().GetDelayedSensor( model().AcquireSensor<T>( mus_ ), 2 * delay );
-		}
-	};
-
 	/// Body type for use in lua scripting.
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaBody
@@ -383,6 +303,92 @@ namespace scone
 		void set_damping( LuaNumber d ) { spr_.SetDamping( d ); }
 
 		Spring& spr_;
+	};
+
+	/// Muscle type for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaMuscle
+	{
+		LuaMuscle( Muscle& m ) : mus_( m ) {}
+
+		/// get the name of the muscle
+		LuaString name() { return mus_.GetName().c_str(); }
+		/// add a value to the normalized actuator input
+		void add_input( LuaNumber value ) { mus_.AddInput( value ); }
+		/// get the current actuator input
+		LuaNumber input() { return mus_.GetInput(); }
+		/// get the normalized excitation level [0..1] of the muscle
+		LuaNumber excitation() { return mus_.GetExcitation(); }
+		/// get the normalized activation level [0..1] of the muscle
+		LuaNumber activation() { return mus_.GetActivation(); }
+		/// get the fiber length [m] of the contractile element
+		LuaNumber fiber_length() { return mus_.GetFiberLength(); }
+		/// get the normalized fiber length of the contractile element
+		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
+		/// get the optimal fiber length [m]
+		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
+		/// get the fiber lengthening velocity [m/s]
+		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
+		/// get the normalized fiber lengthening velocity [m/s]
+		LuaNumber normalized_fiber_velocity() { return mus_.GetNormalizedFiberVelocity(); }
+		/// get the maximum fiber contraction velocity [m/s]
+		LuaNumber max_contraction_velocity() { return mus_.GetMaxContractionVelocity(); }
+		/// get the tendon length [m]
+		LuaNumber tendon_length() { return mus_.GetTendonLength(); }
+		/// get the normalized fiber length of the contractile element
+		LuaNumber normalized_tendon_length() { return mus_.GetNormalizedTendonLength(); }
+		/// get the optimal fiber length [m]
+		LuaNumber tendon_slack_length() { return mus_.GetTendonSlackLength(); }
+		/// get the muscle-tendon-unit length [m]
+		LuaNumber muscle_tendon_length() { return mus_.GetLength(); }
+		/// get the muscle-tendon-unit lengthening velocity [m/s]
+		LuaNumber muscle_tendon_velocity() { return mus_.GetVelocity(); }
+		/// get the current muscle force [N]
+		LuaNumber force() { return mus_.GetForce(); }
+		/// get the normalized muscle force [0..1]
+		LuaNumber normalized_force() { return mus_.GetNormalizedForce(); }
+		/// get the active fiber force [N]
+		LuaNumber active_fiber_force() { return mus_.GetActiveFiberForce(); }
+		/// get the active fiber force-length multiplier
+		LuaNumber active_force_length_multiplier() { return mus_.GetActiveForceLengthMultipler(); }
+		/// get the active force-velocity multiplier
+		LuaNumber force_velocity_multiplier() { return mus_.GetForceVelocityMultipler(); }
+		/// get the passive fiber force [N]
+		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
+		/// get the maximum isometric force [N]
+		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
+		/// get the muscle mass [kg], based on a specific tension of 250000
+		LuaNumber mass() { return mus_.GetMass(); }
+		/// get the 3D moment arm [Nm3] for a specific joint
+		LuaNumber moment_arm( const LuaDof& dof ) { return mus_.GetMomentArm( dof.dof_ ); }
+		/// get the 3D moment arm [Nm3] for a specific joint
+		LuaVec3 moment_arm_3d( const LuaJoint& joint ) { return mus_.GetMomentArm3D( joint.joint_ ); }
+
+		/// create a sensor for delayed muscle force
+		LuaDelayedSensor create_delayed_force_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleForceSensor>( delay ); }
+		/// create a sensor for delayed muscle length
+		LuaDelayedSensor create_delayed_length_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleLengthSensor>( delay ); }
+		/// create a sensor for delayed muscle velocity
+		LuaDelayedSensor create_delayed_velocity_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleVelocitySensor>( delay ); }
+		/// create a sensor for delayed muscle activation
+		LuaDelayedSensor create_delayed_activation_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleActivationSensor>( delay ); }
+
+		/// create an actuator with neural delay
+		LuaDelayedActuator create_delayed_actuator( LuaNumber delay )
+		{ return model().GetDelayedActuator( mus_, 2 * delay ); }
+
+		Muscle& mus_;
+
+	private:
+		// access non-const model, needed for creating delayed sensors and actuators
+		Model& model() { return const_cast<Model&>( mus_.GetModel() ); }
+		template<typename T> DelayedSensorValue get_delayed_sensor( LuaNumber delay ) {
+			return model().GetDelayedSensor( model().AcquireSensor<T>( mus_ ), 2 * delay );
+		}
 	};
 
 	/// Model type for use in lua scripting.

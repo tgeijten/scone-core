@@ -82,6 +82,7 @@ namespace scone
 
 		virtual const String& GetName() const override;
 		virtual Real GetMomentArm( const Dof& dof ) const override;
+		virtual Vec3 GetMomentArm3D( const Joint& joint ) const override { return Vec3::zero(); } // not supported
 
 		void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
