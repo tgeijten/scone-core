@@ -9,7 +9,7 @@
 namespace scone
 {
 	inline size_t GetDelaySampleSize( TimeInSeconds delay, TimeInSeconds step_size ) {
-		return std::max( size_t{ 1 }, xo::round_cast<size_t>( 0.5 * delay / step_size ) );
+		return xo::round_cast<size_t>( std::max( 1.0, 0.5 * delay / step_size ) );
 	}
 
 	using DelayBuffer = xo::circular_buffer<Real>;
@@ -39,7 +39,7 @@ namespace scone
 		void Reset();
 
 		std::map< size_t, DelayBuffer > buffers_;
-		std::vector< std::pair<Sensor*, DelayBufferChannel> > sensors_;
+		std::vector< std::pair<Sensor*, DelayBufferChannel> > sensors_; // #perf: use flat_map instead?
 	};
 
 	struct SCONE_API DelayedActuatorGroup {

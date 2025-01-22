@@ -9,6 +9,7 @@ namespace scone
 {
 	DelayedSensorValue DelayedSensorGroup::GetDelayedSensorValue( Sensor& sensor, TimeInSeconds delay, TimeInSeconds step_size )
 	{
+		SCONE_ERROR_IF( delay <= 0.0, "Invalid neural delay for " + sensor.GetName() + ": " + xo::to_str( delay / 2 ) );
 		auto delay_size = GetDelaySampleSize( delay, step_size );
 		auto it = xo::find_if( sensors_, [&]( const auto& p ) { return p.first == &sensor; } );
 		if ( it != sensors_.end() )

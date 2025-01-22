@@ -134,6 +134,32 @@ namespace scone
 		SensorDelayAdapter& sensor_;
 	};
 
+	/// Sensor with neural delay for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaDelayedSensor
+	{
+		LuaDelayedSensor( DelayedSensorValue& s ) : sensor_( s ) {}
+
+		/// get the delayed value of the sensor
+		LuaNumber value() { return sensor_.GetValue(); }
+		LuaNumber delay_buffer_size() { return static_cast<LuaNumber>( sensor_.dbc_.delay() ); }
+
+		DelayedSensorValue sensor_;
+	};
+
+	/// Actuator with neural delay for use in lua scripting.
+	/// See ScriptController and ScriptMeasure for details on scripting.
+	struct LuaDelayedActuator
+	{
+		LuaDelayedActuator( DelayedActuatorValue& a ) : actuator_( a ) {}
+
+		/// get the delayed value of the sensor
+		void add_input( LuaNumber value ) { return actuator_.AddInput( value ); }
+		LuaNumber delay_buffer_size() { return static_cast<LuaNumber>( actuator_.dbc_.delay() ); }
+
+		DelayedActuatorValue actuator_;
+	};
+
 	/// Dof (degree-of-freedom) type for use in lua scripting.
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaDof
@@ -219,7 +245,31 @@ namespace scone
 		/// get the muscle mass [kg], based on a specific tension of 250000
 		LuaNumber mass() { return mus_.GetMass(); }
 
+		/// create a sensor for delayed muscle force
+		LuaDelayedSensor create_delayed_force_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleForceSensor>( delay ); }
+		/// create a sensor for delayed muscle length
+		LuaDelayedSensor create_delayed_length_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleLengthSensor>( delay ); }
+		/// create a sensor for delayed muscle velocity
+		LuaDelayedSensor create_delayed_velocity_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleVelocitySensor>( delay ); }
+		/// create a sensor for delayed muscle activation
+		LuaDelayedSensor create_delayed_activation_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<MuscleActivationSensor>( delay ); }
+
+		/// create an actuator with neural delay
+		LuaDelayedActuator create_delayed_actuator( LuaNumber delay )
+		{ return model().GetDelayedActuator( mus_, 2 * delay ); }
+
 		Muscle& mus_;
+
+	private:
+		// access non-const model, needed for creating delayed sensors and actuators
+		Model& model() { return const_cast<Model&>( mus_.GetModel() ); }
+		template<typename T> DelayedSensorValue get_delayed_sensor( LuaNumber delay ) {
+			return model().GetDelayedSensor( model().AcquireSensor<T>( mus_ ), 2 * delay );
+		}
 	};
 
 	/// Body type for use in lua scripting.
@@ -407,23 +457,55 @@ namespace scone
 		/// check a specific custom value exists
 		bool has_custom_value( LuaString name ) { return mod_.HasUserValue( name ); }
 
-		/// get neural delay for a specific muscle of dof name, returns zero if not found in the neural_delays section of the model
+		/// get two-way neural delay from the neural_delays section in the model, returns zero if not found 
 		LuaNumber find_two_way_neural_delay( LuaString name ) { return mod_.TryGetTwoWayNeuralDelay( name ); }
+		/// get one-way neural delay from the neural_delays section in the model, returns zero if not found 
+		LuaNumber find_one_way_neural_delay( LuaString name ) { return 0.5 * mod_.TryGetTwoWayNeuralDelay( name ); }
 
 		/// create a sensor for delayed muscle force
 		LuaSensor create_muscle_force_sensor( LuaString name ) {
-			return mod_.AcquireDelayedSensor<MuscleForceSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+			return AcquireMuscleSensorDelayAdapter<MuscleForceSensor>( name ); }
 		/// create a sensor for delayed muscle length
 		LuaSensor create_muscle_length_sensor( LuaString name ) {
-			return mod_.AcquireDelayedSensor<MuscleLengthSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+			return AcquireMuscleSensorDelayAdapter<MuscleLengthSensor>( name ); }
 		/// create a sensor for delayed muscle velocity
 		LuaSensor create_muscle_velocity_sensor( LuaString name ) {
-			return mod_.AcquireDelayedSensor<MuscleVelocitySensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+			return AcquireMuscleSensorDelayAdapter<MuscleVelocitySensor>( name ); }
 		/// create a sensor for delayed muscle activation
 		LuaSensor create_muscle_activation_sensor( LuaString name ) {
-			return mod_.AcquireDelayedSensor<MuscleActivationSensor>( *GetByLuaName( mod_.GetMuscles(), name ) ); }
+			return AcquireMuscleSensorDelayAdapter<MuscleActivationSensor>( name ); }
+
+		/// create a sensor for delayed muscle force
+		LuaDelayedSensor create_delayed_muscle_force_sensor( LuaString muscle, LuaNumber delay ) {
+			return GetDelayedMuscleSensor<MuscleForceSensor>( muscle, delay ); }
+		/// create a sensor for delayed muscle length
+		LuaDelayedSensor create_delayed_muscle_length_sensor( LuaString muscle, LuaNumber delay ) {
+			return GetDelayedMuscleSensor<MuscleLengthSensor>( muscle, delay ); }
+		/// create a sensor for delayed muscle velocity
+		LuaDelayedSensor create_delayed_muscle_velocity_sensor( LuaString muscle, LuaNumber delay ) {
+			return GetDelayedMuscleSensor<MuscleVelocitySensor>( muscle, delay ); }
+		/// create a sensor for delayed muscle activation
+		LuaDelayedSensor create_delayed_muscle_activation_sensor( LuaString muscle, LuaNumber delay ) {
+			return GetDelayedMuscleSensor<MuscleActivationSensor>( muscle, delay ); }
+
+		/// create an actuator with neural delay
+		LuaDelayedActuator create_delayed_muscle_actuator( LuaString muscle, LuaNumber delay ) {
+			return GetDelayedMuscleActuator<MuscleActivationSensor>( muscle, delay ); }
 
 		Model& mod_;
+
+	private:
+
+		Muscle& FindMuscle( LuaString name ) { return *GetByLuaName( mod_.GetMuscles(), name ); }
+		template<typename T> SensorDelayAdapter& AcquireMuscleSensorDelayAdapter( LuaString name ) {
+			return mod_.AcquireDelayedSensor<T>( FindMuscle( name ) );
+		}
+		template<typename T> DelayedSensorValue GetDelayedMuscleSensor( LuaString name, LuaNumber delay ) {
+			return mod_.GetDelayedSensor( mod_.AcquireSensor<T>( FindMuscle( name ) ), 2 * delay );
+		}
+		template<typename T> DelayedActuatorValue GetDelayedMuscleActuator( LuaString name, LuaNumber delay ) {
+			return mod_.GetDelayedActuator( FindMuscle( name ), 2 * delay );
+		}
 	};
 
 	/// Controller type for use in lua scripting.

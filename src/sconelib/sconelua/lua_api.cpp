@@ -29,6 +29,16 @@ namespace scone
 			"value", &LuaSensor::value
 			);
 
+		lua.new_usertype<LuaDelayedSensor>( "LuaDelayedSensor", sol::constructors<>(),
+			"value", &LuaDelayedSensor::value,
+			"delay_buffer_size", &LuaDelayedSensor::delay_buffer_size
+			);
+
+		lua.new_usertype<LuaDelayedActuator>( "LuaDelayedActuator", sol::constructors<>(),
+			"add_input", &LuaDelayedActuator::add_input,
+			"delay_buffer_size", &LuaDelayedActuator::delay_buffer_size
+			);
+
 		lua.new_usertype<LuaDof>( "LuaDof", sol::constructors<>(),
 			"name", &LuaDof::name,
 			"position", &LuaDof::position,
@@ -123,7 +133,12 @@ namespace scone
 			"active_force_length_multiplier", &LuaMuscle::active_force_length_multiplier,
 			"passive_fiber_force", &LuaMuscle::passive_fiber_force,
 			"max_isometric_force", &LuaMuscle::max_isometric_force,
-			"mass", &LuaMuscle::mass
+			"mass", &LuaMuscle::mass,
+			"create_delayed_force_sensor", &LuaMuscle::create_delayed_force_sensor,
+			"create_delayed_length_sensor", &LuaMuscle::create_delayed_length_sensor,
+			"create_delayed_velocity_sensor", &LuaMuscle::create_delayed_velocity_sensor,
+			"create_delayed_activation_sensor", &LuaMuscle::create_delayed_activation_sensor,
+			"create_delayed_actuator", &LuaMuscle::create_delayed_actuator
 			);
 
 		lua.new_usertype<LuaModel>( "LuaModel", sol::constructors<>(),
@@ -157,10 +172,16 @@ namespace scone
 			"get_custom_value", &LuaModel::get_custom_value,
 			"has_custom_value", &LuaModel::has_custom_value,
 			"find_two_way_neural_delay", &LuaModel::find_two_way_neural_delay,
+			"find_one_way_neural_delay", &LuaModel::find_one_way_neural_delay,
 			"create_muscle_force_sensor", &LuaModel::create_muscle_force_sensor,
 			"create_muscle_length_sensor", &LuaModel::create_muscle_length_sensor,
 			"create_muscle_velocity_sensor", &LuaModel::create_muscle_velocity_sensor,
-			"create_muscle_activation_sensor", &LuaModel::create_muscle_activation_sensor
+			"create_muscle_activation_sensor", &LuaModel::create_muscle_activation_sensor,
+			"create_delayed_muscle_force_sensor", &LuaModel::create_delayed_muscle_force_sensor,
+			"create_delayed_muscle_length_sensor", &LuaModel::create_delayed_muscle_length_sensor,
+			"create_delayed_muscle_velocity_sensor", &LuaModel::create_delayed_muscle_velocity_sensor,
+			"create_delayed_muscle_activation_sensor", &LuaModel::create_delayed_muscle_activation_sensor,
+			"create_delayed_muscle_actuator", &LuaModel::create_delayed_muscle_actuator
 			);
 
 		lua.new_usertype<LuaController>( "LuaController", sol::constructors<>(),
