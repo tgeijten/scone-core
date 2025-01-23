@@ -138,7 +138,7 @@ namespace scone
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaDelayedSensor
 	{
-		LuaDelayedSensor( DelayedSensorValue& s ) : sensor_( s ) {}
+		LuaDelayedSensor( const DelayedSensorValue& s ) : sensor_( s ) {}
 
 		/// get the delayed value of the sensor
 		LuaNumber value() { return sensor_.GetValue(); }
@@ -151,7 +151,7 @@ namespace scone
 	/// See ScriptController and ScriptMeasure for details on scripting.
 	struct LuaDelayedActuator
 	{
-		LuaDelayedActuator( DelayedActuatorValue& a ) : actuator_( a ) {}
+		LuaDelayedActuator( const DelayedActuatorValue& a ) : actuator_( a ) {}
 
 		/// get the delayed value of the sensor
 		void add_input( LuaNumber value ) { return actuator_.AddInput( value ); }

@@ -29,7 +29,7 @@ namespace scone
 		Real GetAverageValue( int delay_samples, int window_size ) const;
 
 		void UpdateStorage();
-		Sensor& GetInputSensor() { return m_InputSensor; }
+		const Sensor& GetInputSensor() const { return m_InputSensor; }
 
 	private:
 		Model& m_Model;
