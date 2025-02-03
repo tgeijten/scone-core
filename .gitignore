@@ -13,7 +13,7 @@
 /doc/upload.bat
 /doc/html/
 /doc/xml/
-/doc/ref/
+/doc/ref*/
 /*.bat
 /*.log
 .cquery_cached_index/
