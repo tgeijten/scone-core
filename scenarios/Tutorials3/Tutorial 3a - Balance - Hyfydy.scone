@@ -1,6 +1,6 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
-	min_progress = 1e-3
+	min_progress = 1e-4
 	
 	SimulationObjective {
 		max_duration = 30
@@ -10,6 +10,7 @@ CmaOptimizer {
 			model_file = models/H0918v3.hfd
 			state_init_file = init/InitStateStand.zml
 			initial_load = 1
+			use_opensim_activation_dynamics = 1
 			fixed_control_step_size = 0.005
 		}
 		
