@@ -191,7 +191,21 @@ namespace scone
 		/// get sum of muscle moments for this dof 
 		LuaNumber muscle_moment() { return dof_.GetMuscleMoment(); }
 
+		/// create a sensor for delayed dof position
+		LuaDelayedSensor create_delayed_position_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<DofPositionSensor>( delay ); }
+		/// create a sensor for delayed dof velocity
+		LuaDelayedSensor create_delayed_velocity_sensor( LuaNumber delay )
+		{ return get_delayed_sensor<DofVelocitySensor>( delay ); }
+
 		Dof& dof_;
+
+	private:
+		// access non-const model, needed for creating delayed sensors and actuators
+		Model& model() { return const_cast<Model&>( dof_.GetModel() ); }
+		template<typename T> DelayedSensorValue get_delayed_sensor( LuaNumber delay ) {
+			return model().GetDelayedSensor( model().AcquireSensor<T>( dof_ ), 2 * delay );
+		}
 	};
 
 	/// Body type for use in lua scripting.

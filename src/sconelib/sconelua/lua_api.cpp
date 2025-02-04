@@ -51,7 +51,8 @@ namespace scone
 			"min_torque", &LuaDof::min_torque,
 			"max_torque", &LuaDof::max_torque,
 			"actuator_torque", &LuaDof::actuator_torque,
-			"muscle_moment", &LuaDof::muscle_moment
+			"create_delayed_position_sensor", &LuaDof::create_delayed_position_sensor,
+			"create_delayed_velocity_sensor", &LuaDof::create_delayed_velocity_sensor
 			);
 
 		lua.new_usertype<LuaBody>( "LuaBody", sol::constructors<>(),
