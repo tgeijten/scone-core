@@ -28,6 +28,7 @@
 #	ifdef SCONE_HYFYDY_DBL 
 #		include "sconehfd/sconehfd_f64.h"
 #	endif
+	namespace sconehfd = scone::sconehfd_f32; // namespace alias for sconestudio, sconecmd, etc.
 #else
 #	define SCONE_HYFYDY_ENABLED 0
 #endif
