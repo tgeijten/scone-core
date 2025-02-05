@@ -410,6 +410,12 @@ CLASSES
      |  final_measure(...)
      |      final_measure(self: sconepy.Model) -> float
      |  
+     |  get_control_parameter(...)
+     |      get_control_parameter(self: sconepy.Model, arg0: str) -> float
+     |  
+     |  get_control_parameter_names(...)
+     |      get_control_parameter_names(self: sconepy.Model) -> List[str]
+     |  
      |  gravity(...)
      |      gravity(self: sconepy.Model) -> sconepy.Vec3
      |  
@@ -466,6 +472,9 @@ CLASSES
      |  
      |  set_actuator_inputs(...)
      |      set_actuator_inputs(self: sconepy.Model, arg0: numpy.ndarray[numpy.float64]) -> None
+     |  
+     |  set_control_parameter(...)
+     |      set_control_parameter(self: sconepy.Model, arg0: str, arg1: float) -> int
      |  
      |  set_delayed_actuator_inputs(...)
      |      set_delayed_actuator_inputs(self: sconepy.Model, arg0: numpy.ndarray[numpy.float64]) -> None
@@ -701,6 +710,9 @@ CLASSES
      |  
      |  create_optimizer(...)
      |      create_optimizer(self: sconepy.Scenario) -> scone::Optimizer
+     |  
+     |  get(...)
+     |      get(self: sconepy.Scenario, arg0: str) -> str
      |  
      |  set(...)
      |      set(self: sconepy.Scenario, arg0: str, arg1: str) -> None
