@@ -2,10 +2,10 @@ CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-5
 	
-	init { file = init/H1922GaitRS2Hfd4.par std_factor = 10 }
+	init { file = init/H1922GaitRS4LHfdS4.par std_factor = 5 use_best_as_mean = 1 }
 	
 	SimulationObjective {
-		max_duration = 15
+		max_duration = 20
 		
 		# Model used in simulation
 		ModelHyfydy {
@@ -16,15 +16,15 @@ CmaOptimizer {
 			state_init_file = init/InitStateH1922Gait10.zml
 			initial_state_offset = 0~0.01<-0.5,0.5>
 			initial_state_offset_exclude = "*_t?;*_u"
-			initial_load = 0.75
+			initial_load = 1
 			fixed_control_step_size = 0.005
 		}
 		
 		# Controller for gait
 		CompositeController {
-			<< controllers/H1922RS2v3.scone >>
+			<< controllers/H1922RS4Lv3.scone >>
 			<< controllers/TorsoBO1v3.scone >>
-			NoiseController { base_noise = 0 proportional_noise = 0.02 random_seed = 0 }
+			NoiseController { base_noise = 0.01 proportional_noise = 0.05 random_seed = 0 }
 		}
 		
 		# Measure for gait
@@ -32,7 +32,7 @@ CmaOptimizer {
 			<< measures/Gait08Slope3D.scone >>
 			<< measures/EffortWangCubed2000.scone >>
 			<< measures/DofKnee1.scone >>
-			<< measures/Grf13.scone >>
+			<< measures/Grf15.scone >>
 		}
 	}
 }

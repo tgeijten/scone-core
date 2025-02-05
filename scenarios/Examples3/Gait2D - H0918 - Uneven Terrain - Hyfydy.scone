@@ -1,7 +1,8 @@
 CmaOptimizer {
 	signature_prefix = DATE_TIME
 	min_progress = 1e-4
-	init { file = init/H0918GaitRS2Hfd4.par std_factor = 4 }
+
+	init { file = init/H0918GaitRS2Hfd4.par std_factor = 10 }
 	
 	SimulationObjective {
 		max_duration = 20
