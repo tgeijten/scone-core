@@ -1,7 +1,7 @@
 function init( model, par, side, cont )
 	-- show all available control parameters
 	-- WARNING: this can be slow, so don't use this in update()
-	controls = cont:get_control_parameters()
+	controls = cont:get_control_parameter_names()
 	for i,v in ipairs(controls) do
 		scone.debug(v .. " = " .. cont:get_control_parameter(v))
 	end

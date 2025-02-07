@@ -588,8 +588,8 @@ namespace scone
 			else SCONE_ERROR( "Could not find control parameter: " + String( name ) );
 		}
 
-		/// get all available control parameters
-		std::vector<std::string> get_control_parameters() { return cont_.GetControlParameters(); }
+		/// get the names of all available control parameters
+		std::vector<std::string> get_control_parameter_names() { return cont_.GetControlParameters(); }
 
 		/// set the value of a control parameter, returns the number of parameters that were set
 		bool create_control_parameter( LuaString name, LuaNumber value ) {
