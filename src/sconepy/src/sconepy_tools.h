@@ -18,6 +18,7 @@
 #include "scone/controllers/ExternalController.h"
 #include "scone/controllers/CompositeController.h"
 #include "scone/optimization/Optimizer.h"
+#include "spot/static_par_set.h"
 
 namespace fs = std::filesystem;
 
@@ -58,11 +59,13 @@ namespace scone
 		return true;
 	}
 
-	ModelUP load_model( const std::string& file ) {
+	ModelUP load_model( const std::string& file, const std::string& par_file = "" ) {
 		auto file_path = xo::path( file );
 		auto model_pn = xo::load_zml( file_path );
 		auto model_factory_props_ = FindFactoryProps( GetModelFactory(), model_pn, "Model" );
-		spot::null_objective_info par;
+		spot::static_par_set par;
+		if ( !par_file.empty() )
+			par.load( par_file );
 		auto model = CreateModel( model_factory_props_, par, file_path.parent_path() );
 		model->GetUserData().add_child( g_scenario_user_data_key, model_pn ); // add model_pn so we can save config.scone to results folder
 		CreateExternalController( *model );

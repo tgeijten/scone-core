@@ -29,7 +29,7 @@ PYBIND11_MODULE( sconepy, m ) {
 	m.def( "scone_results_dir", []() { return scone::GetFolder( scone::SconeFolder::Results ).str(); } );
 	m.def( "set_log_level", []( int l ) { console_sink.set_log_level( xo::log::level( l ) ); } );
 	m.def( "evaluate_par_file", &scone::evaluate_par_file );
-	m.def( "load_model", &scone::load_model );
+	m.def( "load_model", &scone::load_model, py::arg(), py::arg() = std::string() );
 	m.def( "load_scenario", &scone::load_scenario, py::arg(), py::arg() = std::map<std::string, std::string>() );
 	m.def( "is_supported", &scone::is_supported );
 	m.def( "replace_string_tags", &scone::ReplaceStringTags );
@@ -246,6 +246,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "integration_step", &scone::Model::GetIntegrationStep )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; } )
 		.def( "set_store_data", &scone::Model::SetStoreData )
+		.def( "get_store_data", &scone::Model::GetStoreData )
 		.def( "write_results", &scone::write_results )
 		;
 
