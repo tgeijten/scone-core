@@ -116,8 +116,15 @@ namespace scone
 		// clear everything
 		void Clear() { m_Labels.clear(); m_LabelIndexMap.clear(); m_Data.clear(); m_InterpolationCache.clear(); }
 
-		// clear data but keep columns
-		void ClearData() { m_Data.clear(); m_InterpolationCache.clear(); }
+		// erase frames, keep columns
+		void EraseFrames( index_t start, size_t size = no_size ) { 
+			if ( start < m_Data.size() ) {
+				auto begin_it = m_Data.begin() + start;
+				auto end_it = ( size == no_size || start + size >= m_Data.size() ) ? m_Data.end() : begin_it + size;
+				m_Data.erase( begin_it, end_it );
+				m_InterpolationCache.clear();
+			}
+		}
 
 		Storage CopySlice( size_t start, size_t size, size_t stride ) const {
 			SCONE_ASSERT( stride > 0 );
