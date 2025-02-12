@@ -1,0 +1,16 @@
+# Model used in simulation
+ModelHyfydy {
+	model_file = H0918v3.hfd
+
+	# Set initial state
+	state_init_file = InitStateH0918Gait10ActA.zml
+	initial_load = 1
+	fixed_control_step_size = 0.005
+	use_opensim_activation_dynamics = 1
+	zero_velocity_equilibration = 1
+
+	# Controller for gait
+	CompositeController {
+		<< H0918RS2v3.scone >>
+	}
+}
