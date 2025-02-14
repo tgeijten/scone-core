@@ -21,6 +21,9 @@
 
 namespace sol { class state; }
 
+// check a pointer function argument and throw with (somewhat) useful error message
+#define LUA_ARG_REF( ptr ) GetArgRef( ptr, __FUNCTION__ )
+
 namespace scone
 {
 	using LuaString = const char*;
@@ -44,8 +47,17 @@ namespace scone
 		else return 0;
 	}
 
-	template< typename T > T& GetRef( T* obj, const std::string& error_msg ) {
+	inline std::string GetLuaMethodName( const char* method_name ) {
+		return xo::replace_str( xo::remove_str( method_name, "scone::" ), "::", ":" );
+	}
+
+	template< typename T > T& GetRef( T* obj, const char* error_msg ) {
 		SCONE_ERROR_IF( !obj, error_msg );
+		return *obj;
+	}
+
+	template< typename T > T& GetArgRef( T* obj, const char* method_name ) {
+		SCONE_ERROR_IF( !obj, GetLuaMethodName( method_name ) + "(): invalid argument" );
 		return *obj;
 	}
 
@@ -228,9 +240,9 @@ namespace scone
 		/// get the current com acceleration [m/s%%^%%2]
 		LuaVec3 com_acc() { return bod_.GetComAcc(); }
 		/// get the global position [m] of a local point p on the body
-		LuaVec3 point_pos( const LuaVec3& p ) { return bod_.GetPosOfPointOnBody( p ); }
+		LuaVec3 point_pos( const LuaVec3* p ) { return bod_.GetPosOfPointOnBody( LUA_ARG_REF( p ) ); }
 		/// get the global linear velocity [m/s] of a local point p on the body
-		LuaVec3 point_vel( const LuaVec3& p ) { return bod_.GetLinVelOfPointOnBody( p ); }
+		LuaVec3 point_vel( const LuaVec3* p ) { return bod_.GetLinVelOfPointOnBody( LUA_ARG_REF( p ) ); }
 		/// get the body orientation as a quaternion
 		LuaQuat ori() { return bod_.GetOrientation(); }
 		/// get the body orientation as a 3d rotation vector [rad]
@@ -250,13 +262,13 @@ namespace scone
 		/// add external moment [Nm] to body
 		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
 		/// set the com position [m] of the body
-		void set_com_pos( const LuaVec3& p ) { bod_.SetPos( p ); }
+		void set_com_pos( const LuaVec3* p ) { bod_.SetPos( LUA_ARG_REF( p ) ); }
 		/// set the orientation of the body
-		void set_ori( const LuaQuat& q ) { bod_.SetOrientation( q ); }
+		void set_ori( const LuaQuat* q ) { bod_.SetOrientation( LUA_ARG_REF( q ) ); }
 		/// set the com velocity [m/s] of the body
-		void set_lin_vel( const LuaVec3& v ) { bod_.SetLinVel( v ); }
+		void set_lin_vel( const LuaVec3* v ) { bod_.SetLinVel( LUA_ARG_REF( v ) ); }
 		/// set the angular velocity [rad/s] of the body
-		void set_ang_vel( const LuaVec3& v ) { bod_.SetAngVel( v ); }
+		void set_ang_vel( const LuaVec3* v ) { bod_.SetAngVel( LUA_ARG_REF( v ) ); }
 
 		Body& bod_;
 	};
@@ -282,11 +294,11 @@ namespace scone
 		/// check if this joint has a motor
 		bool has_motor() { return joint_.HasMotor(); }
 		/// set target orientation of the joint motor
-		void set_motor_target_ori( const LuaQuat& o ) { joint_.SetMotorTargetOri( o ); }
+		void set_motor_target_ori( const LuaQuat* o ) { joint_.SetMotorTargetOri( LUA_ARG_REF( o ) ); }
 		/// set target velocity of the joint motor
-		void set_motor_target_vel( const LuaVec3& v ) { joint_.SetMotorTargetVel( v ); }
+		void set_motor_target_vel( const LuaVec3* v ) { joint_.SetMotorTargetVel( LUA_ARG_REF( v ) ); }
 		/// set target velocity of the joint motor
-		void add_motor_torque( const LuaVec3& v ) { joint_.AddMotorTorque( v ); }
+		void add_motor_torque( const LuaVec3* v ) { joint_.AddMotorTorque( LUA_ARG_REF( v ) ); }
 		/// set stiffness of the joint motor
 		void set_motor_stiffness( LuaNumber kp ) { joint_.SetMotorStiffness( kp ); }
 		/// set damping of the joint motor
@@ -376,9 +388,9 @@ namespace scone
 		/// get the muscle mass [kg], based on a specific tension of 250000
 		LuaNumber mass() { return mus_.GetMass(); }
 		/// get the 3D moment arm [Nm3] for a specific joint
-		LuaNumber moment_arm( const LuaDof& dof ) { return mus_.GetMomentArm( dof.dof_ ); }
+		LuaNumber moment_arm( const LuaDof* dof ) { return mus_.GetMomentArm( LUA_ARG_REF( dof ).dof_ ); }
 		/// get the 3D moment arm [Nm3] for a specific joint
-		LuaVec3 moment_arm_3d( const LuaJoint& joint ) { return mus_.GetMomentArm3D( joint.joint_ ); }
+		LuaVec3 moment_arm_3d( const LuaJoint* joint ) { return mus_.GetMomentArm3D( LUA_ARG_REF( joint ).joint_ ); }
 
 		/// create a sensor for delayed muscle force
 		LuaDelayedSensor create_delayed_force_sensor( LuaNumber delay )
