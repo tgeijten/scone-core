@@ -164,7 +164,7 @@
 | **get_store_data**() | bool | Get if data is stored during Model simulation |
 | **gravity**() | [[#Vec3|Vec3]] | Get the gravity of this Model |
 | **has_simulation_ended**() | bool | Check if the simulation has terminated |
-| **init_muscle_activations**(arg0: numpy.ndarray[numpy.float64]) | None | Initialize all muscle activations |
+| **init_muscle_activations**(arg0: numpy.ndarray) | None | Initialize all muscle activations |
 | **init_state_from_dofs**() | None | Initialize the Model state from the current Dof values and equilibrate all muscles (must be called after modifying Dofs) |
 | **integration_step**() | int | Get the integration step of this Model |
 | **joints**() | List[ [[#Joint|Joint]] ] | Get the array of Joints in this Model |
@@ -180,11 +180,11 @@
 | **muscles**() | List[ [[#Muscle|Muscle]] ] | Get the array of Muscles in this Model |
 | **name**() | str | Get the name of this Model |
 | **reset**() | None | Reset the model to its initial state |
-| **set_actuator_inputs**(arg0: numpy.ndarray[numpy.float64]) | None | Set the actuator inputs for this Model |
+| **set_actuator_inputs**(arg0: numpy.ndarray) | None | Set the actuator inputs for this Model |
 | **set_control_parameter**(arg0: str, arg1: float) | int | Set a control parameter |
-| **set_delayed_actuator_inputs**(arg0: numpy.ndarray[numpy.float64]) | None | Set the delayed actuator inputs for this Model |
-| **set_dof_positions**(arg0: numpy.ndarray[numpy.float64]) | None | Set the dof positions for this Model (must call init_state_from_dofs() afterwards) |
-| **set_dof_velocities**(arg0: numpy.ndarray[numpy.float64]) | None | Set the dof velocities for this Model (must call init_state_from_dofs() afterwards) |
+| **set_delayed_actuator_inputs**(arg0: numpy.ndarray) | None | Set the delayed actuator inputs for this Model |
+| **set_dof_positions**(arg0: numpy.ndarray) | None | Set the dof positions for this Model (must call init_state_from_dofs() afterwards) |
+| **set_dof_velocities**(arg0: numpy.ndarray) | None | Set the dof velocities for this Model (must call init_state_from_dofs() afterwards) |
 | **set_simulation_end_time**(arg0: float) | None | Set the simulation end time [s] for this Model |
 | **set_state**(arg0: Dict[str, float]) | None | Set the current state for this Model |
 | **set_store_data**(arg0: bool) | None | Set if data must be stored during Model simulation (slow, do not use in optimizations) |

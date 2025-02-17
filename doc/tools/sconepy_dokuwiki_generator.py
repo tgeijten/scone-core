@@ -30,6 +30,7 @@ def make_table_row(doc):
     funs = remove_self_argument(doc[0]).split(" -> ")
     fun = funs[0]
     fun = fun.replace("'", "%%'%%")
+    fun = fun.replace("[numpy.float64]", "")
     fun = emphasize_name(fun)
     ret = funs[1]
     info = doc[2] if (len(doc) > 2) else ""
