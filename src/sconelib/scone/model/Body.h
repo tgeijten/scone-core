@@ -82,6 +82,7 @@ namespace scone
 
 		virtual bool IsStatic() const { return GetMass() == 0.0; }
 		virtual index_t GetIndex() const { return no_index; }
+		virtual const String& GetBodyName() const { return GetName(); }
 
 		Side GetSide() const { return GetSideFromName( GetName() ); }
 

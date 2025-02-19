@@ -72,7 +72,9 @@ namespace scone
 	PropNode Body::GetInfo() const
 	{
 		PropNode pn;
-		pn["name"] = GetName();
+		if ( GetName() != GetBodyName() )
+			pn["name"] = GetName() + " (" + GetBodyName() + ")"; // body frame
+		else pn["name"] = GetName();
 		pn["mass"] = GetMass();
 		pn["inertia"] = GetInertiaTensorDiagonal();
 		pn["com_offset"] = GetLocalComPos();
