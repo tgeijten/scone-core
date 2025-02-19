@@ -6,5 +6,5 @@ copy ref\*_hfd.txt ref\*_hyfydy.txt
 dir /b ref\*.txt > "..\..\resources\help\keywords.txt"
 
 cd tools
-python generate_sconepy.py
+python sconepy_dokuwiki_generator.py
 cd ..

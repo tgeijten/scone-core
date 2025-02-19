@@ -148,7 +148,7 @@
 | **contact_load**() | float | Get the contact load [BW] applied to this Model |
 | **contact_power**() | float | Get the contact power [W] |
 | **control_step_size**() | float | Get the control step size [s] of this Model |
-| **current_measure**() | float | Get the Measure value of this Model |
+| **current_measure**() | float | Get the current (instantaneous) value of the Measure defined in this Model (useful as reward in Reinforcement Learning) |
 | **delayed_dof_position_array**() | numpy.ndarray | Get an array of current delayed dof positions |
 | **delayed_dof_velocity_array**() | numpy.ndarray | Get an array of current delayed dof velocities |
 | **delayed_muscle_fiber_length_array**() | numpy.ndarray | Get an array of current delayed muscle fiber lengths |
@@ -158,20 +158,20 @@
 | **dof_position_array**() | numpy.ndarray | Get an array of current dof positions |
 | **dof_velocity_array**() | numpy.ndarray | Get an array of current dof velocities |
 | **dofs**() | List[ [[#Dof|Dof]] ] | Get the array of Dofs in this Model |
-| **final_measure**() | float | Get the final measure of this Model |
-| **get_control_parameter**(arg0: str) | float | Get the value of a control parameter |
-| **get_control_parameter_names**() | List[str] | Get a list of all parameter names in this Model |
+| **final_measure**() | float | Get the final (aggregate) value of the Measure defined in this Model (useful for shooting-based optimizations) |
+| **get_control_parameter**(arg0: str) | float | Get the current value of a control parameter |
+| **get_control_parameter_names**() | List[str] | Get a list of all control parameter names in this Model |
 | **get_store_data**() | bool | Get if data is stored during Model simulation |
 | **gravity**() | [[#Vec3|Vec3]] | Get the gravity of this Model |
 | **has_simulation_ended**() | bool | Check if the simulation has terminated |
-| **init_muscle_activations**(arg0: numpy.ndarray) | None | Initialize all muscle activations |
+| **init_muscle_activations**(arg0: numpy.ndarray) | None | Initialize all muscle activations (must call init_state_from_dofs() afterwards) |
 | **init_state_from_dofs**() | None | Initialize the Model state from the current Dof values and equilibrate all muscles (must be called after modifying Dofs) |
 | **integration_step**() | int | Get the integration step of this Model |
 | **joints**() | List[ [[#Joint|Joint]] ] | Get the array of Joints in this Model |
 | **legs**() | List[ [[#Leg|Leg]] ] | Get the array of Legs in this Model |
 | **log_measure_report**() | None | Log the Measure report |
 | **mass**() | float | Get the mass [kg] of this Model |
-| **measure**() | [[#Measure|Measure]] | Get the Measure of this Model |
+| **measure**() | [[#Measure|Measure]] | Get the Measure defined inside this Model |
 | **muscle_activation_array**() | numpy.ndarray | Get an array of current muscle activations |
 | **muscle_excitation_array**() | numpy.ndarray | Get an array of current muscle excitations |
 | **muscle_fiber_length_array**() | numpy.ndarray | Get an array of current muscle fiber lengths |
@@ -181,7 +181,7 @@
 | **name**() | str | Get the name of this Model |
 | **reset**() | None | Reset the model to its initial state |
 | **set_actuator_inputs**(arg0: numpy.ndarray) | None | Set the actuator inputs for this Model |
-| **set_control_parameter**(arg0: str, arg1: float) | int | Set a control parameter |
+| **set_control_parameter**(arg0: str, arg1: float) | int | Set a control parameter (use get_control_parameter_names() for a list of available control parameters) |
 | **set_delayed_actuator_inputs**(arg0: numpy.ndarray) | None | Set the delayed actuator inputs for this Model |
 | **set_dof_positions**(arg0: numpy.ndarray) | None | Set the dof positions for this Model (must call init_state_from_dofs() afterwards) |
 | **set_dof_velocities**(arg0: numpy.ndarray) | None | Set the dof velocities for this Model (must call init_state_from_dofs() afterwards) |
