@@ -14,6 +14,7 @@
 #include <limits>
 #include <stdlib.h>
 #include <cmath>
+#include "xo/numerical/constants.h"
 
 namespace scone
 {
@@ -28,6 +29,9 @@ namespace scone
 	const Real REAL_MIN = std::numeric_limits< Real >::min();
 	const Real REAL_MAX = std::numeric_limits< Real >::max();
 	const Real REAL_LOWEST = std::numeric_limits< Real >::lowest();
+
+	// constants using RealNum (preferred)
+	using RealNum = xo::num<Real>;
 
 	// math helper functions
 	inline Real DegToRad( Real d ) { return ( REAL_PI / 180 ) * d; }

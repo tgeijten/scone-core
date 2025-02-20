@@ -11,6 +11,7 @@
 #include "platform.h"
 #include "PropNode.h"
 #include "xo/numerical/math.h"
+#include "xo/numerical/bounds.h"
 
 namespace scone
 {
@@ -33,8 +34,9 @@ namespace scone
 		/// Maximum value or upper bound of the range; default = inf
 		T max;
 
-		// explicit conversion constructor
+		// explicit conversion constructors
 		template< typename U > explicit Range( const Range<U>& o ) : min( T( o.min ) ), max( T( o.max ) ) {}
+		template< typename U > explicit Range( const xo::bounds<U>& o ) : min( T( o.lower ) ), max( T( o.upper ) ) {} 
 
 		// test if a value is inside the range
 		bool Test( const T& value ) { return ( value >= min ) && ( value <= max ); }
