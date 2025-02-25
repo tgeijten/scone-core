@@ -28,7 +28,7 @@ namespace scone
 		const PropNode& control_point_y;
 
 		/// Parameter for the dt (delta time [s] from previous point) value of each control point.
-		const PropNode& control_point_dt;
+		const PropNode* control_point_dt;
 
 		/// Flag indicating if value should stay flat after passing the last control point; default = false.
 		bool flat_extrapolation;
