@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-13
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
 
     - name: Get Brew
       run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -22,7 +22,7 @@ jobs:
 
     - name: Check cache for simbody
       id: cache_simbody
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ${{ env.SIMBODY_INSTALL_PATH }}
         key: ${{ runner.os }}-simbody-${{ hashFiles('simbody/Simbody') }}
@@ -33,7 +33,7 @@ jobs:
 
     - name: Cache opensim3
       id: cache_opensim3
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ${{ env.OPENSIM3_INSTALL_PATH }}
         key: ${{ runner.os }}-opensim3-${{ hashFiles('opensim3-scone/OpenSim') }}
