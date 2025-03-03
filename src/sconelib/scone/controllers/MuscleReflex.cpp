@@ -54,36 +54,36 @@ namespace scone
 		INIT_PAR( pn, par, C0, 0.0 );
 
 		// create delayed sensors
-		controls_.insert( control_name + "C0", &C0 );
+		controls_.Add( control_name + "C0", &C0 );
 
 		if ( KF != 0.0 ) {
 			m_pForceSensor = &model.AcquireDelayedSensor< MuscleForceSensor >( source );
-			controls_.insert( control_name + "KF", &KF );
-			controls_.insert( control_name + "F0", &F0 );
+			controls_.Add( control_name + "KF", &KF );
+			controls_.Add( control_name + "F0", &F0 );
 		}
 
 		if ( KL != 0.0 ) {
 			m_pLengthSensor = &model.AcquireDelayedSensor< MuscleLengthSensor >( source );
-			controls_.insert( control_name + "KL", &KL );
-			controls_.insert( control_name + "L0", &L0 );
+			controls_.Add( control_name + "KL", &KL );
+			controls_.Add( control_name + "L0", &L0 );
 		}
 
 		if ( KV != 0.0 ) {
 			m_pVelocitySensor = &model.AcquireDelayedSensor< MuscleVelocitySensor >( source );
-			controls_.insert( control_name + "KV", &KV );
-			controls_.insert( control_name + "V0", &V0 );
+			controls_.Add( control_name + "KV", &KV );
+			controls_.Add( control_name + "V0", &V0 );
 		}
 
 		if ( KS != 0.0 ) {
 			m_pSpindleSensor = &model.AcquireDelayedSensor< MuscleSpindleSensor >( source );
-			controls_.insert( control_name + "KS", &KS );
-			controls_.insert( control_name + "S0", &S0 );
+			controls_.Add( control_name + "KS", &KS );
+			controls_.Add( control_name + "S0", &S0 );
 		}
 
 		if ( KA != 0.0 ) {
 			m_pActivationSensor = &model.AcquireDelayedSensor< MuscleActivationSensor >( source );
-			controls_.insert( control_name + "KA", &KA );
-			controls_.insert( control_name + "A0", &A0 );
+			controls_.Add( control_name + "KA", &KA );
+			controls_.Add( control_name + "A0", &A0 );
 		}
 
 		//log::TraceF( "MuscleReflex SRC=%s TRG=%s KL=%.2f KF=%.2f C0=%.2f", source.GetName().c_str(), m_Target.GetName().c_str(), length_gain, force_gain, u_constant );

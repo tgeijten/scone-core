@@ -32,21 +32,17 @@ namespace scone
 
 	int Reflex::TrySetControlParameter( const String& name, Real value )
 	{
-		return controls_.try_set( name, value ) ? 1 : 0;
+		return controls_.TrySet( name, value );
 	}
 
 	xo::optional<Real> Reflex::TryGetControlParameter( const String& name )
 	{
-		return controls_.try_get( name );
+		return controls_.TryGet( name );
 	}
 
 	std::vector<String> Reflex::GetControlParameters() const
 	{
-		std::vector<String> vec;
-		vec.reserve( controls_.size() );
-		for ( const auto& p : controls_.data() )
-			vec.emplace_back( p.first );
-		return vec;
+		return controls_.GetNames();
 	}
 
 	Real Reflex::AddTargetControlValue( Real u )

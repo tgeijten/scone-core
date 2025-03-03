@@ -51,6 +51,6 @@ namespace scone
 		static String GetReflexName( const String& target, const String& source );
 		static String GetParName( const PropNode& props, const Location& loc );
 
-		ValuePtrMap<Real> controls_;
+		RealPtrMap controls_;
 	};
 }

@@ -53,11 +53,11 @@ namespace scone
 		if ( auto p0pn = pn.try_get< String >( "P0_source" ) )
 			m_pTargetPosSource = &model.AcquireDelayedSensor< DofPositionSensor >( *FindByNameTrySided( model.GetDofs(), *p0pn, loc.side_ ) );
 
-		controls_.insert( control_name + "P0", &P0 );
-		controls_.insert( control_name + "KP", &KP );
-		controls_.insert( control_name + "V0", &V0 );
-		controls_.insert( control_name + "KV", &KV );
-		controls_.insert( control_name + "C0", &C0 );
+		controls_.Add( control_name + "P0", &P0 );
+		controls_.Add( control_name + "KP", &KP );
+		controls_.Add( control_name + "V0", &V0 );
+		controls_.Add( control_name + "KV", &KV );
+		controls_.Add( control_name + "C0", &C0 );
 	}
 
 	DofReflex::~DofReflex()
