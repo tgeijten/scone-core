@@ -25,7 +25,7 @@ namespace scone
 		bool compound_welded_bodies = false;
 		double compound_mass_threshold = 10.0;
 		bool convert_ligaments = true;
-		bool use_pint_joints_ = false;
+		bool use_pin_joints_ = false;
 		bool keep_body_origin_ = false;
 
 	private:

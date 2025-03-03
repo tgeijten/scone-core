@@ -105,7 +105,7 @@ namespace scone
 
 	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn ) const
 	{
-		bool pin_joint = use_pint_joints_ && j.GetDofs().size() == 1;
+		bool pin_joint = use_pin_joints_ && j.GetDofs().size() == 1;
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
 		auto& joint_pn = body_pn.add_child( pin_joint ? "pin_joint" : "joint" );
@@ -210,7 +210,7 @@ namespace scone
 	{
 		auto& dof_pn = parent_pn.add_child( "dof" );
 		dof_pn["name"] = d.GetName();
-		dof_pn["source"] = GetDofSourceName( d, use_pint_joints_ );
+		dof_pn["source"] = GetDofSourceName( d, use_pin_joints_ );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn["range"] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
 		if ( d.GetDefaultPos() != 0.0 )
