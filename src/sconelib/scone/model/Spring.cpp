@@ -24,6 +24,7 @@ namespace scone
 
 	void Spring::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
+		// #todo: Springs currently have no name, so only one "Spring" is supported
 		frame["Spring.parent_index"] = static_cast<Real>( GetParentBody().GetIndex() );
 		frame.SetVec3( "Spring.parent", GetPosInParent() );
 		frame["Spring.child_index"] = static_cast<Real>( GetChildBody().GetIndex() );
@@ -32,6 +33,7 @@ namespace scone
 
 	void Spring::SetStateFromData( const Storage<Real>::Frame& f )
 	{
+		// #todo: Springs currently have no name, so only one "Spring" is supported
 		auto& model = GetParentBody().GetModel();
 		auto pidx = size_t( f["Spring.parent_index"] );
 		Vec3 ppos = f.GetVec3( "Spring.parent" );
