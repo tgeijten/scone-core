@@ -14,8 +14,9 @@
 
 namespace scone
 {
-	static constexpr Real fix_epsilon = 1e-6;
-	inline Real fix( Real v ) { return std::abs( v ) < fix_epsilon ? Real( 0 ) : v; }
+	static int decimals = 5;
+	static constexpr Real zero_epsilon = 1e-6;
+	inline Real fix( Real v ) { return std::abs( v ) < zero_epsilon ? Real( 0 ) : xo::round_decimals( v, decimals ); }
 	inline Vec3 fix( Vec3 v ) { return Vec3( fix( v.x ), fix( v.y ), fix( v.z ) ); }
 
 	ModelConverter::ModelConverter( const PropNode& pn ) :
@@ -83,7 +84,7 @@ namespace scone
 			body_pn["mass"] = gb.mass;
 			body_pn["inertia"] = gb.inertia;
 			if ( keep_body_origin_ && !b.GetLocalComPos().is_null() )
-				body_pn["com_pos"] = b.GetLocalComPos();
+				body_pn["com_pos"] = fix( b.GetLocalComPos() );
 			if ( use_body_mass_threshold_ && gb.mass > 0 && gb.mass < body_mass_threshold_ )
 				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
@@ -164,7 +165,7 @@ namespace scone
 		for ( auto& [b, point] : mp ) {
 			auto& ppn = path_pn.add_child();
 			ppn["body"] = GetBodyName( *b );
-			ppn["pos"] = GetLocalBodyPos( point, *b );
+			ppn["pos"] = fix( GetLocalBodyPos( point, *b ) );
 		}
 	}
 
