@@ -10,14 +10,12 @@
 #include "scone/core/Log.h"
 #include "scone/core/Storage.h"
 #include "scone/controllers/CompositeController.h"
-#include "ScriptController.h"
-
-#include "xo/geometry/vec3_type.h"
-#include "xo/string/string_cast.h"
-#include "xo/geometry/quat_type.h"
-#include "xo/geometry/quat.h"
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/model/Sensors.h"
+#include "ScriptController.h"
+#include "xo/geometry/vec3_type.h"
+#include "xo/string/string_cast.h"
+#include "xo/geometry/quat.h"
 
 namespace sol { class state; }
 
