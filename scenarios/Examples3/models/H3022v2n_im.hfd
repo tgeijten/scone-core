@@ -725,7 +725,7 @@ model {
 		ori { x = -2 y = 0 z = 0 }
 	}
 	geometry {
-		rame = lower_leg_l
+		name = lower_leg_l
 		type = capsule
 		radius = 0.044
 		height = 0.35
