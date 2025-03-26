@@ -353,6 +353,8 @@ namespace scone
 		LuaNumber normalized_fiber_length() { return mus_.GetNormalizedFiberLength(); }
 		/// get the optimal fiber length [m]
 		LuaNumber optimal_fiber_length() { return mus_.GetOptimalFiberLength(); }
+		/// get the pennation angle at optimal fiber length [rad]
+		LuaNumber pennation_angle_at_optimal() { return mus_.GetPennationAngleAtOptimal(); }
 		/// get the fiber lengthening velocity [m/s]
 		LuaNumber fiber_velocity() { return mus_.GetFiberVelocity(); }
 		/// get the normalized fiber lengthening velocity [m/s]
@@ -381,6 +383,8 @@ namespace scone
 		LuaNumber force_velocity_multiplier() { return mus_.GetForceVelocityMultipler(); }
 		/// get the passive fiber force [N]
 		LuaNumber passive_fiber_force() { return mus_.GetPassiveFiberForce(); }
+		/// get the cosine of the pennation angle
+		LuaNumber cos_pennation_angle() { return mus_.GetCosPennationAngle(); }
 		/// get the maximum isometric force [N]
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
 		/// get the muscle mass [kg], based on a specific tension of 250000
