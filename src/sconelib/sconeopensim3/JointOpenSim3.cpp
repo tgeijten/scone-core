@@ -80,4 +80,14 @@ namespace scone
 	{
 		return from_osim( m_osJoint.getLocationInChild() );
 	}
+
+	Quat JointOpenSim3::GetOriInParent() const
+	{
+		return from_osim_euler_xyz( m_osJoint.get_orientation_in_parent() );
+	}
+
+	Quat JointOpenSim3::GetOriInChild() const
+	{
+		return from_osim_euler_xyz( m_osJoint.get_orientation_in_parent() );
+	}
 }

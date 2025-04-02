@@ -95,4 +95,16 @@ namespace scone
 		auto& f1 = m_osJoint.get_frames( 1 );
 		return from_osim( f1.get_translation() );
 	}
+
+	Quat JointOpenSim4::GetOriInParent() const
+	{
+		auto& f0 = m_osJoint.get_frames( 0 );
+		return from_osim_euler_xyz( f0.get_orientation() );
+	}
+
+	Quat JointOpenSim4::GetOriInChild() const
+	{
+		auto& f1 = m_osJoint.get_frames( 1 );
+		return from_osim_euler_xyz( f1.get_orientation() );
+	}
 }

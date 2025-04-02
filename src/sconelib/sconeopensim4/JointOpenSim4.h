@@ -29,6 +29,8 @@ namespace scone
 		virtual Vec3 GetPosInParent() const override;
 		virtual Vec3 GetPosInChild() const override;
 		virtual Vec3 GetReactionForce() const override;
+		virtual Quat GetOriInParent() const override;
+		virtual Quat GetOriInChild() const override;
 
 	private:
 		class ModelOpenSim4& m_Model;
