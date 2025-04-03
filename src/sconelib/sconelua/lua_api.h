@@ -311,21 +311,36 @@ namespace scone
 	{
 		LuaSpring( Spring& spr ) : spr_( spr ) {}
 
+		/// get current parent body this spring is attached to
 		LuaBody parent_body() { return LuaBody( spr_.GetParentBody() ); }
+		/// get current child body this spring is attached to
 		LuaBody child_body() { return LuaBody( spr_.GetChildBody() ); }
+		/// get position in parent body
 		LuaVec3 pos_in_parent() { return spr_.GetPosInParent(); }
+		/// get position in child body
 		LuaVec3 pos_in_child() { return spr_.GetPosInChild(); }
+		/// get spring rest length
 		LuaNumber rest_length() { return spr_.GetRestLength(); }
+		/// get spring stiffness
 		LuaNumber stiffness() { return spr_.GetStiffness(); }
+		/// get spring damping
 		LuaNumber damping() { return spr_.GetDamping(); }
+		/// get spring parent pos in world coordinates
 		LuaVec3 parent_pos() { return spr_.GetParentPos(); }
+		/// get spring child pos in world coordinates
 		LuaVec3 child_pos() { return spr_.GetChildPos(); }
+		/// check if the spring is active (attached to two bodies)
 		bool is_active() { return spr_.IsActive(); }
 
+		/// attach the spring to a local point on a parent body
 		void set_parent( LuaBody b, LuaVec3 pos ) { spr_.SetParent( b.bod_, pos ); }
+		/// attach the spring to a local point on a child body
 		void set_child( LuaBody b, LuaVec3 pos ) { spr_.SetChild( b.bod_, pos ); }
+		/// set the spring rest length
 		void set_rest_length( LuaNumber l ) { spr_.SetRestLength( l ); }
+		/// set the spring stiffness
 		void set_stiffness( LuaNumber s ) { spr_.SetStiffness( s ); }
+		/// set the spring damping
 		void set_damping( LuaNumber d ) { spr_.SetDamping( d ); }
 
 		Spring& spr_;
