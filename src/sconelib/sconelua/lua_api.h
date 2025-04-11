@@ -16,6 +16,7 @@
 #include "xo/geometry/vec3_type.h"
 #include "xo/string/string_cast.h"
 #include "xo/geometry/quat.h"
+#include "sol_config.h"
 
 namespace sol { class state; }
 
@@ -100,10 +101,10 @@ namespace scone
 	{
 		LuaFrame( Storage<Real>::Frame& f ) : frame_( f ) {}
 
+		/// set a numeric value for channel named key (is ignored when nil)
+		void set_value( LuaString key, sol::optional<LuaNumber> value ) { if ( value ) frame_[key] = *value; }
 		/// set a numeric value for channel named key
-		void set_value( LuaString key, LuaNumber value ) { frame_[key] = value; }
-		/// set a numeric value for channel named key
-		void set_vec3( LuaString key, LuaVec3 v ) { string s( key ); frame_[s + "_x"] = v.x; frame_[s + "_y"] = v.y; frame_[s + "_z"] = v.z; }
+		void set_vec3( LuaString key, LuaVec3* pv ) { string s( key ); auto& v = LUA_ARG_REF( pv ); frame_[s + "_x"] = v.x; frame_[s + "_y"] = v.y; frame_[s + "_z"] = v.z; }
 		/// set a boolean (true or false) value for channel named key
 		void set_bool( LuaString key, bool b ) { frame_[key] = b ? 1.0 : 0.0; }
 		/// get time of current frame
