@@ -74,7 +74,7 @@ endif()
 # Build lua if SCONE_LUA is set
 if (SCONE_LUA)
 	add_subdirectory(contrib/lua-5.3.5)
-	find_path( SOL_SINGLE_INCLUDE_DIR NAMES sol/sol.hpp HINTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/sol2/single/include"
+	find_path( SOL_INCLUDE_DIR NAMES sol/sol.hpp HINTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/sol2/include"
 	REQUIRED )
 endif()
 

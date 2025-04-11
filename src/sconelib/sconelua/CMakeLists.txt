@@ -6,7 +6,7 @@ file (GLOB SCONE_LUA_FILES "*.h" "*.cpp")
 
 add_library( sconelua SHARED ${SCONE_LUA_FILES} )
 target_link_libraries( sconelua sconelib liblua )
-target_include_directories( sconelua PRIVATE ${LUA_INCLUDE_DIR} ${SOL_SINGLE_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories( sconelua PRIVATE ${LUA_INCLUDE_DIR} ${SOL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties( sconelua PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
