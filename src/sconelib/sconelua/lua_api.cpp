@@ -1,6 +1,6 @@
 #include "lua_api.h"
 
-#include "sol/sol.hpp"
+#include "sol_config.h"
 #include "xo_lua/lua_register.h"
 
 namespace scone
