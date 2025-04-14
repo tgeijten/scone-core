@@ -30,7 +30,7 @@ namespace scone
 	\li ''LiftOff'' -> ''Swing'' occurs if ''leg_load'' is below **swing_load_threshold**.
 	\li ''Swing'' -> ''Landing'' occurs if ''sagittal_pos'' is above **landing_threshold**.
 
-	See the [[https://scone.software/doku.php?id=tutorials:gait | gait tutorial]] for an example.
+	See the [[tutorials:gait|gait tutorial]] for an example.
 	*/
 	class GaitStateController : public Controller
 	{
