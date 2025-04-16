@@ -84,6 +84,7 @@ namespace scone
 		virtual index_t GetIndex() const { return no_index; }
 		virtual const String& GetBodyName() const { return GetName(); }
 		virtual bool IsRealBody() const { return true; }
+		virtual const Body& GetRealBody() const { return *this; }
 
 		Side GetSide() const { return GetSideFromName( GetName() ); }
 
