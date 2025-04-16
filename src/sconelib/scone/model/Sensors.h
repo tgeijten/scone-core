@@ -13,6 +13,7 @@
 #include "scone/core/Vec3.h"
 #include "scone/model/Side.h"
 #include "xo/numerical/bounds.h"
+#include "scone/core/Quat.h"
 
 #if defined(_MSC_VER)
 #	pragma warning( push )
@@ -221,6 +222,20 @@ namespace scone
 		const Vec3 dir_;
 		const String name_;
 		const double target_;
+	};
+
+	struct SCONE_API BodyPostureMuscleSensor : public Sensor
+	{
+		BodyPostureMuscleSensor( const Body& body, const Muscle& muscle, const Joint* joint, const Quat& target_ori, Real kp, Real kv );
+		virtual String GetName() const override { return name_; }
+		virtual Real GetValue() const override;
+		const Body& body_;
+		const Muscle& muscle_;
+		const Joint* joint_;
+		const Quat target_ori_;
+		const Real kp_;
+		const Real kv_;
+		const String name_;
 	};
 
 	// sensor of the center of mass wrt base of support

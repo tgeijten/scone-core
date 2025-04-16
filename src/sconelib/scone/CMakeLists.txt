@@ -136,6 +136,8 @@ set(CS_CONTROLLERS_REFLEX_FILES
 	controllers/BodyPointReflex.h
 	controllers/BodyOrientationReflex.cpp
 	controllers/BodyOrientationReflex.h
+	controllers/BodyPostureMuscleReflex.cpp
+	controllers/BodyPostureMuscleReflex.h
 	controllers/MuscleReflex.cpp
 	controllers/MuscleReflex.h
 	controllers/Reflex.cpp

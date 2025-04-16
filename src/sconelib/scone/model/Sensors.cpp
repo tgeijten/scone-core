@@ -11,6 +11,7 @@
 #include "Muscle.h"
 #include "Body.h"
 #include "Dof.h"
+#include "Joint.h"
 #include "xo/geometry/vec3.h"
 #include "xo/geometry/quat.h"
 #include "xo/container/container_algorithms.h"
@@ -128,6 +129,31 @@ namespace scone
 		auto ori_rv = xo::rotation_vector_from_quat( xo::normalized( body_.GetOrientation() ) );
 		auto dir = body_.GetOrientation() * dir_;
 		return xo::dot_product( dir, ori_rv ) + kv_ * xo::dot_product( dir, body_.GetAngVel() ) - target_;
+	}
+
+	BodyPostureMuscleSensor::BodyPostureMuscleSensor( const Body& body, const Muscle& muscle, const Joint* joint, const Quat& target_ori, Real kp, Real kv ) :
+		body_( body ),
+		muscle_( muscle ),
+		joint_( joint ),
+		target_ori_( target_ori ),
+		kp_( kp ),
+		kv_( kv ),
+		name_( body_.GetName() + '-' + muscle_.GetName() + ".POS" )
+	{
+		if ( !joint_ ) {
+			const auto& rb = body_.GetRealBody();
+			for ( const auto* j : muscle_.GetJoints() )
+				if ( &j->GetParentBody() == &rb || &j->GetBody() == &rb ) { joint_ = j; break; }
+		}
+		SCONE_ERROR_IF( !joint_, muscle_.GetName() + " does not cross joints on " + body_.GetName() );
+	}
+
+	Real BodyPostureMuscleSensor::GetValue() const {
+		auto rot = xo::rotation_vector_from_quat( -body_.GetOrientation() * target_ori_ );
+		auto ang_vel = body_.GetAngVel();
+		auto mom = xo::normalized( muscle_.GetMomentArm3D( *joint_ ) );
+		auto p = kp_ * xo::dot_product( rot, mom ) - kv_ * xo::dot_product( ang_vel, mom );
+		return p;
 	}
 
 	ComBosSensor::ComBosSensor( const Model& mod, const Vec3& dir, double kv, const String& name, Side side ) :

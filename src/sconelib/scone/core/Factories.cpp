@@ -23,6 +23,7 @@
 #include "scone/controllers/SequentialController.h"
 #include "scone/controllers/BodyPointReflex.h"
 #include "scone/controllers/BodyOrientationReflex.h"
+#include "scone/controllers/BodyPostureMuscleReflex.h"
 #include "scone/controllers/ComPivotReflex.h"
 #include "scone/controllers/ExternalController.h"
 
@@ -156,6 +157,7 @@ namespace scone
 			.register_type<DofReflex>()
 			.register_type<BodyPointReflex>()
 			.register_type<BodyOrientationReflex>()
+			.register_type<BodyPostureMuscleReflex>()
 			.register_type<ComPivotReflex>()
 			.register_type<ConditionalMuscleReflex>();
 
