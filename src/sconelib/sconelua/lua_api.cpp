@@ -217,7 +217,8 @@ namespace scone
 			"info", &LuaScone::info,
 			"warning", &LuaScone::warning,
 			"error", &LuaScone::error,
-			"quat_from_euler_deg", &LuaScone::quat_from_euler_deg
+			"quat_from_euler_deg", &LuaScone::quat_from_euler_deg,
+			"quat_from_euler_rad", &LuaScone::quat_from_euler_rad
 			);
 	}
 }
