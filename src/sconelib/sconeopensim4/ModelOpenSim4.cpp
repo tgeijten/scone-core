@@ -314,7 +314,7 @@ namespace scone
 		m_GroundBody = m_Bodies.front().get();
 		for ( int idx = 0; idx < m_pOsimModel->getBodySet().getSize(); ++idx )
 			m_Bodies.emplace_back( std::make_unique<BodyOpenSim4>( *this, m_pOsimModel->getBodySet().get( idx ) ) );
-		m_RootBody = m_Bodies.empty() ? nullptr : &*m_Bodies.front();
+		m_RootBody = m_Bodies.size() < 2 ? nullptr : m_Bodies[1].get();
 		CopyUniquePtrVec( m_Bodies, m_BodyPtrs );
 
 		// Create wrappers for joints
