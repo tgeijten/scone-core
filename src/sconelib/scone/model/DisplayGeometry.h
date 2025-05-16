@@ -9,7 +9,7 @@
 
 namespace scone
 {
-	enum class DisplayGeometryOptions { mirror, auxiliary };
+	enum class DisplayGeometryOptions { mirror, auxiliary, opaque };
 
 	struct DisplayGeometry
 	{
