@@ -22,7 +22,7 @@ namespace scone
 		Actuator();
 		virtual ~Actuator();
 
-		virtual double AddInput( double v ) { return m_ActuatorInput += v; }
+		virtual void AddInput( double v ) { m_ActuatorInput += v; }
 
 		double GetInput() const { return m_ActuatorInput; }
 		virtual double GetAdaptedInput() const { return xo::clamped( GetInput(), GetMinInput(), GetMaxInput() ); }
