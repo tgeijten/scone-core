@@ -699,6 +699,17 @@ namespace scone
 		return m_Muscles.back().get();
 	}
 
+	void Model::AddMuscleGroups( const PropNode& pn )
+	{
+		for ( const auto& mg_pn : pn.select( "MuscleGroup" ) ) {
+			m_MuscleGroups.emplace_back( *this, mg_pn.second );
+		}
+
+		// add actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
+		for ( auto& mg : m_MuscleGroups )
+			m_ActuatorPtrs.emplace_back( &mg );
+	}
+
 	void Model::Clear()
 	{
 		m_Muscles.clear();

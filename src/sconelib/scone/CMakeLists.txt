@@ -246,6 +246,8 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/Model.h
 	model/Muscle.cpp
 	model/Muscle.h
+	model/MuscleGroup.cpp
+	model/MuscleGroup.h
 	model/Ligament.cpp
 	model/Ligament.h
 	model/Spring.h

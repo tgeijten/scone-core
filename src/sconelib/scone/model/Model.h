@@ -35,6 +35,7 @@
 #include <type_traits>
 #include <utility>
 #include <any>
+#include "MuscleGroup.h"
 
 namespace scone
 {
@@ -335,6 +336,7 @@ namespace scone
 
 		virtual void AddExternalDisplayGeometries( const path& model_path );
 		virtual Muscle* AddMuscle( MuscleUP mus, Params& par );
+		void AddMuscleGroups( const PropNode& pn );
 		virtual void Clear();
 
 		mutable xo::profiler m_Profiler;
@@ -360,6 +362,9 @@ namespace scone
 		std::vector< Actuator* > m_ActuatorPtrs;
 		const Body* m_RootBody;
 		Body* m_GroundBody;
+
+		// muscle groups
+		std::vector< MuscleGroup > m_MuscleGroups;
 
 		// controller, measure components
 		ControllerUP m_Controller;

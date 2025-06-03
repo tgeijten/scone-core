@@ -16,35 +16,6 @@ namespace scone
 	using snel::group_id;
 	using xo::uint32;
 
-	struct MuscleInfo {
-		MuscleInfo( const string& name, index_t idx, TimeInSeconds delay ) :
-			name_( name ), side_( GetSideFromName( name ) ), index_( idx ), delay_( delay )
-		{}
-
-		string name_;
-		Side side_;
-		index_t index_;
-		TimeInSeconds delay_;
-		xo::flat_set<uint32> group_indices_;
-		xo::flat_set<uint32> ant_group_indices_;
-	};
-
-	struct MuscleGroup {
-		MuscleGroup( const PropNode& pn, Side side ) :
-			name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( ~uint32( 0 ) ), pn_( pn ), muscle_pat_( pn.get<xo::pattern_matcher>( "muscles" ) )
-		{}
-
-		string name_;
-		Side side_;
-		std::vector<uint32> muscle_indices_;
-		std::vector<uint32> ant_group_indices_;
-		std::vector<uint32> related_group_indices_;
-		uint32 contra_group_index_;
-		const PropNode& pn_;
-		xo::pattern_matcher muscle_pat_;
-		string sided_name() const { return GetSidedName( name_, side_ ); }
-	};
-
 	class SpinalController : public Controller
 	{
 	public:
@@ -86,6 +57,35 @@ namespace scone
 		string PropNodeName( group_id sgid, group_id tgid, const char* suffix ) const {
 			return GroupName( sgid ) + "_" + GroupName( tgid ) + suffix + "_weight";
 		}
+
+		struct MuscleInfo {
+			MuscleInfo( const string& name, index_t idx, TimeInSeconds delay ) :
+				name_( name ), side_( GetSideFromName( name ) ), index_( idx ), delay_( delay )
+			{}
+
+			string name_;
+			Side side_;
+			index_t index_;
+			TimeInSeconds delay_;
+			xo::flat_set<uint32> group_indices_;
+			xo::flat_set<uint32> ant_group_indices_;
+		};
+
+		struct MuscleGroup {
+			MuscleGroup( const PropNode& pn, Side side ) :
+				name_( pn.get_str( "name" ) ), side_( side ), contra_group_index_( ~uint32( 0 ) ), pn_( pn ), muscle_pat_( pn.get<xo::pattern_matcher>( "muscles" ) )
+			{}
+
+			string name_;
+			Side side_;
+			std::vector<uint32> muscle_indices_;
+			std::vector<uint32> ant_group_indices_;
+			std::vector<uint32> related_group_indices_;
+			uint32 contra_group_index_;
+			const PropNode& pn_;
+			xo::pattern_matcher muscle_pat_;
+			string sided_name() const { return GetSidedName( name_, side_ ); }
+		};
 
 		const xo::flat_map<String, TimeInSeconds> neural_delays_;
 		string activation_;

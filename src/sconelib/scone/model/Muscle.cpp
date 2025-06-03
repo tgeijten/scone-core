@@ -88,7 +88,7 @@ namespace scone
 		return false;
 	}
 
-	const std::vector< const Joint* >& Muscle::GetJoints() const
+	const std::vector<const Joint*>& Muscle::GetJoints() const
 	{
 		SCONE_ASSERT( !m_Joints.empty() ); // Initialize in derived class via InitJointsDofs()
 		return m_Joints;

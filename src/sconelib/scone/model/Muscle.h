@@ -75,8 +75,8 @@ namespace scone
 		virtual Real GetForceVelocityMultipler() const = 0;
 		virtual Real GetMaxContractionVelocity() const = 0;
 
-		virtual std::vector< Vec3 > GetMusclePath() const = 0;
-		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual std::vector<Vec3> GetMusclePath() const = 0;
+		virtual std::vector<std::pair<Body*, Vec3>> GetLocalMusclePath() const = 0;
 
 		virtual Real GetActivation() const = 0;
 		virtual Real GetExcitation() const = 0;
@@ -88,15 +88,15 @@ namespace scone
 		virtual Side GetSide() const;
 
 		virtual bool HasMomentArm( const Dof& dof ) const;
-		virtual const std::vector< const Joint* >& GetJoints() const;
-		virtual const std::vector< const Dof* >& GetDofs() const;
+		virtual const std::vector<const Joint*>& GetJoints() const;
+		virtual const std::vector<const Dof*>& GetDofs() const;
 		virtual bool IsAntagonist( const Muscle& other ) const;
 		virtual bool IsAgonist( const Muscle& other ) const;
 		virtual bool HasSharedDofs( const Muscle& other ) const;
 		virtual bool HasSharedBodies( const Muscle& other ) const;
 		virtual bool HasSharedJoints( const Muscle& other ) const;
 
-		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
+		virtual void StoreData( Storage< Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const override;
 
 		Real GetClampedInput() const { return xo::clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation ); }
@@ -110,8 +110,8 @@ namespace scone
 	protected:
 		void InitBodyJointDofs( const Body* b );
 		void InitJointsDofs();
-		mutable std::vector< const Joint* > m_Joints;
-		mutable std::vector< const Dof* > m_Dofs;
+		mutable std::vector<const Joint*> m_Joints;
+		mutable std::vector<const Dof*> m_Dofs;
 		Real m_MinActivation;
 		Real m_MaxActivation;
 	};
