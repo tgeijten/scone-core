@@ -703,9 +703,15 @@ namespace scone
 	{
 		for ( const auto& mg_pn : pn.select( "MuscleGroup" ) ) {
 			m_MuscleGroups.emplace_back( *this, mg_pn.second );
+			if ( m_MuscleGroups.back().GetMuscles().empty() ) {
+				log::debug( "Removing empty MuscleGroup '", m_MuscleGroups.back().GetName(), "'" );
+				m_MuscleGroups.pop_back();
+			}
 		}
 
-		// add actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
+		// add to muscles and actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
+		for ( auto& mg : m_MuscleGroups )
+			m_MusclePtrs.emplace_back( &mg );
 		for ( auto& mg : m_MuscleGroups )
 			m_ActuatorPtrs.emplace_back( &mg );
 	}
