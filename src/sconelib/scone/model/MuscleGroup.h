@@ -49,6 +49,7 @@ namespace scone
 		virtual Real GetExcitation() const override;
 		virtual void SetExcitation( Real u ) override;
 		virtual void InitializeActivation( Real u ) override;
+		virtual PropNode GetInfo() const override;
 
 		// non-virtual members
 		std::vector<std::pair<Real, Muscle*>> const GetMuscles() { return muscles_; }
