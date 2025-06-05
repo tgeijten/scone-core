@@ -65,6 +65,8 @@ namespace scone
 		// muscle access
 		std::vector< Muscle* >& GetMuscles() { return m_MusclePtrs; }
 		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
+		Muscle& FindMuscleOrGroup( const String& name );
+		Muscle& FindMuscleOrGroup( const String& name, Location loc );
 
 		// ligament access
 		std::vector< Ligament* >& GetLigaments() { return m_LigamentPtrs; }

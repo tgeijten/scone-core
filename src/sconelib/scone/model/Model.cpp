@@ -129,6 +129,20 @@ namespace scone
 
 	Model::~Model() {}
 
+	Muscle& Model::FindMuscleOrGroup( const String& name )
+	{
+		if ( auto musit = TryFindByName( GetMuscles(), name ); musit != GetMuscles().end() )
+			return **musit;
+		else if ( auto mgit = xo::find_if( m_MuscleGroups, [&]( auto&& mg ) { return mg.GetName() == name; } ); mgit != m_MuscleGroups.end() )
+			return *mgit;
+		SCONE_ERROR( "Could not find " + name );
+	}
+
+	Muscle& Model::FindMuscleOrGroup( const String& name, Location loc )
+	{
+		return FindMuscleOrGroup( loc.GetSidedName( name ) );
+	}
+
 	SensorDelayAdapter& Model::AcquireSensorDelayAdapter( Sensor& source )
 	{
 		auto it = std::find_if( m_SensorDelayAdapters.begin(), m_SensorDelayAdapters.end(),
@@ -709,9 +723,7 @@ namespace scone
 			}
 		}
 
-		// add to muscles and actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
-		for ( auto& mg : m_MuscleGroups )
-			m_MusclePtrs.emplace_back( &mg );
+		// add to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
 		for ( auto& mg : m_MuscleGroups )
 			m_ActuatorPtrs.emplace_back( &mg );
 	}
