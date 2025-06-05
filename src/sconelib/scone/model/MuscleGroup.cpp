@@ -187,8 +187,8 @@ namespace scone
 	void MuscleGroup::SetExcitation( Real u )
 	{
 		//SCONE_ERROR( "Unexpected call to MuscleGroup::SetExcitation()" );
-		for ( auto&& m : muscles_ )
-			m.second->SetExcitation( u );
+		//for ( auto&& m : muscles_ )
+		//	m.second->SetExcitation( u );
 	}
 
 	void MuscleGroup::InitializeActivation( Real u )
