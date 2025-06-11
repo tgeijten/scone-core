@@ -12,6 +12,7 @@
 #include "scone/core/Vec3.h"
 #include "scone/core/Range.h"
 #include "Actuator.h"
+#include "Side.h"
 
 namespace scone
 {
@@ -46,6 +47,8 @@ namespace scone
 		virtual Real GetMinTorque() const { return 0.0; }
 		virtual Real GetMaxTorque() const { return 0.0; }
 		virtual Real GetActuatorTorque() const { return 0.0; }
+
+		virtual Side GetSide() const;
 
 		virtual const Model& GetModel() const = 0;
 
