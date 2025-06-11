@@ -62,7 +62,7 @@ namespace scone
 		Real u_v;
 		Dof& m_SourceDof;
 		Dof* m_SourceParentDof;
-		Real m_Mirror;
+		bool m_Mirror;
 		SensorDelayAdapter* m_pTargetPosSource;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;
