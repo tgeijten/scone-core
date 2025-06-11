@@ -1,23 +1,19 @@
 #pragma once
 
+#include "scone/core/types.h"
 #include "PropNode.h"
 #include "xo/string/pattern_matcher.h"
 
 namespace scone
 {
-	struct IncludeExcludePattern
+	struct SCONE_API IncludeExcludePattern
 	{
 		IncludeExcludePattern() = default;
-		IncludeExcludePattern( const PropNode& pn ) :
-			INIT_MEMBER( pn, include, "*" ),
-			INIT_MEMBER( pn, exclude, "" )
-		{}
+		IncludeExcludePattern( const PropNode& pn );
 
-		bool match( const string& str ) const {
-			return include.match( str ) && !exclude.match( str );
-		}
-
+		bool match( const string& str ) const;
 		bool operator()( const string& str ) const { return match( str ); }
+		void mirror_patterns();
 
 	private:
 		xo::pattern_matcher include;

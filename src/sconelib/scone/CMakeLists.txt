@@ -90,6 +90,8 @@ set(CORE_TOOL_FILES
 	core/ValuePtrMap.h
 	core/ExternalResourceContainer.h
 	core/ExternalResourceContainer.cpp
+	core/IncludeExcludePattern.h
+	core/IncludeExcludePattern.cpp
 	)
 set(CS_CONTROLLERS_FILES
 	controllers/Controller.cpp
