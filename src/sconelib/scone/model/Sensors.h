@@ -104,9 +104,11 @@ namespace scone
 	// Base struct for dof sensors
 	struct SCONE_API DofSensor : public Sensor
 	{
-		DofSensor( const Dof& dof, const Dof* root_dof ) : dof_( dof ), root_dof_( root_dof ) {}
+		DofSensor( const Dof& dof, const Dof* root_dof );
+		String GetDofName() const;
 		const Dof& dof_;
 		const Dof* root_dof_;
+		Real root_sign_; // -1 if dof is left and root has no side (e.g. hip_rotation_l and pelvis_rotation)
 	};
 
 	struct SCONE_API DofPositionSensor : public DofSensor
@@ -119,7 +121,6 @@ namespace scone
 	struct SCONE_API DofVelocitySensor : public DofSensor
 	{
 		DofVelocitySensor( const Dof& dof, const Dof* root_dof = nullptr ) : DofSensor( dof, root_dof ) {}
-
 		virtual String GetName() const override;
 		virtual Real GetValue() const override;
 	};

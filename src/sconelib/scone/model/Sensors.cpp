@@ -56,15 +56,32 @@ namespace scone
 	String LegLoadSensor::GetName() const { return leg_.GetName() + ".LD"; }
 	Real LegLoadSensor::GetValue() const { return range_.clamped( gain_ * leg_.GetLoad() + ofs_ ); }
 
-	String DofPositionSensor::GetName() const { return dof_.GetName() + ".DP"; }
-	Real DofPositionSensor::GetValue() const { return root_dof_ ? root_dof_->GetPos() + dof_.GetPos() : dof_.GetPos(); }
+	DofSensor::DofSensor( const Dof& dof, const Dof* root_dof ) :
+		dof_( dof ), root_dof_( root_dof ),
+		root_sign_( root_dof && ( dof.GetSide() == Side::Left && root_dof->GetSide() == Side::None ) ? -1.0 : 1.0 )
+	{
+		if ( root_dof_ )
+			log::debug( dof.GetName(), " root=", root_dof_->GetName(), " root_sign=", root_sign_ );
+	}
 
-	String DofVelocitySensor::GetName() const { return dof_.GetName() + ".DV"; }
-	Real DofVelocitySensor::GetValue() const { return root_dof_ ? root_dof_->GetVel() + dof_.GetVel() : dof_.GetVel(); }
+	String DofSensor::GetDofName() const
+	{
+		return root_dof_ ? root_dof_->GetName() + "_" + dof_.GetName() : dof_.GetName();
+	}
+
+	String DofPositionSensor::GetName() const { return GetDofName() + ".DP"; }
+	Real DofPositionSensor::GetValue() const {
+		return root_dof_ ? root_sign_ * root_dof_->GetPos() + dof_.GetPos() : dof_.GetPos();
+	}
+
+	String DofVelocitySensor::GetName() const { return GetDofName() + ".DV"; }
+	Real DofVelocitySensor::GetValue() const {
+		return root_dof_ ? root_sign_ * root_dof_->GetVel() + dof_.GetVel() : dof_.GetVel();
+	}
 
 	String DofPosVelSensor::GetName() const { return GetSidedName( dof_.GetName(), side_ ) + ".DPV"; }
 	Real DofPosVelSensor::GetValue() const {
-		Real value = root_dof_ ? root_dof_->GetPos() + dof_.GetPos() + kv_ * ( root_dof_->GetVel() + dof_.GetVel() ) :
+		Real value = root_dof_ ? root_sign_ * root_dof_->GetPos() + dof_.GetPos() + kv_ * ( root_sign_ * root_dof_->GetVel() + dof_.GetVel() ) :
 			dof_.GetPos() + kv_ * dof_.GetVel();
 		return side_ == Side::Right ? -value : value; // mirror for right side, see SensorNeuron.cpp
 	}
