@@ -338,6 +338,7 @@ namespace scone
 
 		virtual void AddExternalDisplayGeometries( const path& model_path );
 		virtual Muscle* AddMuscle( MuscleUP mus, Params& par );
+		void TryAddMuscleGroup( const PropNode& pn, bool mirror );
 		void AddMuscleGroups( const PropNode& pn );
 		virtual void Clear();
 

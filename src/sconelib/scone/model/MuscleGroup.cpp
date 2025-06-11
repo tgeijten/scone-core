@@ -2,15 +2,20 @@
 #include "scone/core/IncludeExcludePattern.h"
 #include "Model.h"
 #include "xo/container/container_tools.h"
+#include "xo/geometry/mirror_tools.h"
 
 namespace scone
 {
-	MuscleGroup::MuscleGroup( const Model& m, const PropNode& pn ) :
+	MuscleGroup::MuscleGroup( const Model& m, const PropNode& pn, bool mirror ) :
 		Muscle( m ),
 		INIT_MEMBER_REQUIRED( pn, name_ ),
 		total_weight_( 0 )
 	{
 		auto pattern_match = pn.get<IncludeExcludePattern>();
+		if ( mirror ) {
+			xo::mirror( name_ );
+			pattern_match.mirror_patterns();
+		}
 		for ( auto* mus : m.GetMuscles() ) {
 			if ( pattern_match( mus->GetName() ) ) {
 				auto w = mus->GetMaxIsometricForce();

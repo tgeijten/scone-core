@@ -713,15 +713,31 @@ namespace scone
 		return m_Muscles.back().get();
 	}
 
+	void Model::TryAddMuscleGroup( const PropNode& pn, bool mirror )
+	{
+		m_MuscleGroups.emplace_back( *this, pn, mirror );
+		if ( m_MuscleGroups.back().GetMuscles().empty() ) {
+			log::debug( "Skipping empty MuscleGroup '", m_MuscleGroups.back().GetName(), "'" );
+			m_MuscleGroups.pop_back();
+		}
+	}
+
 	void Model::AddMuscleGroups( const PropNode& pn )
 	{
 		for ( const auto& mg_pn : pn.select( "MuscleGroup" ) ) {
-			m_MuscleGroups.emplace_back( *this, mg_pn.second );
-			if ( m_MuscleGroups.back().GetMuscles().empty() ) {
-				log::debug( "Removing empty MuscleGroup '", m_MuscleGroups.back().GetName(), "'" );
-				m_MuscleGroups.pop_back();
-			}
+			TryAddMuscleGroup( mg_pn.second, false );
+			if ( mg_pn.second.get( "dual_sided", false ) )
+				TryAddMuscleGroup( mg_pn.second, true );
 		}
+
+		// normalize muscle weights by number of groups they are member of
+		//xo::flat_map<Muscle*, size_t> muscles;
+		//for ( auto& mg : m_MuscleGroups )
+		//	for ( auto& kvp : mg.GetMuscles() )
+		//		muscles[kvp.second] += 1;
+		//for ( auto& mg : m_MuscleGroups )
+		//	for ( auto& kvp : mg.GetMuscles() )
+		//		kvp.first /= muscles[kvp.second];
 
 		// add to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
 		for ( auto& mg : m_MuscleGroups )

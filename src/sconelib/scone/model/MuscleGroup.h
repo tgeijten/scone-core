@@ -7,7 +7,7 @@ namespace scone
 	class SCONE_API MuscleGroup : public Muscle
 	{
 	public:
-		MuscleGroup( const Model& m, const PropNode& pn );
+		MuscleGroup( const Model& m, const PropNode& pn, bool mirror = false );
 		virtual ~MuscleGroup() = default;
 
 		// HasName overrides
@@ -52,7 +52,8 @@ namespace scone
 		virtual PropNode GetInfo() const override;
 
 		// non-virtual members
-		std::vector<std::pair<Real, Muscle*>> const GetMuscles() { return muscles_; }
+		const std::vector<std::pair<Real, Muscle*>>& GetMuscles() const { return muscles_; }
+		std::vector<std::pair<Real, Muscle*>>& GetMuscles() { return muscles_; }
 
 	protected:
 		String name_;
