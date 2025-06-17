@@ -82,6 +82,7 @@ namespace scone
 
 		// Contact geometries
 		const std::vector< ContactGeometryUP >& GetContactGeometries() const { return m_ContactGeometries; }
+		virtual std::pair<Real, ContactGeometry*> GetRayIntersection( const Vec3& pos, const Vec3& dir, Real max_dist ) const { return { max_dist, nullptr }; }
 
 		// Contact forces
 		const std::vector< ContactForceUP >& GetContactForces() const { return m_ContactForces; }
