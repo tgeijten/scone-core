@@ -73,6 +73,9 @@ namespace scone
 		/// Use omnidirectional control, not restricted to movent along the x-axis; default = 0.
 		bool omnidirectional;
 
+		/// Use omnidirectional control, not restricted to movent along the x-axis; default = 0.
+		bool allow_stance_swing_transition;
+
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;

@@ -60,7 +60,8 @@ namespace scone
 		swing_load_threshold( 0 ), // not used internally, only for documentation purpose
 		INIT_MEMBER( props, use_model_com_reference_pos, false ),
 		INIT_MEMBER( props, symmetric, true ),
-		INIT_MEMBER( props, omnidirectional, false )
+		INIT_MEMBER( props, omnidirectional, false ),
+		INIT_MEMBER( props, allow_stance_swing_transition, false )
 	{
 		// show a helpful error message when no legs are defined
 		if ( model.GetLegs().empty() )
@@ -177,8 +178,8 @@ namespace scone
 				ls.sagittal_pos = ls.leg.GetFootBody().GetComPos().x - reference_pos.x;
 				ls.coronal_pos = ls.leg.GetFootBody().GetComPos().z - reference_pos.z;
 			}
-			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length* ls.late_stance_threshold;
-			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length* ls.liftoff_threshold;
+			ls.allow_late_stance_transition = ls.sagittal_pos < ls.leg_length * ls.late_stance_threshold;
+			ls.allow_liftoff_transition = ls.sagittal_pos < ls.leg_length * ls.liftoff_threshold;
 			ls.allow_landing_transition = ls.sagittal_pos > ls.leg_length * ls.landing_threshold;
 		}
 
@@ -212,7 +213,9 @@ namespace scone
 			case EarlyStanceState:
 				// --> liftoff if other leg is eligible for stance and before this leg
 				// --> late stance if a position threshold has passed
-				if ( mir_ls.allow_stance_transition && ls.sagittal_pos < mir_ls.sagittal_pos )
+				if ( allow_stance_swing_transition && ls.allow_swing_transition )
+					new_state = SwingState;
+				else if ( mir_ls.allow_stance_transition && ls.sagittal_pos < mir_ls.sagittal_pos )
 					new_state = LiftoffState;
 				else if ( ls.allow_late_stance_transition )
 					new_state = LateStanceState;
@@ -221,7 +224,9 @@ namespace scone
 			case LateStanceState:
 				// --> liftoff if other leg is eligible for stance and before this leg
 				// --> liftoff if position is beyond swing_threshold
-				if ( mir_ls.allow_stance_transition && ls.sagittal_pos < mir_ls.sagittal_pos )
+				if ( allow_stance_swing_transition && ls.allow_swing_transition )
+					new_state = SwingState;
+				else if ( mir_ls.allow_stance_transition && ls.sagittal_pos < mir_ls.sagittal_pos )
 					new_state = LiftoffState;
 				else if ( ls.allow_liftoff_transition )
 					new_state = LiftoffState;
