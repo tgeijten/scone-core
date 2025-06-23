@@ -584,6 +584,19 @@ namespace scone
 		return files;
 	}
 
+	void Model::ExportMuscleInfo( const path& filename ) const
+	{
+		std::ofstream str( filename.str() );
+		str << "name\tf_max\tl_opt\tl_slack\tpen_opt\n";
+		for ( auto* m : GetMuscles() ) {
+			str << m->GetName() << "\t"
+				<< m->GetMaxIsometricForce() << "\t"
+				<< m->GetOptimalFiberLength() << "\t"
+				<< m->GetTendonSlackLength() << "\t"
+				<< m->GetPennationAngleAtOptimal() << "\n";
+		}
+	}
+
 	Real Model::GetComHeight() const
 	{
 		auto com = GetComPos();
