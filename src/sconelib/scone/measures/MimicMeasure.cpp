@@ -30,7 +30,8 @@ namespace scone
 		INIT_MEMBER( pn, peak_error_limit, 2 * average_error_limit ),
 		INIT_MEMBER( pn, time_offset, 0 ),
 		INIT_MEMBER( pn, activation_error_weight, 1.0 ),
-		storage_( g_storage_cache( file ) )
+		storage_( g_storage_cache( file ) ),
+		termination_time_( 0.0 )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -86,8 +87,10 @@ namespace scone
 		mimic_result_.AddSample( timestamp, error );
 
 		if ( ( average_error_limit != 0 && mimic_result_.GetAverage() > average_error_limit ) ||
-			( peak_error_limit != 0 && error > peak_error_limit ) )
+			( peak_error_limit != 0 && error > peak_error_limit ) ) {
+			termination_time_ = model.GetTime();
 			return true; // early termination
+		}
 
 		return false;
 	}
@@ -95,11 +98,18 @@ namespace scone
 	double MimicMeasure::ComputeResult( const Model& model )
 	{
 		auto result = use_best_match ? mimic_result_.GetLowest() : mimic_result_.GetAverage();
-		auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
-		auto penalty = peak_error_limit * penalty_duration;
 		report_.set( "mimic_error", result );
-		report_.set( "early_termination_penalty", penalty );
-		return result + penalty;
+
+		if ( termination_time_ > 0.0 ) {
+			auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
+			if ( penalty_duration > 0.0 ) {
+				auto penalty = threshold + threshold_transition + peak_error_limit * penalty_duration;
+				result += penalty;
+				report_.set( "early_termination_penalty", penalty );
+			}
+		}
+
+		return result;
 	}
 
 	double MimicMeasure::GetCurrentResult( const Model& model )
@@ -117,11 +127,12 @@ namespace scone
 
 	void MimicMeasure::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame["MimicMeasure.penalty"] = mimic_result_.GetLatest();
+		frame[GetName() + ".error"] = mimic_result_.GetLatest();
+		frame[GetName() + ".average_error"] = mimic_result_.GetAverage();
 		if ( flags.get<StoreDataTypes::DebugData>() )
 		{
 			for ( auto& c : channel_errors_ )
-				frame[c.first + ".mimic_penalty"] = c.second;
+				frame[GetName() + "." + c.first + ".error"] = c.second;
 		}
 	}
 
