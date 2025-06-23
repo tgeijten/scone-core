@@ -69,6 +69,9 @@ namespace scone
 		/// Minimum velocity used for penalty normalization (advanced); default = 0.1 m/s.
 		Real min_norm_velocity;
 
+		/// Always apply early termination penalty, even when the evaluation was terminated by another Measure (e.g. MimicMeasure); default = 0.
+		bool always_apply_early_termination_penalty;
+
 		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
 		void AddStep( const Model& model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;

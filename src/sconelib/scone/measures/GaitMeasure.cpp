@@ -34,6 +34,7 @@ namespace scone
 		INIT_PROP( props, direction, Vec3::unit_x() );
 		INIT_PROP( props, use_initial_heading, false );
 		INIT_PROP( props, min_norm_velocity, 0.1 );
+		INIT_PROP( props, always_apply_early_termination_penalty, false );
 
 		if ( use_initial_heading && model.HasRootBody() )
 			direction = xo::projected_xz( model.GetRootBody().GetOrientation() * Vec3::unit_x() );
@@ -123,7 +124,7 @@ namespace scone
 			}
 		}
 
-		if ( model.GetTime() < duration && m_TerminationTime )
+		if ( model.GetTime() < duration && ( m_TerminationTime || always_apply_early_termination_penalty ) )
 			step_time += duration - model.GetTime();
 
 		// set results
