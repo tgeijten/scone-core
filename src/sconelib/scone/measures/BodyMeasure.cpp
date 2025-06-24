@@ -82,7 +82,7 @@ namespace scone
 		position.Reset(); velocity.Reset(); angular_velocity.Reset(); acceleration.Reset();
 	}
 
-	bool BodyMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult BodyMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )
 		{

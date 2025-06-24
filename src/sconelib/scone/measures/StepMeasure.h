@@ -48,7 +48,7 @@ namespace scone
 		/// disregarded in the final measure; default = 1 (>0).
 		int initiation_cycles;
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 		virtual String GetClassSignature() const override;
 

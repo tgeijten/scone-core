@@ -15,6 +15,7 @@
 #include "scone/optimization/Params.h"
 #include "xo/filesystem/path.h"
 #include "scone/core/HasName.h"
+#include "scone/core/UpdateResult.h"
 
 namespace scone
 {
@@ -38,7 +39,7 @@ namespace scone
 		bool UpdateControls( Model& model, double timestamp );
 
 		// Called after each successful integration step, returns true on termination request, checks IsActive() first
-		bool UpdateAnalysis( const Model& model, double timestamp );
+		UpdateResult UpdateAnalysis( const Model& model, double timestamp );
 
 		// Check if Controller is active, i.e. start_time >= time_stamp > stop_time && disabled state is not set
 		virtual bool IsActive( const Model& model, double time ) const { return time >= start_time && ( stop_time == 0.0 || time < stop_time ) && !disabled_; }
@@ -63,7 +64,7 @@ namespace scone
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) { return false; }
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) { return false; }
+		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) { return false; }
 
 		bool disabled_;
 	};

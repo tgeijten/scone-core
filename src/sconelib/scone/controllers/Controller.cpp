@@ -37,7 +37,7 @@ namespace scone
 		else return false;
 	}
 
-	bool Controller::UpdateAnalysis( const Model& model, double timestamp )
+	UpdateResult Controller::UpdateAnalysis( const Model& model, double timestamp )
 	{
 		if ( IsActive( model, timestamp ) )
 			return PerformAnalysis( model, timestamp );

@@ -25,9 +25,9 @@ namespace scone
 		c1->StoreData( frame, flags );
 	}
 
-	bool MirrorController::PerformAnalysis( const Model& model, double timestamp )
+	UpdateResult MirrorController::PerformAnalysis( const Model& model, double timestamp )
 	{
-		bool b = c0->UpdateAnalysis( model, timestamp );
+		UpdateResult b = c0->UpdateAnalysis( model, timestamp );
 		b |= c1->UpdateAnalysis( model, timestamp );
 		return b;
 	}

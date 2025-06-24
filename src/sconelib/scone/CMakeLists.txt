@@ -92,6 +92,7 @@ set(CORE_TOOL_FILES
 	core/ExternalResourceContainer.cpp
 	core/IncludeExcludePattern.h
 	core/IncludeExcludePattern.cpp
+	core/UpdateResult.h
 	)
 set(CS_CONTROLLERS_FILES
 	controllers/Controller.cpp

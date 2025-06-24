@@ -31,7 +31,7 @@ namespace scone
 			"Any of stride_length / stride_duration / stride_velocity should be defined" );
 	}
 
-	bool StepMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult StepMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

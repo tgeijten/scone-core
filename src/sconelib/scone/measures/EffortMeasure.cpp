@@ -68,7 +68,7 @@ namespace scone
 		slow_twitch_ratio = ratio;
 	}
 
-	bool EffortMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult EffortMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

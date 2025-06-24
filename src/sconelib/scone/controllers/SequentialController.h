@@ -53,7 +53,7 @@ namespace scone
 		void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	protected:
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
+		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) override;
 		index_t GetActiveIdx( double timestamp );
 		std::vector< TimeInSeconds > start_times_;
 		index_t active_idx_;

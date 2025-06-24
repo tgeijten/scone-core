@@ -7,7 +7,7 @@ namespace scone
 		Measure( pn, par, model, loc )
 	{}
 
-	bool SimulationMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult SimulationMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		return false;
 	}

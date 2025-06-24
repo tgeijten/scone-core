@@ -36,7 +36,7 @@ namespace scone
 		RangePenalty<Real>::Reset();
 	}
 
-	bool ReactionForceMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult ReactionForceMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		Real leg_load = 0.0f;
 		if ( use_force_per_leg )

@@ -59,7 +59,7 @@ namespace scone
 
 	protected:
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
+		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) override;
 
 		virtual String GetClassSignature() const override;
 		std::vector< ControllerUP > controllers_;

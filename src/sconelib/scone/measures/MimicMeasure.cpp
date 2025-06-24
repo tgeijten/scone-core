@@ -67,7 +67,7 @@ namespace scone
 		model.AddExternalResource( file );
 	}
 
-	bool MimicMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult MimicMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		// when using a full motion, skip when there's no more data
 		// we don't terminate because there may be other measures
@@ -89,10 +89,13 @@ namespace scone
 		error /= state_storage_map_.size();
 		mimic_result_.AddSample( timestamp, error );
 
-		if ( ( average_error_limit != 0 && mimic_result_.GetAverage() > average_error_limit ) ||
-			( peak_error_limit != 0 && error > peak_error_limit ) ) {
+		bool average_limit_reached = average_error_limit != 0 && mimic_result_.GetAverage() > average_error_limit;
+		bool peak_limit_reached = peak_error_limit != 0 && error > peak_error_limit;
+		
+		if ( average_limit_reached || peak_limit_reached ) {
 			termination_time_ = model.GetTime();
-			return true; // early termination
+			String msg = average_limit_reached ? "average_error_limit reached" : "peak_error_limit reached";
+			return GetName() + ": " + msg;
 		}
 
 		return false;

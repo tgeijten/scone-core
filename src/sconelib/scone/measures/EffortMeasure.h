@@ -80,7 +80,7 @@ namespace scone
 		/// Value for mechanical work power
 		Real order;
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override { return m_Effort.GetLatest(); }
 		virtual void Reset( Model& model ) override { Measure::Reset( model ); m_Effort.Reset(); }

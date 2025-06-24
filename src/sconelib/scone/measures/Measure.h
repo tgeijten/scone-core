@@ -58,8 +58,8 @@ namespace scone
 	protected:
 		virtual double ComputeResult( const Model& model ) = 0;
 		virtual bool ComputeControls( Model& model, double timestamp ) override final { return false; }
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) override final;
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) = 0;
+		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) override final;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) = 0;
 		double WorstResult() const;
 
 		PropNode report_;

@@ -60,7 +60,7 @@ namespace scone
 		m_InitComHeight = use_height_wrt_feet ? model.GetComHeightWrtFeet() : model.GetComHeight();
 	}
 
-	bool GaitMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult GaitMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -74,7 +74,7 @@ namespace scone
 				m_TerminationTime = timestamp + continue_after_fall;
 		}
 		if ( m_TerminationTime && timestamp >= *m_TerminationTime )
-			return true;
+			return GetName() + ": termination_height reached";
 
 		// update min_velocity measure on new step
 		bool new_contact = HasNewFootContact( model );

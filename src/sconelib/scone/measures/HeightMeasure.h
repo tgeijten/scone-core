@@ -36,7 +36,7 @@ namespace scone
 		double upward_velocity_threshold;
 		double downward_velocity_threshold;
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 
 	protected:

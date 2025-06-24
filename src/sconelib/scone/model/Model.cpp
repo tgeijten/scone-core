@@ -458,14 +458,14 @@ namespace scone
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 
-		bool terminate = false;
+		UpdateResult result;
 		if ( auto* c = GetController() )
-			terminate |= c->UpdateAnalysis( *this, GetTime() );
+			result |= c->UpdateAnalysis( *this, GetTime() );
 		if ( auto* m = GetMeasure() )
-			terminate |= m->UpdateAnalysis( *this, GetTime() );
+			result |= m->UpdateAnalysis( *this, GetTime() );
 
-		if ( terminate )
-			RequestTermination();
+		if ( result.must_terminate_ )
+			RequestTermination( result.termination_reason_ );
 	}
 
 	std::vector< ForceValue > Model::GetContactForceValues() const
@@ -548,6 +548,8 @@ namespace scone
 	PropNode Model::GetSimulationReport() const
 	{
 		PropNode pn;
+		if ( !m_TerminationReason.empty() )
+			pn["Termination Reason"] = m_TerminationReason;
 		auto& perf_pn = pn["Simulation Performance"];
 		perf_pn["simulation_frequency"] = ( GetIntegrationStep() / GetTime() );
 		if ( auto sd = GetSimulationDuration(); sd > 0 )

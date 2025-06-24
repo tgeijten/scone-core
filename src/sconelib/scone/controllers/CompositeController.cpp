@@ -66,12 +66,12 @@ namespace scone
 		return terminate;
 	}
 
-	bool CompositeController::PerformAnalysis( const Model& model, double timestamp )
+	UpdateResult CompositeController::PerformAnalysis( const Model& model, double timestamp )
 	{
-		bool terminate = false;
+		UpdateResult result;
 		for ( auto& c : controllers_ )
-			terminate |= c->UpdateAnalysis( model, timestamp );
-		return terminate;
+			result |= c->UpdateAnalysis( model, timestamp );
+		return result;
 	}
 
 	void CompositeController::Reset( Model& model )

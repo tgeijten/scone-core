@@ -11,7 +11,6 @@
 
 namespace scone
 {
-
 	BalanceMeasure::BalanceMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Measure( props, par, model, loc )
 	{
@@ -20,7 +19,7 @@ namespace scone
 		m_InitialHeight = model.GetComHeight();
 	}
 
-	bool BalanceMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult BalanceMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		double pos = model.GetComHeight();
 		if ( pos < termination_height * m_InitialHeight )

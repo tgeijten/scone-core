@@ -76,7 +76,7 @@ namespace scone
 		return name_;
 	}
 
-	bool Measure::PerformAnalysis( const Model& model, double timestamp )
+	UpdateResult Measure::PerformAnalysis( const Model& model, double timestamp )
 	{
 		// #todo: cleanup, rename UpdateMeasure into PerformAnalysis
 		return UpdateMeasure( model, timestamp );

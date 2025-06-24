@@ -66,7 +66,7 @@ namespace scone
 		/// weight applied to muscle activation error; default = 1.
 		Real activation_error_weight;
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
 		virtual void Reset( Model& model ) override;

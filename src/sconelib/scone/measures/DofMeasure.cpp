@@ -83,7 +83,7 @@ namespace scone
 		position.Reset(); velocity.Reset(); acceleration.Reset(); limit_torque.Reset(); actuator_torque.Reset();
 	}
 
-	bool DofMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult DofMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		if ( !position.IsNull() )
 			position.AddSample( timestamp, ConvertDofValue( dof.GetPos() + ( parent ? parent->GetPos() : 0 ) ) );

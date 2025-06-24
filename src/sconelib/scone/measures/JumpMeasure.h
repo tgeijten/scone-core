@@ -50,7 +50,7 @@ namespace scone
 		Degree jump_angle;
 
 		virtual double ComputeResult( const Model& model ) override;
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 

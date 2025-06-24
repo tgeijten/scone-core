@@ -17,7 +17,7 @@ namespace scone
 	public:
 		SimulationMeasure( const PropNode& pn, Params& par, const Model& model, const Location& loc );
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual double ComputeResult( const Model& model ) override;
 
 	protected:

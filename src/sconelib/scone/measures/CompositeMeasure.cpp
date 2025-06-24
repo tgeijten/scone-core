@@ -49,15 +49,15 @@ namespace scone
 			m->StoreData( frame, flags );
 	}
 
-	bool CompositeMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult CompositeMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
-		bool terminate = false;
+		UpdateResult result;
 		for ( MeasureUP& m : m_Measures )
-			terminate |= m->UpdateAnalysis( model, timestamp ) == true;
+			result |= m->UpdateAnalysis( model, timestamp );
 
-		return terminate ? true : false;
+		return result;
 	}
 
 	double CompositeMeasure::ComputeResult( const Model& model )

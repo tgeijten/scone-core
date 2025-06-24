@@ -44,7 +44,7 @@ namespace scone
 		controllers_[active_idx_]->StoreData( frame, flags );
 	}
 
-	bool SequentialController::PerformAnalysis( const Model& model, double timestamp )
+	UpdateResult SequentialController::PerformAnalysis( const Model& model, double timestamp )
 	{
 		auto idx = GetActiveIdx( timestamp );
 		timestamp -= start_times_[idx];

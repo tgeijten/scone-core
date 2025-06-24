@@ -149,6 +149,8 @@ namespace scone
 		virtual void SetSimulationEndTime( double time ) = 0;
 		virtual bool HasSimulationEnded() { return m_ShouldTerminate || GetTime() >= GetSimulationEndTime(); }
 		virtual void RequestTermination() { m_ShouldTerminate = true; }
+		virtual void RequestTermination( const String& reason ) { m_ShouldTerminate = true; m_TerminationReason = reason; }
+		virtual const String& GetTerminationReason() const { return m_TerminationReason; }
 		virtual PropNode GetSimulationReport() const;
 		virtual TimeInSeconds GetSimulationDuration() const { return m_SimulationTimer().secondsd(); }
 		virtual void UpdatePerformanceStats( const path& filename ) const {}
@@ -381,6 +383,7 @@ namespace scone
 
 		// simulation data
 		bool m_ShouldTerminate;
+		String m_TerminationReason;
 		Storage< Real > m_SensorDelayStorage;
 		Storage< Real, TimeInSeconds > m_Data;
 		PropNode m_UserData;

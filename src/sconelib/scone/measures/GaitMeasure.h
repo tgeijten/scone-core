@@ -72,7 +72,7 @@ namespace scone
 		/// Always apply early termination penalty, even when the evaluation was terminated by another Measure (e.g. MimicMeasure); default = 0.
 		bool always_apply_early_termination_penalty;
 
-		virtual bool UpdateMeasure( const Model& model, double timestamp ) override;
+		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		void AddStep( const Model& model, double timestamp );
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;

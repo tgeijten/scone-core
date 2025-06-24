@@ -45,7 +45,7 @@ namespace scone
 		return value;
 	}
 
-	bool ScriptMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult ScriptMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

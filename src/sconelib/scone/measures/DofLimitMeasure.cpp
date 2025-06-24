@@ -49,7 +49,7 @@ namespace scone
 		INIT_PROP( props, abs_force_penalty, 0 );
 	}
 
-	bool DofLimitMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult DofLimitMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 

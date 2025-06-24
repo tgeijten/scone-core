@@ -20,7 +20,7 @@ namespace scone
 		virtual ~MirrorController();
 
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
-		virtual bool PerformAnalysis( const Model& model, double timestamp ) override;
+		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) override;
 		virtual bool ComputeControls( Model& model, double timestamp ) override;
 
 	protected:

@@ -63,7 +63,7 @@ namespace scone
 		}
 	}
 
-	bool JumpMeasure::UpdateMeasure( const Model& model, double timestamp )
+	UpdateResult JumpMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		Vec3 com_pos = model.GetComPos();
 		Vec3 com_vel = model.GetComVel();
