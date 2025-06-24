@@ -502,6 +502,10 @@ namespace scone
 		/// get the model interaction spring
 		LuaSpring get_interaction_spring() { return GetRef( mod_.GetInteractionSpring(), "Model has no interaction spring" ); }
 
+		/// get the distance of a ray cast at a position and direction, up until max_dist
+		LuaNumber get_ray_distance( LuaVec3* pos, LuaVec3* dir, LuaNumber max_dist ) {
+			return mod_.GetRayIntersection( LUA_ARG_REF( pos ), LUA_ARG_REF( dir ), max_dist ).first; }
+
 		/// store a custom value that can be accessed in other scripts
 		void set_custom_value( LuaString name, LuaNumber value ) { mod_.GetUserValue( name ) = value; }
 		/// retrieve a specific custom value that has previously been set

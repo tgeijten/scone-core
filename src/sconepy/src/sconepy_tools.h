@@ -241,6 +241,10 @@ namespace scone
 		return model.GetController()->GetControlParameters();
 	};
 
+	double get_ray_distance( Model& model, const Vec3& pos, const Vec3& dir, double max_dist ) {
+		return model.GetRayIntersection( pos, dir, max_dist ).first;
+	}
+
 	fs::path to_fs( const xo::path& p ) { return fs::path( p.str() ); }
 	xo::path from_fs( const fs::path& p ) { return xo::path( p.string() ); }
 

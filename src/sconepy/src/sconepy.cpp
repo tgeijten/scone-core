@@ -228,6 +228,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "set_control_parameter", &scone::set_control_parameter, "Set a control parameter (use get_control_parameter_names() for a list of available control parameters)" )
 		.def( "get_control_parameter", &scone::get_control_parameter, "Get the current value of a control parameter" )
 		.def( "get_control_parameter_names", &scone::get_control_parameter_names, "Get a list of all control parameter names in this Model" )
+		.def( "get_ray_distance", &scone::get_ray_distance, "Get the distance of a ray cast with a position and direction, up unit max_dist" )
 		.def( "integration_step", &scone::Model::GetIntegrationStep, "Get the integration step of this Model" )
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; }, "Get the control step size [s] of this Model" )
 		.def( "set_store_data", &scone::Model::SetStoreData, "Set if data must be stored during Model simulation (slow, do not use in optimizations)" )
