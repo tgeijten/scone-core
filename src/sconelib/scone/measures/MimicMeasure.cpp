@@ -37,6 +37,9 @@ namespace scone
 
 		SCONE_THROW_IF( storage_.IsEmpty(), file.str() + " contains no data" );
 
+		// always exclude the global world offset since this makes no sense to include
+		exclude_states.patterns().emplace_back( "world.pos.*" );
+
 		// automatically set stop_time to match data, if not set
 		if ( stop_time == 0 || stop_time > storage_.Back().GetTime() )
 			stop_time = storage_.Back().GetTime();
