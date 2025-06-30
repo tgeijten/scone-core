@@ -149,6 +149,8 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "activation", &scone::Muscle::GetActivation, "Get the activation of this Muscle" )
 		//.def( "set_excitation", &scone::Muscle::SetExcitation )
 		.def( "init_activation", &scone::Muscle::InitializeActivation, "Initialize the Muscle activation" )
+		.def( "set_max_activation", &scone::Muscle::SetMaxActivation, "Set the maximum allowed Muscle activation" )
+		.def( "set_min_activation", &scone::Muscle::SetMinActivation, "Set the minimum allowed Muscle activation" )
 		.def( "force", &scone::Muscle::GetForce, "Get the current force of this Muscle" )
 		.def( "force_norm", &scone::Muscle::GetNormalizedForce, "Get the current normalized force this Muscle" )
 		.def( "fiber_length", &scone::Muscle::GetFiberLength, "Get the current fiber length of this Muscle" )

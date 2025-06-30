@@ -409,6 +409,10 @@ namespace scone
 		LuaNumber moment_arm( const LuaDof* dof ) { return mus_.GetMomentArm( LUA_ARG_REF( dof ).dof_ ); }
 		/// get the 3D moment arm [Nm3] for a specific joint
 		LuaVec3 moment_arm_3d( const LuaJoint* joint ) { return mus_.GetMomentArm3D( LUA_ARG_REF( joint ).joint_ ); }
+		/// set the maximum activation for this muscle
+		void set_max_activation( LuaNumber v ) { mus_.SetMaxActivation( v ); }
+		/// set the minimum activation for this muscle
+		void set_min_activation( LuaNumber v ) { mus_.SetMinActivation( v ); }
 
 		/// create a sensor for delayed muscle force
 		LuaDelayedSensor create_delayed_force_sensor( LuaNumber delay )

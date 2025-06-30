@@ -141,6 +141,8 @@ namespace scone
 			"mass", &LuaMuscle::mass,
 			"moment_arm", &LuaMuscle::moment_arm,
 			"moment_arm_3d", &LuaMuscle::moment_arm_3d,
+			"set_max_activation", &LuaMuscle::set_max_activation,
+			"set_min_activation", &LuaMuscle::set_min_activation,
 			"create_delayed_force_sensor", &LuaMuscle::create_delayed_force_sensor,
 			"create_delayed_length_sensor", &LuaMuscle::create_delayed_length_sensor,
 			"create_delayed_velocity_sensor", &LuaMuscle::create_delayed_velocity_sensor,
