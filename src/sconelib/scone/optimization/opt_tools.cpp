@@ -108,10 +108,10 @@ namespace scone
 		else log::warning( "Could not find Model in scenario" );
 	}
 
-	PropNode LoadScenario( const path& scenario_or_par_file )
+	PropNode LoadScenario( const path& scenario_or_par_file, std::vector<path>* included_files )
 	{
 		path scenario_file = FindScenario( scenario_or_par_file );
-		PropNode scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE" );
+		PropNode scenario_pn = xo::load_file_with_include( scenario_file, "INCLUDE", included_files );
 		if ( scenario_or_par_file.extension_no_dot() == "par" )
 			AddEmptyVersionForOldScenarios( scenario_pn ); // Add empty version for results from SCONE < 2.0
 		return scenario_pn;

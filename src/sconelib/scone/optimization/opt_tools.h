@@ -37,7 +37,7 @@ namespace scone
 	SCONE_API void AddEmptyVersionForOldScenarios( PropNode& scenario_pn );
 
 	// Loads a scenario prop_node form a .scone or .par file. Adds empty version for .par files
-	SCONE_API PropNode LoadScenario( const path& scenario_or_par_file );
+	SCONE_API PropNode LoadScenario( const path& scenario_or_par_file, std::vector<path>* included_files = nullptr );
 
 	// Gets spot::evaluator based on SCONE settings
 	SCONE_API spot::evaluator& GetSpotEvaluator();
