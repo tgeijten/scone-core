@@ -123,29 +123,30 @@ namespace scone
 			if ( ia_group_ ) {
 				Connect( l_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
 				Connect( ia_group_, mg.ant_group_indices_, ia_group_, mgi, par, pn, &mg.pn_, v2 ? "_ant" : "" );
-			}
-			// VES -> IA
-			if ( ves_group_ )
-				for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
-					if ( NeuronSide( ves_group_, vi ) == mg.side_ )
-						TryConnect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
-			// Load -> IA
-			if ( load_group_ )
-				for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
-					TryConnect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_,
-						NeuronSide( load_group_, vi ) == mg.side_ ? "" : "_com" );
 
-			// IB -> IA
-			if ( pn.has_key( "IB_IA_weight" ) )
-				Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
-			if ( pn.has_key( "IBE_IA_weight" ) )
-				Connect( ibe_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
-			// RC -> IA
-			if ( rc_group_ )
-				Connect( rc_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
-			// PM -> IA
-			if ( pm_group_ )
-				Connect( pm_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
+				// VES -> IA
+				if ( ves_group_ )
+					for ( uint32 vi = 0; vi < network_.group_size( ves_group_ ); ++vi )
+						if ( NeuronSide( ves_group_, vi ) == mg.side_ )
+							TryConnect( ves_group_, vi, ia_group_, mgi, par, pn, &mg.pn_ );
+				// Load -> IA
+				if ( load_group_ )
+					for ( uint32 vi = 0; vi < network_.group_size( load_group_ ); ++vi )
+						TryConnect( load_group_, vi, ia_group_, mgi, par, pn, &mg.pn_,
+							NeuronSide( load_group_, vi ) == mg.side_ ? "" : "_com" );
+
+				// IB -> IA
+				if ( pn.has_key( "IB_IA_weight" ) )
+					Connect( ib_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
+				if ( pn.has_key( "IBE_IA_weight" ) )
+					Connect( ibe_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
+				// RC -> IA
+				if ( rc_group_ )
+					Connect( rc_group_, mg.muscle_indices_, ia_group_, mgi, par, pn, &mg.pn_ );
+				// PM -> IA
+				if ( pm_group_ )
+					Connect( pm_group_, mgi, ia_group_, mgi, par, pn, &mg.pn_ );
+			}
 
 			// IB interneurons
 			for ( auto ib_group : { ib_group_, ibi_group_, ibe_group_ } ) {
