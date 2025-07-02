@@ -69,8 +69,11 @@ namespace scone
 		m_PrevStoreDataStep( 0 ),
 		m_SimulationTimer( false ),
 		m_StoreData( false ),
-		m_StoreDataInterval( 1.0 / GetSconeSetting<double>( "data.frequency" ) ),
-		m_StoreDataFlags( { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::ContactForce } ),
+		m_StoreDataProfiles{ {
+			{ 1.0 / GetSconeSetting<double>( "data.frequency" ), { StoreDataTypes::State } },
+			{ 0.01, { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce } }
+			} },
+		m_StoreDataProfileIdx( 0 ),
 		m_KeepAllFrames( GetSconeSetting<bool>( "data.keep_all_frames" ) )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
@@ -109,8 +112,8 @@ namespace scone
 		fixed_control_step_interval = static_cast<int>( std::round( fixed_control_step_size / fixed_step_size ) );
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );
 
-		// set store data info from settings
-		auto& flags = m_StoreDataFlags;
+		// set default store data profile from settings
+		auto& flags = m_StoreDataProfiles[0].flags;
 		flags.set( StoreDataTypes::BodyPosition, GetSconeSetting<bool>( "data.body" ) );
 		flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( "data.joint" ) );
 		flags.set( StoreDataTypes::ActuatorInput, GetSconeSetting<bool>( "data.actuator" ) );
@@ -250,7 +253,13 @@ namespace scone
 		return m_StoreData &&
 			( m_Data.IsEmpty()
 				|| m_KeepAllFrames && GetTime() != m_Data.Back().GetTime()
-				|| xo::greater_than_or_equal( GetTime() - m_Data.Back().GetTime(), m_StoreDataInterval, 1e-6 ) );
+				|| xo::greater_than_or_equal( GetTime() - m_Data.Back().GetTime(), GetStoreDataInterval(), 1e-6 ) );
+	}
+
+	void Model::SetStoreDataProfile( index_t profile_idx )
+	{
+		SCONE_ERROR_IF( profile_idx >= m_StoreDataProfiles.size(), "Invalid StoreData Profile" );
+		m_StoreDataProfileIdx = profile_idx;
 	}
 
 	void Model::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
@@ -399,7 +408,7 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 		if ( m_Data.IsEmpty() || GetTime() > m_Data.Back().GetTime() )
 			m_Data.AddFrame( GetTime() );
-		StoreData( m_Data.Back(), m_StoreDataFlags );
+		StoreData( m_Data.Back(), GetStoreDataFlags() );
 
 		m_PrevStoreDataTime = GetTime();
 		m_PrevStoreDataStep = GetIntegrationStep();
@@ -560,7 +569,7 @@ namespace scone
 	std::vector<path> Model::WriteResults( const path& file ) const
 	{
 		std::vector<path> files;
-		WriteStorageSto( m_Data, file + ".sto", ( file.parent_path().filename() / file.stem() ).str(), m_StoreDataInterval );
+		WriteStorageSto( m_Data, file + ".sto", ( file.parent_path().filename() / file.stem() ).str(), GetStoreDataInterval() );
 		files.push_back( file + ".sto" );
 
 		if ( GetSconeSetting<bool>( "results.controller" ) )

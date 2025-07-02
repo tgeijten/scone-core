@@ -316,7 +316,10 @@ namespace scone
 		virtual void SetStoreData( bool store );
 		bool GetStoreData() const { return m_StoreData; }
 		bool MustStoreCurrentFrame() const;
-		const StoreDataFlags& GetStoreDataFlags() const { return m_StoreDataFlags; }
+		void SetStoreDataProfile( index_t profile_idx );
+		const StoreDataProfile& GetStoreDataProfile() const { return m_StoreDataProfiles[m_StoreDataProfileIdx]; }
+		const StoreDataFlags& GetStoreDataFlags() const { return GetStoreDataProfile().flags; }
+		TimeInSeconds GetStoreDataInterval() const { return GetStoreDataProfile().interval; }
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }
 
@@ -405,8 +408,8 @@ namespace scone
 		int fixed_control_step_interval;
 		int fixed_analysis_step_interval;
 		bool m_StoreData;
-		TimeInSeconds m_StoreDataInterval;
-		StoreDataFlags m_StoreDataFlags;
+		std::array<StoreDataProfile, 2> m_StoreDataProfiles;
+		index_t m_StoreDataProfileIdx;
 		bool m_KeepAllFrames;
 	};
 }

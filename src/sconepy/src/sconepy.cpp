@@ -235,6 +235,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "control_step_size", []( scone::Model& m ) { return m.fixed_control_step_size; }, "Get the control step size [s] of this Model" )
 		.def( "set_store_data", &scone::Model::SetStoreData, "Set if data must be stored during Model simulation (slow, do not use in optimizations)" )
 		.def( "get_store_data", &scone::Model::GetStoreData, "Get if data is stored during Model simulation" )
+		.def( "set_store_data_profile", &scone::Model::SetStoreDataProfile, "Set store data profile, 0 = default, 1 = minimal" )
 		.def( "write_results", &scone::write_results, "Write the simulation results to a .sto file" )
 		;
 
