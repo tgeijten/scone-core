@@ -71,7 +71,7 @@ namespace scone
 		m_StoreData( false ),
 		m_StoreDataProfiles{ {
 			{ 1.0 / GetSconeSetting<double>( "data.frequency" ), { StoreDataTypes::State } },
-			{ 0.01, { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce } }
+			{ 0.01, { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::SimulationStatistics } }
 			} },
 		m_StoreDataProfileIdx( 0 ),
 		m_KeepAllFrames( GetSconeSetting<bool>( "data.keep_all_frames" ) )
@@ -89,15 +89,12 @@ namespace scone
 		}
 
 		// old-style initialization (for backwards compatibility)
-		if ( auto sio = props.try_get_child( "state_init_optimization" ) )
-		{
+		if ( auto sio = props.try_get_child( "state_init_optimization" ) ) {
 			initial_state_offset = sio->try_get_child( "offset" );
 			initial_state_offset_symmetric = sio->get( "symmetric", false );
 			initial_state_offset_include = sio->get< String >( "include_states", "*" );
 			initial_state_offset_exclude = sio->get< String >( "exclude_states", "" );
-		}
-		else
-		{
+		} else {
 			initial_state_offset = props.try_get_child( "initial_state_offset" );
 			INIT_PROP( props, initial_state_offset_symmetric, false );
 			INIT_PROP( props, initial_state_offset_include, "*" );
