@@ -219,7 +219,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "delayed_vestibular_array", []( scone::Model& m ) { return get_delayed_sensor_array( m, SensorType::Vestibular, g_f32 ); }, "Get an array of current delayed vestibular sensors" )
 		.def( "set_delayed_actuator_inputs", &scone::set_delayed_actuator_inputs, "Set the delayed actuator inputs for this Model" )
 		.def( "init_muscle_activations", &scone::init_muscle_activations, "Initialize all muscle activations (must call init_state_from_dofs() afterwards)" )
-		.def( "advance_simulation_to", &scone::Model::AdvanceSimulationTo, "Advance the Model simulation to a specific time [s]" )
+		.def( "advance_simulation_to", []( scone::Model& m, double t ) { m.AdvanceSimulationTo( t ); }, "Advance the Model simulation to a specific time [s]" )
 		.def( "reset", &scone::Model::Reset, "Reset the model to its initial state" )
 		.def( "time", &scone::Model::GetTime, "Get the current simulation time [s]" )
 		.def( "set_simulation_end_time", &scone::Model::SetSimulationEndTime, "Set the simulation end time [s] for this Model" )

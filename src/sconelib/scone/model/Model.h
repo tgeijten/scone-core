@@ -142,7 +142,7 @@ namespace scone
 		virtual void Reset();
 
 		// Simulate model
-		virtual void AdvanceSimulationTo( double time ) = 0;
+		virtual void AdvanceSimulationTo( double time, size_t max_steps = no_size ) = 0;
 		virtual void TryAdvanceSimulationTo( double time );
 		virtual void AdvancePlayback( const std::vector<Real>& state, TimeInSeconds timestamp ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual double GetSimulationEndTime() const = 0;

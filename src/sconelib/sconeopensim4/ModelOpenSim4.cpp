@@ -614,7 +614,7 @@ namespace scone
 		Model::StoreCurrentFrame();
 	}
 
-	void ModelOpenSim4::AdvanceSimulationTo( double time )
+	void ModelOpenSim4::AdvanceSimulationTo( double time, size_t max_steps )
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );
 

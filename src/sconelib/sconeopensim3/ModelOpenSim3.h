@@ -89,7 +89,7 @@ namespace scone
 		virtual Real GetBW() const override final { return m_BW; }
 		virtual Vec3 GetGravity() const override final;
 
-		virtual void AdvanceSimulationTo( double time ) override;
+		virtual void AdvanceSimulationTo( double time, size_t max_steps ) override;
 
 		virtual double GetSimulationEndTime() const override;
 		virtual void SetSimulationEndTime( double t ) override;
