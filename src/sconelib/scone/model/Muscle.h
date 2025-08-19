@@ -48,6 +48,7 @@ namespace scone
 
 		virtual Real GetMass( Real specific_tension = 0.25e6, Real muscle_density = 1059.7 ) const;
 		virtual Real GetPCSA( Real specific_tension = 0.25e6 ) const;
+		virtual Real GetVolume( Real specific_tension = 0.25e6 ) const;
 
 		virtual Real GetForce() const = 0;
 		virtual Real GetNormalizedForce() const = 0;

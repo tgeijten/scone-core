@@ -67,6 +67,11 @@ namespace scone
 		return GetMaxIsometricForce() / specific_tension;
 	}
 
+	Real Muscle::GetVolume( Real specific_tension ) const
+	{
+		return GetPCSA( specific_tension ) * GetOptimalFiberLength();
+	}
+
 	Real Muscle::GetNormalizedSpindleRate() const
 	{
 		// derived from [Prochazka1999], velocity component normalized to unit length
