@@ -74,6 +74,9 @@ namespace scone
 		/// Divide result by number of muscles, useful for muscle activation measures; default = false.
 		bool use_average_per_muscle;
 
+		/// Weight by relative muscle volume, useful for muscle activation measures; default = false.
+		bool use_muscle_volume_weighting;
+
 		/// Use omnidirectional distance measure instead of distance along the x-axis; default = 0.
 		bool omnidirectional;
 

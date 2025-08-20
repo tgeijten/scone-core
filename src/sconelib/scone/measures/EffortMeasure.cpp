@@ -43,6 +43,7 @@ namespace scone
 		INIT_PROP( props, use_symmetric_fiber_ratios, true );
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
+		INIT_PROP( props, use_muscle_volume_weighting, false );
 		INIT_PROP( props, omnidirectional, false );
 		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
@@ -107,11 +108,21 @@ namespace scone
 		return *result;
 	}
 
-	template<int Order> Real GetMuscleActivation( const Model& model ) {
+	template<int Order> Real GetMuscleActivation( const Model& model, bool use_muscle_volume_weighting ) {
 		double sum = 0.0;
-		for ( auto& m : model.GetMuscles() )
-			sum += xo::power<Order>( m->GetActivation() );
-		return sum;
+		if ( use_muscle_volume_weighting ) {
+			double total_vol = 0.0;
+			for ( auto& m : model.GetMuscles() ) {
+				auto vol = m->GetVolume();
+				sum += vol * xo::power<Order>( m->GetActivation() );
+				total_vol += vol;
+			}
+			return sum / total_vol;
+		} else {
+			for ( auto& m : model.GetMuscles() )
+				sum += xo::power<Order>( m->GetActivation() );
+			return sum;
+		}
 	}
 
 	double EffortMeasure::GetCurrentEffort( const Model& model ) const
@@ -124,9 +135,9 @@ namespace scone
 		case EffortMeasureType::Uchida2016: return GetUchida2016( model );
 		case EffortMeasureType::SquaredMuscleStress: return GetSquaredMuscleStress( model );
 		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
-		case EffortMeasureType::MuscleActivation: return GetMuscleActivation<1>( model );
-		case EffortMeasureType::SquaredMuscleActivation: return GetMuscleActivation<2>( model );
-		case EffortMeasureType::CubedMuscleActivation: return GetMuscleActivation<3>( model );
+		case EffortMeasureType::MuscleActivation: return GetMuscleActivation<1>( model, use_muscle_volume_weighting );
+		case EffortMeasureType::SquaredMuscleActivation: return GetMuscleActivation<2>( model, use_muscle_volume_weighting );
+		case EffortMeasureType::CubedMuscleActivation: return GetMuscleActivation<3>( model, use_muscle_volume_weighting );
 		case EffortMeasureType::MechnicalWork: return GetMechnicalWork( model );
 		case EffortMeasureType::MotorTorque: return GetMotorTorque( model );
 		default: SCONE_THROW( "Invalid energy measure" );
