@@ -47,6 +47,8 @@ namespace scone
 		INIT_PROP( props, omnidirectional, false );
 		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
+		SCONE_ERROR_IF( use_average_per_muscle && use_muscle_volume_weighting, "Cannot use both use_average_per_muscle and use_muscle_volume_weighting" );
+
 		if ( name_.empty() )
 			name_ = g_MeasureNames( measure_type );
 

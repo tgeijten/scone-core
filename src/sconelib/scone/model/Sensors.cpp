@@ -61,7 +61,7 @@ namespace scone
 		root_sign_( root_dof && ( dof.GetSide() == Side::Left && root_dof->GetSide() == Side::None ) ? -1.0 : 1.0 )
 	{
 		if ( root_dof_ )
-			log::debug( dof.GetName(), " root=", root_dof_->GetName(), " root_sign=", root_sign_ );
+			log::trace( dof.GetName(), " root=", root_dof_->GetName(), " root_sign=", root_sign_ );
 	}
 
 	String DofSensor::GetDofName() const
