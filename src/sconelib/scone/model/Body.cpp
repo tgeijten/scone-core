@@ -50,14 +50,22 @@ namespace scone
 		auto& name = GetName();
 		if ( flags( StoreDataTypes::BodyPosition ) )
 		{
-			auto pos = GetComPos();
-			frame[name + ".com_pos_x"] = pos.x;
-			frame[name + ".com_pos_y"] = pos.y;
-			frame[name + ".com_pos_z"] = pos.z;
-			auto lin_vel = GetComVel();
+			auto pos = GetOriginPos();
+			frame[name + ".pos_x"] = pos.x;
+			frame[name + ".pos_y"] = pos.y;
+			frame[name + ".pos_z"] = pos.z;
+			auto lin_vel = GetOriginVel();
 			frame[name + ".lin_vel_x"] = lin_vel.x;
 			frame[name + ".lin_vel_y"] = lin_vel.y;
 			frame[name + ".lin_vel_z"] = lin_vel.z;
+			auto com_pos = GetComPos();
+			frame[name + ".com_pos_x"] = com_pos.x;
+			frame[name + ".com_pos_y"] = com_pos.y;
+			frame[name + ".com_pos_z"] = com_pos.z;
+			auto com_lin_vel = GetComVel();
+			frame[name + ".com_lin_vel_x"] = com_lin_vel.x;
+			frame[name + ".com_lin_vel_y"] = com_lin_vel.y;
+			frame[name + ".com_lin_vel_z"] = com_lin_vel.z;
 			auto ori = rotation_vector_from_quat( normalized( GetOrientation() ) );
 			frame[name + ".ori_x"] = ori.x;
 			frame[name + ".ori_y"] = ori.y;
