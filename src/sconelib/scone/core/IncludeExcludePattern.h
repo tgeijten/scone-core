@@ -10,6 +10,7 @@ namespace scone
 	{
 		IncludeExcludePattern() = default;
 		IncludeExcludePattern( const PropNode& pn );
+		IncludeExcludePattern( const String& include_str, const String& exclude_str );
 
 		bool match( const string& str ) const;
 		bool operator()( const string& str ) const { return match( str ); }
