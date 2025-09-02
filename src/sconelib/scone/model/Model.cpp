@@ -83,11 +83,10 @@ namespace scone
 		if ( scone_version > GetSconeVersion() )
 			log::warning( "This scenario was created for using a newer version of SCONE (", scone_version, ")" );
 
-		if ( muscle_input_soft_limits != std::pair{ 0.0, 1.0 } ) {
-			if ( muscle_input_soft_limits.second < muscle_input_soft_limits.first )
-				SCONE_ERROR( "Invalid values for muscle_input_soft_limits" );
-			if ( muscle_input_soft_limits.first < min_muscle_activation || muscle_input_soft_limits.second > max_muscle_activation )
-				log::warning( "muscle_input_soft_limits is outside range defined by min/max_muscle_activation" );
+		const auto& misl = muscle_input_soft_limits;
+		if ( misl != std::pair{ 0.0, 1.0 } ) {
+			if ( misl.first <= 0.0 || misl.second >= 1.0 || misl.second <= misl.first )
+				SCONE_ERROR( "Invalid values for muscle_input_soft_limits, must be: 0 < lower < upper < 1" );
 		}
 
 		// old-style initialization (for backwards compatibility)

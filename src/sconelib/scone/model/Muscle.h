@@ -100,8 +100,13 @@ namespace scone
 		virtual void StoreData( Storage< Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const override;
 
+		// get clamped input with hard limits
 		Real GetClampedInput() const { return xo::clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation ); }
-		Real GetSoftLimitInput( Real lb, Real ub ) const { return xo::smooth_clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation, lb, ub ); }
+
+		// get clamped input with RELATIVE soft limits, with 0 < lb < ub < 1
+		Real GetSoftLimitInput( Real lb, Real ub ) const {
+			return xo::smooth_clamped_relative( m_ActuatorInput, m_MinActivation, m_MaxActivation, lb, ub );
+		}
 
 		virtual Real SetMaxIsometricForce( Real force ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual Real SetOptimalFiberLength( Real length ) { SCONE_THROW_NOT_IMPLEMENTED; }

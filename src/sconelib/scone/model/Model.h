@@ -298,6 +298,8 @@ namespace scone
 
 		/// Set min and max activation for individual muscles, see MuscleActivationSettings for details; default = not set.
 		const MuscleActivationSettings* muscle_activation;
+
+		/// Pair of values [lower upper] determining the RELATIVE lower and upper soft limit for muscle input, where 0 < lower < upper < 1; default = [0 1].
 		std::pair<Real, Real> muscle_input_soft_limits;
 
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
