@@ -215,7 +215,8 @@ namespace scone
 		lua.new_usertype<LuaParams>( "LuaParams", sol::constructors<>(),
 			"create_from_mean_std", &LuaParams::create_from_mean_std,
 			"create_from_string", &LuaParams::create_from_string,
-			"get", &LuaParams::get
+			"get", &LuaParams::get,
+			"random_seed", &LuaParams::random_seed
 			);
 
 		lua.new_usertype<LuaScone>( "scone", sol::constructors<>(),

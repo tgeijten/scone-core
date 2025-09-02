@@ -12,6 +12,7 @@
 #include "scone/controllers/CompositeController.h"
 #include "scone/model/SensorDelayAdapter.h"
 #include "scone/model/Sensors.h"
+#include "scone/core/random_tools.h"
 #include "ScriptController.h"
 #include "xo/geometry/vec3_type.h"
 #include "xo/string/string_cast.h"
@@ -674,6 +675,8 @@ namespace scone
 				return *p;
 			else SCONE_ERROR( "Could not find parameter: " + string( name ) );
 		}
+		/// get a deterministic random seed derived from the current parameter values
+		LuaNumber random_seed() { return GetRandomSeed( par_ ); }
 
 		Params& par_;
 	};
