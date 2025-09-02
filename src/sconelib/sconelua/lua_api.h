@@ -183,6 +183,10 @@ namespace scone
 		LuaNumber position() { return dof_.GetPos(); }
 		/// get the current velocity of the dof in [m/s] or [rad/s]
 		LuaNumber velocity() { return dof_.GetVel(); }
+		/// check if this dof is rotational
+		bool is_rotational() { return dof_.IsRotational(); }
+		/// get the rotation axis of a rotational dof
+		LuaVec3 rotation_axis() { return dof_.GetRotationAxis(); }
 		/// check if this dof is actuated
 		bool is_actuated() { return dof_.IsActuated(); }
 		/// add a value to the actuator input (only for actuated dofs)
@@ -201,6 +205,11 @@ namespace scone
 		LuaNumber actuator_torque() { return dof_.GetActuatorTorque(); }
 		/// get sum of muscle moments for this dof 
 		LuaNumber muscle_moment() { return dof_.GetMuscleMoment(); }
+
+		/// set the current value (position) of the dof in [m] or [rad], must call init_state_from_dofs() on model to take effect
+		void set_position( LuaNumber pos ) { dof_.SetPos( pos ); }
+		/// set the current velocity of the dof in [m/s] or [rad/s], must call init_state_from_dofs() on model to take effect
+		void set_velocity( LuaNumber vel ) { dof_.SetVel( vel ); }
 
 		/// create a sensor for delayed dof position
 		LuaDelayedSensor create_delayed_position_sensor( LuaNumber delay )
@@ -477,6 +486,8 @@ namespace scone
 		LuaDof find_dof( LuaString name ) { return *GetByLuaName( mod_.GetDofs(), name ); }
 		/// number of dofs
 		int dof_count() { return static_cast<int>( mod_.GetDofs().size() ); }
+		/// Initialize the Model state from the current Dof values and equilibrate all muscles (must be called after modifying Dofs)
+		void init_state_from_dofs() { mod_.InitStateFromDofs(); }
 
 		/// get the muscle at index (starting at 1)
 		LuaMuscle muscle( int index ) { return *GetByLuaIndex( mod_.GetMuscles(), index ); }

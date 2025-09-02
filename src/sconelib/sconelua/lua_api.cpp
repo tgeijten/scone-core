@@ -42,6 +42,8 @@ namespace scone
 			"name", &LuaDof::name,
 			"position", &LuaDof::position,
 			"velocity", &LuaDof::velocity,
+			"is_rotational", &LuaDof::is_rotational,
+			"rotation_axis", &LuaDof::rotation_axis,
 			"is_actuated", &LuaDof::is_actuated,
 			"add_input", &LuaDof::add_input,
 			"input", &LuaDof::input,
@@ -51,6 +53,8 @@ namespace scone
 			"max_torque", &LuaDof::max_torque,
 			"actuator_torque", &LuaDof::actuator_torque,
 			"muscle_moment", &LuaDof::muscle_moment,
+			"set_position", &LuaDof::set_position,
+			"set_velocity", &LuaDof::set_velocity,
 			"create_delayed_position_sensor", &LuaDof::create_delayed_position_sensor,
 			"create_delayed_velocity_sensor", &LuaDof::create_delayed_velocity_sensor
 			);
@@ -165,6 +169,7 @@ namespace scone
 			"dof", &LuaModel::dof,
 			"find_dof", &LuaModel::find_dof,
 			"dof_count", &LuaModel::dof_count,
+			"init_state_from_dofs", &LuaModel::init_state_from_dofs,
 			"muscle", &LuaModel::muscle,
 			"find_muscle", &LuaModel::find_muscle,
 			"muscle_count", &LuaModel::muscle_count,
