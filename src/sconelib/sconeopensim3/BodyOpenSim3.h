@@ -68,6 +68,7 @@ namespace scone
 		virtual Vec3 GetExternalForcePoint() const override;
 
 		virtual void SetPos( const Vec3& pos ) { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual void SetComPos( const Vec3& pos ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetOrientation( const Quat& ori ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetLinVel( const Vec3& lin_vel ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual void SetAngVel( const Vec3& ang_vel ) { SCONE_THROW_NOT_IMPLEMENTED; }

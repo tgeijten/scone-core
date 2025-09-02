@@ -69,6 +69,7 @@ namespace scone
 		virtual Real GetPower() const { return 0.0; }
 
 		virtual void SetPos( const Vec3& pos ) = 0;
+		virtual void SetComPos( const Vec3& pos ) = 0;
 		virtual void SetOrientation( const Quat& ori ) = 0;
 		virtual void SetLinVel( const Vec3& lin_vel ) = 0;
 		virtual void SetAngVel( const Vec3& ang_vel ) = 0;

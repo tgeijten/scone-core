@@ -261,10 +261,10 @@ namespace scone
 		/// add external moment [Nm] to body
 		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
 		/// set the com position [m] of the body
-		void set_com_pos( const LuaVec3* p ) { bod_.SetPos( LUA_ARG_REF( p ) ); }
+		void set_com_pos( const LuaVec3* p ) { bod_.SetComPos( LUA_ARG_REF( p ) ); }
 		/// set the orientation of the body
 		void set_ori( const LuaQuat* q ) { bod_.SetOrientation( LUA_ARG_REF( q ) ); }
-		/// set the com velocity [m/s] of the body
+		/// set the com linear velocity [m/s] of the body
 		void set_lin_vel( const LuaVec3* v ) { bod_.SetLinVel( LUA_ARG_REF( v ) ); }
 		/// set the angular velocity [rad/s] of the body
 		void set_ang_vel( const LuaVec3* v ) { bod_.SetAngVel( LUA_ARG_REF( v ) ); }
