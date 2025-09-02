@@ -95,6 +95,11 @@ namespace scone
 		return GetNameNoSide( str ) + GetSideName( GetOppositeSide( GetSideFromName( str ) ) );
 	}
 
+	inline String GetParName( const String& str, bool symmetric )
+	{
+		return symmetric ? GetNameNoSide( str ) : str;
+	}
+
 	inline bool IsMirrored( const String& str1, const String& str2 ) { return str1 == GetMirroredName( str2 ); }
 
 	// get axis that is mirrored in the XY plane for Side::Left, used in e.g. BodyOrientationSensor

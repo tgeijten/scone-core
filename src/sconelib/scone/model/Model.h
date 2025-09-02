@@ -22,6 +22,8 @@
 #include "ModelFeatures.h"
 #include "DelayBuffer.h"
 #include "Spring.h"
+#include "MuscleGroup.h"
+#include "MuscleActivationSettings.h"
 
 #include "scone/controllers/Controller.h"
 #include "scone/core/ExternalResourceContainer.h"
@@ -35,7 +37,6 @@
 #include <type_traits>
 #include <utility>
 #include <any>
-#include "MuscleGroup.h"
 
 namespace scone
 {
@@ -295,7 +296,8 @@ namespace scone
 		/// Maximum individual muscle activation, allows for optimization of individual max activation; default = not set.
 		const PropNode* max_individual_muscle_activation;
 
-		/// Pair of values determining the RELATIVE lower and upper soft limit for muscle input; default = [0.0 1.0].
+		/// Set min and max activation for individual muscles, see MuscleActivationSettings for details; default = not set.
+		const MuscleActivationSettings* muscle_activation;
 		std::pair<Real, Real> muscle_input_soft_limits;
 
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
@@ -347,6 +349,8 @@ namespace scone
 		virtual Muscle* AddMuscle( MuscleUP mus, Params& par );
 		void TryAddMuscleGroup( const PropNode& pn, bool mirror );
 		void AddMuscleGroups( const PropNode& pn );
+		void ProcessMuscleActivationSettings( const PropNode& pn, Params& par );
+
 		virtual void Clear();
 
 		mutable xo::profiler m_Profiler;

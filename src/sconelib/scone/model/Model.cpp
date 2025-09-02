@@ -37,6 +37,8 @@
 #include <tuple>
 #include <fstream>
 #include "symmetry_tools.h"
+#include "MuscleActivationSettings.h"
+#include "scone/core/IncludeExcludePattern.h"
 
 using std::endl;
 
@@ -763,6 +765,23 @@ namespace scone
 		// add to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
 		for ( auto& mg : m_MuscleGroups )
 			m_ActuatorPtrs.emplace_back( &mg );
+	}
+
+	void Model::ProcessMuscleActivationSettings( const PropNode& pn, Params& par )
+	{
+		for ( auto& mas_pn : pn.select( "muscle_activation" ) ) {
+			auto mas = MuscleActivationSettings{ mas_pn.second };
+			IncludeExcludePattern match{ mas.include, mas.exclude };
+			for ( auto* mus : GetMuscles() ) {
+				if ( match( mus->GetName() ) ) {
+					auto par_name = GetParName( mus->GetName(), mas.symmetric );
+					if ( mas.min_activation )
+						mus->SetMinActivation( par.get( par_name + ".min_activation", *mas.min_activation ) );
+					if ( mas.max_activation )
+						mus->SetMaxActivation( par.get( par_name + ".max_activation", *mas.max_activation ) );
+				}
+			}
+		}
 	}
 
 	void Model::Clear()

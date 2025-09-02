@@ -203,6 +203,10 @@ namespace scone
 			//SCONE_PROFILE_SCOPE( GetProfiler(), "CreateWrappers" );
 			CreateModelWrappers( props, par );
 			AddExternalDisplayGeometries( model_file.parent_path() );
+
+			// Process muscle activation settings and create muscle groups
+			ProcessMuscleActivationSettings( props, par );
+			AddMuscleGroups( props );
 		}
 
 		{
