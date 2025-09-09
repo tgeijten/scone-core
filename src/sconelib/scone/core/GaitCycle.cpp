@@ -4,16 +4,16 @@
 namespace scone
 {
 	index_t FindNextTouch( const Storage<>& sto, index_t idx, const index_t channel_idx, const Real threshold ) {
-		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] < threshold ) idx++;
-		return idx < sto.GetFrameCount() ? idx : no_index;
+		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] <= threshold ) idx++;
+		return idx < sto.GetFrameCount() ? idx: no_index;
 	}
 
 	index_t FindNextFlight( const Storage<>& sto, index_t idx, const index_t channel_idx, const Real threshold ) {
-		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] >= threshold ) idx++;
-		return idx < sto.GetFrameCount() ? idx : no_index;
+		while ( idx != no_index && idx < sto.GetFrameCount() && sto.GetFrame( idx )[channel_idx] > threshold ) idx++;
+		return idx < sto.GetFrameCount() ? idx: no_index;
 	}
 
-	std::vector<GaitCycle> ExtractGaitCycles( const Storage<>& sto, Real threshold, TimeInSeconds min_stance )
+	std::vector<GaitCycle> ExtractGaitCycles( const Storage<>& sto, const GaitCycleExtractionSettings& opt  )
 	{
 		std::vector<GaitCycle> cycles;
 		for ( auto side : { Side::Left, Side::Right } )
@@ -23,26 +23,26 @@ namespace scone
 			index_t cop_chan = sto.GetChannelIndex( leg_name + ".cop_x" );
 
 			// skip to first touch down
-			index_t flight_idx = FindNextFlight( sto, 0u, grf_chan, threshold );
-			index_t touch_idx = FindNextTouch( sto, flight_idx, grf_chan, threshold );
+			index_t flight_idx = FindNextFlight( sto, 0u, grf_chan, opt.touch_force_threshold );
+			index_t touch_idx = FindNextTouch( sto, flight_idx, grf_chan, opt.touch_force_threshold );
 
 			while ( touch_idx != no_index && touch_idx < sto.GetFrameCount() )
 			{
 				auto begin_time = sto.GetFrame( touch_idx ).GetTime();
 				auto begin_pos = sto.GetFrame( touch_idx ).GetVec3( cop_chan );
 
-				flight_idx = FindNextFlight( sto, touch_idx, grf_chan, threshold );
+				flight_idx = FindNextFlight( sto, touch_idx, grf_chan, opt.touch_force_threshold );
 				if ( flight_idx == no_index )
 					break;
 				auto swing_time = sto.GetFrame( flight_idx ).GetTime();
 
-				touch_idx = FindNextTouch( sto, flight_idx, grf_chan, threshold );
+				touch_idx = FindNextTouch( sto, flight_idx, grf_chan, opt.touch_force_threshold );
 				if ( touch_idx == no_index )
 					break;
 				auto end_time = sto.GetFrame( touch_idx ).GetTime();
 				auto end_pos = sto.GetFrame( touch_idx ).GetVec3( cop_chan );
 
-				if ( swing_time - begin_time < min_stance )
+				if ( swing_time - begin_time < opt.min_swing_duraction )
 				{
 					// the stance was just a bump
 					if ( !cycles.empty() && cycles.back().side_ == side )

@@ -8,6 +8,11 @@
 
 namespace scone
 {
+	struct GaitCycleExtractionSettings {
+		Real touch_force_threshold = 0.0;
+		Real min_swing_duraction = 0.0;
+	};
+
 	struct GaitCycle
 	{
 		Side side_ = Side::None;
@@ -24,7 +29,7 @@ namespace scone
 		Real velocity() const { return length() / duration(); }
 	};
 
-	SCONE_API std::vector<GaitCycle> ExtractGaitCycles( const Storage<>& sto, Real threshold, TimeInSeconds min_stance );
+	SCONE_API std::vector<GaitCycle> ExtractGaitCycles( const Storage<>& sto, const GaitCycleExtractionSettings& opt );
 }
 
 namespace xo

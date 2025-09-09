@@ -50,9 +50,8 @@ namespace scone
 
 	double StepMeasure::ComputeResult( const Model& model )
 	{
-		auto cycles = ExtractGaitCycles( stored_data_,
-			load_threshold,
-			min_stance_duration_threshold );
+		GaitCycleExtractionSettings cfg{ load_threshold, min_stance_duration_threshold };
+		auto cycles = ExtractGaitCycles( stored_data_, cfg );
 
 		// calculate stride length / duration / velocity
 		for ( index_t idx = initiation_cycles; idx < cycles.size(); ++idx )
