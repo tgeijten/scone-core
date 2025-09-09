@@ -90,8 +90,9 @@ namespace scone
 
 			// joint
 			auto* j = b.GetJoint();
-			if ( j && IsRealJoint( *j ) )
+			if ( j && IsRealJoint( *j ) ) {
 				ConvertJoint( *j, body_pn );
+			}
 			else if ( !b.GetLocalComPos().is_null() ) {
 				// root body, add pos and ori
 				body_pn["pos"] = b.GetLocalComPos();
@@ -107,16 +108,19 @@ namespace scone
 	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn ) const
 	{
 		bool pin_joint = use_pin_joints_ && j.GetDofs().size() == 1;
+		bool weld_joint = use_weld_joints_ && IsWeldJoint( j );
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
-		auto& joint_pn = body_pn.add_child( pin_joint ? "pin_joint" : "joint" );
+		auto& joint_pn = body_pn.add_child( GetJointType( j ) );
 		joint_pn["name"] = j.GetName();
 		joint_pn["parent"] = j.GetParentBody().GetName();
 		joint_pn["pos_in_parent"] = fix( GetLocalBodyPos( j.GetPosInParent(), bp ) );
 		joint_pn["pos_in_child"] = fix( GetLocalBodyPos( j.GetPosInChild(), bc ) );
 		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
-		if ( !xo::is_identity( ref_ori, 1e-9 ) )
+		if ( !xo::is_identity( ref_ori, 1e-9 ) ) {
+			SCONE_ERROR_IF( weld_joint, "weld_joint cannot have ref_ori" );
 			joint_pn["ref_ori"] = ref_ori;
+		}
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
 		for ( auto* dof : j.GetDofs() ) {
 			if ( dof->IsRotational() ) {
@@ -149,7 +153,8 @@ namespace scone
 		}
 		if ( pin_joint )
 			joint_pn["limits"] = limits[0];
-		else joint_pn["limits"] = limits;
+		else if ( !weld_joint )
+			joint_pn["limits"] = limits;
 	}
 
 	void ModelConverter::ConvertMuscle( const Muscle& m, PropNode& parent_pn ) const
@@ -288,6 +293,14 @@ namespace scone
 		}
 		else if ( !global_bodies_.contains( b.GetName() ) )
 			global_bodies_.insert( { b.GetName() , BodyInfo( b ) } );
+	}
+
+	String ModelConverter::GetJointType( const Joint& j ) const
+	{
+		if ( use_pin_joints_ && j.GetDofs().size() == 1 ) return "pin_joint";
+		else if ( use_ball_socket_joints_ && IsBallSocketJoint( j ) ) return "ball_socket_joint";
+		else if ( use_weld_joints_ && IsWeldJoint( j ) ) return "weld_joint";
+		else return "joint";
 	}
 
 	bool ModelConverter::IsCompoundChild( const Body& b ) const

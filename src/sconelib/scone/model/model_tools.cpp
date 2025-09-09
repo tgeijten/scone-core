@@ -71,6 +71,16 @@ namespace scone
 		return j.GetParentBody().GetMass() > 0 || trans_dofs == 0;
 	}
 
+	bool IsWeldJoint( const Joint& j )
+	{
+		return IsWeldedBody( j.GetBody() );
+	}
+
+	bool IsBallSocketJoint( const Joint& j )
+	{
+		return IsRealJoint( j ) && j.GetDofs().size() == 3;
+	}
+
 	bool IsWeldedBody( const Body& b )
 	{
 		auto* j = b.GetJoint();

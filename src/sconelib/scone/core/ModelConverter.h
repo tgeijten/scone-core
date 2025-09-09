@@ -26,6 +26,8 @@ namespace scone
 		double compound_mass_threshold = 10.0;
 		bool convert_ligaments = true;
 		bool use_pin_joints_ = false;
+		bool use_ball_socket_joints_ = false;
+		bool use_weld_joints_ = true;
 		bool keep_body_origin_ = false;
 
 	private:
@@ -58,6 +60,7 @@ namespace scone
 		bool IsCompoundChild( const Body& b ) const;
 		const Body& GetCompoundRoot( const Body& b ) const;
 		void MakeBodyInfo( const Body& b );
+		String GetJointType( const Joint& j ) const;
 
 		const BodyInfo& GetGlobalBody( const Body& b ) const;
 		const String& GetBodyName( const Body& b ) const { return GetGlobalBody( b ).name; }
