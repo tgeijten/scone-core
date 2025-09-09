@@ -174,6 +174,12 @@ namespace scone
 
 		size_t GetFrameCount() const { return m_Data.size(); }
 
+		Real GetAverageFrameDuration() const { 
+			if ( m_Data.size() >= 2 )
+				return ( m_Data.back()->GetTime() - m_Data.front()->GetTime() ) / ( m_Data.size() - 1 );
+			else return 0.0;
+		}
+
 		index_t AddChannel( const String& label, ValueT default_value = ValueT( 0 ) ) {
 			SCONE_ASSERT_MSG( TryGetChannelIndex( label ) == NoIndex, "Channel " + label + " already exists" );
 			m_Labels.push_back( label );
