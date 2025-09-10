@@ -9,6 +9,7 @@
 #pragma once
 
 #include "scone/controllers/Controller.h"
+#include "scone/core/FactoryProps.h"
 
 namespace scone
 {
@@ -37,6 +38,12 @@ namespace scone
 
 		const PropNode* Controllers;
 
+		/// Indicate if child controllers should be generated for both sides; default = 0.
+		bool dual_sided;
+
+		/// Indicate if child control parameters should be the same for left and right; default = 1.
+		bool symmetric;
+
 		/// prefixes to add to child controller parameter names, so that the same controller can easily be used multiple times; default = empty.
 		std::vector<String> child_names;
 
@@ -63,5 +70,8 @@ namespace scone
 
 		virtual String GetClassSignature() const override;
 		std::vector< ControllerUP > controllers_;
+
+	private:
+		void CreateChildController( const FactoryProps& fp, Params& par, Model& model, const Location& loc );
 	};
 }

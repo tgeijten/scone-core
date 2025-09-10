@@ -17,19 +17,20 @@ namespace scone
 {
 	CompositeController::CompositeController( const PropNode& props, Params& par, Model& model, const Location& loc ) :
 		Controller( props, par, model, loc ),
+		INIT_MEMBER( props, dual_sided, false ),
+		INIT_MEMBER( props, symmetric, loc.symmetric_ ),
 		INIT_MEMBER( props, child_names, std::vector<String>() )
 	{
 		auto child_count = child_names.size();
 		
-		do
-		{
+		do {
 			// directly added controllers
 			for ( auto& cpn : props ) {
 				if ( child_count > 0 && controllers_.size() == child_count )
 					break;
 				if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) ) {
 					ScopedParamSetPrefixer pp( par, child_count > 0 ? child_names[controllers_.size() % child_count] : "" );
-					controllers_.emplace_back( CreateController( fp, par, model, loc ) );
+					CreateChildController( fp, par, model, loc );
 				}
 			}
 
@@ -40,7 +41,7 @@ namespace scone
 				for ( auto& cpn : *Controllers )
 					if ( auto fp = MakeFactoryProps( GetControllerFactory(), cpn, "Controller" ) ) {
 						ScopedParamSetPrefixer pp( par, child_count > 0 ? child_names[controllers_.size() % child_count] : "" );
-						controllers_.emplace_back( CreateController( fp, par, model, loc ) );
+						CreateChildController( fp, par, model, loc );
 					}
 			}
 		} while ( controllers_.size() > 0 && controllers_.size() < child_count );
@@ -48,8 +49,7 @@ namespace scone
 		// show error if child controllers have identical names
 		if ( controllers_.size() > 1 && child_names.empty() ) {
 			for ( auto it1 = controllers_.begin(); it1 != controllers_.end(); ++it1 )
-				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 )
-				{
+				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 ) {
 					if ( ( *it1 )->GetName().empty() && ( *it2 )->GetName().empty() )
 						log::debug( "Multiple child controllers have no name and may use the same parameters" );
 					else if ( ( *it1 )->GetName() == ( *it2 )->GetName() )
@@ -138,12 +138,20 @@ namespace scone
 	String CompositeController::GetClassSignature() const
 	{
 		std::vector< String > strset;
-		for ( auto& c : controllers_ )
-		{
+		for ( auto& c : controllers_ ) {
 			string s = c->GetSignature();
 			if ( xo::find( strset, s ) == strset.end() )
 				strset.emplace_back( s );
 		}
 		return xo::concat_str( strset, "." );
+	}
+
+	void CompositeController::CreateChildController( const FactoryProps& fp, Params& par, Model& model, const Location& loc )
+	{
+		if ( dual_sided ) {
+			for ( auto s : LeftAndRightSide )
+				controllers_.emplace_back( CreateController( fp, par, model, Location{ s, symmetric } ) );
+		}
+		else controllers_.emplace_back( CreateController( fp, par, model, Location{ loc.side_, symmetric } ) );
 	}
 }

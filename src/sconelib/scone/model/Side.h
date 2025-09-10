@@ -31,6 +31,8 @@ namespace scone
 		Opposite = 999
 	};
 
+	constexpr Side LeftAndRightSide[] = { Side::Left, Side::Right };
+
 	inline Side GetOppositeSide( Side s ) {
 		switch ( s )
 		{
