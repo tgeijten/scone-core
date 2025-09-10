@@ -73,7 +73,7 @@ namespace scone
 		/// Use omnidirectional control, not restricted to movent along the x-axis; default = 0.
 		bool omnidirectional;
 
-		/// Use omnidirectional control, not restricted to movent along the x-axis; default = 0.
+		/// Allow direct transition from Stance to Swing, skipping LiftOff; default = 0.
 		bool allow_stance_swing_transition;
 
 		virtual bool ComputeControls( Model& model, double timestamp ) override;

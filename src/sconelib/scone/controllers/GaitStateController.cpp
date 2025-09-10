@@ -46,7 +46,7 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, swing_load_threshold, stance_load_threshold ),
 		INIT_PAR_MEMBER( props, par, landing_threshold, 0.0 ),
 		INIT_PAR_MEMBER( props, par, late_stance_threshold, 0.0 ),
-		INIT_PAR_MEMBER( props, par, liftoff_threshold, -1.0 ) // default value is such that parameter has no effect
+		INIT_PAR_MEMBER( props, par, liftoff_threshold, -1.0 ) // default value is such that parameter has (almost) no effect
 	{}
 
 	GaitStateController::GaitStateController( const PropNode& props, Params& par, Model& model, const Location& target_area ) :
