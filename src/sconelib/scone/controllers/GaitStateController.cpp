@@ -302,9 +302,11 @@ namespace scone
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
 			frame[m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
 
-		// store sagittal pos
-		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
+		// store normalized sagittal pos
+		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx ) {
 			frame[m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
+			frame[m_LegStates[idx].leg.GetName() + ".sag_pos_norm"] = m_LegStates[idx].sagittal_pos / m_LegStates[idx].leg_length;
+		}
 
 		for ( auto& cc : m_ConditionalControllers )
 		{
