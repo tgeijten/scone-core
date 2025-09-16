@@ -97,6 +97,7 @@ namespace scone
 
 		// Model file access
 		virtual path GetModelFile() const { return path(); }
+		virtual bool SaveModel( const path& f ) const { return false; }
 
 		// Controller access
 		Controller* GetController() { return m_Controller.get(); }
