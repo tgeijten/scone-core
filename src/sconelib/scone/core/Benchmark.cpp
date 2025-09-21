@@ -146,7 +146,7 @@ namespace scone
 
 		if ( !bo.results_file.empty() ) {
 			path fixed_results_file = bo.results_file;
-			fixed_results_file.concat_stem( "_" + xo::replace_str( simulator_id, "Hyfydy-", "" ) );
+			fixed_results_file.concat_stem( "_" + xo::remove_strs( simulator_id, { "Hyfydy-", "-DBL" } ) );
 			if ( !xo::file_exists( fixed_results_file ) )
 				xo::save_string( fixed_results_file, results_header + "\n" );
 			xo::append_string( fixed_results_file, results_string + "\n" );
