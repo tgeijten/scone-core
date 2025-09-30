@@ -16,6 +16,7 @@
 
 #include "Actuator.h"
 #include "Side.h"
+#include "PathElement.h"
 
 #include <vector>
 
@@ -77,7 +78,7 @@ namespace scone
 		virtual Real GetMaxContractionVelocity() const = 0;
 
 		virtual std::vector<Vec3> GetMusclePath() const = 0;
-		virtual std::vector<std::pair<Body*, Vec3>> GetLocalMusclePath() const = 0;
+		virtual std::vector<PathElement> GetLocalMusclePath() const = 0;
 
 		virtual Real GetActivation() const = 0;
 		virtual Real GetExcitation() const = 0;

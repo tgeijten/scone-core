@@ -174,9 +174,9 @@ namespace scone
 		return std::vector<Vec3>();
 	}
 
-	std::vector< std::pair< Body*, scone::Vec3 > > MuscleGroup::GetLocalMusclePath() const
+	std::vector<PathElement> MuscleGroup::GetLocalMusclePath() const
 	{
-		return std::vector< std::pair< Body*, scone::Vec3 > >();
+		return std::vector<PathElement>();
 	}
 
 	Real MuscleGroup::GetActivation() const

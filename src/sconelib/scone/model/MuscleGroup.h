@@ -44,7 +44,7 @@ namespace scone
 		virtual Real GetForceVelocityMultipler() const override;
 		virtual Real GetMaxContractionVelocity() const override;
 		virtual std::vector<Vec3> GetMusclePath() const override;
-		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const override;
+		virtual std::vector<PathElement> GetLocalMusclePath() const override;
 		virtual Real GetActivation() const override;
 		virtual Real GetExcitation() const override;
 		virtual void SetExcitation( Real u ) override;

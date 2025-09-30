@@ -33,9 +33,9 @@ namespace scone
 		auto path2 = m2.GetLocalMusclePath();
 		if ( CheckValues( path1.size(), path2.size(), "path_size", pn ) ) {
 			for ( index_t i = 0; i < path1.size(); ++i ) {
-				if ( !IsMirrored( path1[i].first->GetName(), path2[i].first->GetName() ) )
-					pn.add_value( path1[i].first->GetName() + " <> " + path2[i].first->GetName() );
-				CheckMirrored( path1[i].second, path2[i].second, xo::stringf( "path_point[%d]", i ), pn );
+				if ( !IsMirrored( path1[i].body->GetName(), path2[i].body->GetName() ) )
+					pn.add_value( path1[i].body->GetName() + " <> " + path2[i].body->GetName() );
+				CheckMirrored( path1[i].pos, path2[i].pos, xo::stringf( "path_point[%d]", i ), pn );
 			}
 		}
 		CheckValues( m1.GetMaxIsometricForce(), m2.GetMaxIsometricForce(), "max_isometric_force", pn );

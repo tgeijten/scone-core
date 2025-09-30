@@ -73,7 +73,7 @@ namespace scone
 		virtual Real GetExcitation() const override;
 
 		virtual std::vector< Vec3 > GetMusclePath() const override;
-		virtual std::vector< std::pair< Body*, Vec3 > > GetLocalMusclePath() const override;
+		virtual std::vector<PathElement> GetLocalMusclePath() const override;
 
 		virtual void SetExcitation( Real u ) override;
 		virtual void InitializeActivation( Real a ) override;

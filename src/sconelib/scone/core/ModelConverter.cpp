@@ -167,10 +167,10 @@ namespace scone
 		mus_pn["pennation_angle"] = m.GetPennationAngleAtOptimal();
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
-		for ( auto& [b, point] : mp ) {
+		for ( auto& pe : mp ) {
 			auto& ppn = path_pn.add_child();
-			ppn["body"] = GetBodyName( *b );
-			ppn["pos"] = fix( GetLocalBodyPos( point, *b ) );
+			ppn["body"] = GetBodyName( *pe.body );
+			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
 		}
 	}
 
