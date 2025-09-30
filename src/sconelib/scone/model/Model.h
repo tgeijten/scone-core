@@ -192,7 +192,7 @@ namespace scone
 		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
 		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[id]; }
 		const Real& GetUserValue( const String& id ) const { return m_UserValueData.at( id ); }
-		Real& GetUserValue( const String& id ) { return m_UserValueData[id]; }
+		void SetUserValue( const String& id, Real value ) { m_UserValueData[id] = value; }
 		bool HasUserValue( const String& id ) { return m_UserValueData.contains( id ); }
 
 		// Model info

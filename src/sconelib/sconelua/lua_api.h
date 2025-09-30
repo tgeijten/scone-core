@@ -523,7 +523,7 @@ namespace scone
 			return mod_.GetRayIntersection( LUA_ARG_REF( pos ), LUA_ARG_REF( dir ), max_dist ).first; }
 
 		/// store a custom value that can be accessed in other scripts
-		void set_custom_value( LuaString name, LuaNumber value ) { mod_.GetUserValue( name ) = value; }
+		void set_custom_value( LuaString name, LuaNumber value ) { mod_.SetUserValue( name, value ); }
 		/// retrieve a specific custom value that has previously been set
 		LuaNumber get_custom_value( LuaString name ) { return mod_.GetUserValue( name ); }
 		/// check a specific custom value exists
