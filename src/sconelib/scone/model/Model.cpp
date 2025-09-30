@@ -651,6 +651,15 @@ namespace scone
 		else return point - xo::multiply( point, up ); // default projects to plane defined by origin and up
 	}
 
+	std::vector<String> Model::GetCustomValueNames() const
+	{
+		std::vector<String> names;
+		names.reserve( m_CustomValues.size() );
+		for ( const auto& [name, value] : m_CustomValues )
+			names.emplace_back( name );
+		return names;
+	}
+
 	PropNode Model::GetInfo() const
 	{
 		PropNode pn;

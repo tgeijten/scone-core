@@ -191,9 +191,10 @@ namespace scone
 		PropNode& GetUserData() { return m_UserData; }
 		const std::any& GetUserAnyData( const String& id ) const { return m_UserAnyData.at( id ); }
 		std::any& GetUserAnyData( const String& id ) { return m_UserAnyData[id]; }
-		const Real& GetUserValue( const String& id ) const { return m_UserValueData.at( id ); }
-		void SetUserValue( const String& id, Real value ) { m_UserValueData[id] = value; }
-		bool HasUserValue( const String& id ) { return m_UserValueData.contains( id ); }
+		const Real& GetCustomValue( const String& id ) const { return m_CustomValues.at( id ); }
+		void SetCustomValue( const String& id, Real value ) { m_CustomValues[id] = value; }
+		bool HasCustomValue( const String& id ) const { return m_CustomValues.contains( id ); }
+		std::vector<String> GetCustomValueNames() const;
 
 		// Model info
 		virtual PropNode GetInfo() const;
@@ -397,8 +398,8 @@ namespace scone
 		Storage< Real > m_SensorDelayStorage;
 		Storage< Real, TimeInSeconds > m_Data;
 		PropNode m_UserData;
-		std::map<String, std::any> m_UserAnyData; // must be map for persistance
-		xo::flat_map<String, Real> m_UserValueData;
+		std::map<String, std::any> m_UserAnyData; // must be map for persistence
+		xo::flat_map<String, Real> m_CustomValues;
 		TimeInSeconds m_PrevStoreDataTime;
 		int m_PrevStoreDataStep;
 		xo::timer m_SimulationTimer;

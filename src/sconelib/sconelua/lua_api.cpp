@@ -185,6 +185,7 @@ namespace scone
 			"set_custom_value", &LuaModel::set_custom_value,
 			"get_custom_value", &LuaModel::get_custom_value,
 			"has_custom_value", &LuaModel::has_custom_value,
+			"get_custom_value_names", &LuaModel::get_custom_value_names,
 			"find_two_way_neural_delay", &LuaModel::find_two_way_neural_delay,
 			"find_one_way_neural_delay", &LuaModel::find_one_way_neural_delay,
 			"create_muscle_force_sensor", &LuaModel::create_muscle_force_sensor,
