@@ -119,6 +119,9 @@ namespace scone
 			const Real landing_threshold;
 			const Real late_stance_threshold;
 			const Real liftoff_threshold; // default value is such that parameter has no effect
+
+			// name
+			String custom_value_name;
 		};
 
 		virtual void UpdateLegStates( Model& model, double timestamp );

@@ -81,7 +81,9 @@ namespace scone
 		for ( auto& leg : model.GetLegs() )
 		{
 			ScopedParamSetPrefixer prefixer( par, symmetric ? "" : leg.GetName() + '.' );
-			m_LegStates.push_back( LegState( model, leg, props, par ) );
+			auto& ls = m_LegStates.emplace_back( LegState( model, leg, props, par ) );
+			ls.custom_value_name = xo::concat_str( GetName(), ls.leg.GetName() + ".state", '.' );
+			model.SetCustomValue( ls.custom_value_name, ls.state );
 			//log::TraceF( "leg %d leg_length=%.5f", m_LegStates.back()->leg.GetIndex(), m_LegStates.back()->leg_length );
 		}
 
@@ -261,6 +263,7 @@ namespace scone
 			{
 				//log::TraceF( "%.3f: Leg %d state changed from %s to %s", timestamp, idx, ls.GetStateName().c_str(), m_StateNames.GetString( new_state ).c_str() );
 				ls.state = new_state;
+				model.SetCustomValue( ls.custom_value_name, ls.state );
 			}
 		}
 	}
