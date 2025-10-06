@@ -53,6 +53,12 @@ namespace scone
 		/// Energy model to be used, can be: ''Constant'', ''TotalForce'', ''Wang2012'', ''Uchida2016'', ''SquaredMuscleStress'', ''CubedMuscleStress'', ''SquaredMuscleActivation'', ''CubedMuscleActivation'', ''MechanicalWork''
 		EffortMeasureType measure_type;
 
+		/// Actuator names to include (wildcards supported, semicolon separated); default = "*"
+		String include;
+
+		/// Actuator names to exclude (wildcards supported, semicolon separated); default = ""
+		String exclude;
+
 		/// Flag indicating to use (energy / distance) as a result; default = 0.
 		bool use_cost_of_transport;
 
@@ -97,6 +103,7 @@ namespace scone
 		Real m_Uchida2016BasalEnergy;
 		Real m_AerobicFactor;
 		Statistic< double > m_Effort;
+		std::vector<Muscle*> m_MusclePtrs;
 		std::vector<String> m_MuscleNames;
 		mutable std::vector<Real> m_MuscleEfforts;
 		Vec3 m_InitComPos;

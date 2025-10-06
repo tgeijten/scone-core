@@ -14,6 +14,7 @@
 #include "scone/core/math.h"
 #include "xo/string/pattern_matcher.h"
 #include "xo/numerical/math.h"
+#include "scone/core/IncludeExcludePattern.h"
 
 namespace scone
 {
@@ -36,6 +37,8 @@ namespace scone
 		m_Effort( Statistic<>::LinearInterpolation )
 	{
 		measure_type = g_MeasureNames( props.get<String>( "measure_type" ) );
+		INIT_PROP( props, include, "*" );
+		INIT_PROP( props, exclude, "" );
 		INIT_PROP( props, use_cost_of_transport, false );
 		INIT_PROP( props, specific_tension, 0.25e6 );
 		INIT_PROP( props, muscle_density, 1059.7 );
@@ -52,15 +55,22 @@ namespace scone
 		if ( name_.empty() )
 			name_ = g_MeasureNames( measure_type );
 
+		// initialize muscle list
+		IncludeExcludePattern match{ include, exclude };
+		for ( auto* mus : model.GetMuscles() )
+			if ( match( mus->GetName() ) )
+				m_MusclePtrs.emplace_back( mus );
+		SCONE_ERROR_IF( m_MusclePtrs.empty(), "No muscles included in EffortMeasure" );
+
 		// precompute some stuff
 		m_Wang2012BasalEnergy = 1.51 * model.GetMass();
 		m_Uchida2016BasalEnergy = 1.2 * model.GetMass();
 		m_AerobicFactor = 1.5; // 1.5 is for aerobic conditions, 1.0 for anaerobic. may need to add as option later
 		m_InitComPos = model.GetComPos() - model.GetGroundBody().GetOriginPos();
 		SetSlowTwitchRatios( props, model );
-		for ( auto& mus : model.GetMuscles() )
+		for ( auto& mus : m_MusclePtrs )
 			m_MuscleNames.push_back( name_ + "." + mus->GetName() + ".penalty" );
-		m_MuscleEfforts.resize( model.GetMuscles().size() );
+		m_MuscleEfforts.resize( m_MusclePtrs.size() );
 	}
 
 	EffortMeasure::MuscleProperties::MuscleProperties( const PropNode& props ) :
@@ -104,24 +114,24 @@ namespace scone
 		}
 
 		SCONE_ASSERT( result );
-		if ( use_average_per_muscle && !model.GetMuscles().empty() )
-			*result /= model.GetMuscles().size();
+		if ( use_average_per_muscle && !m_MusclePtrs.empty() )
+			*result /= m_MusclePtrs.size();
 
 		return *result;
 	}
 
-	template<int Order> Real GetMuscleActivation( const Model& model, bool use_muscle_volume_weighting ) {
+	template<int Order> Real GetMuscleActivation( const std::vector<Muscle*>& muscles, bool use_muscle_volume_weighting ) {
 		double sum = 0.0;
 		if ( use_muscle_volume_weighting ) {
 			double total_vol = 0.0;
-			for ( auto& m : model.GetMuscles() ) {
+			for ( auto& m : muscles ) {
 				auto vol = m->GetVolume();
 				sum += vol * xo::power<Order>( m->GetActivation() );
 				total_vol += vol;
 			}
 			return sum / total_vol;
 		} else {
-			for ( auto& m : model.GetMuscles() )
+			for ( auto& m : muscles )
 				sum += xo::power<Order>( m->GetActivation() );
 			return sum;
 		}
@@ -137,9 +147,9 @@ namespace scone
 		case EffortMeasureType::Uchida2016: return GetUchida2016( model );
 		case EffortMeasureType::SquaredMuscleStress: return GetSquaredMuscleStress( model );
 		case EffortMeasureType::CubedMuscleStress: return GetCubedMuscleStress( model );
-		case EffortMeasureType::MuscleActivation: return GetMuscleActivation<1>( model, use_muscle_volume_weighting );
-		case EffortMeasureType::SquaredMuscleActivation: return GetMuscleActivation<2>( model, use_muscle_volume_weighting );
-		case EffortMeasureType::CubedMuscleActivation: return GetMuscleActivation<3>( model, use_muscle_volume_weighting );
+		case EffortMeasureType::MuscleActivation: return GetMuscleActivation<1>( m_MusclePtrs, use_muscle_volume_weighting );
+		case EffortMeasureType::SquaredMuscleActivation: return GetMuscleActivation<2>( m_MusclePtrs, use_muscle_volume_weighting );
+		case EffortMeasureType::CubedMuscleActivation: return GetMuscleActivation<3>( m_MusclePtrs, use_muscle_volume_weighting );
 		case EffortMeasureType::MechnicalWork: return GetMechnicalWork( model );
 		case EffortMeasureType::MotorTorque: return GetMotorTorque( model );
 		default: SCONE_THROW( "Invalid energy measure" );
@@ -149,7 +159,7 @@ namespace scone
 	double EffortMeasure::GetTotalForce( const Model& model ) const
 	{
 		double f = 1.0; // base muscle force
-		for ( const auto& mus : model.GetMuscles() )
+		for ( const auto& mus : m_MusclePtrs )
 			f += mus->GetForce();
 		return f;
 	}
@@ -157,9 +167,9 @@ namespace scone
 	double EffortMeasure::GetWang2012( const Model& model ) const
 	{
 		double e = m_Wang2012BasalEnergy;
-		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
+		for ( index_t i = 0; i < m_MusclePtrs.size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[i];
+			const auto& mus = m_MusclePtrs[i];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 			Real l = m_SlowTwitchFiberRatios[i];
 			Real fa = 40 * l * sin( REAL_HALF_PI * mus->GetExcitation() ) + 133 * ( 1 - l ) * ( 1 - cos( REAL_HALF_PI * mus->GetExcitation() ) );
@@ -194,9 +204,9 @@ namespace scone
 	double EffortMeasure::GetUchida2016( const Model& model ) const
 	{
 		double e = m_Uchida2016BasalEnergy;
-		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
+		for ( index_t i = 0; i < m_MusclePtrs.size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[i];
+			const auto& mus = m_MusclePtrs[i];
 			double mass = mus->GetMass( specific_tension, muscle_density );
 
 			// calculate A parameter
@@ -279,7 +289,7 @@ namespace scone
 	void EffortMeasure::SetSlowTwitchRatios( const PropNode& props, const Model& model )
 	{
 		// initialize all muscles to default
-		std::vector< Real > init( model.GetMuscles().size(), default_muscle_slow_twitch_ratio );
+		std::vector< Real > init( m_MusclePtrs.size(), default_muscle_slow_twitch_ratio );
 		m_SlowTwitchFiberRatios = init;
 
 		// read in fiber ratios. throw exception if out of [0,1] range
@@ -292,9 +302,9 @@ namespace scone
 		}
 
 		// update muscle if its name is in the map
-		for ( index_t i = 0; i < model.GetMuscles().size(); ++i )
+		for ( index_t i = 0; i < m_MusclePtrs.size(); ++i )
 		{
-			const auto& mus = model.GetMuscles()[i];
+			const auto& mus = m_MusclePtrs[i];
 
 			bool foundMuscle = false;
 			for ( auto it = muscPropsInput.begin(); it != muscPropsInput.end(); ++it )
@@ -312,7 +322,7 @@ namespace scone
 	double EffortMeasure::GetSquaredMuscleStress( const Model& model ) const
 	{
 		double sum = 0.0;
-		for ( auto& m : model.GetMuscles() )
+		for ( auto& m : m_MusclePtrs )
 			sum += xo::squared( m->GetForce() / m->GetPCSA() );
 		return sum;
 	}
@@ -320,7 +330,7 @@ namespace scone
 	double EffortMeasure::GetCubedMuscleStress( const Model& model ) const
 	{
 		double sum = 0.0;
-		for ( auto& m : model.GetMuscles() )
+		for ( auto& m : m_MusclePtrs )
 			sum += xo::cubed( m->GetForce() / m->GetPCSA() );
 		return sum;
 	}
