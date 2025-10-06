@@ -110,6 +110,7 @@ namespace OpenSim
 			throw OpenSim::Exception( "PointActuator: Unknown body (" + bodyName + ") specified in Actuator " + getName() );
 
 		body_ = &model.updBodySet().get( bodyName );
+		point_ = body_->getMassCenter();
 	}
 
 	void ConstantForce::updateFromXMLNode( SimTK::Xml::Element& node, int versionNumber )

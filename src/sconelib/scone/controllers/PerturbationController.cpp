@@ -34,11 +34,11 @@ namespace scone
 
 		AddPerturbation();
 
-		// set force point, make sure it's not set yet
-		if ( !position_offset.is_null() )
+		// set force point, make sure it's not set yet or the same as before
+		if ( !xo::equal( body.GetExternalForcePoint(), position_offset, double( xo::constantsf::ample_epsilon() ) ) )
 		{
-			if ( !body.GetExternalForcePoint().is_null() && !xo::equal( body.GetExternalForcePoint(), position_offset, double( xo::constantsf::ample_epsilon() ) ) )
-				SCONE_THROW( "Cannot apply multiple external forces at different points on one body" );
+			if ( !body.GetExternalForce().is_null() )
+				SCONE_ERROR( "PerturbationControllers cannot apply multiple external forces at different points on one body" );
 			body.SetExternalForceAtPoint( Vec3::zero(), position_offset );
 		}
 	}

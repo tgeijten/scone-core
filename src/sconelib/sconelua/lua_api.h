@@ -266,10 +266,12 @@ namespace scone
 		LuaVec3 contact_moment() { return bod_.GetContactMoment(); }
 		/// get contact point vector [m] of a contact force applied to this body (zero if no contact)
 		LuaVec3 contact_point() { return bod_.GetContactPoint(); }
-		/// add external force [N] to body com
+		/// add external force [N] to body com or latest external force position
 		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
 		/// add external moment [Nm] to body
 		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
+		/// set external force vector [N%%^%%3] to applied to the body at a position vector [m%%^%%3]
+		void set_external_force_at( const LuaVec3* f, const LuaVec3* p ) { bod_.SetExternalForceAtPoint( LUA_ARG_REF( f ), LUA_ARG_REF( p ) ); }
 		/// set the com position [m] of the body
 		void set_com_pos( const LuaVec3* p ) { bod_.SetComPos( LUA_ARG_REF( p ) ); }
 		/// set the orientation of the body
@@ -469,9 +471,9 @@ namespace scone
 		LuaVec3 com_vel() { return mod_.GetComVel(); }
 		/// get the model mass [kg]
 		LuaNumber mass() { return mod_.GetMass(); }
-		/// get the gravitational pull [m/s^2]
+		/// get the gravitational pull [m/s%%^%%2]
 		LuaVec3 gravity() { return mod_.GetGravity(); }
-		/// get the gravitational pull [m/s^2]
+		/// get the gravitational pull [m/s%%^%%2]
 		void set_gravity( LuaVec3 g ) { return mod_.SetGravity( g ); }
 
 		/// get the actuator at index (starting at 1)
