@@ -237,10 +237,66 @@ namespace scone
 
 	std::vector<PathElement> MuscleOpenSim4::GetLocalMusclePath() const
 	{
-		auto& pps = m_osMus.getGeometryPath().getCurrentPath( m_Model.GetTkState() );
 		std::vector<PathElement> points;
-		for ( int i = 0; i < pps.size(); ++i )
-			points.emplace_back( FindByName( m_Model.GetBodies(), pps[i]->getBody().getName() ), from_osim( pps[i]->getLocation( m_Model.GetTkState() ) ) );
+
+#if 0
+		// we use getCurrentPath() because that makes it easier to see the index of the wrap object
+		// #todo: use getPointSet() and getWrapSet() to get the points and figure out where to insert wrap objects
+		auto& pps = m_osMus.getGeometryPath().getCurrentPath( m_Model.GetTkState() );
+		int wc_count = 0;
+		for ( int i = 0; i < pps.size(); ++i ) {
+			auto* b = FindByName( m_Model.GetBodies(), pps[i]->getBody().getName() );
+			if ( auto* wc = dynamic_cast<const OpenSim::WrapCylinder*>( pps[i]->getWrapObject() ) ) {
+				auto pos = from_osim( wc->get_translation() );
+				auto dir = from_osim_euler_xyz( wc->get_xyz_body_rotation() ) * Vec3::unit_z();
+				points.emplace_back( b, pos, dir, wc->get_radius() );
+				++i, ++wc_count; // skip next point because wrap objects create 2 points, also keep count
+			}
+			else {
+				auto pos = from_osim( pps[i]->getLocation( m_Model.GetTkState() ) );
+				points.emplace_back( b, pos );
+			}
+		}
+
+		// check if there are remaining wrapping surfaces
+		auto& ws = m_osMus.getGeometryPath().getWrapSet();
+		if ( ws.getSize() > wc_count ) {
+			log::warning( "Not all wrapping objects where converted" );
+			for ( int i = 0; i < ws.getSize(); ++i ) {
+				auto* w = ws[i].getWrapObject();
+				auto& f = w->getFrame();
+				log::info( GetName(), " body=", f.getName(), " wrap=", w->getName(), " ", ws[i].getStartPoint(), " ", ws[i].getEndPoint() );
+			}
+		}
+#else
+		// add path points
+		auto& ps = m_osMus.getGeometryPath().getPathPointSet();
+		for ( int i = 0; i < ps.getSize(); ++i ) {
+			auto* b = FindByName( m_Model.GetBodies(), ps[i].getBody().getName() );
+			auto pos = from_osim( ps[i].getLocation( m_Model.GetTkState() ) );
+			points.emplace_back( b, pos );
+			//log::info( GetName(), "\t", i, "\tbody=", b->GetName() );
+		}
+
+		// insert wrap objects
+		auto& ws = m_osMus.getGeometryPath().getWrapSet();
+		for ( int i = 0; i < ws.getSize(); ++i ) {
+			if ( auto* wc = dynamic_cast<const OpenSim::WrapCylinder*>( ws[i].getWrapObject() ) ) {
+				auto* b = FindByName( m_Model.GetBodies(), wc->getFrame().getName() );
+				auto pos = from_osim( wc->get_translation() );
+				bool flip = xo::str_equals_any_of( wc->get_quadrant(), { "-x", "-y" } );
+				auto dir = from_osim_euler_xyz( wc->get_xyz_body_rotation() ) * ( flip ? Vec3::neg_unit_z() : Vec3::unit_z() );
+				//log::info( GetName(), "\t", i, "\tbody=", b->GetName(), " ", ws[i].getStartPoint(), " ", ws[i].getEndPoint() );
+				for ( int j = 1; j < points.size(); ++j ) {
+					if ( points[j - 1].body->GetName() == b->GetName() && points[j].body->GetName() != b->GetName() ) {
+						points.insert( points.begin() + j, PathElement{ b, pos, dir, wc->get_radius() } );
+						++j;
+					}
+				}
+			}
+		}
+
+#endif
 		return points;
 	}
 

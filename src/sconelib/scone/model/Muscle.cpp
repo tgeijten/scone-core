@@ -214,8 +214,17 @@ namespace scone
 		pn["pennation_angle_at_optimal"] = GetPennationAngleAtOptimal();
 		pn["max_contraction_velocity"] = GetMaxContractionVelocity();
 		auto& path_pn = pn["path"];
-		for ( auto& pe : GetLocalMusclePath() )
-			path_pn.add_key_value( pe.body->GetName(), pe.pos );
+		for ( auto& pe : GetLocalMusclePath() ) {
+			if ( !pe.dir.is_null() ) {
+				auto& cpn = path_pn.add_child( pe.body->GetName() );
+				cpn["pos"] = pe.pos;
+				cpn["dir"] = pe.dir;
+				if ( pe.radius != 0 )
+					cpn["radius"] = pe.radius;
+			}
+			else
+				path_pn.add_key_value( pe.body->GetName(), pe.pos );
+		}
 		return pn;
 	}
 

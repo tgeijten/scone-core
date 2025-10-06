@@ -8,14 +8,16 @@ namespace scone
 {
 	struct PathElement
 	{
-		PathElement( const Body* b, const Vec3& p, const Quat& o = Quat::identity(), Real r = Real( 0 ) ) :
-			body( b ), pos( p ), ori( o ), radius( r )
+		PathElement( const Body* b, const Vec3& p, const Vec3& d = Vec3::zero(), Real r = Real( 0 ) ) :
+			body( b ), pos( p ), dir( d ), radius( r )
 		{}
 
 		const Body* body;
 		Vec3 pos;
-		Quat ori;
+		Vec3 dir;
 		Real radius;
+
+		bool IsCylinder() const { return radius != 0; }
 	};
 }
 

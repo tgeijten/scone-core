@@ -171,6 +171,11 @@ namespace scone
 			auto& ppn = path_pn.add_child();
 			ppn["body"] = GetBodyName( *pe.body );
 			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
+			if ( !pe.dir.is_null() ) {
+				ppn["dir"] = fix( -pe.body->GetOrientation() * pe.dir );
+				if ( pe.radius != REAL_0 )
+					ppn["radius"] = fix( pe.radius );
+			}
 		}
 	}
 
