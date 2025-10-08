@@ -85,7 +85,7 @@ namespace scone
 			body_pn["inertia"] = gb.inertia;
 			if ( keep_body_origin_ && !b.GetLocalComPos().is_null() )
 				body_pn["com_pos"] = fix( b.GetLocalComPos() );
-			if ( use_body_mass_threshold_ && gb.mass > 0 && gb.mass < body_mass_threshold_ )
+			if ( use_body_mass_threshold_ && !( IsWeldedBody( b ) && use_weld_joints_ ) && gb.mass > 0 && gb.mass < body_mass_threshold_ )
 				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
 			// joint
