@@ -10,10 +10,14 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         -DCMAKE_CXX_FLAGS="-stdlib=libc++"
         -DCMAKE_MACOSX_RPATH=TRUE
         -DCMAKE_INSTALL_RPATH="@executable_path/../lib"
+        -DBUILD_EXAMPLES=OFF
+        -DBUILD_TESTING=OFF
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     )
 else
     PLATFORM_SPECIFIC_FLAGS=(
         -DCMAKE_INSTALL_RPATH="\$ORIGIN"
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     )
 fi
 

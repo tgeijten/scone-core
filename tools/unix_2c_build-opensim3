@@ -8,9 +8,11 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     PLATFORM_SPECIFIC_FLAGS=(
         -DCMAKE_OSX_DEPLOYMENT_TARGET=10.10
         -DCMAKE_CXX_FLAGS="-stdlib=libc++"
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     )
 else
     PLATFORM_SPECIFIC_FLAGS=(
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     )
 fi
 
