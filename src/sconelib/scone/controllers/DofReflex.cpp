@@ -27,7 +27,8 @@ namespace scone
 		m_Mirror( mirror_left && loc.GetSide() == Side::Left ),
 		m_pTargetPosSource( nullptr ),
 		m_DelayedPos( model.AcquireDelayedSensor< DofPositionSensor >( m_SourceDof, m_SourceParentDof ) ),
-		m_DelayedVel( model.AcquireDelayedSensor< DofVelocitySensor >( m_SourceDof, m_SourceParentDof ) )
+		m_DelayedVel( model.AcquireDelayedSensor< DofVelocitySensor >( m_SourceDof, m_SourceParentDof ) ),
+		m_DelayedAcc( model.AcquireDelayedSensor< DofAccelerationSensor >( m_SourceDof, m_SourceParentDof ) )
 	{
 		String par_name = GetParName( pn, loc );
 		ScopedParamSetPrefixer prefixer( par, par_name + "." );
@@ -43,6 +44,10 @@ namespace scone
 		INIT_PAR_NAMED( pn, par, KV, "KV", 0.0 );
 		INIT_PROP( pn, allow_neg_V, true );
 
+		INIT_PAR_NAMED( pn, par, A0, "A0", 0.0 );
+		INIT_PAR_NAMED( pn, par, KA, "KA", 0.0 );
+		INIT_PROP( pn, allow_neg_A, true );
+
 		INIT_PAR_NAMED( pn, par, C0, "C0", 0.0 );
 		INIT_PROP( pn, condition, 0 );
 		INIT_PROP( pn, filter_cutoff_frequency, 0.0 );
@@ -57,6 +62,8 @@ namespace scone
 		controls_.Add( control_name + "KP", &KP );
 		controls_.Add( control_name + "V0", &V0 );
 		controls_.Add( control_name + "KV", &KV );
+		controls_.Add( control_name + "A0", &V0 );
+		controls_.Add( control_name + "KA", &KV );
 		controls_.Add( control_name + "C0", &C0 );
 	}
 
@@ -67,10 +74,12 @@ namespace scone
 	{
 		Real pos = m_DelayedPos.GetValue( delay );
 		Real vel = m_DelayedVel.GetValue( delay );
+		Real acc = m_DelayedAcc.GetValue( delay );
 
 		if ( m_Mirror ) {
 			pos = -pos;
 			vel = -vel;
+			acc = -acc;
 		}
 
 		if ( filter_cutoff_frequency != 0.0 ) {
@@ -80,6 +89,7 @@ namespace scone
 
 		auto delta_pos = P0 - pos;
 		auto delta_vel = V0 - vel;
+		auto delta_acc = A0 - acc;
 
 		if ( condition == 0 || ( condition == -1 && delta_pos < 0 && delta_vel < 0 ) || ( condition == 1 && delta_pos > 0 && delta_vel > 0 ) )
 		{
@@ -91,15 +101,23 @@ namespace scone
 			if ( !allow_neg_V && u_v < 0.0 )
 				u_v = 0.0;
 
-			AddTargetControlValue( C0 + u_p + u_v );
+			u_a = KA * delta_acc;
+			if ( !allow_neg_A && u_a < 0.0 )
+				u_a = 0.0;
+
+			AddTargetControlValue( C0 + u_p + u_v + u_a );
 		}
-		else u_p = u_v = 0.0;
+		else u_p = u_v = u_a = 0.0;
 	}
 
 	void DofReflex::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		auto name = GetReflexName( actuator_.GetName(), source );
-		frame[name + ".RDP"] = u_p;
-		frame[name + ".RDV"] = u_v;
+		if ( KP != 0 || P0 != 0 )
+			frame[name + ".RDP"] = u_p;
+		if ( KV != 0 || V0 != 0 )
+			frame[name + ".RDV"] = u_v;
+		if ( KA != 0 || A0 != 0 )
+			frame[name + ".RDA"] = u_a;
 	}
 }

@@ -39,12 +39,19 @@ namespace scone
 		/// Allow this reflex to be negative; default = 1.
 		bool allow_neg_P;
 
-		/// Target velocity [rad or m] for sensor DOF; default = 0.
+		/// Target velocity [rad or m/s] for sensor DOF; default = 0.
 		Real V0;
 		/// Velocity feedback gain; default = 0.
 		Real KV;
 		/// Allow this reflex to be negative; default = 1.
 		bool allow_neg_V;
+
+		/// Target acceleration [rad or m/s%%^%%2] for sensor DOF; default = 0.
+		Real A0;
+		/// Acceleration feedback gain; default = 0.
+		Real KA;
+		/// Allow this reflex to be negative; default = 1.
+		bool allow_neg_A;
 
 		/// Constant actuation added to the reflex; default = 0.
 		Real C0;
@@ -52,7 +59,7 @@ namespace scone
 		/// Cut-off frequency of optional low-pass filter, no filtering if zero; default = 0.
 		Real filter_cutoff_frequency;
 
-		/// Apply this reflex only depending on the sign of the result: 1 = pos, -1 = neg, 0 = always.
+		/// Apply this reflex only depending on the sign of the position and velocity (deprecated): 1 = pos, -1 = neg, 0 = always.
 		int condition;
 
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
@@ -60,12 +67,14 @@ namespace scone
 	private:
 		Real u_p;
 		Real u_v;
+		Real u_a;
 		Dof& m_SourceDof;
 		Dof* m_SourceParentDof;
 		bool m_Mirror;
 		SensorDelayAdapter* m_pTargetPosSource;
 		SensorDelayAdapter& m_DelayedPos;
 		SensorDelayAdapter& m_DelayedVel;
+		SensorDelayAdapter& m_DelayedAcc;
 		xo::iir_filter< double, 2 > m_Filter;
 	};
 }

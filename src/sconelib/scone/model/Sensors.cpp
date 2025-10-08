@@ -79,6 +79,11 @@ namespace scone
 		return root_dof_ ? root_sign_ * root_dof_->GetVel() + dof_.GetVel() : dof_.GetVel();
 	}
 
+	String DofAccelerationSensor::GetName() const { return GetDofName() + ".DA"; }
+	Real DofAccelerationSensor::GetValue() const {
+		return root_dof_ ? root_sign_ * root_dof_->GetAcc() + dof_.GetAcc() : dof_.GetAcc();
+	}
+
 	String DofPosVelSensor::GetName() const { return GetSidedName( dof_.GetName(), side_ ) + ".DPV"; }
 	Real DofPosVelSensor::GetValue() const {
 		Real value = root_dof_ ? root_sign_ * root_dof_->GetPos() + dof_.GetPos() + kv_ * ( root_sign_ * root_dof_->GetVel() + dof_.GetVel() ) :
