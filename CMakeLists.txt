@@ -117,7 +117,18 @@ enable_testing()
 if (XO_TEST_ENABLED)
 	add_test( NAME xo_test COMMAND xo_test)
 endif()
-add_test(NAME sconeunittests COMMAND sconeunittests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (SCONE_HYFYDY)
+	add_test(NAME sconeunittests COMMAND sconeunittests --skip-opensim WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+# Create a target that runs tests as part of the build
+if (MSVC)
+	add_custom_target(sconeunittests_run ALL
+	    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIG>
+	    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+	add_dependencies(sconeunittests_run sconeunittests)
+endif()
 
 #
 # Installation / packaging (CPack)
