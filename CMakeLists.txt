@@ -125,7 +125,7 @@ endif()
 # Create a target that runs tests as part of the build
 if (MSVC)
 	add_custom_target(sconeunittests_run ALL
-	    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIG>
+	    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C Release
 	    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	add_dependencies(sconeunittests_run sconeunittests)
 endif()
