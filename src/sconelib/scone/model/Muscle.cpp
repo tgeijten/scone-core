@@ -213,6 +213,10 @@ namespace scone
 		pn["tendon_slack_length"] = GetTendonSlackLength();
 		pn["pennation_angle_at_optimal"] = GetPennationAngleAtOptimal();
 		pn["max_contraction_velocity"] = GetMaxContractionVelocity();
+		if ( auto v = GetTendonStrainAtOneNormForce(); v != 0 )
+			pn["tendon_strain_at_one_force_norm"] = v;
+		if ( auto v = GetPassiveFiberStrainAtOneNormForce(); v != 0 )
+			pn["passive_fiber_strain_at_one_force_norm"] = v;
 		auto& path_pn = pn["path"];
 		for ( auto& pe : GetLocalMusclePath() ) {
 			if ( !pe.dir.is_null() ) {

@@ -169,6 +169,16 @@ namespace scone
 		return GetAverage( [&]( const Muscle& m ) { return m.GetMaxContractionVelocity(); } );
 	}
 
+	Real MuscleGroup::GetTendonStrainAtOneNormForce() const
+	{
+		return GetAverage( [&]( const Muscle& m ) { return m.GetTendonStrainAtOneNormForce(); } );
+	}
+
+	Real MuscleGroup::GetPassiveFiberStrainAtOneNormForce() const
+	{
+		return GetAverage( [&]( const Muscle& m ) { return m.GetPassiveFiberStrainAtOneNormForce(); } );
+	}
+
 	std::vector<Vec3> MuscleGroup::GetMusclePath() const
 	{
 		return std::vector<Vec3>();

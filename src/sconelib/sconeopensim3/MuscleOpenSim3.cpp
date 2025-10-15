@@ -215,6 +215,20 @@ namespace scone
 		return m_osMus.getMaxContractionVelocity();
 	}
 
+	Real MuscleOpenSim3::GetTendonStrainAtOneNormForce() const
+	{
+		if ( auto* m = dynamic_cast<OpenSim::Millard2012EquilibriumMuscle*>( &m_osMus ) )
+			return m->getTendonForceLengthCurve().getStrainAtOneNormForce();
+		else return 0.0;
+	}
+
+	Real MuscleOpenSim3::GetPassiveFiberStrainAtOneNormForce() const
+	{
+		if ( auto* m = dynamic_cast<OpenSim::Millard2012EquilibriumMuscle*>( &m_osMus ) )
+			return m->getFiberForceLengthCurve().getStrainAtOneNormForce();
+		else return 0.0;
+	}
+
 	Real MuscleOpenSim3::GetMaxIsometricForce() const
 	{
 		return m_osMus.getMaxIsometricForce();

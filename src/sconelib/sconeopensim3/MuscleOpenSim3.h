@@ -69,6 +69,9 @@ namespace scone
 		virtual Real GetForceVelocityMultipler() const override;
 		virtual Real GetMaxContractionVelocity() const override;
 
+		virtual Real GetTendonStrainAtOneNormForce() const override;
+		virtual Real GetPassiveFiberStrainAtOneNormForce() const override;
+
 		virtual Real GetActivation() const override;
 		virtual Real GetExcitation() const override;
 
