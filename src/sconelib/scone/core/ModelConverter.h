@@ -29,6 +29,7 @@ namespace scone
 		bool use_ball_socket_joints_ = false;
 		bool use_weld_joints_ = true;
 		bool keep_body_origin_ = false;
+		bool use_tendon_strain_at_one_norm_force = false;
 
 	private:
 		using StringSet = xo::flat_set<std::string>;

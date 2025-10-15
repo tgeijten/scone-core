@@ -165,6 +165,8 @@ namespace scone
 		mus_pn["optimal_fiber_length"] = m.GetOptimalFiberLength();
 		mus_pn["tendon_slack_length"] = m.GetTendonSlackLength();
 		mus_pn["pennation_angle"] = m.GetPennationAngleAtOptimal();
+		if ( auto s = m.GetTendonStrainAtOneNormForce(); use_tendon_strain_at_one_norm_force && s != 0 )
+			mus_pn["tendon_strain_at_one_norm_force"] = s;
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
 		for ( auto& pe : mp ) {
