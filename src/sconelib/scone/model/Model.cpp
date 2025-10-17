@@ -73,7 +73,7 @@ namespace scone
 		m_StoreData( false ),
 		m_StoreDataProfiles{ {
 			{ 1.0 / GetSconeSetting<double>( "data.frequency" ), { StoreDataTypes::State } },
-			{ 0.01, { StoreDataTypes::State, StoreDataTypes::ActuatorInput, StoreDataTypes::GroundReactionForce, StoreDataTypes::SimulationStatistics } }
+			{ 1.0 / GetSconeSetting<double>( "data_minimal.frequency" ), { StoreDataTypes::State } }
 			} },
 		m_StoreDataProfileIdx( 0 ),
 		m_KeepAllFrames( GetSconeSetting<bool>( "data.keep_all_frames" ) )
@@ -111,21 +111,24 @@ namespace scone
 		fixed_analysis_step_interval = static_cast<int>( std::round( fixed_measure_step_size / fixed_step_size ) );
 
 		// set default store data profile from settings
-		auto& flags = m_StoreDataProfiles[0].flags;
-		flags.set( StoreDataTypes::BodyPosition, GetSconeSetting<bool>( "data.body" ) );
-		flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( "data.joint" ) );
-		flags.set( StoreDataTypes::ActuatorInput, GetSconeSetting<bool>( "data.actuator" ) );
-		flags.set( StoreDataTypes::MuscleProperties, GetSconeSetting<bool>( "data.muscle" ) );
-		flags.set( StoreDataTypes::MusclePropertiesDetailed, GetSconeSetting<bool>( "data.muscle_detail" ) );
-		flags.set( StoreDataTypes::MuscleDofMomentPower, GetSconeSetting<bool>( "data.muscle_dof" ) );
-		flags.set( StoreDataTypes::GroundReactionForce, GetSconeSetting<bool>( "data.grf" ) );
-		flags.set( StoreDataTypes::ContactForce, GetSconeSetting<bool>( "data.contact" ) );
-		flags.set( StoreDataTypes::SystemPower, GetSconeSetting<bool>( "data.power" ) );
-		flags.set( StoreDataTypes::SensorData, GetSconeSetting<bool>( "data.sensor" ) );
-		flags.set( StoreDataTypes::ControllerData, GetSconeSetting<bool>( "data.controller" ) );
-		flags.set( StoreDataTypes::MeasureData, GetSconeSetting<bool>( "data.measure" ) );
-		flags.set( StoreDataTypes::SimulationStatistics, GetSconeSetting<bool>( "data.simulation" ) );
-		flags.set( StoreDataTypes::DebugData, GetSconeSetting<bool>( "data.debug" ) );
+		for ( index_t idx = 0; idx < 2; ++idx ) {
+			auto& flags = m_StoreDataProfiles[idx].flags;
+			string prefix = idx == 0 ? "data." : "data_minimal.";
+			flags.set( StoreDataTypes::BodyPosition, GetSconeSetting<bool>( prefix + "body" ) );
+			flags.set( StoreDataTypes::JointReactionForce, GetSconeSetting<bool>( prefix + "joint" ) );
+			flags.set( StoreDataTypes::ActuatorInput, GetSconeSetting<bool>( prefix + "actuator" ) );
+			flags.set( StoreDataTypes::MuscleProperties, GetSconeSetting<bool>( prefix + "muscle" ) );
+			flags.set( StoreDataTypes::MusclePropertiesDetailed, GetSconeSetting<bool>( prefix + "muscle_detail" ) );
+			flags.set( StoreDataTypes::MuscleDofMomentPower, GetSconeSetting<bool>( prefix + "muscle_dof" ) );
+			flags.set( StoreDataTypes::GroundReactionForce, GetSconeSetting<bool>( prefix + "grf" ) );
+			flags.set( StoreDataTypes::ContactForce, GetSconeSetting<bool>( prefix + "contact" ) );
+			flags.set( StoreDataTypes::SystemPower, GetSconeSetting<bool>( prefix + "power" ) );
+			flags.set( StoreDataTypes::SensorData, GetSconeSetting<bool>( prefix + "sensor" ) );
+			flags.set( StoreDataTypes::ControllerData, GetSconeSetting<bool>( prefix + "controller" ) );
+			flags.set( StoreDataTypes::MeasureData, GetSconeSetting<bool>( prefix + "measure" ) );
+			flags.set( StoreDataTypes::SimulationStatistics, GetSconeSetting<bool>( prefix + "simulation" ) );
+			flags.set( StoreDataTypes::DebugData, GetSconeSetting<bool>( prefix + "debug" ) );
+		}
 	}
 
 	Model::~Model() {}

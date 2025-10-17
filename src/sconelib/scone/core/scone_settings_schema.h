@@ -25,6 +25,25 @@ data {
 	keep_all_frames { type = bool label = "Keep all data frames for analysis" default = 0 }
 }
 
+data_minimal {
+	frequency { type = float label = "Data output frequency" default = 100 range = 10..1000000 }
+	body { type = bool label = "Output body position and orientation" default = 0 }
+	joint { type = bool label = "Output joint reation force" default = 0 }
+	actuator { type = bool label = "Output actuator input" default = 1 }
+	muscle { type = bool label = "Output muscle properties" default = 0 }
+	muscle_detail { type = bool label = "Output detailed muscle properties" default = 0 }
+	muscle_dof { type = bool label = "Output muscle moments and powers" default = 0 }
+	grf { type = bool label = "Output ground reaction force" default = 1 }
+	contact { type = bool label = "Output contact forces and moments" default = 0 }
+	power { type = bool label = "Output system powers" default = 0 }
+	sensor { type = bool label = "Output sensor data" default = 0 }
+	controller { type = bool label = "Output controller data" default = 0 }
+	measure { type = bool label = "Output measure data" default = 0 }
+	simulation { type = bool label = "Output simulation statisticts" default = 1 }
+	debug { type = bool label = "Output debug data" default = 0 }
+	keep_all_frames { type = bool label = "Keep all data frames for analysis" default = 0 }
+}
+
 results {
 	controller { type = bool label = "Output Controller and Measure results" default = 0 }
 	extract_channels { type = bool label = "Extract specific channels to separate file" default = 0 }
