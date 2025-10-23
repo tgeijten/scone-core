@@ -52,6 +52,15 @@
 
 namespace scone
 {
+	inline void TryRegisterSconeHfd() {
+#if SCONE_HYFYDY_ENABLED
+		sconehfd_f32::TryRegisterSconeHfd();
+#	ifdef SCONE_HYFYDY_DBL 
+		sconehfd_f64::TryRegisterSconeHfd();
+#	endif
+#endif
+	}
+
 	inline void Initialize()
 	{
 		// register .scone file format
@@ -67,10 +76,7 @@ namespace scone
 
 #if SCONE_HYFYDY_ENABLED
 		xo::register_file_extension< xo::prop_node_serializer_zml >( "hfd" );
-		sconehfd_f32::TryRegisterSconeHfd();
-#	ifdef SCONE_HYFYDY_DBL 
-		sconehfd_f64::TryRegisterSconeHfd();
-#	endif
+		TryRegisterSconeHfd();
 #endif
 
 #if SCONE_LUA_ENABLED
