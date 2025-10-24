@@ -28,6 +28,7 @@ namespace scone
 		bool use_pin_joints_ = false;
 		bool use_ball_socket_joints_ = false;
 		bool use_weld_joints_ = true;
+		bool use_cylinder_wrapping = true;
 		bool keep_body_origin_ = false;
 		bool use_tendon_strain_at_one_norm_force = false;
 

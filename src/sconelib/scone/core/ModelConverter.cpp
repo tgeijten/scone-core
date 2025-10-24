@@ -175,7 +175,7 @@ namespace scone
 			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
 			if ( !pe.dir.is_null() ) {
 				ppn["dir"] = fix( -pe.body->GetOrientation() * pe.dir );
-				if ( pe.radius != REAL_0 )
+				if ( use_cylinder_wrapping && pe.radius != REAL_0 )
 					ppn["radius"] = fix( pe.radius );
 			}
 		}
