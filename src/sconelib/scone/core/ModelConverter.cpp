@@ -304,6 +304,9 @@ namespace scone
 
 	String ModelConverter::GetJointType( const Joint& j ) const
 	{
+		if ( j.GetBody().GetModel().IsPlanar() ) // #fix: this check fails for OpenSim models
+			return "joint"; // always use joint for planar models
+
 		if ( use_pin_joints_ && j.GetDofs().size() == 1 ) return "pin_joint";
 		else if ( use_ball_socket_joints_ && IsBallSocketJoint( j ) ) return "ball_socket_joint";
 		else if ( use_weld_joints_ && IsWeldJoint( j ) ) return "weld_joint";
