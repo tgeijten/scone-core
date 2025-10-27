@@ -62,7 +62,7 @@ namespace scone
 		return xo::get_config_dir() / "SCONE";
 	}
 
-	path GetDataFolder()
+	path GetDefaultDataFolder()
 	{
 		auto doc = xo::get_documents_dir();
 		if ( doc.empty() ) {
@@ -70,6 +70,16 @@ namespace scone
 			return "/SCONE";
 		}
 		else return doc / "SCONE";
+	}
+
+	path GetScenarioFolder()
+	{
+		return GetFolder( SconeFolder::Scenarios );
+	}
+
+	path GetResultsFolder()
+	{
+		return GetFolder( SconeFolder::Results );
 	}
 
 	path GetApplicationFolder()
@@ -82,8 +92,8 @@ namespace scone
 		switch ( folder )
 		{
 		case SconeFolder::Root: return GetInstallFolder();
-		case SconeFolder::Results: return GetFolder( "results", GetDataFolder() / "results" );
-		case SconeFolder::Scenarios: return GetFolder( "scenarios", GetDataFolder() );
+		case SconeFolder::Results: return GetFolder( "results", GetDefaultDataFolder() / "results" );
+		case SconeFolder::Scenarios: return GetFolder( "scenarios", GetDefaultDataFolder() );
 		case SconeFolder::Geometry: return GetFolder( "geometry", GetInstallFolder().parent_path() / "resources/geometry" );
 		default: SCONE_THROW( "Unknown folder type" );
 		}
@@ -100,4 +110,18 @@ namespace scone
 			path( ".." ) / p.filename() // filename in parent folder
 			} );
 	}
+
+	bool CopyFileLogErrors( const path& source, const path& target, bool overwrite )
+	{
+		xo::error_code ec;
+		if ( !xo::copy_file( source, target, overwrite, &ec ) ) {
+			log::warning( "Could not copy ", target, ": ", ec.message() );
+			return false;
+		}
+		else {
+			log::debug( "Copied ", target );
+			return true;
+		}
+	}
 }
+

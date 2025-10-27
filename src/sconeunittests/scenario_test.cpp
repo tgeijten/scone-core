@@ -56,7 +56,7 @@ namespace scone
 	void add_scenario_tests( const path& rootdir, const path& subdir, const xo::pattern_matcher& include, const xo::pattern_matcher& exclude, int levels )
 	{
 		auto full_test_dir = rootdir / subdir;
-		auto results_dir = GetDataFolder() / "resources/UnitTestResults" / subdir / xo::get_computer_name() + "_results";
+		auto results_dir = GetScenarioFolder() / "resources/UnitTestResults" / subdir / xo::get_computer_name() + "_results";
 		if ( XO_IS_DEBUG_BUILD ) results_dir += string( "_debug" );
 
 		xo::log::debug( "scanning dir: ", full_test_dir );
