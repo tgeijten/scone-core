@@ -37,6 +37,7 @@ namespace scone
 	struct StoreDataProfile {
 		TimeInSeconds interval;
 		StoreDataFlags flags;
+		String fileFormat = "sto";
 	};
 
 	/// Objects derived from this class can store data for analysis

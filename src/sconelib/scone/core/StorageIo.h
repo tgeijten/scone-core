@@ -24,12 +24,17 @@ namespace scone
 	void SCONE_API WriteStorageSto( const Storage< Real, TimeInSeconds >& storage, std::FILE*, const String& name, TimeInSeconds min_interval = 0.0 );
 	void SCONE_API WriteStorageSto( const Storage< Real, TimeInSeconds >& storage, std::ostream& str, const String& name, TimeInSeconds min_interval = 0.0 );
 
+	void SCONE_API WriteStorageStob( const Storage< Real, TimeInSeconds >& storage, const xo::path& file, const String& name, TimeInSeconds min_interval = 0.0 );
+
 	void SCONE_API ReadStorageTxt( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
 	void SCONE_API ReadStorageTxt( Storage< Real, TimeInSeconds >& storage, xo::char_stream& str );
 
 	void SCONE_API ReadStorageSto( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
 	void SCONE_API ReadStorageSto( Storage< Real, TimeInSeconds >& storage, xo::char_stream& str );
 
+	void SCONE_API ReadStorageStob( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
+
 	/// read storage file, autodetect format (txt or sto)
+	void SCONE_API WriteStorage( const Storage< Real, TimeInSeconds >& storage, const xo::path& file, const String& name, TimeInSeconds min_interval = 0.0 );
 	void SCONE_API ReadStorage( Storage< Real, TimeInSeconds >& storage, const xo::path& file );
 }

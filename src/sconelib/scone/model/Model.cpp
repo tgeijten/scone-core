@@ -72,8 +72,8 @@ namespace scone
 		m_SimulationTimer( false ),
 		m_StoreData( false ),
 		m_StoreDataProfiles{ {
-			{ 1.0 / GetSconeSetting<double>( "data.frequency" ), { StoreDataTypes::State } },
-			{ 1.0 / GetSconeSetting<double>( "data_minimal.frequency" ), { StoreDataTypes::State } }
+			{ 1.0 / GetSconeSetting<double>( "data.frequency" ), { StoreDataTypes::State }, GetSconeSetting<String>( "data.format" ) },
+			{ 1.0 / GetSconeSetting<double>( "data_minimal.frequency" ), { StoreDataTypes::State }, GetSconeSetting<String>( "data_minimal.format" ) }
 			} },
 		m_StoreDataProfileIdx( 0 ),
 		m_KeepAllFrames( GetSconeSetting<bool>( "data.keep_all_frames" ) )
@@ -570,8 +570,9 @@ namespace scone
 	std::vector<path> Model::WriteResults( const path& file ) const
 	{
 		std::vector<path> files;
-		WriteStorageSto( m_Data, file + ".sto", ( file.parent_path().filename() / file.stem() ).str(), GetStoreDataInterval() );
-		files.push_back( file + ".sto" );
+		auto storage_file = file + "." + GetStoreDataProfile().fileFormat;
+		WriteStorage( m_Data, storage_file, ( file.parent_path().filename() / file.stem() ).str(), GetStoreDataInterval() );
+		files.push_back( storage_file );
 
 		if ( GetSconeSetting<bool>( "results.controller" ) )
 		{

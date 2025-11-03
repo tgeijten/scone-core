@@ -8,6 +8,7 @@ folders {
 
 data {
 	frequency { type = float label = "Data output frequency" default = 100 range = 10..1000000 }
+	format { type = string label = "File format (sto, txt, stob)" default = "sto" }
 	body { type = bool label = "Output body position and orientation" default = 1 }
 	joint { type = bool label = "Output joint reation force" default = 1 }
 	actuator { type = bool label = "Output actuator input" default = 1 }
@@ -27,6 +28,7 @@ data {
 
 data_minimal {
 	frequency { type = float label = "Data output frequency" default = 100 range = 10..1000000 }
+	format { type = string label = "File format (sto, txt, stob)" default = "sto" }
 	body { type = bool label = "Output body position and orientation" default = 0 }
 	joint { type = bool label = "Output joint reation force" default = 0 }
 	actuator { type = bool label = "Output actuator input" default = 1 }
