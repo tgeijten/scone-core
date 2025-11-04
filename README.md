@@ -23,9 +23,8 @@ get started!
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information on ways to contribute to
 SCONE.
 
-### License
+### License and Third-Party Software 
 
-SCONE is licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+SCONE is licensed under the [Apache License, Version 2.0](./LICENSE).
 
-This project includes third-party components licensed under various open-source licenses.  
-See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for details.
+This product includes third-party software components, each distributed under their own license terms. Full license texts and notices for these components are provided in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
