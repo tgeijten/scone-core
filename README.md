@@ -26,3 +26,6 @@ SCONE.
 ### License
 
 SCONE is licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+This project includes third-party components licensed under various open-source licenses.  
+See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for details.
