@@ -113,6 +113,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "set_motor_target_orientation", &scone::Joint::SetMotorTargetOri, "Set the target orientation of the joint motor" )
 		.def( "set_motor_target_velocity", &scone::Joint::SetMotorTargetVel, "Set the target velocity of the joint motor" )
 		.def( "add_motor_torque", &scone::Joint::AddMotorTorque, "Add a torque [Nm^3] to this joint motor" )
+		.def( "motor_torque", &scone::Joint::GetMotorTorque, "Get the current motor torque [Nm^3]" )
 		.def( "set_motor_stiffness", &scone::Joint::SetMotorStiffness, "Set the joint motor stiffness" )
 		.def( "set_motor_damping", &scone::Joint::SetMotorDamping, "Set the joint motor damping" )
 		;
@@ -121,11 +122,14 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "name", &scone::Dof::GetName, "Get the name of this Dof" )
 		.def( "pos", &scone::Dof::GetPos, "Get the position/value of this Dof [m or rad]" )
 		.def( "vel", &scone::Dof::GetVel, "Get the velocity of this Dof" )
+		.def( "limit_torque", &scone::Dof::GetLimitMoment, "Get the dof limit torque [Nm]" )
 		.def( "set_pos", &scone::Dof::SetPos, "Set the Dof position. This is only applied after Model.init_state_from_dofs()" )
 		.def( "set_vel", &scone::Dof::SetVel, "Set the Dof velocity. This is only applied after Model.init_state_from_dofs()" )
 		.def( "is_rotational", &scone::Dof::IsRotational, "Check if this is a rotational Dof" )
 		.def( "rotation_axis", &scone::Dof::GetRotationAxis, "Get the rotation axis" )
 		.def( "is_actuated", &scone::Dof::IsActuated, "Check if this Dof is actuated via a Joint Motor (see Joint)" )
+		.def( "actuator_torque", &scone::Dof::GetActuatorTorque, "Get the actuator torque [Nm] applied to this dof" )
+		.def( "muscle_moment", &scone::Dof::GetMuscleMoment, "Get the muscle moment [Nm] applied to this dof" )
 		;
 
 	py::class_<scone::Actuator>( m, "Actuator" )

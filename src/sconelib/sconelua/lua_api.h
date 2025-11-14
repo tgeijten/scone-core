@@ -184,6 +184,8 @@ namespace scone
 		LuaNumber position() { return dof_.GetPos(); }
 		/// get the current velocity of the dof in [m/s] or [rad/s]
 		LuaNumber velocity() { return dof_.GetVel(); }
+		/// get the limit torque
+		LuaNumber limit_torque() { return dof_.GetLimitMoment(); }
 		/// check if this dof is rotational
 		bool is_rotational() { return dof_.IsRotational(); }
 		/// get the rotation axis of a rotational dof
@@ -308,8 +310,10 @@ namespace scone
 		void set_motor_target_ori( const LuaQuat* o ) { joint_.SetMotorTargetOri( LUA_ARG_REF( o ) ); }
 		/// set target velocity of the joint motor
 		void set_motor_target_vel( const LuaVec3* v ) { joint_.SetMotorTargetVel( LUA_ARG_REF( v ) ); }
-		/// set target velocity of the joint motor
+		/// add an offset to the motor torque
 		void add_motor_torque( const LuaVec3* v ) { joint_.AddMotorTorque( LUA_ARG_REF( v ) ); }
+		/// set target velocity of the joint motor
+		LuaVec3 motor_torque( const LuaVec3* v ) { return joint_.GetMotorTorque(); }
 		/// set stiffness of the joint motor
 		void set_motor_stiffness( LuaNumber kp ) { joint_.SetMotorStiffness( kp ); }
 		/// set damping of the joint motor

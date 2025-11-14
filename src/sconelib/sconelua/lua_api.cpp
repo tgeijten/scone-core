@@ -42,6 +42,7 @@ namespace scone
 			"name", &LuaDof::name,
 			"position", &LuaDof::position,
 			"velocity", &LuaDof::velocity,
+			"limit_torque", &LuaDof::limit_torque,
 			"is_rotational", &LuaDof::is_rotational,
 			"rotation_axis", &LuaDof::rotation_axis,
 			"is_actuated", &LuaDof::is_actuated,
@@ -94,6 +95,7 @@ namespace scone
 			"set_motor_target_ori", &LuaJoint::set_motor_target_ori,
 			"set_motor_target_vel", &LuaJoint::set_motor_target_vel,
 			"add_motor_torque", &LuaJoint::add_motor_torque,
+			"motor_torque", &LuaJoint::motor_torque,
 			"set_motor_stiffness", &LuaJoint::set_motor_stiffness,
 			"set_motor_damping", &LuaJoint::set_motor_damping
 			);
