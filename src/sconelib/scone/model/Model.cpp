@@ -400,7 +400,13 @@ namespace scone
 
 		// store interaction spring state
 		if ( auto* spr = GetInteractionSpring() ) {
-			spr->StoreData( frame, flags );
+			spr->StoreStateData( frame, flags );
+		}
+
+		// store spring lengths and velocities
+		if ( flags( StoreDataTypes::JointReactionForce ) ) {
+			for ( auto& spring : GetSprings() )
+				spring->StoreData( frame, flags );
 		}
 	}
 

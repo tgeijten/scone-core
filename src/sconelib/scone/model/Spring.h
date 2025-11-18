@@ -18,7 +18,7 @@ namespace scone
 {
 	class Body;
 
-	class SCONE_API Spring : HasData
+	class SCONE_API Spring : public HasName, HasData
 	{
 	public:
 		Spring() = default;
@@ -36,6 +36,10 @@ namespace scone
 		virtual Vec3 GetChildPos() const;
 		virtual bool IsActive() const;
 
+		virtual Real GetLength() const = 0;
+		virtual Real GetVelocity() const = 0;
+		virtual Real GetForce() const = 0;
+
 		virtual void SetParent( const Body& b, const Vec3& pos ) = 0;
 		virtual void SetChild( const Body& b, const Vec3& pos ) = 0;
 		virtual void SetRestLength( Real l ) = 0;
@@ -43,6 +47,7 @@ namespace scone
 		virtual void SetDamping( Real kd ) = 0;
 
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
+		virtual void StoreStateData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const;
 		virtual void SetStateFromData( const Storage<Real>::Frame& frame );
 	};
 }

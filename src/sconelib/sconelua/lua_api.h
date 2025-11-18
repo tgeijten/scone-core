@@ -348,6 +348,12 @@ namespace scone
 		LuaVec3 child_pos() { return spr_.GetChildPos(); }
 		/// check if the spring is active (attached to two bodies)
 		bool is_active() { return spr_.IsActive(); }
+		/// get spring length
+		LuaNumber length() { return spr_.GetLength(); }
+		/// get spring velocity
+		LuaNumber velocity() { return spr_.GetVelocity(); }
+		/// get spring force
+		LuaNumber force() { return spr_.GetForce(); }
 
 		/// attach the spring to a local point on a parent body
 		void set_parent( LuaBody b, LuaVec3 pos ) { spr_.SetParent( b.bod_, pos ); }
