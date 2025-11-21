@@ -56,6 +56,11 @@ namespace scone
 		return GetForce() * GetMomentArm( dof );
 	}
 
+	Vec3 Muscle::GetMoment3D( const Joint& j ) const
+	{
+		return GetForce() * GetMomentArm3D( j );
+	}
+
 	Real Muscle::GetMass( Real specific_tension, Real muscle_density ) const
 	{
 		// from OpenSim Umberger metabolic energy model docs

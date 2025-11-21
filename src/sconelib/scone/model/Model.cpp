@@ -133,6 +133,14 @@ namespace scone
 
 	Model::~Model() {}
 
+	const Body& Model::FindBody( const String& name ) const { return *FindByName( m_BodyPtrs, name ); }
+	const Joint& Model::FindJoint( const String& name ) const { return *FindByName( m_JointPtrs, name ); }
+	const Muscle& Model::FindMuscle( const String& name ) const { return *FindByName( m_MusclePtrs, name ); }
+	const Dof& Model::FindDof( const String& name ) const { return *FindByName( m_DofPtrs, name ); }
+	const Ligament& Model::FindLigament( const String& name ) const { return *FindByName( m_LigamentPtrs, name ); }
+	const Spring& Model::FindSpring( const String& name ) const { return *FindByName( m_SpringPtrs, name ); }
+	const Actuator& Model::FindActuator( const String& name ) const { return *FindByName( m_ActuatorPtrs, name ); }
+
 	Muscle& Model::FindMuscleOrGroup( const String& name )
 	{
 		if ( auto musit = TryFindByName( GetMuscles(), name ); musit != GetMuscles().end() )
@@ -142,7 +150,7 @@ namespace scone
 		SCONE_ERROR( "Could not find " + name );
 	}
 
-	Muscle& Model::FindMuscleOrGroup( const String& name, Location loc )
+	Muscle& Model::FindMuscleOrGroupByLocation( const String& name, Location loc )
 	{
 		return FindMuscleOrGroup( loc.GetSidedName( name ) );
 	}
@@ -831,4 +839,5 @@ namespace scone
 		m_PrevStoreDataTime = 0;
 		m_PrevStoreDataStep = 0;
 	}
+
 }

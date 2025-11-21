@@ -54,32 +54,39 @@ namespace scone
 		const Body& GetRootBody() const { SCONE_ASSERT( m_RootBody );  return *m_RootBody; }
 		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 		const Body& GetGroundBody() const { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
+		const Body& FindBody( const String& name ) const;
 
 		// joint access
 		std::vector< Joint* >& GetJoints() { return m_JointPtrs; }
 		const std::vector< Joint* >& GetJoints() const { return m_JointPtrs; }
+		const Joint& FindJoint( const String& name ) const;
 
 		// dof access
 		std::vector< Dof* >& GetDofs() { return m_DofPtrs; }
 		const std::vector< Dof* >& GetDofs() const { return m_DofPtrs; }
+		const Dof& FindDof( const String& name ) const;
 
 		// muscle access
 		std::vector< Muscle* >& GetMuscles() { return m_MusclePtrs; }
 		const std::vector< Muscle* >& GetMuscles() const { return m_MusclePtrs; }
+		const Muscle& FindMuscle( const String& name ) const;
 		Muscle& FindMuscleOrGroup( const String& name );
-		Muscle& FindMuscleOrGroup( const String& name, Location loc );
+		Muscle& FindMuscleOrGroupByLocation( const String& name, Location loc );
 
 		// ligament access
 		std::vector< Ligament* >& GetLigaments() { return m_LigamentPtrs; }
 		const std::vector< Ligament* >& GetLigaments() const { return m_LigamentPtrs; }
+		const Ligament& FindLigament( const String& name ) const;
 
 		// spring access
 		std::vector< Spring* >& GetSprings() { return m_SpringPtrs; }
 		const std::vector< Spring* >& GetSprings() const { return m_SpringPtrs; }
+		const Spring& FindSpring( const String& name ) const;
 
 		// Actuator access
 		std::vector< Actuator* >& GetActuators() { return m_ActuatorPtrs; }
 		const std::vector< Actuator* >& GetActuators() const { return m_ActuatorPtrs; }
+		const Actuator& FindActuator( const String& name ) const;
 
 		// Contact geometries
 		const std::vector< ContactGeometryUP >& GetContactGeometries() const { return m_ContactGeometries; }

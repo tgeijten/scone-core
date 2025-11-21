@@ -41,6 +41,7 @@ namespace scone
 		virtual Vec3 GetMomentArm3D( const Joint& joint ) const = 0;
 		virtual Real GetNormalizedMomentArm( const Dof& dof ) const;
 		virtual Real GetMoment( const Dof& dof ) const;
+		virtual Vec3 GetMoment3D( const Joint& joint ) const;
 
 		virtual Real GetMaxIsometricForce() const = 0;
 		virtual Real GetOptimalFiberLength() const = 0;
