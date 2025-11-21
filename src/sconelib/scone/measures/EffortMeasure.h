@@ -86,6 +86,9 @@ namespace scone
 		/// Use omnidirectional distance measure instead of distance along the x-axis; default = 0.
 		bool omnidirectional;
 
+		/// Store effort values for individual muscles; default = 1 for Wang2012 and Uchida2016, 0 otherwise.
+		bool store_individual_muscle_efforts;
+
 		/// Value for mechanical work power
 		Real order;
 

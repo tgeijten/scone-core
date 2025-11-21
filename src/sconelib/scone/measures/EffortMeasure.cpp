@@ -47,6 +47,7 @@ namespace scone
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
 		INIT_PROP( props, use_muscle_volume_weighting, false );
+		INIT_PROP( props, store_individual_muscle_efforts, measure_type == EffortMeasureType::Wang2012 || measure_type == EffortMeasureType::Uchida2016  );
 		INIT_PROP( props, omnidirectional, false );
 		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
@@ -190,7 +191,7 @@ namespace scone
 			Real effort_w = xo::max( 0.0, mus->GetActiveFiberForce() * -v_ce );
 			Real effort = effort_a + effort_m + effort_s + effort_w;
 			e += effort;
-			if ( model.GetStoreData() )
+			if ( model.GetStoreData() && store_individual_muscle_efforts )
 				m_MuscleEfforts[i] = effort;
 
 			SCONE_ERROR_IF( fa != fa, "Error computing fa for " + mus->GetName() + "; excitation=" + to_str( mus->GetExcitation() ) );
@@ -278,7 +279,7 @@ namespace scone
 			// total metabolic rate for this muscle
 			double Edot = ( totalHeatRate + Wdot ) * mass;
 
-			if ( model.GetStoreData() )
+			if ( model.GetStoreData() && store_individual_muscle_efforts )
 				m_MuscleEfforts[i] = Edot;
 
 			e += Edot;
@@ -379,7 +380,9 @@ namespace scone
 	void EffortMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		frame[name_ + ".penalty"] = m_Effort.GetLatest();
-		for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i )
-			frame[m_MuscleNames[i]] = m_MuscleEfforts[i];
+		if ( store_individual_muscle_efforts ) {
+			for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i )
+				frame[m_MuscleNames[i]] = m_MuscleEfforts[i];
+		}
 	}
 }
