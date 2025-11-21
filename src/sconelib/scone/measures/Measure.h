@@ -50,10 +50,7 @@ namespace scone
 		const PropNode& GetReport() const { return report_; }
 
 		virtual const String& GetName() const override;
-		Real GetWeight() { return weight; }
-		Real GetThreshold() { return threshold; }
-		Real GetOffset() { return result_offset; }
-		bool GetMinimize() { return minimize; }
+		bool GetMinimize() const { return minimize; }
 
 	protected:
 		virtual double ComputeResult( const Model& model ) = 0;

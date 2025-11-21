@@ -34,15 +34,15 @@ namespace scone
 		if ( !result_ )
 			result_ = ComputeResult( model );
 
-		Real m = *result_ + GetOffset();
-		if ( minimize && GetThreshold() != 0 )
+		Real m = *result_ + result_offset;
+		if ( minimize && threshold != 0 )
 		{
-			if ( m < GetThreshold() )
+			if ( m < threshold )
 				m = 0;
-			else if ( m < GetThreshold() + threshold_transition )
-				m = m * ( m - GetThreshold() ) / threshold_transition;
+			else if ( m < threshold + threshold_transition )
+				m = m * ( m - threshold ) / threshold_transition;
 		}
-		return GetWeight() * m;
+		return weight * m;
 	}
 
 	double Measure::GetCurrentResult( const Model& model )
@@ -52,15 +52,15 @@ namespace scone
 
 	double Measure::GetCurrentWeightedResult( const Model& model )
 	{
-		Real m = GetCurrentResult( model ) + GetOffset();
-		if ( GetThreshold() != 0 )
+		Real m = GetCurrentResult( model ) + result_offset;
+		if ( threshold != 0 )
 		{
-			if ( m < GetThreshold() )
+			if ( m < threshold )
 				m = 0;
-			else if ( m < GetThreshold() + threshold_transition )
-				m = m * ( m - GetThreshold() ) / threshold_transition;
+			else if ( m < threshold + threshold_transition )
+				m = m * ( m - threshold ) / threshold_transition;
 		}
-		return GetWeight() * m;
+		return weight * m;
 	}
 
 	void Measure::Reset( Model& model )

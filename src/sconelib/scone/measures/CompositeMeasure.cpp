@@ -73,22 +73,22 @@ namespace scone
 			}
 			else total += res_weighted;
 
-			bool hasweight = m->GetWeight() != 1;
-			bool hasofs = m->GetOffset() != 0;
-			bool hasthreshold = m->GetThreshold() != 0;
+			bool hasweight = m->weight != 1;
+			bool hasofs = m->result_offset != 0;
+			bool hasthreshold = m->threshold != 0;
 			string value = stringf( "%g", res_weighted );
 			if ( hasweight || hasofs || hasthreshold )
 			{
 				value += " <- ";
 				if ( hasweight )
-					value += stringf( "%g * ", m->GetWeight() );
+					value += stringf( "%g * ", m->weight );
 				if ( hasofs || hasthreshold )
 					value += "(";
 				value += stringf( "%g", res_org );
 				if ( hasofs )
-					value += stringf( " + %g", m->GetOffset() );
+					value += stringf( " + %g", m->result_offset );
 				if ( hasthreshold )
-					value += stringf( " > %g", m->GetThreshold() );
+					value += stringf( " > %g", m->threshold );
 				if ( hasofs || hasthreshold )
 					value += ")";
 			}
