@@ -108,7 +108,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "reaction_force", &scone::Joint::GetReactionForce, "Get the Joint reaction force [N^3]" )
 		.def( "limit_torque", &scone::Joint::GetLimitTorque, "Get the Joint limit torque [Nm^3]" )
 		.def( "limit_power", &scone::Joint::GetLimitPower, "Get the Joint limit power" )
-		.def( "load", &scone::Joint::GetLoad, "Get the scalar joint load" )
+		.def( "load", &scone::Joint::GetLoad, "Get the scalar joint load [BW]" )
 		.def( "body", &scone::Joint::GetBody, py::return_value_policy::reference, "Get the child Body of this Joint" )
 		.def( "parent_body", &scone::Joint::GetParentBody, py::return_value_policy::reference, "Get the parent Body of this Joint" )
 		.def( "has_motor", &scone::Joint::HasMotor, "See if this Joint has a Joint Motor" )
