@@ -16,10 +16,16 @@ namespace scone
 	{
 		INIT_PROP( props, name_, "" );
 		INIT_PROP( props, weight, 1.0 );
-		INIT_PROP( props, threshold, 0.0 );
+		INIT_OPTIONAL_PROP( props, threshold );
+		INIT_OPTIONAL_PROP( props, soft_threshold );
 		INIT_PROP( props, threshold_transition, 0.0 );
 		INIT_PROP( props, result_offset, 0.0 );
 		INIT_PROP( props, minimize, true );
+		if ( soft_threshold ) {
+			SCONE_ERROR_IF( threshold || result_offset != 0.0, "Cannot set threshold or result_offset with soft_threshold" )
+			result_offset = -*soft_threshold;
+			threshold = 0;
+		}
 	}
 
 	double Measure::GetResult( const Model& model )
@@ -35,12 +41,12 @@ namespace scone
 			result_ = ComputeResult( model );
 
 		Real m = *result_ + result_offset;
-		if ( minimize && threshold != 0 )
+		if ( minimize && threshold )
 		{
-			if ( m < threshold )
+			if ( m < *threshold )
 				m = 0;
-			else if ( m < threshold + threshold_transition )
-				m = m * ( m - threshold ) / threshold_transition;
+			else if ( m < *threshold + threshold_transition )
+				m = m * ( m - *threshold ) / threshold_transition;
 		}
 		return weight * m;
 	}
@@ -53,12 +59,12 @@ namespace scone
 	double Measure::GetCurrentWeightedResult( const Model& model )
 	{
 		Real m = GetCurrentResult( model ) + result_offset;
-		if ( threshold != 0 )
+		if ( threshold )
 		{
-			if ( m < threshold )
+			if ( m < *threshold )
 				m = 0;
-			else if ( m < threshold + threshold_transition )
-				m = m * ( m - threshold ) / threshold_transition;
+			else if ( m < *threshold + threshold_transition )
+				m = m * ( m - *threshold ) / threshold_transition;
 		}
 		return weight * m;
 	}

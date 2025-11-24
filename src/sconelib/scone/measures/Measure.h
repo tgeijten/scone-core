@@ -10,6 +10,7 @@
 
 #include "scone/controllers/Controller.h"
 #include "scone/core/HasName.h"
+#include "scone/core/Optional.h"
 
 namespace scone
 {
@@ -26,8 +27,11 @@ namespace scone
 		/// Weighting factor applied to the result of the measure; default = 1.
 		Real weight;
 
-		/// Threshold above / below which the measure becomes zero; default = 0.
-		Real threshold;
+		/// Hard threshold above / below which the measure becomes zero; default = not set.
+		optional<Real> threshold;
+
+		/// Soft or subtractive threshold, such that result becomes max( 0, result - soft_threshold); default = not set.
+		optional<Real> soft_threshold;
 
 		/// Transition range above ''threshold'' between which the measure linearly decreases to zero; default = 0.
 		Real threshold_transition;

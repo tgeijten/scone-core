@@ -75,7 +75,7 @@ namespace scone
 
 			bool hasweight = m->weight != 1;
 			bool hasofs = m->result_offset != 0;
-			bool hasthreshold = m->threshold != 0;
+			bool hasthreshold = bool( m->threshold );
 			string value = stringf( "%g", res_weighted );
 			if ( hasweight || hasofs || hasthreshold )
 			{
@@ -86,7 +86,7 @@ namespace scone
 					value += "(";
 				value += stringf( "%g", res_org );
 				if ( hasofs )
-					value += stringf( " + %g", m->result_offset );
+					value += stringf( " %c %g", m->result_offset > 0 ? '+' : '-', std::abs( m->result_offset ) );
 				if ( hasthreshold )
 					value += stringf( " > %g", m->threshold );
 				if ( hasofs || hasthreshold )

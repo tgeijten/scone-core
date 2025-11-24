@@ -109,7 +109,7 @@ namespace scone
 		if ( termination_time_ > 0.0 ) {
 			auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
 			if ( penalty_duration > 0.0 ) {
-				auto penalty = threshold + threshold_transition + peak_error_limit * penalty_duration;
+				auto penalty = threshold.value_or( 0.0 ) + threshold_transition + peak_error_limit * penalty_duration;
 				result += penalty;
 				report_.set( "early_termination_penalty", penalty );
 			}
