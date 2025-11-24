@@ -12,7 +12,7 @@
 #include "spot/objective_info.h"
 #include "spot/par_tools.h"
 #include "spot/par_info.h"
-#include "xo/utility/optional.h"
+#include "scone/core/Optional.h"
 
 namespace scone
 {
@@ -21,7 +21,7 @@ namespace scone
 	using ObjectiveInfo = spot::objective_info;
 	using ParInfo = spot::par_info;
 	using ParValue = spot::par_t;
-	using OptionalPar = xo::optional<spot::par_t>;
+	using OptionalPar = optional<spot::par_t>;
 	using ScopedParamSetPrefixer = spot::scoped_prefix;
 
 }

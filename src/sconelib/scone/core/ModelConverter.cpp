@@ -5,7 +5,6 @@
 #include "scone/model/Dof.h"
 #include "xo/numerical/bounds.h"
 #include "xo/utility/side.h"
-#include "xo/utility/optional.h"
 #include "scone/model/model_tools.h"
 #include "scone/core/Log.h"
 #include "string_tools.h"

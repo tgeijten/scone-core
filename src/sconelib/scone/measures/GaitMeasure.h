@@ -11,7 +11,7 @@
 #include "scone/core/Statistic.h"
 #include "EffortMeasure.h"
 #include "DofLimitMeasure.h"
-#include "xo/utility/optional.h"
+#include "scone/core/Optional.h"
 
 namespace scone
 {
@@ -86,7 +86,7 @@ namespace scone
 		std::vector< const Body* > m_BaseBodies;
 		Real m_InitComHeight;
 		Real m_InitGaitDist;
-		xo::optional<TimeInSeconds> m_TerminationTime;
+		optional<TimeInSeconds> m_TerminationTime;
 
 		struct Step {
 			TimeInSeconds time;
