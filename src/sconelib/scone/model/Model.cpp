@@ -271,6 +271,12 @@ namespace scone
 		m_StoreDataProfileIdx = profile_idx;
 	}
 
+	void Model::StoreExternalData( const String& name, Real value )
+	{
+		if ( m_StoreData && !m_Data.IsEmpty() )
+			m_Data.Back().Set( name, value );
+	}
+
 	void Model::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		SCONE_PROFILE_FUNCTION( GetProfiler() );

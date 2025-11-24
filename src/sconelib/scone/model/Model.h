@@ -333,6 +333,8 @@ namespace scone
 		const StoreDataProfile& GetStoreDataProfile() const { return m_StoreDataProfiles[m_StoreDataProfileIdx]; }
 		const StoreDataFlags& GetStoreDataFlags() const { return GetStoreDataProfile().flags; }
 		TimeInSeconds GetStoreDataInterval() const { return GetStoreDataProfile().interval; }
+		void StoreExternalData( const String& name, Real value );
+		TimeInSeconds GetCurrentDataFrameTime() const { return m_PrevStoreDataTime; }
 
 		xo::profiler& GetProfiler() const { return m_Profiler; }
 
