@@ -184,6 +184,7 @@ namespace scone
 			"find_joint", &LuaModel::find_joint,
 			"joint_count", &LuaModel::joint_count,
 			"get_interaction_spring", &LuaModel::get_interaction_spring,
+			"get_ray_distance", &LuaModel::get_ray_distance,
 			"set_custom_value", &LuaModel::set_custom_value,
 			"get_custom_value", &LuaModel::get_custom_value,
 			"has_custom_value", &LuaModel::has_custom_value,
