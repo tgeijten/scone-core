@@ -101,7 +101,7 @@
 | **has_motor**() | bool | See if this Joint has a Joint Motor |
 | **limit_power**() | float | Get the Joint limit power |
 | **limit_torque**() | [[#Vec3|Vec3]] | Get the Joint limit torque [Nm%%^%%3] |
-| **load**() | float | Get the scalar joint load |
+| **load**() | float | Get the scalar joint load [BW] |
 | **motor_max_torque**() | float | Get the max torque [Nm] for the joint motor |
 | **motor_torque**() | [[#Vec3|Vec3]] | Get the current motor torque [Nm%%^%%3] |
 | **name**() | str | Get the name of this Joint |
@@ -155,6 +155,7 @@
 | **contact_load**() | float | Get the contact load [BW] applied to this Model |
 | **contact_power**() | float | Get the contact power [W] |
 | **control_step_size**() | float | Get the control step size [s] of this Model |
+| **current_data_frame_time**() | float | Timestamp of most recent SCONE data frame |
 | **current_measure**() | float | Get the current (instantaneous) value of the Measure defined in this Model (useful as reward in Reinforcement Learning) |
 | **delayed_dof_position_array**() | numpy.ndarray | Get an array of current delayed dof positions |
 | **delayed_dof_velocity_array**() | numpy.ndarray | Get an array of current delayed dof velocities |
@@ -208,6 +209,7 @@
 | **set_store_data**(arg0: bool) | None | Set if data must be stored during Model simulation (slow, do not use in optimizations) |
 | **set_store_data_profile**(arg0: int) | None | Set store data profile, 0 = default, 1 = minimal |
 | **state**() | Dict[str, float] | Get the current state of this Model |
+| **store_external_data**(arg0: str, arg1: float) | None | Store external data to current data frame |
 | **time**() | float | Get the current simulation time [s] |
 | **write_results**(arg0: str, arg1: str) | None | Write the simulation results to a .sto file |
 
