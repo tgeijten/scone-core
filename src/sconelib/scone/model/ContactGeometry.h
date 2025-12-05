@@ -20,8 +20,8 @@ namespace scone
 	class SCONE_API ContactGeometry : public HasName
 	{
 	public:
-		ContactGeometry( const String& name, const Body& b, const xo::shape& s, const Vec3& p, const Quat& q );
-		ContactGeometry( const String& name, const Body& b, const xo::path& f, const Vec3& p, const Quat& q );
+		ContactGeometry( const String& name, const Body& b, const xo::shape& s, const Vec3& p, const Quat& q, const String& material );
+		ContactGeometry( const String& name, const Body& b, const xo::path& f, const Vec3& p, const Quat& q, const String& material );
 
 		virtual const String& GetName() const override { return m_Name; }
 
@@ -40,5 +40,6 @@ namespace scone
 		Vec3 m_Pos;
 		Quat m_Ori;
 		xo::path m_FileName;
+		const String& m_Material;
 	};
 }

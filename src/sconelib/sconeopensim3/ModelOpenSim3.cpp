@@ -328,17 +328,17 @@ namespace scone
 
 			if ( auto cs = dynamic_cast<OpenSim::ContactSphere*>( cg_osim ) )
 				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-					name, bod, xo::sphere( float( cs->getRadius() ) ), loc, ori ) );
+					name, bod, xo::sphere( float( cs->getRadius() ) ), loc, ori, name ) );
 			else if ( auto cp = dynamic_cast<OpenSim::ContactHalfSpace*>( cg_osim ) )
 				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-					name, bod, xo::plane( xo::vec3f::neg_unit_x() ), loc, ori ) );
+					name, bod, xo::plane( xo::vec3f::neg_unit_x() ), loc, ori, name ) );
 			else if ( auto cm = dynamic_cast<OpenSim::ContactMesh*>( cg_osim ) )
 			{
 				// #todo: add support for displaying mesh contacts
 				auto file = FindFile( model_file.parent_path() / cm->getFilename() );
 				AddExternalResource( file );
 				m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-					name, bod, file.filename(), loc, ori ) );
+					name, bod, file.filename(), loc, ori, name ) );
 			}
 		}
 

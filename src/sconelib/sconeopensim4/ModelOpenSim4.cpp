@@ -361,17 +361,17 @@ namespace scone
 				auto ori = xo::quat_from_euler( ea, xo::euler_order::xyz );
 				if ( auto cs = dynamic_cast<OpenSim::ContactSphere*>( cg_osim ) )
 					m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-						name, body, xo::sphere( float( cs->getRadius() ) ), loc, ori ) );
+						name, body, xo::sphere( float( cs->getRadius() ) ), loc, ori, name ) );
 				else if ( auto cp = dynamic_cast<OpenSim::ContactHalfSpace*>( cg_osim ) )
 					m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-						name, body, xo::plane( xo::vec3f::neg_unit_x() ), loc, ori ) );
+						name, body, xo::plane( xo::vec3f::neg_unit_x() ), loc, ori, name ) );
 				else if ( auto cm = dynamic_cast<OpenSim::ContactMesh*>( cg_osim ) )
 				{
 					// #todo: add support for displaying mesh contacts
 					auto file = FindFile( model_file.parent_path() / cm->getFilename() );
 					AddExternalResource( file );
 					m_ContactGeometries.emplace_back( std::make_unique<ContactGeometry>(
-						name, body, file.filename(), loc, ori ) );
+						name, body, file.filename(), loc, ori, name ) );
 				}
 			}
 			else log::info( "Could not create ContactGeometry ", name, ": could not find body ", body_name );
