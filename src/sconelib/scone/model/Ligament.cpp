@@ -14,6 +14,7 @@
 #include "Model.h"
 #include "scone/core/math.h"
 #include "xo/container/container_tools.h"
+#include "muscle_tools.h"
 
 #pragma warning( disable: 4355 )
 
@@ -105,6 +106,7 @@ namespace scone
 		pn["insertion"] = GetInsertionBody().GetName();
 		pn["pcsa_force"] = GetPcsaForce();
 		pn["resting_length"] = GetRestingLength();
+		pn.add_child( "path", GetPathInfo( GetLocalLigamentPath() ) );
 		return pn;
 	}
 

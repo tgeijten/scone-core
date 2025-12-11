@@ -44,7 +44,7 @@ namespace scone
 		Real GetNormalizedVelocity() const override;
 
 		std::vector<Vec3> GetLigamentPath() const override;
-		std::vector<std::pair<Body*, Vec3>> GetLocalLigamentPath() const override;
+		std::vector<PathElement> GetLocalLigamentPath() const override;
 
 		const String& GetName() const override;
 

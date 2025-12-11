@@ -188,10 +188,15 @@ namespace scone
 		mus_pn["resting_length"] = m.GetRestingLength();
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalLigamentPath();
-		for ( auto& [b, point] : mp ) {
+		for ( auto& pe : mp ) {
 			auto& ppn = path_pn.add_child();
-			ppn["body"] = GetBodyName( *b );
-			ppn["pos"] = GetLocalBodyPos( point, *b );
+			ppn["body"] = GetBodyName( *pe.body );
+			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
+			if ( !pe.dir.is_null() ) {
+				ppn["dir"] = fix( -pe.body->GetOrientation() * pe.dir );
+				if ( use_cylinder_wrapping && pe.radius != REAL_0 )
+					ppn["radius"] = fix( pe.radius );
+			}
 		}
 	}
 

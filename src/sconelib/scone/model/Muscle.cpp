@@ -15,6 +15,7 @@
 #include "Model.h"
 #include "scone/core/math.h"
 #include "scone/core/profiler_config.h"
+#include "muscle_tools.h"
 
 #pragma warning( disable: 4355 )
 
@@ -222,18 +223,8 @@ namespace scone
 			pn["tendon_strain_at_one_force_norm"] = v;
 		if ( auto v = GetPassiveFiberStrainAtOneNormForce(); v != 0 )
 			pn["passive_fiber_strain_at_one_force_norm"] = v;
-		auto& path_pn = pn["path"];
-		for ( auto& pe : GetLocalMusclePath() ) {
-			if ( !pe.dir.is_null() ) {
-				auto& cpn = path_pn.add_child( pe.body->GetName() );
-				cpn["pos"] = pe.pos;
-				cpn["dir"] = pe.dir;
-				if ( pe.radius != 0 )
-					cpn["radius"] = pe.radius;
-			}
-			else
-				path_pn.add_key_value( pe.body->GetName(), pe.pos );
-		}
+		pn.add_child( "path", GetPathInfo( GetLocalMusclePath() ) );
+
 		return pn;
 	}
 

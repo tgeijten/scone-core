@@ -99,4 +99,20 @@ namespace scone
 			}
 		}
 	}
+
+	PropNode GetPathInfo( const std::vector<PathElement>& p )
+	{
+		PropNode pn;
+		for ( auto& pe : p ) {
+			if ( !pe.dir.is_null() ) {
+				auto& cpn = pn.add_child( pe.body->GetName() );
+				cpn["pos"] = pe.pos;
+				cpn["dir"] = pe.dir;
+				if ( pe.radius != 0 )
+					cpn["radius"] = pe.radius;
+			}
+			else pn.add_key_value( pe.body->GetName(), pe.pos );
+		}
+		return pn;
+	}
 }

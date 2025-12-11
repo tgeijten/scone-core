@@ -17,6 +17,7 @@ namespace scone
 		Vec3 dir;
 		Real radius;
 
+		bool HasDir() const { return !dir.is_null(); }
 		bool IsCylinder() const { return radius != 0; }
 	};
 }

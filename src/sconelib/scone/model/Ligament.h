@@ -15,6 +15,7 @@
 #include "scone/core/Vec3.h"
 #include "scone/core/Storage.h"
 #include "scone/core/PropNode.h"
+#include "PathElement.h"
 #include "Side.h"
 #include <vector>
 
@@ -47,7 +48,7 @@ namespace scone
 		virtual Real GetNormalizedVelocity() const = 0;
 
 		virtual std::vector<Vec3> GetLigamentPath() const = 0;
-		virtual std::vector<std::pair<Body*, Vec3>> GetLocalLigamentPath() const { SCONE_THROW_NOT_IMPLEMENTED; }
+		virtual std::vector<PathElement> GetLocalLigamentPath() const { SCONE_THROW_NOT_IMPLEMENTED; }
 
 		virtual Side GetSide() const;
 
