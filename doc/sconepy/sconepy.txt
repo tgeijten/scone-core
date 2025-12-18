@@ -233,14 +233,17 @@
 | **joint_moment**(arg0: [[#Joint|Joint]]) | [[#Vec3|Vec3]] | Get the 3D moment of this muscle over a joint |
 | **joint_moment_arm**(arg0: [[#Joint|Joint]]) | [[#Vec3|Vec3]] | Get the 3D moment arm of this muscle over a joint |
 | **joints**() | List[ [[#Joint|Joint]] ] | Get the array of Joints this Muscle crosses |
+| **mass**(arg0: float = 250000.0, arg1: float = 1059.7) | float | Get the mass of the Muscle for a specific tension and density |
 | **max_isometric_force**() | float | Get the maximum isometric force of this Muscle |
 | **name**() | str | Get the name of this Muscle |
 | **optimal_fiber_length**() | float | Get the optimum fiber lengths of this Muscle |
 | **origin_body**() | [[#Body|Body]] | Get the origin Body of this Muscle |
+| **pcsa**(arg0: float = 250000.0) | float | Get the PCSA of the Muscle for a specific tension |
 | **pennation_angle_at_optimal**() | float | Get the pennation angle at optimal of this Muscle |
 | **set_max_activation**(arg0: float) | None | Set the maximum allowed Muscle activation |
 | **set_min_activation**(arg0: float) | None | Set the minimum allowed Muscle activation |
 | **tendon_slack_length**() | float | Get the tendon slack length of this Muscle |
+| **volume**(arg0: float = 250000.0) | float | Get the volume of the Muscle for a specific tension |
 
 
 ===== Optimizer =====
