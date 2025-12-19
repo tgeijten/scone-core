@@ -34,7 +34,7 @@ namespace scone
 		PropNode GetInfo() const;
 
 	private:
-		const String& m_Name;
+		String m_Name;
 		const Body& m_Body;
 		xo::shape m_Shape;
 		Vec3 m_Pos;
