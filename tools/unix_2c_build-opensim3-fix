@@ -18,6 +18,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
     PLATFORM_SPECIFIC_FLAGS=(
         -DCMAKE_INSTALL_RPATH="\$ORIGIN"
+        -DBUILD_TESTING=OFF
+        -DBUILD_API_EXAMPLES=OFF
+        -DBUILD_API_ONLY=OFF
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     )
 fi
