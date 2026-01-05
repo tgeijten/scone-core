@@ -23,5 +23,4 @@ namespace scone
 	using ParValue = spot::par_t;
 	using OptionalPar = optional<spot::par_t>;
 	using ScopedParamSetPrefixer = spot::scoped_prefix;
-
 }

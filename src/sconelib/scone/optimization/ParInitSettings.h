@@ -26,6 +26,8 @@ namespace scone
 			INIT_MEMBER( pn, use_std, true ),
 			INIT_MEMBER( pn, std_factor, 1.0 ),
 			INIT_MEMBER( pn, std_offset, 0.0 ),
+			INIT_MEMBER( pn, value_factor, 1.0 ),
+			INIT_MEMBER( pn, value_offset, 0.0 ),
 			INIT_MEMBER( pn, include, "" ),
 			INIT_MEMBER( pn, exclude, "" ),
 			INIT_MEMBER( pn, locked, false ),
@@ -44,6 +46,12 @@ namespace scone
 		/// Offset added to the standard deviations from init_file; default = 0.
 		double std_offset = 0.0;
 
+		/// Factor by which to multiply the parameter values; default = 1.0.
+		double value_factor = 1.0;
+
+		/// Offset added to the parameter values; default = 0.
+		double value_offset = 0.0;
+
 		/// Pattern matching the file parameters to include (semicolon seperated); default = "" (all).
 		String include;
 
@@ -56,6 +64,20 @@ namespace scone
 		/// Use values from the first column of the .par file (generation best) as mean; default = false.
 		bool use_best_as_mean = false;
 	};
+
+	inline spot::par_import_settings to_spot( const ParInitSettings& p ) {
+		spot::par_import_settings pis;
+		pis.import_std = p.use_std;
+		pis.std_factor = p.std_factor;
+		pis.std_offset = p.std_offset;
+		pis.value_factor = p.value_factor;
+		pis.value_offset = p.value_offset;
+		pis.include = p.include;
+		pis.exclude = p.exclude;
+		pis.locked = p.locked;
+		pis.use_best_as_mean = p.use_best_as_mean;
+		return pis;
+	}
 }
 
 XO_DEFINE_FROM_PROP_NODE_FOR_TYPE( scone::ParInitSettings );

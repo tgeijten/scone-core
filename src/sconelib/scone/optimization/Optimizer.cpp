@@ -76,9 +76,14 @@ namespace scone
 		if ( use_init_file && !init_file.empty() )
 		{
 			init_file = FindFile( init_file );
-			auto result = info.import_mean_std( init_file,
-				use_init_file_std, init_file_std_factor, init_file_std_offset,
-				init_file_include, init_file_exclude, use_init_file_best_as_mean );
+			spot::par_import_settings pis;
+			pis.import_std = use_init_file_std;
+			pis.std_factor = init_file_std_factor;
+			pis.std_offset = init_file_std_offset;
+			pis.include = init_file_include;
+			pis.exclude = init_file_exclude;
+			pis.use_best_as_mean = use_init_file_best_as_mean;
+			auto result = info.import_mean_std( init_file, pis );
 			GetObjective().AddExternalResource( init_file );
 			log::debug( "Imported ", result.first, " of ", info.dim(), ", skipped ", result.second, " parameters from ", init_file );
 		}
@@ -89,8 +94,9 @@ namespace scone
 			init.file = FindFile( init.file );
 			GetObjective().AddExternalResource( init.file );
 			std::pair< size_t, size_t > r;
+			auto pis = to_spot( init );
 			if ( !init.locked )
-				r = info.import_mean_std( init.file, init.use_std, init.std_factor, init.std_offset, init.include, init.exclude, init.use_best_as_mean );
+				r = info.import_mean_std( init.file, pis );
 			else r = info.import_locked( init.file, init.include, init.exclude );
 			log::debug( "Imported ", r.first, " of ", info.dim(), ", skipped ", r.second, " parameters from ", init.file );
 		}
