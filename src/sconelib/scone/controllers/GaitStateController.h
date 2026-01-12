@@ -30,6 +30,10 @@ namespace scone
 	\li ''LiftOff'' -> ''Swing'' occurs if ''leg_load'' is below **swing_load_threshold**.
 	\li ''Swing'' -> ''Landing'' occurs if ''sagittal_pos'' is above **landing_threshold**.
 
+	To access the current gait state as a number (0-5) from a ScriptController or ScriptMeasure, you can use:
+	\li ''local state_l = model.get_custom_value("leg0_l.state")''
+	\li ''local state_r = model.get_custom_value("leg1_r.state")''
+
 	See the [[tutorials:gait|gait tutorial]] for an example.
 	*/
 	class GaitStateController : public Controller
