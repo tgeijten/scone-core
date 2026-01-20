@@ -73,6 +73,9 @@ namespace scone
 			"ang_pos", &LuaBody::ang_pos,
 			"ang_vel", &LuaBody::ang_vel,
 			"ang_acc", &LuaBody::ang_acc,
+			"has_parent", &LuaBody::has_parent,
+			"parent_joint", &LuaBody::parent_joint,
+			"parent_body", &LuaBody::parent_body,
 			"contact_force", &LuaBody::contact_force,
 			"contact_moment", &LuaBody::contact_moment,
 			"contact_point", &LuaBody::contact_point,
@@ -91,6 +94,8 @@ namespace scone
 			"limit_torque", &LuaJoint::limit_torque,
 			"limit_power", &LuaJoint::limit_power,
 			"load", &LuaJoint::load,
+			"parent", &LuaJoint::parent,
+			"child", &LuaJoint::child,
 			"has_motor", &LuaJoint::has_motor,
 			"set_motor_target_ori", &LuaJoint::set_motor_target_ori,
 			"set_motor_target_vel", &LuaJoint::set_motor_target_vel,
@@ -233,4 +238,9 @@ namespace scone
 			"quat_from_euler_rad", &LuaScone::quat_from_euler_rad
 			);
 	}
+
+	struct LuaJoint LuaBody::parent_joint() {
+		return GetRefRemoveConst( bod_.GetJoint(), "Body has no parent joint" );
+	}
+
 }

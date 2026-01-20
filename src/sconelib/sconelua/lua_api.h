@@ -56,6 +56,11 @@ namespace scone
 		return *obj;
 	}
 
+	template< typename T > T& GetRefRemoveConst( const T* obj, const char* error_msg ) {
+		SCONE_ERROR_IF( !obj, error_msg );
+		return const_cast<T&>( *obj );
+	}
+
 	template< typename T > T& GetArgRef( T* obj, const char* method_name ) {
 		SCONE_ERROR_IF( !obj, GetLuaMethodName( method_name ) + "(): invalid argument" );
 		return *obj;
@@ -262,6 +267,12 @@ namespace scone
 		LuaVec3 ang_vel() { return bod_.GetAngVel(); }
 		/// get the angular acceleration [rad/s%%^%%2] of the body
 		LuaVec3 ang_acc() { return bod_.GetAngAcc(); }
+		/// check if this body has a parent joint
+		bool has_parent() { return bod_.GetJoint() != nullptr; }
+		/// get the parent joint, error if not existing
+		struct LuaJoint parent_joint();
+		/// get the parent joint, error if not existing
+		LuaBody parent_body() { return GetRefRemoveConst( bod_.GetParentBody(), "Body has no parent" );  }
 		/// get the contact force vector [N] applied to this body via contact geometry
 		LuaVec3 contact_force() { return bod_.GetContactForce(); }
 		/// get the contact moment vector [Nm] applied to this body via contact geometry
@@ -304,6 +315,10 @@ namespace scone
 		Real limit_power() { return joint_.GetLimitPower(); }
 		/// get the joint load [BW]
 		Real load() { return joint_.GetLoad(); }
+		/// get the parent body
+		LuaBody parent() { return const_cast<Body&>( joint_.GetParentBody() ); }
+		/// get the child body
+		LuaBody child() { return const_cast<Body&>( joint_.GetBody() ); }
 		/// check if this joint has a motor
 		bool has_motor() { return joint_.HasMotor(); }
 		/// set target orientation of the joint motor
