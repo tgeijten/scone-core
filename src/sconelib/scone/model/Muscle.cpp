@@ -91,10 +91,18 @@ namespace scone
 		return GetSideFromName( GetName() );
 	}
 
-	bool Muscle::HasMomentArm( const Dof& dof ) const
+	bool Muscle::ActsOnDof( const Dof& dof ) const
 	{
 		for ( const auto& d : m_Dofs )
 			if ( d == &dof )
+				return true;
+		return false;
+	}
+
+	bool Muscle::ActsOnJoint( const Joint& joint ) const
+	{
+		for ( const auto& j : m_Joints )
+			if ( j == &joint )
 				return true;
 		return false;
 	}
@@ -114,7 +122,7 @@ namespace scone
 	{
 		for ( auto& dof : GetModel().GetDofs() )
 		{
-			if ( HasMomentArm( *dof ) && other.HasMomentArm( *dof ) )
+			if ( ActsOnDof( *dof ) && other.ActsOnDof( *dof ) )
 				if ( Sign( GetMomentArm( *dof ) ) != Sign( other.GetMomentArm( *dof ) ) )
 					return true;
 		}
@@ -125,7 +133,7 @@ namespace scone
 	{
 		for ( auto& dof : GetModel().GetDofs() )
 		{
-			if ( HasMomentArm( *dof ) && other.HasMomentArm( *dof ) )
+			if ( ActsOnDof( *dof ) && other.ActsOnDof( *dof ) )
 				if ( Sign( GetMomentArm( *dof ) ) == Sign( other.GetMomentArm( *dof ) ) )
 					return true;
 		}
@@ -136,7 +144,7 @@ namespace scone
 	{
 		for ( auto& dof : GetOriginBody().GetModel().GetDofs() )
 		{
-			if ( HasMomentArm( *dof ) && other.HasMomentArm( *dof ) )
+			if ( ActsOnDof( *dof ) && other.ActsOnDof( *dof ) )
 				return true;
 		}
 		return false;

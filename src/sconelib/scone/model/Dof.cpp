@@ -23,7 +23,7 @@ namespace scone
 		Real mom = 0.0;
 		for ( const auto& mus : GetModel().GetMuscles() )
 		{
-			if ( mus->HasMomentArm( *this ) )
+			if ( mus->ActsOnDof( *this ) )
 				mom += mus->GetMoment( *this );
 		}
 		return mom;

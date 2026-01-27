@@ -240,7 +240,7 @@ namespace scone
 
 		for ( auto& dof : mus->GetModel().GetDofs() )
 		{
-			if ( mus->HasMomentArm( *dof ) )
+			if ( mus->ActsOnDof( *dof ) )
 			{
 				auto mom = mus->GetNormalizedMomentArm( *dof );
 				result.push_back( { GetNameNoSide( dof->GetName() ) + GetSignChar( mom ), abs( mom ),{ dof } } );

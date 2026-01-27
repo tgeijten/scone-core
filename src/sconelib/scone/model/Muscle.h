@@ -93,7 +93,8 @@ namespace scone
 
 		virtual Side GetSide() const;
 
-		virtual bool HasMomentArm( const Dof& dof ) const;
+		virtual bool ActsOnDof( const Dof& dof ) const;
+		virtual bool ActsOnJoint( const Joint& joint ) const;
 		virtual const std::vector<const Joint*>& GetJoints() const;
 		virtual const std::vector<const Dof*>& GetDofs() const;
 		virtual bool IsAntagonist( const Muscle& other ) const;

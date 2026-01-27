@@ -68,7 +68,7 @@ namespace scone
 			auto range = GetDofRangeVec( *dof, 1.0 );
 			for ( auto& mus : model.GetMuscles() )
 			{
-				if ( mus->HasMomentArm( *dof ) )
+				if ( mus->ActsOnDof( *dof ) )
 				{
 					model.SetNullState();
 					auto name = dof->GetName() + '.' + mus->GetName();
