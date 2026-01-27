@@ -211,7 +211,7 @@ namespace scone
 		LuaNumber max_torque() { return dof_.GetMaxTorque(); }
 		/// get highest possible actuator torque [Nm] for this dof
 		LuaNumber actuator_torque() { return dof_.GetActuatorTorque(); }
-		/// get sum of muscle moments for this dof 
+		/// get sum of muscle moments [Nm] for this dof 
 		LuaNumber muscle_moment() { return dof_.GetMuscleMoment(); }
 
 		/// set the current value (position) of the dof in [m] or [rad], must call init_state_from_dofs() on model to take effect
@@ -313,6 +313,8 @@ namespace scone
 		LuaVec3 limit_torque() { return joint_.GetLimitTorque(); }
 		/// get the joint limit power [W]
 		Real limit_power() { return joint_.GetLimitPower(); }
+		/// get sum of muscle moments [Nm3] for this joint
+		LuaVec3 muscle_moment() { return joint_.GetMuscleMoment(); }
 		/// get the joint load [BW]
 		Real load() { return joint_.GetLoad(); }
 		/// get the parent body
@@ -442,10 +444,18 @@ namespace scone
 		LuaNumber max_isometric_force() { return mus_.GetMaxIsometricForce(); }
 		/// get the muscle mass [kg], based on a specific tension of 250000
 		LuaNumber mass() { return mus_.GetMass(); }
-		/// get the 3D moment arm [Nm3] for a specific joint
+		/// get the moment arm [m] for a specific dof (deprecated, use dof_moment_arm instead)
 		LuaNumber moment_arm( const LuaDof* dof ) { return mus_.GetMomentArm( LUA_ARG_REF( dof ).dof_ ); }
-		/// get the 3D moment arm [Nm3] for a specific joint
+		/// get the 3D moment arm [m3] for a specific joint (deprecated, use joint_moment_arm instead)
 		LuaVec3 moment_arm_3d( const LuaJoint* joint ) { return mus_.GetMomentArm3D( LUA_ARG_REF( joint ).joint_ ); }
+		/// get the moment [Nm] for a specific dof
+		LuaNumber dof_moment( const LuaDof* dof ) { return mus_.GetMoment( LUA_ARG_REF( dof ).dof_ ); }
+		/// get the moment arm [Nm] for a specific dof
+		LuaNumber dof_moment_arm( const LuaDof* dof ) { return mus_.GetMomentArm( LUA_ARG_REF( dof ).dof_ ); }
+		/// get the 3D moment [Nm3] for a specific joint
+		LuaVec3 joint_moment( const LuaJoint* joint ) { return mus_.GetMoment3D( LUA_ARG_REF( joint ).joint_ ); }
+		/// get the 3D moment arm [Nm3] for a specific joint
+		LuaVec3 joint_moment_arm( const LuaJoint* joint ) { return mus_.GetMomentArm3D( LUA_ARG_REF( joint ).joint_ ); }
 		/// set the maximum activation for this muscle
 		void set_max_activation( LuaNumber v ) { mus_.SetMaxActivation( v ); }
 		/// set the minimum activation for this muscle

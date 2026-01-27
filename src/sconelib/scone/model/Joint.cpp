@@ -37,6 +37,16 @@ namespace scone
 		return pow;
 	}
 
+	Vec3 Joint::GetMuscleMoment() const
+	{
+		Vec3 mom = Vec3::zero();
+		for ( const auto& mus : m_Body.GetModel().GetMuscles() ) {
+			if ( mus->ActsOnJoint( *this ) )
+				mom += mus->GetMoment3D( *this );
+		}
+		return mom;
+	}
+
 	Real Joint::GetLoad() const
 	{
 		return xo::length( GetReactionForce() ) / m_Body.GetModel().GetBW();

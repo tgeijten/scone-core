@@ -35,6 +35,7 @@ namespace scone
 		virtual Vec3 GetReactionForce() const = 0;
 		virtual Vec3 GetLimitTorque() const;
 		virtual Real GetLimitPower() const;
+		virtual Vec3 GetMuscleMoment() const;
 		virtual Real GetLoad() const;
 
 		const Body& GetBody() const { return m_Body; }
