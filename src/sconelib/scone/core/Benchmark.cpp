@@ -52,7 +52,7 @@ namespace scone
 			par.import_values( file );
 
 		auto min_samples = bo.min_samples;
-		auto max_samples = min_samples * 10;
+		auto max_samples = min_samples * 20;
 
 		// run simulations
 		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;
@@ -65,7 +65,8 @@ namespace scone
 		xo::time duration;
 		double result = 0.0;
 		std::vector<TimeInSeconds> bmsortedbest;
-		for ( index_t idx = 0; idx < max_samples; ++idx )
+		index_t samples = 0;
+		for ( ; samples < max_samples; ++samples )
 		{
 			xo::timer t;
 			auto model = mo->CreateModelFromParams( par );
@@ -93,12 +94,15 @@ namespace scone
 				auto [mean, stdev] = xo::mean_std( bmsortedbest );
 				auto rt_mean = model->GetTime() / mean;
 				auto norm_std = stdev / mean;
-				printf( "%03zd: %6.2f M=%6.2f S=%.4f\r", idx, real_time_x, rt_mean, norm_std );
-				if ( norm_std < bo.min_norm_std && idx >= min_samples )
+				printf( "%03zd: %6.2f M=%6.2f S=%.4f\r", samples, real_time_x, rt_mean, norm_std );
+				if ( norm_std < bo.min_norm_std && samples >= min_samples )
 					break;
 			}
 			//xo::sleep( 100 ); // this sleep makes the benchmarks slightly more consistent (albeit slower) on Win64
 		}
+
+		if ( samples == max_samples )
+			log::error( "Maximum number of samples was reached, results may be inaccurate" );
 
 		// process
 		std::vector<Benchmark> benchmarks;
@@ -139,7 +143,7 @@ namespace scone
 				log::info( xo::stringf( "%-32s\t%5.0fns", bm.name_.c_str(), bm.time_.nanosecondsd() ) );
 		}
 
-		log::info( "result=", result, " duration=", duration.secondsd() );
+		log::info( "result=", result, " duration=", duration.secondsd(), " samples=", samples );
 		if ( has_baseline && baseline_result_str != result_str )
 			log::error( "Result is different from baseline: ", result_str, " != ", baseline_result_str );
 
