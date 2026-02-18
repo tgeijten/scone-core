@@ -95,15 +95,15 @@ namespace scone
 
 		virtual bool ActsOnDof( const Dof& dof ) const;
 		virtual bool ActsOnJoint( const Joint& joint ) const;
-		virtual const std::vector<const Joint*>& GetJoints() const;
-		virtual const std::vector<const Dof*>& GetDofs() const;
+		virtual const std::vector<const Joint*>& GetJoints() const { return m_Joints; }
+		virtual const std::vector<const Dof*>& GetDofs() const { return m_Dofs; }
 		virtual bool IsAntagonist( const Muscle& other ) const;
 		virtual bool IsAgonist( const Muscle& other ) const;
 		virtual bool HasSharedDofs( const Muscle& other ) const;
 		virtual bool HasSharedBodies( const Muscle& other ) const;
 		virtual bool HasSharedJoints( const Muscle& other ) const;
 
-		virtual void StoreData( Storage< Real>::Frame& frame, const StoreDataFlags& flags ) const override;
+		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const override;
 
 		// get clamped input with hard limits

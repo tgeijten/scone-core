@@ -52,9 +52,10 @@ namespace scone
 
 		virtual Side GetSide() const;
 
-		virtual bool HasMomentArm( const Dof& dof ) const;
-		virtual const std::vector<const Joint*>& GetJoints() const;
-		virtual const std::vector<const Dof*>& GetDofs() const;
+		virtual bool ActsOnDof( const Dof& dof ) const;
+		virtual bool ActsOnJoint( const Joint& joint ) const;
+		virtual const std::vector<const Joint*>& GetJoints() const { return m_Joints; }
+		virtual const std::vector<const Dof*>& GetDofs() const { return m_Dofs; }
 
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 		virtual PropNode GetInfo() const;

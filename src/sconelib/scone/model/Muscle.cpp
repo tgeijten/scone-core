@@ -94,29 +94,12 @@ namespace scone
 
 	bool Muscle::ActsOnDof( const Dof& dof ) const
 	{
-		for ( const auto& d : m_Dofs )
-			if ( d == &dof )
-				return true;
-		return false;
+		return xo::contains( m_Dofs, &dof );
 	}
 
 	bool Muscle::ActsOnJoint( const Joint& joint ) const
 	{
-		for ( const auto& j : m_Joints )
-			if ( j == &joint )
-				return true;
-		return false;
-	}
-
-	const std::vector<const Joint*>& Muscle::GetJoints() const
-	{
-		SCONE_ASSERT( !m_Joints.empty() ); // Initialize in derived class via InitJointsDofs()
-		return m_Joints;
-	}
-
-	const std::vector<const Dof*>& Muscle::GetDofs() const
-	{
-		return m_Dofs;
+		return xo::contains( m_Joints, &joint );
 	}
 
 	bool Muscle::IsAntagonist( const Muscle& other ) const

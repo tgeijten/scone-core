@@ -49,23 +49,14 @@ namespace scone
 		return GetSideFromName( GetName() );
 	}
 
-	bool Ligament::HasMomentArm( const Dof& dof ) const
+	bool Ligament::ActsOnDof( const Dof& dof ) const
 	{
-		for ( const auto& d : m_Dofs )
-			if ( d == &dof )
-				return true;
-		return false;
+		return xo::contains( m_Dofs, &dof );
 	}
 
-	const std::vector< const Joint* >& Ligament::GetJoints() const
+	bool Ligament::ActsOnJoint( const Joint& joint ) const
 	{
-		SCONE_ASSERT( !m_Joints.empty() ); // Initialize in derived class via InitJointsDofs()
-		return m_Joints;
-	}
-
-	const std::vector<const Dof*>& Ligament::GetDofs() const
-	{
-		return m_Dofs;
+		return xo::contains( m_Joints, &joint );
 	}
 
 	void Ligament::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
