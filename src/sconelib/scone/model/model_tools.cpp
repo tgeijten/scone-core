@@ -202,4 +202,35 @@ namespace scone
 	{
 		return dir[GetDominantComponentIndex( dir )] < 0 ? -1 : 1;
 	}
+
+	inline const Body* GetFirstParent( const Body* b, const Body* parent, const Body* root ) {
+		while ( b && b != parent && b != root )
+			b = b->GetParentBody();
+		return b;
+	}
+
+	inline void CollectJoints( std::vector<const Joint*>& joints, const Body* child, const Body* parent )
+	{
+		for ( auto* b = child; b && b->GetJoint() && b != parent; b = b->GetParentBody() )
+			joints.push_back( b->GetJoint() );
+	}
+
+	std::vector<const Joint*> GetConnectingJoints( const Body* b1, const Body* b2, const Body* root )
+	{
+		SCONE_ASSERT( b1 && b2 );
+		std::vector<const Joint*> result;
+		const Body* p1 = GetFirstParent( b1, b2, root );
+		const Body* p2 = GetFirstParent( b2, b1, root );
+
+		if ( p1 == b2 ) {
+			CollectJoints( result, b1, p1 );
+		} else if ( p2 == b1 ) {
+			CollectJoints( result, b2, p2 );
+		} else if ( p1 == root && p2 == root ) {
+			CollectJoints( result, b1, p1 );
+			CollectJoints( result, b2, p2 );
+		} else SCONE_ERROR( "Could not find bodies connecting " + b1->GetName() + " to " + b2->GetName() );
+
+		return result;
+	}
 }

@@ -120,7 +120,6 @@ namespace scone
 		virtual Real SetPennationAngleAtOptimal( Real angle ) { SCONE_THROW_NOT_IMPLEMENTED; }
 
 	protected:
-		void InitBodyJointDofs( const Body* b );
 		void InitJointsDofs();
 		mutable std::vector<const Joint*> m_Joints;
 		mutable std::vector<const Dof*> m_Dofs;

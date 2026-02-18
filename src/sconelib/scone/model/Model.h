@@ -52,6 +52,7 @@ namespace scone
 		const std::vector< Body* >& GetBodies() const { return m_BodyPtrs; }
 		bool HasRootBody() const { return m_RootBody != nullptr; }
 		const Body& GetRootBody() const { SCONE_ASSERT( m_RootBody );  return *m_RootBody; }
+		const Body* TryGetRootBody() const { return m_RootBody; }
 		Body& GetGroundBody() { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 		const Body& GetGroundBody() const { SCONE_ASSERT( m_GroundBody ); return *m_GroundBody; }
 		const Body& FindBody( const String& name ) const;

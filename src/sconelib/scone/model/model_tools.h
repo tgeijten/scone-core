@@ -42,4 +42,6 @@ namespace scone
 	SCONE_API index_t GetAxisIndex( const Vec3& v );
 	SCONE_API index_t GetDominantComponentIndex( const Vec3& dir );
 	SCONE_API Real GetDominantComponentSign( const Vec3& dir );
+
+	SCONE_API std::vector<const Joint*> GetConnectingJoints( const Body* b1, const Body* b2, const Body* root );
 }

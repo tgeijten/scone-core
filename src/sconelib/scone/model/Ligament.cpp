@@ -15,6 +15,7 @@
 #include "scone/core/math.h"
 #include "xo/container/container_tools.h"
 #include "muscle_tools.h"
+#include "model_tools.h"
 
 #pragma warning( disable: 4355 )
 
@@ -110,33 +111,14 @@ namespace scone
 		return pn;
 	}
 
-	void Ligament::InitBodyJointDofs( const Body* b )
-	{
-		if ( auto* j = b->GetJoint() )
-		{
-			m_Joints.push_back( j );
-			xo::append( m_Dofs, j->GetDofs() );
-		}
-	}
-
 	void Ligament::InitJointsDofs()
 	{
 		SCONE_ASSERT( m_Joints.empty() && m_Dofs.empty() );
-		const Body* const orgBody = &GetOriginBody();
-		const Body* const insBody = &GetInsertionBody();
-		const Body* const rootBody = GetModel().HasRootBody() ? &GetModel().GetRootBody() : nullptr;
-		const Body* b = nullptr;
-
-		// add joints, traversing from insertion to origin
-		for ( b = insBody; b && b != orgBody && b != rootBody; b = b->GetParentBody() )
-			InitBodyJointDofs( b );
-
-		if ( b == rootBody )
-		{
-			// In this case, the muscle crosses the root body and
-			// we need to add joints from insertion to root as well.
-			for ( b = orgBody; b && b != rootBody; b = b->GetParentBody() )
-				InitBodyJointDofs( b );
+		auto jvec = GetConnectingJoints( &GetOriginBody(), &GetInsertionBody(), GetModel().TryGetRootBody() );
+		for ( auto* j : jvec ) {
+			m_Joints.push_back( j );
+			xo::append( m_Dofs, j->GetDofs() );
 		}
+		SCONE_ASSERT( !m_Joints.empty() );
 	}
 }
