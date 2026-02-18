@@ -27,11 +27,12 @@ int main( int argc, const char* argv[] )
 		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 		scone::Initialize();
 		auto& install_dir = scone::GetInstallFolder();
+		auto& scone_dir = scone::GetScenarioFolder();
 
 		if ( !args.has_flag( "skip-scenarios" ) ) {
 #if SCONE_OPENSIM_3_ENABLED
 			if ( !args.has_flag( "skip-opensim3" ) && !args.has_flag( "skip-opensim" ) ) {
-				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/OpenSim3" );
+				scone::add_scenario_tests( scone_dir, "scenarios/unittests/OpenSim3" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*OpenSim3*.scone" );
@@ -52,8 +53,8 @@ int main( int argc, const char* argv[] )
 #endif
 #if SCONE_HYFYDY_ENABLED
 			if ( !args.has_flag( "skip-hyfydy" ) ) {
-				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/HyfydyResults", "*.par", "", 1 );
-				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Hyfydy", "*.scone", "", 1 );
+				scone::add_scenario_tests( scone_dir, "unittests/HyfydyResults", "*.par", "", 1 );
+				scone::add_scenario_tests( scone_dir, "unittests/Hyfydy", "*.scone", "", 1 );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*Hyfydy.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*Hyfydy.scone", "Interactive*.scone" );
@@ -62,9 +63,9 @@ int main( int argc, const char* argv[] )
 				scone::add_scenario_tests( install_dir, "scenarios/Benchmarks", "*.par", "data", 1 );
 				scone::add_scenario_tests( scone::GetScenarioFolder(), "Benchmarks", "bench*.scone" );
 #	if SCONE_EXPERIMENTAL_FEATURES_ENABLED
-				scone::add_scenario_tests( install_dir, "scenarios/UnitTests/HyfydyExperimental", "*.par", "data", 1 );
+				scone::add_scenario_tests( scone_dir, "unittests/HyfydyExperimental", "*.par", "data", 1 );
 				if ( args.has_flag( "add-blueprints" ) )
-					scone::add_scenario_tests( install_dir, "scenarios/UnitTests/Blueprints", "*.par", "data", 1 );
+					scone::add_scenario_tests( scone_dir, "unittests/Blueprints", "*.par", "data", 1 );
 #	endif
 			}
 #endif
