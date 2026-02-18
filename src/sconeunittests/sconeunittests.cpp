@@ -27,7 +27,7 @@ int main( int argc, const char* argv[] )
 		xo::log::info( "SCONE version ", scone::GetSconeVersion() );
 		scone::Initialize();
 		auto& install_dir = scone::GetInstallFolder();
-		auto& scone_dir = scone::GetScenarioFolder();
+		auto scone_dir = scone::GetScenarioFolder();
 
 		if ( !args.has_flag( "skip-scenarios" ) ) {
 #if SCONE_OPENSIM_3_ENABLED
