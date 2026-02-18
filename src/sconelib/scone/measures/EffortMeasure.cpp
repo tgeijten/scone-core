@@ -47,7 +47,8 @@ namespace scone
 		INIT_PROP( props, min_distance, 1.0 );
 		INIT_PROP( props, use_average_per_muscle, false );
 		INIT_PROP( props, use_muscle_volume_weighting, false );
-		INIT_PROP( props, store_individual_muscle_efforts, measure_type == EffortMeasureType::Wang2012 || measure_type == EffortMeasureType::Uchida2016  );
+		INIT_PROP( props, store_individual_muscle_efforts, measure_type == EffortMeasureType::Wang2012 || measure_type == EffortMeasureType::Uchida2016 );
+		INIT_PROP( props, store_individual_muscle_effort_details, false );
 		INIT_PROP( props, omnidirectional, false );
 		order = props.get_any( { "mechanical_work_order", "order" }, 1.0 );
 
@@ -69,9 +70,15 @@ namespace scone
 		m_AerobicFactor = 1.5; // 1.5 is for aerobic conditions, 1.0 for anaerobic. may need to add as option later
 		m_InitComPos = model.GetComPos() - model.GetGroundBody().GetOriginPos();
 		SetSlowTwitchRatios( props, model );
-		for ( auto& mus : m_MusclePtrs )
-			m_MuscleNames.push_back( name_ + "." + mus->GetName() + ".penalty" );
-		m_MuscleEfforts.resize( m_MusclePtrs.size() );
+
+		store_individual_muscle_efforts = store_individual_muscle_efforts || store_individual_muscle_effort_details;
+		if ( store_individual_muscle_efforts ) {
+			for ( auto& mus : m_MusclePtrs )
+				m_MuscleNames.push_back( name_ + "." + mus->GetName() + ".effort" );
+			m_MuscleEfforts.resize( m_MusclePtrs.size() );
+			if ( store_individual_muscle_effort_details )
+				m_MuscleEffortDetails.resize( m_MusclePtrs.size() );
+		}
 	}
 
 	EffortMeasure::MuscleProperties::MuscleProperties( const PropNode& props ) :
@@ -279,8 +286,15 @@ namespace scone
 			// total metabolic rate for this muscle
 			double Edot = ( totalHeatRate + Wdot ) * mass;
 
-			if ( model.GetStoreData() && store_individual_muscle_efforts )
+			if ( model.GetStoreData() && store_individual_muscle_efforts ) {
 				m_MuscleEfforts[i] = Edot;
+				if ( store_individual_muscle_effort_details ) {
+					auto& detail = m_MuscleEffortDetails[i];
+					detail["AM"] = AMdot * mass;
+					detail["S"] = Sdot * mass;
+					detail["W"] = Wdot * mass;
+				}
+			}
 
 			e += Edot;
 		}
@@ -379,10 +393,15 @@ namespace scone
 
 	void EffortMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		frame[name_ + ".penalty"] = m_Effort.GetLatest();
+		frame[name_ + ".effort"] = m_Effort.GetLatest();
 		if ( store_individual_muscle_efforts ) {
-			for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i )
+			for ( index_t i = 0; i < m_MuscleEfforts.size(); ++i ) {
 				frame[m_MuscleNames[i]] = m_MuscleEfforts[i];
+				if ( store_individual_muscle_effort_details ) {
+					for ( auto&& [k, v] : m_MuscleEffortDetails[i] )
+						frame[m_MuscleNames[i] + "." + k] = v;
+				}
+			}
 		}
 	}
 }

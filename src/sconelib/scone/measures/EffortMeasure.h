@@ -89,6 +89,9 @@ namespace scone
 		/// Store effort values for individual muscles; default = 1 for Wang2012 and Uchida2016, 0 otherwise.
 		bool store_individual_muscle_efforts;
 
+		/// Store details for individual muscles; default = 0.
+		bool store_individual_muscle_effort_details;
+
 		/// Value for mechanical work power
 		Real order;
 
@@ -109,6 +112,7 @@ namespace scone
 		std::vector<Muscle*> m_MusclePtrs;
 		std::vector<String> m_MuscleNames;
 		mutable std::vector<Real> m_MuscleEfforts;
+		mutable std::vector<xo::flat_map<String, Real>> m_MuscleEffortDetails;
 		Vec3 m_InitComPos;
 		PropNode m_Report;
 		std::vector< Real > m_SlowTwitchFiberRatios;
