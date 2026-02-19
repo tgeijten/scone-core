@@ -179,6 +179,7 @@ namespace scone
 				frame[name + ".mtu_velocity"] = GetVelocity();
 				frame[name + ".mtu_force"] = GetForce();
 				frame[name + ".mtu_power"] = GetForce() * -GetVelocity();
+				frame[name + ".active_fiber_power"] = GetActiveFiberForce() * -GetFiberVelocity();
 
 				// fiber properties
 				frame[name + ".cos_pennation_angle"] = GetCosPennationAngle();
