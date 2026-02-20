@@ -14,7 +14,7 @@ namespace scone
 		auto pattern_match = pn.get<IncludeExcludePattern>();
 		if ( mirror ) {
 			xo::mirror( name_ );
-			pattern_match.mirror_patterns();
+			xo::mirror( pattern_match );
 		}
 		for ( auto* mus : m.GetMuscles() ) {
 			if ( pattern_match( mus->GetName() ) ) {

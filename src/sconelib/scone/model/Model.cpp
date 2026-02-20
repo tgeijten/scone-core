@@ -781,7 +781,7 @@ namespace scone
 	{
 		for ( const auto& mg_pn : pn.select( "MuscleGroup" ) ) {
 			TryAddMuscleGroup( mg_pn.second, false );
-			if ( mg_pn.second.get( "dual_sided", false ) )
+			if ( mg_pn.second.get( "dual_sided", true ) )
 				TryAddMuscleGroup( mg_pn.second, true );
 		}
 
