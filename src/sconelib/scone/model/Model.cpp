@@ -386,22 +386,22 @@ namespace scone
 		{
 			for ( auto& leg : GetLegs() )
 			{
-				Vec3 force, moment, cop;
-				leg.GetContactForceMomentCop( force, moment, cop );
-				Vec3 grf = force / GetBW();
+				auto fv = leg.GetContactForceValue();
+				Vec3 grf = fv.force / GetBW();
+				Vec3 moment = fv.moment();
 
 				frame[leg.GetName() + ".grf_norm_x"] = grf.x;
 				frame[leg.GetName() + ".grf_norm_y"] = grf.y;
 				frame[leg.GetName() + ".grf_norm_z"] = grf.z;
-				frame[leg.GetName() + ".grf_x"] = force.x;
-				frame[leg.GetName() + ".grf_y"] = force.y;
-				frame[leg.GetName() + ".grf_z"] = force.z;
+				frame[leg.GetName() + ".grf_x"] = fv.force.x;
+				frame[leg.GetName() + ".grf_y"] = fv.force.y;
+				frame[leg.GetName() + ".grf_z"] = fv.force.z;
 				frame[leg.GetName() + ".grm_x"] = moment.x;
 				frame[leg.GetName() + ".grm_y"] = moment.y;
 				frame[leg.GetName() + ".grm_z"] = moment.z;
-				frame[leg.GetName() + ".cop_x"] = cop.x;
-				frame[leg.GetName() + ".cop_y"] = cop.y;
-				frame[leg.GetName() + ".cop_z"] = cop.z;
+				frame[leg.GetName() + ".cop_x"] = fv.point.x;
+				frame[leg.GetName() + ".cop_y"] = fv.point.y;
+				frame[leg.GetName() + ".cop_z"] = fv.point.z;
 			}
 		}
 

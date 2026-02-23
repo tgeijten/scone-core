@@ -62,18 +62,6 @@ namespace scone
 		return GetFootBody().GetComPos() - GetBaseBody().GetComPos();
 	}
 
-	void Leg::GetContactForceMomentCop( Vec3& force, Vec3& moment, Vec3& cop ) const
-	{
-		if ( m_ContactForce )
-			std::tie( force, moment, cop ) = m_ContactForce->GetForceMomentPoint();
-		else {
-			ForceAtPoint v = GetContactForceValue();
-			force = v.force;
-			cop = v.point;
-			moment = v.moment();
-		}
-	}
-
 	ForceAtPoint Leg::GetContactForceValue() const
 	{
 		if ( m_ContactForce )

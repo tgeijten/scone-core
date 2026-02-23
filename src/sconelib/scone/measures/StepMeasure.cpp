@@ -38,11 +38,10 @@ namespace scone
 		auto& frame = stored_data_.AddFrame( timestamp );
 		for ( const auto& leg : model.GetLegs() )
 		{
-			Vec3 force, moment, cop;
-			leg.GetContactForceMomentCop( force, moment, cop );
-			Vec3 grf = force / model.GetBW();
+			auto fv = leg.GetContactForceValue();
+			Vec3 grf = fv.force / model.GetBW();
 			frame.SetVec3( leg.GetName() + ".grf_norm", grf );
-			frame.SetVec3( leg.GetName() + ".cop", cop );
+			frame.SetVec3( leg.GetName() + ".cop", fv.point );
 		}
 
 		return false;

@@ -33,7 +33,6 @@ namespace scone
 		Vec3 GetContactMoment() const;
 		Vec3 GetContactPos() const;
 		Vec3 GetRelFootPos() const;
-		void GetContactForceMomentCop( Vec3& force, Vec3& moment, Vec3& cop ) const;
 		ForceAtPoint GetContactForceValue() const;
 		Real GetLoad() const;
 		Real GetLength() const { return m_LegLength; }
