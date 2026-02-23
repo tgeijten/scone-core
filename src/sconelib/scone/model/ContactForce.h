@@ -12,7 +12,7 @@
 #include "scone/core/Vec3.h"
 #include "scone/core/HasName.h"
 #include "scone/core/HasData.h"
-#include "ForceValue.h"
+#include "ForceAtPoint.h"
 
 namespace scone
 {
@@ -26,7 +26,7 @@ namespace scone
 		virtual const Vec3& GetMoment() const = 0;
 		virtual const Vec3& GetPoint() const = 0;
 		virtual std::tuple<const Vec3&, const Vec3&, const Vec3&> GetForceMomentPoint() const;
-		virtual ForceValue GetForceValue() const;
+		virtual ForceAtPoint GetForceValue() const;
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
 
 		Real GetStaticFriction() const { return m_StaticFriction; }

@@ -67,19 +67,19 @@ namespace scone
 		if ( m_ContactForce )
 			std::tie( force, moment, cop ) = m_ContactForce->GetForceMomentPoint();
 		else {
-			ForceValue v = GetContactForceValue();
+			ForceAtPoint v = GetContactForceValue();
 			force = v.force;
 			cop = v.point;
 			moment = v.moment();
 		}
 	}
 
-	ForceValue Leg::GetContactForceValue() const
+	ForceAtPoint Leg::GetContactForceValue() const
 	{
 		if ( m_ContactForce )
 			return m_ContactForce->GetForceValue();
 		else {
-			ForceValue v;
+			ForceAtPoint v;
 			for ( auto& b : m_ContactBodies )
 				v += b->GetContactForceValue();
 			return v;

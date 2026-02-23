@@ -118,7 +118,7 @@ namespace scone
 		return { m_Force, m_Moment, m_Point };
 	}
 
-	ForceValue ContactForceOpenSim3::GetForceValue() const
+	ForceAtPoint ContactForceOpenSim3::GetForceValue() const
 	{
 		UpdateForceValues();
 		return { m_Force, m_Point };

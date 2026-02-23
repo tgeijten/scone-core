@@ -90,13 +90,13 @@ namespace scone
 		return m_ContactForces.front()->GetPoint();
 	}
 
-	ForceValue BodyOpenSim3::GetContactForceValue() const
+	ForceAtPoint BodyOpenSim3::GetContactForceValue() const
 	{
 		if ( m_ContactForces.size() == 1 )
 			return m_ContactForces.front()->GetForceValue();
 		else if ( m_ContactForces.size() >= 2 )
 		{
-			auto fv = ForceValue();
+			auto fv = ForceAtPoint();
 			double total_force = 0.0;
 			for ( auto& cf : m_ContactForces )
 			{
@@ -110,12 +110,12 @@ namespace scone
 				fv.point /= total_force;
 			return fv;
 		}
-		else return ForceValue();
+		else return ForceAtPoint();
 	}
 
-	std::vector<ForceValue> BodyOpenSim3::GetContactForceValues() const
+	std::vector<ForceAtPoint> BodyOpenSim3::GetContactForceValues() const
 	{
-		std::vector<ForceValue> result;
+		std::vector<ForceAtPoint> result;
 		for ( const auto& cf : m_ContactForces )
 			result.emplace_back( cf->GetForceValue() );
 		return result;

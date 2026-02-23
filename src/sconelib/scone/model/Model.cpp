@@ -498,9 +498,9 @@ namespace scone
 			RequestTermination( result.termination_reason_ );
 	}
 
-	std::vector< ForceValue > Model::GetContactForceValues() const
+	std::vector< ForceAtPoint > Model::GetContactForceValues() const
 	{
-		std::vector< ForceValue > fvec;
+		std::vector< ForceAtPoint > fvec;
 		fvec.reserve( GetContactForces().size() );
 		for ( auto& cf : GetContactForces() )
 		{

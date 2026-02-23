@@ -21,9 +21,9 @@ namespace scone
 		return { GetForce(), GetMoment(), GetPoint() };
 	}
 
-	ForceValue ContactForce::GetForceValue() const
+	ForceAtPoint ContactForce::GetForceValue() const
 	{
-		return ForceValue{ GetForce(), GetPoint() };
+		return ForceAtPoint{ GetForce(), GetPoint() };
 	}
 
 	void ContactForce::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const

@@ -240,7 +240,7 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/ContactForce.h
 	model/DelayBuffer.h
 	model/DelayBuffer.cpp
-	model/ForceValue.h
+	model/ForceAtPoint.h
 	model/Dof.cpp
 	model/Dof.h
 	model/Joint.cpp

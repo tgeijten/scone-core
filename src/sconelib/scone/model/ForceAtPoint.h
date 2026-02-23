@@ -4,7 +4,7 @@
 
 namespace scone
 {
-	struct ForceValue
+	struct ForceAtPoint
 	{
 		Vec3 force;
 		Vec3 point;
@@ -12,7 +12,7 @@ namespace scone
 		Vec3 moment() const { return xo::cross_product( point, force ); }
 	};
 
-	inline ForceValue& operator+=( ForceValue& fv1, const ForceValue& fv2 ) {
+	inline ForceAtPoint& operator+=( ForceAtPoint& fv1, const ForceAtPoint& fv2 ) {
 		auto l1 = xo::length( fv1.force );
 		auto l2 = xo::length( fv2.force );
 		fv1.force += fv2.force;

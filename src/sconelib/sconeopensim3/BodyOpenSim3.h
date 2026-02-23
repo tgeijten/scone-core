@@ -50,8 +50,8 @@ namespace scone
 		virtual Vec3 GetContactForce() const override;
 		virtual Vec3 GetContactMoment() const override;
 		virtual Vec3 GetContactPoint() const override;
-		virtual ForceValue GetContactForceValue() const override;
-		virtual std::vector<ForceValue> GetContactForceValues() const override;
+		virtual ForceAtPoint GetContactForceValue() const override;
+		virtual std::vector<ForceAtPoint> GetContactForceValues() const override;
 
 		virtual Model& GetModel() override;
 		virtual const Model& GetModel() const override;

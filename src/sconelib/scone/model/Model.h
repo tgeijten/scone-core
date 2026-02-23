@@ -16,7 +16,7 @@
 
 #include "ContactForce.h"
 #include "ContactGeometry.h"
-#include "ForceValue.h"
+#include "ForceAtPoint.h"
 #include "Leg.h"
 #include "Sensor.h"
 #include "ModelFeatures.h"
@@ -101,7 +101,7 @@ namespace scone
 		virtual void UpdateModelFromUserInputs() {}
 
 		// Contact force values
-		virtual std::vector< ForceValue > GetContactForceValues() const;
+		virtual std::vector< ForceAtPoint > GetContactForceValues() const;
 
 		// Model file access
 		virtual path GetModelFile() const { return path(); }
