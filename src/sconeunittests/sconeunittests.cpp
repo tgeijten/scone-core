@@ -32,7 +32,7 @@ int main( int argc, const char* argv[] )
 		if ( !args.has_flag( "skip-scenarios" ) ) {
 #if SCONE_OPENSIM_3_ENABLED
 			if ( !args.has_flag( "skip-opensim3" ) && !args.has_flag( "skip-opensim" ) ) {
-				scone::add_scenario_tests( scone_dir, "scenarios/unittests/OpenSim3" );
+				scone::add_scenario_tests( scone_dir, "unittests/OpenSim3" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples2", "*OpenSim3*.scone" );
 				scone::add_scenario_tests( install_dir, "scenarios/Examples3", "*OpenSim3*.scone" );
