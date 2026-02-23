@@ -279,6 +279,8 @@ namespace scone
 		LuaVec3 contact_moment() { return bod_.GetContactMoment(); }
 		/// get contact point vector [m] of a contact force applied to this body (zero if no contact)
 		LuaVec3 contact_point() { return bod_.GetContactPoint(); }
+		/// get individual contact forces applied to this body, per geometry
+		std::vector<ForceAtPoint> contact_forces() { return bod_.GetContactForceValues(); }
 		/// add external force [N] to body com or latest external force position
 		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
 		/// add external moment [Nm] to body

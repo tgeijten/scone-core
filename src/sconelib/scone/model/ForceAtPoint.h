@@ -21,4 +21,12 @@ namespace scone
 			fv1.point = ( l1 * fv1.point + l2 * fv2.point ) / ( total_l );
 		return fv1;
 	}
+
+	inline ForceAtPoint operator+( ForceAtPoint fv1, const ForceAtPoint& fv2 ) {
+		return fv1 += fv2;
+	}
+
+	inline bool operator==( const ForceAtPoint& fv1, const ForceAtPoint& fv2 ) {
+		return fv1.force == fv2.force && fv1.point == fv2.point;
+	}
 }

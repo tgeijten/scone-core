@@ -69,6 +69,14 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "__str__", []( const scone::Quat& q ) { return xo::stringf( "[ %f %f %f %f ]", q.w, q.x, q.y, q.z ); } )
 		;
 
+	py::class_<scone::ForceAtPoint>( m, "ForceAtPoint" )
+		.def( py::init<>() )
+		.def_readwrite( "force", &scone::ForceAtPoint::force, "force component" )
+		.def_readwrite( "point", &scone::ForceAtPoint::point, "point component" )
+		.def( "moment", &scone::ForceAtPoint::moment, "Compute the moment" )
+		.def( py::self + scone::ForceAtPoint(), "Addition" )
+		;
+
 	py::class_<scone::Body>( m, "Body" )
 		.def( "name", &scone::Body::GetName, "Get the name of this Body" )
 		.def( "mass", &scone::Body::GetMass, "Get the mass of this Body" )
@@ -85,6 +93,7 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "contact_force", &scone::Body::GetContactForce, "Get the sum of all contact forces acting on this Body" )
 		.def( "contact_moment", &scone::Body::GetContactMoment, "Get the sum of all contact moments acting on this Body" )
 		.def( "contact_point", &scone::Body::GetContactPoint, "Get the average position of contacts acting on this Body" )
+		.def( "contact_forces", &scone::Body::GetContactForceValues, "Get the contact forces and positions acting on this Body for each contact geometry" )
 		.def( "external_force", &scone::Body::GetExternalForce, "Get the external perturbation force acting on this Body" )
 		.def( "external_moment", &scone::Body::GetExternalMoment, "Get the external perturbation moment acting on this Body" )
 		.def( "external_force_at", &scone::Body::GetExternalForcePoint, "Get the position at which the average external force is applied" )

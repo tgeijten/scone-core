@@ -9,6 +9,14 @@ namespace scone
 		xo::lua_register_vec3<double>( lua, "vec3" );
 		xo::lua_register_quat<double>( lua, "quat" );
 
+		lua.new_usertype<ForceAtPoint>( "LuaForceAtPoint", sol::constructors<>(),
+			"force", &ForceAtPoint::force,
+			"point", &ForceAtPoint::point,
+			sol::meta_function::addition, []( ForceAtPoint& v1, ForceAtPoint& v2 ) -> ForceAtPoint { return v1 + v2; },
+			sol::meta_function::equal_to, []( ForceAtPoint& v1, ForceAtPoint& v2 ) -> bool { return v1 == v2; },
+			"moment", &ForceAtPoint::moment
+		);
+
 		lua.new_usertype<LuaFrame>( "LuaFrame", sol::constructors<>(),
 			"set_value", &LuaFrame::set_value,
 			"set_vec3", &LuaFrame::set_vec3,
@@ -79,6 +87,7 @@ namespace scone
 			"contact_force", &LuaBody::contact_force,
 			"contact_moment", &LuaBody::contact_moment,
 			"contact_point", &LuaBody::contact_point,
+			"contact_forces", &LuaBody::contact_forces,
 			"add_external_force", &LuaBody::add_external_force,
 			"add_external_moment", &LuaBody::add_external_moment,
 			"set_com_pos", &LuaBody::set_com_pos,
