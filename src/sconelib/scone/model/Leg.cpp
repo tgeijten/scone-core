@@ -44,12 +44,32 @@ namespace scone
 
 	Vec3 Leg::GetContactForce() const
 	{
-		return GetContactForceValue().force;
+		Vec3 f;
+		if ( m_ContactForce )
+			f = m_ContactForce->GetForce();
+		else for ( auto& b : m_ContactBodies )
+			f += b->GetContactForce();
+		return f;
+	}
+
+	Vec3 Leg::GetGroundContactForce() const
+	{
+		Vec3 f;
+		if ( m_ContactForce )
+			f = m_ContactForce->GetForce();
+		else for ( auto& b : m_ContactBodies )
+			f += b->GetGroundContactForce();
+		return f;
 	}
 
 	Vec3 Leg::GetContactMoment() const
 	{
-		return GetContactForceValue().moment();
+		Vec3 m;
+		if ( m_ContactForce )
+			m = m_ContactForce->GetMoment();
+		else for ( auto& b : m_ContactBodies )
+			m += b->GetContactMoment();
+		return m;
 	}
 
 	Vec3 Leg::GetContactPos() const
@@ -64,14 +84,12 @@ namespace scone
 
 	ForceAtPoint Leg::GetContactForceValue() const
 	{
+		ForceAtPoint v;
 		if ( m_ContactForce )
-			return m_ContactForce->GetForceValue();
-		else {
-			ForceAtPoint v;
-			for ( auto& b : m_ContactBodies )
-				v += b->GetContactForceValue();
-			return v;
-		}
+			v = m_ContactForce->GetForceValue();
+		else for ( auto& b : m_ContactBodies )
+			v += b->GetContactForceValue();
+		return v;
 	}
 
 	Real Leg::MeasureLength() const
@@ -88,6 +106,6 @@ namespace scone
 
 	Real Leg::GetLoad() const
 	{
-		return xo::length( GetContactForce() ) / m_Upper.GetModel().GetBW();
+		return xo::length( GetGroundContactForce() ) / m_Upper.GetModel().GetBW();
 	}
 }

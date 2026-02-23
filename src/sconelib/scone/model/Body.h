@@ -51,6 +51,7 @@ namespace scone
 
 		virtual bool HasContactGeometry() const = 0;
 		virtual Vec3 GetContactForce() const = 0;
+		virtual Vec3 GetGroundContactForce() const { return GetContactForce(); };
 		virtual Vec3 GetContactMoment() const = 0;
 		virtual Vec3 GetContactPoint() const = 0;
 		virtual ForceAtPoint GetContactForceValue() const = 0;
