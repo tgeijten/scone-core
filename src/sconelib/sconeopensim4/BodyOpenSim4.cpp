@@ -115,6 +115,14 @@ namespace scone
 		else return ForceValue();
 	}
 
+	std::vector<ForceValue> BodyOpenSim4::GetContactForceValues() const
+	{
+		std::vector<ForceValue> result;
+		for ( const auto& cf : m_ContactForces )
+			result.emplace_back( cf->GetForceValue() );
+		return result;
+	}
+
 	Vec3 BodyOpenSim4::GetOriginPos() const
 	{
 		// #todo: see if we need to do this call to realize every time (maybe do it once before controls are updated)
