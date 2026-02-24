@@ -56,6 +56,9 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, max_muscle_activation, 1.0 ),
 		max_individual_muscle_activation( props.try_get_child( "max_individual_muscle_activation" ) ),
 		INIT_PAR_MEMBER( props, par, muscle_input_soft_limits, ( std::pair<Real, Real>( 0.0, 1.0 ) ) ),
+		INIT_MEMBER( props, dual_sided_muscle_groups, true ),
+		INIT_MEMBER( props, normalize_muscles_in_multiple_muscle_groups, false ),
+		INIT_MEMBER( props, remove_actuators_in_muscle_groups, false ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
 		planar_( props.try_get<bool>( "planar" ) ),
@@ -694,10 +697,11 @@ namespace scone
 		model_pn.append( m_ModelInfo );
 		model_pn["mass"] = GetMass();
 		model_pn["gravity"] = GetGravity();
-		model_pn["dof count"] = GetDofs().size();
-		model_pn["muscle count"] = GetMuscles().size();
-		model_pn["body count"] = GetBodies().size();
-		model_pn["leg count"] = GetLegCount();
+		model_pn["dofs"] = GetDofs().size();
+		model_pn["bodies"] = GetBodies().size();
+		model_pn["muscles"] = GetMuscles().size();
+		model_pn["actuators"] = GetActuators().size();
+		model_pn["legs"] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
 			auto& asym_pn = model_pn.add_child( "asymmetries" );
 			asym_pn.merge( objects );
@@ -781,20 +785,29 @@ namespace scone
 	{
 		for ( const auto& mg_pn : pn.select( "MuscleGroup" ) ) {
 			TryAddMuscleGroup( mg_pn.second, false );
-			if ( mg_pn.second.get( "dual_sided", true ) )
+			if ( mg_pn.second.get( "dual_sided", dual_sided_muscle_groups ) )
 				TryAddMuscleGroup( mg_pn.second, true );
 		}
 
 		// normalize muscle weights by number of groups they are member of
-		//xo::flat_map<Muscle*, size_t> muscles;
-		//for ( auto& mg : m_MuscleGroups )
-		//	for ( auto& kvp : mg.GetMuscles() )
-		//		muscles[kvp.second] += 1;
-		//for ( auto& mg : m_MuscleGroups )
-		//	for ( auto& kvp : mg.GetMuscles() )
-		//		kvp.first /= muscles[kvp.second];
+		if ( normalize_muscles_in_multiple_muscle_groups ) {
+			xo::flat_map<Muscle*, size_t> muscles;
+			for ( auto& mg : m_MuscleGroups )
+				for ( auto& kvp : mg.GetMuscles() )
+					muscles[kvp.second] += 1;
+			for ( auto& mg : m_MuscleGroups )
+				for ( auto& kvp : mg.GetMuscles() )
+					kvp.first /= muscles[kvp.second];
+		}
 
-		// add to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
+		// remove group muscles from actuator list
+		if ( remove_actuators_in_muscle_groups ) {
+			for ( auto& mg : m_MuscleGroups )
+				for ( auto& kvp : mg.GetMuscles() )
+					xo::erase( m_ActuatorPtrs, kvp.second );
+		}
+
+		// add to muscle groups to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
 		for ( auto& mg : m_MuscleGroups )
 			m_ActuatorPtrs.emplace_back( &mg );
 	}

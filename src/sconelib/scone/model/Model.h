@@ -312,6 +312,15 @@ namespace scone
 		/// Pair of values [lower upper] determining the RELATIVE lower and upper soft limit for muscle input, where 0 < lower < upper < 1; default = [0 1].
 		std::pair<Real, Real> muscle_input_soft_limits;
 
+		/// Setting to determine if muscle groups are dual sided; default = 1.
+		bool dual_sided_muscle_groups;
+
+		/// Adjust the contribution of muscles in multiple muscle groups; default = 0.
+		bool normalize_muscles_in_multiple_muscle_groups;
+
+		/// Remove individual muscles from the list of actuators after they are added to a MuscleGroup; default = 0.
+		bool remove_actuators_in_muscle_groups;
+
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;
 

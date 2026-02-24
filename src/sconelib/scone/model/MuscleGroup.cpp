@@ -6,8 +6,8 @@
 
 namespace scone
 {
-	MuscleGroup::MuscleGroup( const Model& m, const PropNode& pn, bool mirror ) :
-		Muscle( m ),
+	MuscleGroup::MuscleGroup( const Model& model, const PropNode& pn, bool mirror ) :
+		Muscle( model ),
 		INIT_MEMBER_REQUIRED( pn, name_ ),
 		total_weight_( 0 )
 	{
@@ -16,7 +16,7 @@ namespace scone
 			xo::mirror( name_ );
 			xo::mirror( pattern_match );
 		}
-		for ( auto* mus : m.GetMuscles() ) {
+		for ( auto* mus : model.GetMuscles() ) {
 			if ( pattern_match( mus->GetName() ) ) {
 				auto w = mus->GetMaxIsometricForce();
 				muscles_.emplace_back( w, mus );
@@ -216,6 +216,11 @@ namespace scone
 		for ( auto m : muscles_ )
 			mus_pn[m.second->GetName()] = m.first;
 		return pn;
+	}
+
+	bool MuscleGroup::Contains( const Muscle* m )
+	{
+		return xo::contains_if( muscles_, [&]( auto&& gm ) { return gm.second == m; } );
 	}
 }
 

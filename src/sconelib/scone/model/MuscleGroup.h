@@ -56,6 +56,7 @@ namespace scone
 		// non-virtual members
 		const std::vector<std::pair<Real, Muscle*>>& GetMuscles() const { return muscles_; }
 		std::vector<std::pair<Real, Muscle*>>& GetMuscles() { return muscles_; }
+		bool Contains( const Muscle* m );
 
 	protected:
 		String name_;
