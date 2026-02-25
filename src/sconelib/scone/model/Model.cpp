@@ -700,7 +700,10 @@ namespace scone
 		model_pn["gravity"] = GetGravity();
 		model_pn["dofs"] = GetDofs().size();
 		model_pn["bodies"] = GetBodies().size();
-		model_pn["muscles"] = GetMuscles().size();
+		if ( GetMuscles().size() != GetIndividualMuscles().size() )
+			model_pn["muscles"] = xo::stringf( "%d (%d)", GetMuscles().size(), GetIndividualMuscles().size() );
+		else model_pn["muscles"] = GetMuscles().size();
+			
 		model_pn["actuators"] = GetActuators().size();
 		model_pn["legs"] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
