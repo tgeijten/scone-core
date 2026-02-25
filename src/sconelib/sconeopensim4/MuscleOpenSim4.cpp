@@ -338,6 +338,7 @@ namespace scone
 
 	void MuscleOpenSim4::InitializeActivation( Real a )
 	{
+		m_ActuatorInput = a;
 		m_osMus.setExcitation( m_Model.GetTkState(), a );
 		m_osMus.setActivation( m_Model.GetTkState(), a );
 	}
