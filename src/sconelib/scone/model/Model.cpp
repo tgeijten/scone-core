@@ -59,6 +59,7 @@ namespace scone
 		INIT_MEMBER( props, dual_sided_muscle_groups, true ),
 		INIT_MEMBER( props, normalize_muscles_in_multiple_muscle_groups, false ),
 		INIT_MEMBER( props, remove_actuators_in_muscle_groups, false ),
+		INIT_MEMBER( props, remove_muscles_in_muscle_groups, false ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
 		planar_( props.try_get<bool>( "planar" ) ),
@@ -805,6 +806,15 @@ namespace scone
 			for ( auto& mg : m_MuscleGroups )
 				for ( auto& kvp : mg.GetMuscles() )
 					xo::erase( m_ActuatorPtrs, kvp.second );
+		}
+
+		// remove group muscles from muscle list
+		if ( remove_muscles_in_muscle_groups ) {
+			for ( auto& mg : m_MuscleGroups ) {
+				for ( auto& kvp : mg.GetMuscles() )
+					xo::erase( m_MusclePtrs, kvp.second );
+				m_MusclePtrs.emplace_back( &mg );
+			}
 		}
 
 		// add to muscle groups to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)

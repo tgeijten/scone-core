@@ -73,6 +73,7 @@ namespace scone
 		const Muscle& FindMuscle( const String& name ) const;
 		Muscle& FindMuscleOrGroup( const String& name );
 		Muscle& FindMuscleOrGroupByLocation( const String& name, Location loc );
+		const std::vector< MuscleUP >& GetIndividualMuscles() const { return m_Muscles; }
 
 		// ligament access
 		std::vector< Ligament* >& GetLigaments() { return m_LigamentPtrs; }
@@ -318,8 +319,11 @@ namespace scone
 		/// Adjust the contribution of muscles in multiple muscle groups; default = 0.
 		bool normalize_muscles_in_multiple_muscle_groups;
 
-		/// Remove individual muscles from the list of actuators after they are added to a MuscleGroup; default = 0.
+		/// Remove individual actuators that are added to a MuscleGroup; default = 0.
 		bool remove_actuators_in_muscle_groups;
+
+		/// Remove individual muscles that are added to a MuscleGroup, and add MuscleGroups to muscles; default = 0.
+		bool remove_muscles_in_muscle_groups;
 
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;

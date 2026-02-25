@@ -201,19 +201,21 @@ namespace scone
 
 	void MuscleGroup::SetExcitation( Real u )
 	{
-		SCONE_ERROR( "Unexpected call to MuscleGroup::SetExcitation()" );
+		for ( auto& m : muscles_ )
+			m.second->SetExcitation( u );
 	}
 
 	void MuscleGroup::InitializeActivation( Real u )
 	{
-		SCONE_ERROR( "Unexpected call to MuscleGroup::InitializeActivation()" );
+		for ( auto& m : muscles_ )
+			m.second->InitializeActivation( u );
 	}
 
 	PropNode MuscleGroup::GetInfo() const
 	{
 		PropNode pn = Muscle::GetInfo();
 		auto& mus_pn = pn["muscles"];
-		for ( auto m : muscles_ )
+		for ( const auto& m : muscles_ )
 			mus_pn[m.second->GetName()] = m.first;
 		return pn;
 	}
