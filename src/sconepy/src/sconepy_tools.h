@@ -133,8 +133,9 @@ namespace scone
 
 		// also init ExternalController values, because InitializeController() may be called via InitStateFromDofs() later
 		if ( auto* ec = TryGetExternalController( model ) ) {
-			for ( index_t i = 0; i < mus.size(); ++i )
-				ec->SetInput( i, v( i ) );
+			auto& act = model.GetActuators();
+			for ( index_t i = 0; i < act.size(); ++i )
+				ec->SetInput( i, act[i]->GetInput() );
 		}
 	};
 
