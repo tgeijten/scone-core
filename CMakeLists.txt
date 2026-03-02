@@ -173,7 +173,7 @@ if (SCONE_CORE_CPACK)
 			# packaging: package installation as a DEB
 			set(CPACK_GENERATOR DEB)
 			set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/scone-core")
-			set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6")
+			set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6, libblas3, liblapack3")
 			set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 			set(CPACK_STRIP_FILES YES)
 
