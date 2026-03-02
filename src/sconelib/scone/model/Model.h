@@ -323,7 +323,7 @@ namespace scone
 		bool remove_actuators_in_muscle_groups;
 
 		/// Remove individual muscles that are added to a MuscleGroup, and add MuscleGroups to muscles; default = 0.
-		bool remove_muscles_in_muscle_groups;
+		bool replace_muscles_with_muscle_groups;
 
 		/// Initialize muscle activations from initial controller values; default = true unless state_init_file contains activations.
 		xo::optional<bool> initialize_activations_from_controller;

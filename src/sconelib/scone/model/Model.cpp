@@ -59,7 +59,7 @@ namespace scone
 		INIT_MEMBER( props, dual_sided_muscle_groups, true ),
 		INIT_MEMBER( props, normalize_muscles_in_multiple_muscle_groups, false ),
 		INIT_MEMBER( props, remove_actuators_in_muscle_groups, false ),
-		INIT_MEMBER( props, remove_muscles_in_muscle_groups, false ),
+		INIT_MEMBER( props, replace_muscles_with_muscle_groups, false ),
 		INIT_PAR_MEMBER( props, par, initialize_activations_from_controller, xo::optional<bool>() ),
 		INIT_MEMBER( props, neural_delays, {} ),
 		planar_( props.try_get<bool>( "planar" ) ),
@@ -168,8 +168,7 @@ namespace scone
 		{
 			m_SensorDelayAdapters.push_back( std::make_unique<SensorDelayAdapter>( *this, source, 0.0 ) );
 			return *m_SensorDelayAdapters.back();
-		}
-		else return **it;
+		} else return **it;
 	}
 
 	DelayedSensorValue Model::GetDelayedSensor( Sensor& sensor, TimeInSeconds two_way_delay )
@@ -465,8 +464,7 @@ namespace scone
 			m_DelayedActuators.UpdateActuatorInputs();
 			m_DelayedActuators.AdvanceActuatorBuffers();
 			m_DelayedActuators.ClearActuatorBufferValues();
-		}
-		else {
+		} else {
 			m_DelayedSensors.UpdateSensorBufferValues();
 			m_DelayedActuators.ClearActuatorBufferValues();
 		}
@@ -479,8 +477,7 @@ namespace scone
 		{
 			m_DelayedSensors.AdvanceSensorBuffers();
 			m_DelayedSensors.UpdateSensorBufferValues();
-		}
-		else {
+		} else {
 			m_DelayedActuators.UpdateActuatorInputs();
 		}
 
@@ -675,8 +672,7 @@ namespace scone
 			auto r = xo::lined( point, -up );
 			auto t = xo::transformd( ground->GetPos(), ground->GetOri() );
 			return xo::intersection( r, std::get<xo::plane>( ground->GetShape() ), t );
-		}
-		else return point - xo::multiply( point, up ); // default projects to plane defined by origin and up
+		} else return point - xo::multiply( point, up ); // default projects to plane defined by origin and up
 	}
 
 	std::vector<String> Model::GetCustomValueNames() const
@@ -703,7 +699,7 @@ namespace scone
 		if ( GetMuscles().size() != GetIndividualMuscles().size() )
 			model_pn["muscles"] = xo::stringf( "%d (%d)", GetMuscles().size(), GetIndividualMuscles().size() );
 		else model_pn["muscles"] = GetMuscles().size();
-			
+
 		model_pn["actuators"] = GetActuators().size();
 		model_pn["legs"] = GetLegCount();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
@@ -804,25 +800,30 @@ namespace scone
 					kvp.first /= muscles[kvp.second];
 		}
 
+		// make sure there are no empty muscle groups
+		for ( auto& mg : m_MuscleGroups )
+			SCONE_ASSERT( !mg.GetMuscles().empty() );
+
 		// remove group muscles from actuator list
 		if ( remove_actuators_in_muscle_groups ) {
-			for ( auto& mg : m_MuscleGroups )
+			for ( auto& mg : m_MuscleGroups ) {
+				xo::find_ref( m_ActuatorPtrs, mg.GetMuscles().front().second ) = &mg;
 				for ( auto& kvp : mg.GetMuscles() )
 					xo::erase( m_ActuatorPtrs, kvp.second );
+			}
+		} else {
+			for ( auto& mg : m_MuscleGroups )
+				m_ActuatorPtrs.emplace_back( &mg );
 		}
 
 		// remove group muscles from muscle list
-		if ( remove_muscles_in_muscle_groups ) {
+		if ( replace_muscles_with_muscle_groups ) {
 			for ( auto& mg : m_MuscleGroups ) {
+				xo::find_ref( m_MusclePtrs, mg.GetMuscles().front().second ) = &mg;
 				for ( auto& kvp : mg.GetMuscles() )
 					xo::erase( m_MusclePtrs, kvp.second );
-				m_MusclePtrs.emplace_back( &mg );
 			}
 		}
-
-		// add to muscle groups to actuators (must be done AFTER m_MuscleGroups is fully constructed since we use pointers)
-		for ( auto& mg : m_MuscleGroups )
-			m_ActuatorPtrs.emplace_back( &mg );
 	}
 
 	void Model::ProcessMuscleActivationSettings( const PropNode& pn, Params& par )
