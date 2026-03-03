@@ -229,6 +229,5 @@ namespace scone
 			m_Joints.push_back( j );
 			xo::append( m_Dofs, j->GetDofs() );
 		}
-		SCONE_ASSERT( !m_Joints.empty() );
 	}
 }
