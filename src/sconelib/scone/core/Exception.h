@@ -48,6 +48,10 @@ namespace scone
 #define SCONE_ERROR_IF( _condition_, _message_ ) \
 	if ( _condition_ ) throw scone::RuntimeException( std::string( _message_ ) );
 
+#define SCONE_RETHROW( _exc_, _msg_ ) \
+	throw scone::RuntimeException( _msg_ + std::string( ":\n   " ) + xo::replace_str( e.what(), "\n", "\n   " ) );
+#define SCONE_CATCH_RETHROW( _msg_ ) \
+	catch( const std::exception& e ) { SCONE_RETHROW( e, _msg_ ); }
 #define SCONE_TRY_RETHROW( _func_, _msg_ ) \
-	try { _func_; } catch( std::exception& e ) { throw scone::RuntimeException( _msg_ + std::string( ":\n   " ) + xo::replace_str( e.what(), "\n", "\n   " ) ); }
+	try { _func_; } catch( std::exception& e ) { SCONE_RETHROW( e, _msg_ ); }
 

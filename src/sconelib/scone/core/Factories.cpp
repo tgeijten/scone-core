@@ -103,16 +103,14 @@ namespace scone
 	{
 		ScopedParamSetPrefixer param_prefix( par, fp.props().get<String>( "name", "" ), true );
 		spot::scoped_par_options param_options( fp.props(), par );
-		SCONE_TRY_RETHROW(
-			return GetControllerFactory().create( fp.type(), fp.props(), par, model, target_area ),
-			fp.type() );
+		return GetControllerFactory().create_rethrow( fp.type(), fp.props(), par, model, target_area );
 	}
 
 	ControllerUP CreateController( const PropNode& pn, Params& par, Model& model, const Location& target_area )
 	{
 		ScopedParamSetPrefixer param_prefix( par, pn.get<String>( "name", "" ), true );
 		spot::scoped_par_options param_options( pn, par );
-		return GetControllerFactory().create( pn.get< String >( "type" ), pn, par, model, target_area );
+		return GetControllerFactory().create_rethrow( pn.get< String >( "type" ), pn, par, model, target_area );
 	}
 
 	MeasureFactory& GetMeasureFactory()
@@ -140,14 +138,12 @@ namespace scone
 
 	MeasureUP CreateMeasure( const FactoryProps& fp, Params& par, const Model& model, const Location& target_area )
 	{
-		SCONE_TRY_RETHROW(
-			return GetMeasureFactory().create( fp.type(), fp.props(), par, model, target_area ),
-			fp.type() );
+		return GetMeasureFactory().create_rethrow( fp.type(), fp.props(), par, model, target_area );
 	}
 
 	MeasureUP CreateMeasure( const PropNode& pn, Params& par, const Model& model, const Location& target_area )
 	{
-		return GetMeasureFactory().create( pn.get< String >( "type" ), pn, par, model, target_area );
+		return GetMeasureFactory().create_rethrow( pn.get< String >( "type" ), pn, par, model, target_area );
 	}
 
 	ReflexFactory& GetReflexFactory()
@@ -166,7 +162,7 @@ namespace scone
 
 	ReflexUP CreateReflex( const FactoryProps& fp, Params& par, Model& model, ReflexController& rc, const Location& target_area )
 	{
-		return GetReflexFactory().create( fp.type(), fp.props(), par, model, rc, target_area );
+		return GetReflexFactory().create_rethrow( fp.type(), fp.props(), par, model, rc, target_area );
 	}
 
 	FunctionFactory& GetFunctionFactory()
@@ -189,7 +185,7 @@ namespace scone
 
 	FunctionUP CreateFunction( const FactoryProps& fp, Params& par )
 	{
-		return GetFunctionFactory().create( fp.type(), fp.props(), par );
+		return GetFunctionFactory().create_rethrow( fp.type(), fp.props(), par );
 	}
 
 	OptimizerFactory& GetOptimizerFactory()
@@ -209,7 +205,7 @@ namespace scone
 	OptimizerUP CreateOptimizer( const PropNode& props, const path& scenario_dir )
 	{
 		auto fp = FindFactoryProps( GetOptimizerFactory(), props, "Optimizer" );
-		return GetOptimizerFactory().create( fp.type(), fp.props(), props, scenario_dir );
+		return GetOptimizerFactory().create_rethrow( fp.type(), fp.props(), props, scenario_dir );
 	}
 
 	ModelFactory& GetModelFactory()
@@ -224,9 +220,7 @@ namespace scone
 	ModelUP CreateModel( const FactoryProps& fp, Params& par, const path& scenario_dir )
 	{
 		xo::current_find_file_path( scenario_dir );
-		SCONE_TRY_RETHROW(
-			return GetModelFactory().create( fp.type(), fp.props(), par ),
-			fp.type() );
+		return GetModelFactory().create_rethrow( fp.type(), fp.props(), par );
 	}
 
 	StateComponentFactory& GetStateComponentFactory()
@@ -239,7 +233,7 @@ namespace scone
 
 	StateComponentUP CreateStateComponent( const FactoryProps& fp, Params& par, Model& model )
 	{
-		return GetStateComponentFactory().create( fp.type(), fp.props(), par, model );
+		return GetStateComponentFactory().create_rethrow( fp.type(), fp.props(), par, model );
 	}
 
 	ObjectiveFactory& GetObjectiveFactory()
@@ -256,6 +250,6 @@ namespace scone
 
 	ObjectiveUP CreateObjective( const FactoryProps& fp, const path& find_file_folder )
 	{
-		return GetObjectiveFactory().create( fp.type(), fp.props(), find_file_folder );
+		return GetObjectiveFactory().create_rethrow( fp.type(), fp.props(), find_file_folder );
 	}
 }
