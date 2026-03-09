@@ -553,6 +553,15 @@ namespace scone
 		LuaJoint find_joint( LuaString name ) { return *GetByLuaName( mod_.GetJoints(), name ); }
 		/// number of joints
 		int joint_count() { return static_cast<int>( mod_.GetJoints().size() ); }
+		
+		/// total contact force
+		LuaNumber contact_force() { return mod_.GetTotalContactForce(); }
+		/// total contact power
+		LuaNumber contact_power() { return mod_.GetTotalContactPower(); }
+		/// total ground reaction force
+		LuaNumber ground_reaction_force() { return mod_.GetTotalGroundReactionForce(); }
+		/// total self contact force
+		LuaNumber self_contact_force() { return mod_.GetTotalSelfContactForce(); }
 
 		/// get the model interaction spring
 		LuaSpring get_interaction_spring() { return GetRef( mod_.GetInteractionSpring(), "Model has no interaction spring" ); }

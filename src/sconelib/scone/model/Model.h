@@ -186,6 +186,7 @@ namespace scone
 		virtual Real GetTotalContactForce() const;
 		virtual Real GetTotalContactPower() const { return 0.0; }
 		virtual Real GetTotalGroundReactionForce() const { return GetTotalContactForce(); }
+		virtual Real GetTotalSelfContactForce() const { return GetTotalContactForce() - GetTotalGroundReactionForce(); }
 
 		// get static model info
 		virtual Real GetMass() const = 0;

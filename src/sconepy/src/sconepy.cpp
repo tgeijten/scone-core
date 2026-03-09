@@ -215,6 +215,8 @@ PYBIND11_MODULE( sconepy, m ) {
 		.def( "contact_force", &scone::Model::GetTotalContactForce, "Get the contact force [N] applied to this Model" )
 		.def( "contact_load", []( scone::Model& m ) { return m.GetTotalContactForce() / m.GetBW(); }, "Get the contact load [BW] applied to this Model" )
 		.def( "contact_power", &scone::Model::GetTotalContactPower, "Get the contact power [W]" )
+		.def( "ground_reaction_force", &scone::Model::GetTotalGroundReactionForce, "Get the total ground reaction force [N] for this Model" )
+		.def( "self_contact_force", &scone::Model::GetTotalSelfContactForce, "Get the total self contact force [N] for this Model" )
 		.def( "state", &scone::get_state, "Get the current state of this Model" )
 		.def( "set_state", &scone::set_state, "Set the current state for this Model" )
 		.def( "bodies", []( scone::Model& m ) { return &m.GetBodies(); }, py::return_value_policy::reference, "Get the array of Bodies in this Model" )
