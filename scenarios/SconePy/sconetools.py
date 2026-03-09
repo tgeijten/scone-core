@@ -58,10 +58,10 @@ if importlib.util.find_spec("sconepy") is None:
 
     # check if we succeeded
     if path_to_sconepy:
-        print("Found SconePy at", path_to_sconepy)
         sys.path.append(path_to_sconepy)
     else:
         print("Could not find SconePy in", path_list)
         raise Exception("Could not find SconePy in " + path_list)
 
 import sconepy
+print("Initialized SconePy", sconepy.version(), "at", path_to_sconepy)
