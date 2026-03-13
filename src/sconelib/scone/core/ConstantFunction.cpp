@@ -12,9 +12,12 @@
 
 namespace scone
 {
-	ConstantFunction::ConstantFunction( const PropNode& props, Params& par ) :
-		INIT_PAR_MEMBER( props, par, value, 0.0 )
-	{}
+	ConstantFunction::ConstantFunction( const PropNode& props, Params& par )
+	{
+		SCONE_ERROR_IF( props.size() != 1, "ConstantController must have one value child" );
+		const auto& [name, par_pn] = props.front();
+		value = par.get( name, par_pn );
+	}
 
 	String ConstantFunction::GetSignature()
 	{

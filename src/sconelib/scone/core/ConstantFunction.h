@@ -22,7 +22,7 @@ namespace scone
 		virtual ~ConstantFunction() = default;
 
 		/// Constant value.
-		const Real value;
+		Real value;
 
 		virtual Real GetValue( Real x ) override { return value; }
 
