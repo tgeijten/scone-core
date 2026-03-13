@@ -56,6 +56,7 @@ namespace scone
 		INIT_PAR_MEMBER( props, par, max_muscle_activation, 1.0 ),
 		max_individual_muscle_activation( props.try_get_child( "max_individual_muscle_activation" ) ),
 		INIT_PAR_MEMBER( props, par, muscle_input_soft_limits, ( std::pair<Real, Real>( 0.0, 1.0 ) ) ),
+		INIT_MEMBER( props, muscle_input_limit_type, muscle_input_soft_limits.first > 0.0 && muscle_input_soft_limits.second < 1.0 ? 2 : 0 ),
 		INIT_MEMBER( props, dual_sided_muscle_groups, true ),
 		INIT_MEMBER( props, normalize_muscles_in_multiple_muscle_groups, false ),
 		INIT_MEMBER( props, remove_actuators_in_muscle_groups, false ),
@@ -91,6 +92,8 @@ namespace scone
 		if ( misl != std::pair{ 0.0, 1.0 } ) {
 			if ( misl.first <= 0.0 || misl.second >= 1.0 || misl.second <= misl.first )
 				SCONE_ERROR( "Invalid values for muscle_input_soft_limits, must be: 0 < lower < upper < 1" );
+			if ( auto& misl_pn = props.get_child( "muscle_input_soft_limits" ); misl_pn.size() == 3 )
+				muscle_input_limit_type = misl_pn.get<int>( 2 ); // set using third argument
 		}
 
 		// old-style initialization (for backwards compatibility)

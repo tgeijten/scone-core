@@ -34,9 +34,12 @@ namespace scone
 	double Muscle::GetAdaptedInput() const
 	{
 		const auto& sb = GetModel().muscle_input_soft_limits;
-		if ( sb.first > 0.0 && sb.second < 1.0 )
-			return GetSoftLimitInput( sb.first, sb.second );
-		else return GetClampedInput();
+		switch ( GetModel().muscle_input_limit_type ) {
+		case 0: return GetClampedInput();
+		case 1: return GetSoftLimitInputC1( sb.first, sb.second );
+		case 2: return GetSoftLimitInputC2( sb.first, sb.second );
+		}
+		return 0.0; // invalid limit type
 	}
 
 	Real Muscle::GetNormalizedMomentArm( const Dof& dof ) const

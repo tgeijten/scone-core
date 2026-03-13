@@ -109,8 +109,12 @@ namespace scone
 		// get clamped input with hard limits
 		Real GetClampedInput() const { return xo::clamped( m_ActuatorInput, m_MinActivation, m_MaxActivation ); }
 
-		// get clamped input with RELATIVE soft limits, with 0 < lb < ub < 1
-		Real GetSoftLimitInput( Real lb, Real ub ) const {
+		// get C1 clamped input with RELATIVE soft limits, with 0 < lb < ub < 1
+		Real GetSoftLimitInputC1( Real lb, Real ub ) const {
+			return xo::soft_clamped_relative( m_ActuatorInput, m_MinActivation, m_MaxActivation, lb, ub );
+		}
+		// get C2 clamped input with RELATIVE soft limits, with 0 < lb < ub < 1
+		Real GetSoftLimitInputC2( Real lb, Real ub ) const {
 			return xo::smooth_clamped_relative( m_ActuatorInput, m_MinActivation, m_MaxActivation, lb, ub );
 		}
 

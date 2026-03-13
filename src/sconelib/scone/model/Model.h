@@ -311,8 +311,11 @@ namespace scone
 		/// Set min and max activation for individual muscles, see MuscleActivationSettings for details; default = not set.
 		const MuscleActivationSettings* muscle_activation;
 
-		/// Pair of values [lower upper] determining the RELATIVE lower and upper soft limit for muscle input, where 0 < lower < upper < 1; default = [0 1].
+		/// Set of values [lower upper type] determining the RELATIVE lower and upper soft limit for muscle input, where 0 < lower < upper < 1; default = [0 1].
 		std::pair<Real, Real> muscle_input_soft_limits;
+
+		/// Muscle input limit type (0 = none, 1 = C1 continuous, 2 = C2 continuous); default = 2 when muscle_input_soft_limits is defined
+		int muscle_input_limit_type;
 
 		/// Setting to determine if muscle groups are dual sided; default = 1.
 		bool dual_sided_muscle_groups;
