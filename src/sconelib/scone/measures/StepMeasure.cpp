@@ -34,6 +34,12 @@ namespace scone
 	UpdateResult StepMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
+		
+		// reserve space for better performance
+		if ( stored_data_.IsEmpty() ) {
+			size_t s = size_t( 0.5 + model.GetSimulationEndTime() / model.fixed_measure_step_size );
+			stored_data_.Reserve( s );
+		}
 
 		auto& frame = stored_data_.AddFrame( timestamp );
 		for ( const auto& leg : model.GetLegs() )
