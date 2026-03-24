@@ -33,7 +33,7 @@ namespace scone
 		size_t frames = 0;
 		auto prev_time = xo::constantsd::lowest();
 		for ( auto& frame : storage.GetData() ) {
-			auto t = frame->GetTime();
+			auto t = frame.GetTime();
 			if ( xo::greater_than_or_equal( t - prev_time, min_interval, interval_epsilon ) ) {
 				++frames;
 				prev_time = t;
@@ -58,12 +58,12 @@ namespace scone
 		auto prev_time = xo::constantsd::lowest();
 		for ( auto& frame : storage.GetData() )
 		{
-			auto t = frame->GetTime();
+			auto t = frame.GetTime();
 			if ( xo::greater_than_or_equal( t - prev_time, min_interval, interval_epsilon ) )
 			{
-				str << frame->GetTime();
+				str << frame.GetTime();
 				for ( size_t idx = 0; idx < storage.GetChannelCount(); ++idx )
-					str << "\t" << ( *frame )[idx];
+					str << "\t" << frame[idx];
 				str << "\n";
 				prev_time = t;
 				++frame_count;
@@ -82,11 +82,11 @@ namespace scone
 		auto prev_time = xo::constantsd::lowest();
 		for ( auto& frame : storage.GetData() )
 		{
-			auto t = frame->GetTime();
+			auto t = frame.GetTime();
 			if ( xo::greater_than_or_equal( t - prev_time, min_interval, interval_epsilon ) ) {
-				fprintf( f, "%g", frame->GetTime() );
+				fprintf( f, "%g", frame.GetTime() );
 				for ( size_t idx = 0; idx < storage.GetChannelCount(); ++idx )
-					fprintf( f, "\t%g", ( *frame )[idx] );
+					fprintf( f, "\t%g", frame[idx] );
 				fprintf( f, "\n" );
 				prev_time = t;
 				++frame_count;
@@ -102,12 +102,12 @@ namespace scone
 		size_t frame_count = 0;
 		auto prev_time = xo::constantsd::lowest();
 		for ( auto& frame : storage.GetData() ) {
-			Real t = frame->GetTime();
+			Real t = frame.GetTime();
 			if ( xo::greater_than_or_equal( t - prev_time, min_interval, interval_epsilon ) ) {
-				T tt = static_cast<T>( frame->GetTime() );
+				T tt = static_cast<T>( frame.GetTime() );
 				str.write( reinterpret_cast<char*>( &tt ), sizeof( T ) );
 				for ( size_t idx = 0; idx < storage.GetChannelCount(); ++idx ) {
-					T vt = static_cast<T>( ( *frame )[idx] );
+					T vt = static_cast<T>( frame[idx] );
 					str.write( reinterpret_cast<char*>( &vt ), sizeof( T ) );
 				}
 				prev_time = t;

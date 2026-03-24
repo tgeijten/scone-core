@@ -35,7 +35,10 @@ namespace scone
 			Frame( Storage& store, TimeT t, ValueT default_value = ValueT( 0 ) ) :
 				m_Store( store ),
 				m_Time( t ),
-				m_Values( store.GetChannelCount(), default_value ) { }
+				m_Values( store.GetChannelCount(), default_value )
+			{}
+			Frame( const Frame& other ) = default;
+			Frame( Frame&& other ) = default;
 
 			TimeT GetTime() const { return m_Time; }
 
@@ -81,8 +84,7 @@ namespace scone
 			std::vector< ValueT > m_Values;
 		};
 
-		using FrameUP = std::unique_ptr< Frame >;
-		using container_t = std::vector< FrameUP >;
+		using container_t = std::vector<Frame>;
 
 		Storage() {}
 		Storage( const Storage& other ) {
@@ -101,7 +103,7 @@ namespace scone
 			m_Data.clear();
 			m_Data.reserve( other.m_Data.size() );
 			for ( auto it = other.m_Data.begin(); it != other.m_Data.end(); ++it )
-				m_Data.push_back( std::make_unique<Frame>( **it ) );
+				m_Data.push_back( *it );
 			m_InterpolationCache.clear();
 			return *this;
 		};
@@ -114,16 +116,23 @@ namespace scone
 		};
 
 		// clear everything
-		void Clear() { m_Labels.clear(); m_LabelIndexMap.clear(); m_Data.clear(); m_InterpolationCache.clear(); }
+		void Clear() {
+			m_Labels.clear();
+			m_LabelIndexMap.clear();
+			m_Data.clear();
+			m_InterpolationCache.clear();
+		}
 
-		// erase frames, keep columns
-		void EraseFrames( index_t start, size_t size = no_size ) { 
-			if ( start < m_Data.size() ) {
-				auto begin_it = m_Data.begin() + start;
-				auto end_it = ( size == no_size || start + size >= m_Data.size() ) ? m_Data.end() : begin_it + size;
-				m_Data.erase( begin_it, end_it );
-				m_InterpolationCache.clear();
-			}
+		void ShrinkToSize( size_t s ) {
+			SCONE_ASSERT( s <= m_Data.size() );
+			m_Data.resize( s, Frame( *this, TimeT( 0 ) ) );
+			m_InterpolationCache.clear();
+		}
+
+		void Reserve( size_t s ) {
+			SCONE_ASSERT( s >= m_Data.size() );
+			m_Data.reserve( s );
+			m_InterpolationCache.clear();
 		}
 
 		Storage CopySlice( size_t start, size_t size, size_t stride ) const {
@@ -140,23 +149,23 @@ namespace scone
 		}
 
 		Frame& AddFrame( TimeT time, ValueT default_value = ValueT( 0 ) ) {
-			SCONE_ERROR_IF( !m_Data.empty() && time <= m_Data.back()->GetTime(),
+			SCONE_ERROR_IF( !m_Data.empty() && time <= m_Data.back().GetTime(),
 				"Timestamp is not higher than previous frame time: " + std::to_string( time ) );
-			m_Data.push_back( std::make_unique<Frame>( *this, time, default_value ) );
+			m_Data.emplace_back( *this, time, default_value );
 			m_InterpolationCache.clear(); // cached iterators have become invalid
-			return *m_Data.back();
+			return m_Data.back();
 		}
 
 		bool IsEmpty() const { return m_Data.empty(); }
 
-		Frame& Front() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.front(); }
-		const Frame& Front() const { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.front(); }
+		Frame& Front() { SCONE_ASSERT( !m_Data.empty() ); return m_Data.front(); }
+		const Frame& Front() const { SCONE_ASSERT( !m_Data.empty() ); return m_Data.front(); }
 
-		Frame& Back() { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
-		const Frame& Back() const { SCONE_ASSERT( !m_Data.empty() ); return *m_Data.back(); }
+		Frame& Back() { SCONE_ASSERT( !m_Data.empty() ); return m_Data.back(); }
+		const Frame& Back() const { SCONE_ASSERT( !m_Data.empty() ); return m_Data.back(); }
 
-		Frame& GetFrame( index_t frame_idx ) { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[frame_idx]; }
-		const Frame& GetFrame( index_t frame_idx ) const { SCONE_ASSERT( frame_idx < m_Data.size() ); return *m_Data[frame_idx]; }
+		Frame& GetFrame( index_t frame_idx ) { SCONE_ASSERT( frame_idx < m_Data.size() ); return m_Data[frame_idx]; }
+		const Frame& GetFrame( index_t frame_idx ) const { SCONE_ASSERT( frame_idx < m_Data.size() ); return m_Data[frame_idx]; }
 
 		std::vector< ValueT > GetChannelData( index_t idx ) const {
 			std::vector< ValueT > result( GetFrameCount() );
@@ -176,7 +185,7 @@ namespace scone
 
 		Real GetAverageFrameDuration() const { 
 			if ( m_Data.size() >= 2 )
-				return ( m_Data.back()->GetTime() - m_Data.front()->GetTime() ) / ( m_Data.size() - 1 );
+				return ( m_Data.back().GetTime() - m_Data.front().GetTime() ) / ( m_Data.size() - 1 );
 			else return 0.0;
 		}
 
@@ -185,7 +194,7 @@ namespace scone
 			m_Labels.push_back( label );
 			m_LabelIndexMap[label] = m_Labels.size() - 1;
 			for ( auto it = m_Data.begin(); it != m_Data.end(); ++it )
-				( *it )->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
+				it->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
 			return m_Labels.size() - 1;
 		}
 
@@ -217,7 +226,7 @@ namespace scone
 			else {
 				auto it0 = it;
 				--it0;
-				if ( time - ( *it0 )->GetTime() <= ( *it )->GetTime() - time )
+				if ( time - it0->GetTime() <= it->GetTime() - time )
 					return it0 - m_Data.begin();
 				else return it - m_Data.begin();
 			}
@@ -229,7 +238,7 @@ namespace scone
 		struct InterpolatedFrame {
 			double upper_weight;
 			typename container_t::const_iterator upper_frame, lower_frame;
-			ValueT value( index_t channel_idx ) const { return upper_weight * ( **upper_frame )[channel_idx] + ( 1.0 - upper_weight ) * ( **lower_frame )[channel_idx]; }
+			ValueT value( index_t channel_idx ) const { return upper_weight * ( *upper_frame )[channel_idx] + ( 1.0 - upper_weight ) * ( *lower_frame )[channel_idx]; }
 		};
 
 		// Compute interpolated value (always recomputes, slow)
@@ -258,7 +267,7 @@ namespace scone
 			{
 				// we have an actual interpolation
 				bf.lower_frame = bf.upper_frame - 1;
-				bf.upper_weight = ( time - ( *bf.lower_frame )->GetTime() ) / ( ( *bf.upper_frame )->GetTime() - ( *bf.lower_frame )->GetTime() );
+				bf.upper_weight = ( time - bf.lower_frame->GetTime() ) / ( bf.upper_frame->GetTime() - bf.lower_frame->GetTime() );
 			}
 
 			return bf;
@@ -288,7 +297,7 @@ namespace scone
 		std::unordered_map< String, index_t > m_LabelIndexMap;
 
 		auto upper_bound( TimeT time ) const {
-			return std::upper_bound( m_Data.cbegin(), m_Data.cend(), time, []( TimeT lhs, const FrameUP& rhs ) { return lhs < rhs->GetTime(); } );
+			return std::upper_bound( m_Data.cbegin(), m_Data.cend(), time, []( TimeT lhs, const Frame& rhs ) { return lhs < rhs.GetTime(); } );
 		}
 
 		std::map< TimeT, InterpolatedFrame > m_InterpolationCache;

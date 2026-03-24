@@ -81,7 +81,7 @@ namespace scone
 			auto& ds = model.GetSensorDelayStorage();
 			for ( index_t fidx = 1; fidx < m_Storage.GetFrameCount(); ++fidx )
 			{
-				auto sf = m_Storage.GetFrame( fidx );
+				const auto& sf = m_Storage.GetFrame( fidx );
 				ds.AddFrame( sf.GetTime() );
 				for ( index_t cidx = 0; cidx < m_SensorChannels.size(); ++cidx )
 					ds.Back()[cidx] = sf[m_SensorChannels[cidx]];
@@ -96,7 +96,7 @@ namespace scone
 		{
 			for ( index_t fidx = frame_start * frame_delta; fidx < m_Storage.GetFrameCount() && m_Storage.GetFrame( fidx ).GetTime() <= t; fidx += frame_delta )
 			{
-				auto f = m_Storage.GetFrame( fidx );
+				const auto& f = m_Storage.GetFrame( fidx );
 
 				// set state and compare output
 				model.SetStateValues( f.GetValues(), f.GetTime() );
