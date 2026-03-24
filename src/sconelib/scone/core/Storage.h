@@ -33,12 +33,10 @@ namespace scone
 			friend class Storage;
 
 			Frame( Storage& store, TimeT t, ValueT default_value = ValueT( 0 ) ) :
-				m_Store( store ),
+				m_Store( &store ),
 				m_Time( t ),
 				m_Values( store.GetChannelCount(), default_value )
 			{}
-			Frame( const Frame& other ) = default;
-			Frame( Frame&& other ) = default;
 
 			TimeT GetTime() const { return m_Time; }
 
@@ -47,14 +45,14 @@ namespace scone
 			const ValueT& operator[]( index_t idx ) const { return m_Values[idx]; }
 
 			ValueT& operator[]( const String& label ) {
-				index_t idx = m_Store.TryGetChannelIndex( label );
+				index_t idx = m_Store->TryGetChannelIndex( label );
 				if ( idx == NoIndex )
-					idx = m_Store.AddChannel( label );
+					idx = m_Store->AddChannel( label );
 				return m_Values[idx];
 			}
 
 			const ValueT& operator[]( const String& label ) const {
-				index_t idx = m_Store.GetChannelIndex( label );
+				index_t idx = m_Store->GetChannelIndex( label );
 				SCONE_ASSERT( idx != NoIndex );
 				return m_Values[idx];
 			}
@@ -75,11 +73,11 @@ namespace scone
 			}
 
 			Vec3 GetVec3( const String& label ) const {
-				return GetVec3( m_Store.TryGetChannelIndex( label + "_x" ) );
+				return GetVec3( m_Store->TryGetChannelIndex( label + "_x" ) );
 			}
 
 		private:
-			Storage< ValueT, TimeT >& m_Store;
+			Storage< ValueT, TimeT >* m_Store;
 			TimeT m_Time;
 			std::vector< ValueT > m_Values;
 		};
