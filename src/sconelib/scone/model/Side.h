@@ -11,6 +11,7 @@
 #include "scone/core/platform.h"
 #include "scone/core/memory_tools.h"
 #include "scone/core/Exception.h"
+#include "scone/core/PropNode.h"
 #include <vector>
 
 #include <algorithm>
@@ -100,6 +101,11 @@ namespace scone
 	inline String GetParName( const String& str, bool symmetric )
 	{
 		return symmetric ? GetNameNoSide( str ) : str;
+	}
+
+	inline String GetParName( const String& str, const PropNode& pn )
+	{
+		return pn.get( "symmetric", true ) ? GetNameNoSide( str ) : str;
 	}
 
 	inline bool IsMirrored( const String& str1, const String& str2 ) { return str1 == GetMirroredName( str2 ); }
