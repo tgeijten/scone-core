@@ -67,8 +67,15 @@ namespace scone
 				( *this )[label + "_z"] = vec.z;
 			}
 
+			void SetVec3( index_t idx, const Vec3& vec ) {
+				SCONE_ASSERT( m_Values.size() >= 3 && idx <= m_Values.size() - 3 );
+				m_Values[idx] = vec.x;
+				m_Values[idx + 1] = vec.y;
+				m_Values[idx + 2] = vec.z;
+			}
+
 			Vec3 GetVec3( index_t idx ) const {
-				SCONE_ASSERT( idx != NoIndex && idx + 2 < m_Values.size() );
+				SCONE_ASSERT( m_Values.size() >= 3 && idx <= m_Values.size() - 3 );
 				return Vec3( m_Values[idx], m_Values[idx + 1], m_Values[idx + 2] );
 			}
 
@@ -188,12 +195,24 @@ namespace scone
 		}
 
 		index_t AddChannel( const String& label, ValueT default_value = ValueT( 0 ) ) {
-			SCONE_ASSERT_MSG( TryGetChannelIndex( label ) == NoIndex, "Channel " + label + " already exists" );
+			SCONE_ERROR_IF( TryGetChannelIndex( label ) != NoIndex, "Channel " + label + " already exists" );
 			m_Labels.push_back( label );
 			m_LabelIndexMap[label] = m_Labels.size() - 1;
 			for ( auto it = m_Data.begin(); it != m_Data.end(); ++it )
 				it->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
 			return m_Labels.size() - 1;
+		}
+
+		index_t AddChannels( const String& base_name, std::initializer_list<string_view> postfixes, ValueT default_value = ValueT( 0 ) ) {
+			for ( auto&& pf : postfixes ) {
+				String label = xo::append_str( base_name, pf );
+				SCONE_ERROR_IF( TryGetChannelIndex( label ) != NoIndex, "Channel " + label + " already exists" );
+				m_Labels.push_back( label );
+				m_LabelIndexMap[label] = m_Labels.size() - 1;
+			}
+			for ( auto it = m_Data.begin(); it != m_Data.end(); ++it )
+				it->m_Values.resize( m_Labels.size(), default_value ); // resize existing data
+			return m_Labels.size() - postfixes.size();
 		}
 
 		index_t GetChannelIndex( const String& label ) const {

@@ -39,15 +39,20 @@ namespace scone
 		if ( stored_data_.IsEmpty() ) {
 			size_t s = size_t( 0.5 + model.GetSimulationEndTime() / model.fixed_measure_step_size );
 			stored_data_.Reserve( s );
+			for ( const auto& leg : model.GetLegs() ) {
+				stored_data_.AddChannels( leg.GetName() + ".grf_norm", { "_x", "_y", "_z" } );
+				stored_data_.AddChannels( leg.GetName() + ".cop", { "_x", "_y", "_z" } );
+			}
 		}
 
 		auto& frame = stored_data_.AddFrame( timestamp );
-		for ( const auto& leg : model.GetLegs() )
+		for ( index_t idx = 0; idx < model.GetLegCount(); ++idx )
 		{
+			const auto& leg = model.GetLeg( idx );
 			auto fv = leg.GetContactForceValue();
 			Vec3 grf = fv.force / model.GetBW();
-			frame.SetVec3( leg.GetName() + ".grf_norm", grf );
-			frame.SetVec3( leg.GetName() + ".cop", fv.point );
+			frame.SetVec3( idx * 6, grf );
+			frame.SetVec3( idx * 6 + 3, fv.point );
 		}
 
 		return false;
