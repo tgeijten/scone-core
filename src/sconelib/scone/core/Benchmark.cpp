@@ -52,7 +52,7 @@ namespace scone
 			par.import_values( file );
 
 		auto min_samples = bo.min_samples;
-		auto max_samples = min_samples * 20;
+		auto max_samples = min_samples * bo.max_samples_factor;
 
 		// run simulations
 		xo::flat_map<string, std::vector<TimeInSeconds>> bm_components;

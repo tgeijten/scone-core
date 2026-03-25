@@ -10,6 +10,7 @@ namespace scone
 {
 	struct BenchmarkOptions {
 		size_t min_samples = 8;
+		size_t max_samples_factor = 20;
 		double min_norm_std = 0.01;
 		path baseline_file;
 		path results_file;
