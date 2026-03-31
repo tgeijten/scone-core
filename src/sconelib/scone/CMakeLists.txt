@@ -187,6 +187,8 @@ set(MEASURE_FILES
 	measures/JumpMeasure.h
 	measures/JointLoadMeasure.cpp
 	measures/JointLoadMeasure.h
+	measures/JointMeasure.cpp
+	measures/JointMeasure.h
 	measures/MimicMeasure.cpp
 	measures/MimicMeasure.h
 	measures/MuscleMeasure.cpp

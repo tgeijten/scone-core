@@ -72,6 +72,7 @@
 #ifdef SCONE_SNEL
 #	include "scone/controllers/SpinalController.h"
 #endif
+#include "scone/measures/JointMeasure.h"
 
 namespace scone
 {
@@ -127,6 +128,7 @@ namespace scone
 			.register_type<CompositeMeasure>()
 			.register_type<JumpMeasure>()
 			.register_type<JointLoadMeasure>()
+			.register_type<JointMeasure>()
 			.register_type<ReactionForceMeasure>()
 			.register_type<BalanceMeasure>()
 			.register_type<MimicMeasure>()
