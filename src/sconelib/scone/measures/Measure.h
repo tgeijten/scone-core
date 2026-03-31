@@ -42,6 +42,9 @@ namespace scone
 		/// Indicate whether this measure should be minimized; default value depends on the measure type (usually true).
 		bool minimize;
 
+		/// Scale the weight by the relative time this measure was active; default = 0.
+		bool scale_weight_by_relative_duration;
+
 		// Get final result.
 		double GetResult( const Model& model );
 		double GetWeightedResult( const Model& model );
@@ -62,6 +65,7 @@ namespace scone
 		virtual UpdateResult PerformAnalysis( const Model& model, double timestamp ) override final;
 		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) = 0;
 		double WorstResult() const;
+		double GetRelativeDuration( const Model& model ) const;
 
 		PropNode report_;
 		xo::optional< double > result_; // caches result so it's only computed once

@@ -8,6 +8,7 @@
 
 #include "Measure.h"
 #include "xo/numerical/constants.h"
+#include "scone/model/Model.h"
 
 namespace scone
 {
@@ -21,6 +22,7 @@ namespace scone
 		INIT_PROP( props, threshold_transition, 0.0 );
 		INIT_PROP( props, result_offset, 0.0 );
 		INIT_PROP( props, minimize, true );
+		INIT_PROP( props, scale_weight_by_relative_duration, false );
 		if ( soft_threshold ) {
 			SCONE_ERROR_IF( threshold || result_offset != 0.0, "Cannot set threshold or result_offset with soft_threshold" )
 			result_offset = -*soft_threshold;
@@ -40,7 +42,10 @@ namespace scone
 		if ( !result_ )
 			result_ = ComputeResult( model );
 
+		// result_offset is used by soft_threshold
 		Real m = *result_ + result_offset;
+
+		// apply threshold
 		if ( minimize && threshold )
 		{
 			if ( m < *threshold )
@@ -48,6 +53,11 @@ namespace scone
 			else if ( m < *threshold + threshold_transition )
 				m = m * ( m - *threshold ) / threshold_transition;
 		}
+
+		// scale by relative duration after threshold
+		if ( scale_weight_by_relative_duration )
+			m *= GetRelativeDuration( model );
+
 		return weight * m;
 	}
 
@@ -93,4 +103,14 @@ namespace scone
 		return minimize ? xo::constants<double>::max() : xo::constants<double>::lowest();
 	}
 
+	double Measure::GetRelativeDuration( const Model& model ) const
+	{
+		auto model_end_time = model.GetSimulationEndTime();
+		auto max_end_time = stop_time > 0.0 ? std::min( stop_time, model_end_time ) : model_end_time;
+		auto max_duration = max_end_time - start_time;
+		SCONE_ERROR_IF( max_duration <= 0.0, "Measure start_time must be smaller than stop_time or duration" );
+		auto end_time = stop_time > 0.0 ? std::min( stop_time, model.GetTime() ) : model.GetTime();
+		auto duration = std::max( 0.0, end_time - start_time );
+		return duration / max_duration;
+	}
 }
