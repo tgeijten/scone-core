@@ -64,6 +64,7 @@ namespace scone
 	using ModelFactory = xo::factory< Model, const PropNode&, Params& >;
 	SCONE_API ModelFactory& GetModelFactory();
 	SCONE_API ModelUP CreateModel( const FactoryProps& fp, Params& par, const path& scenario_dir );
+	SCONE_API String GetModelFactoryType( const path& model_file );
 
 	using StateComponentFactory = xo::factory< StateComponent, const PropNode&, Params&, Model& >;
 	SCONE_API StateComponentFactory& GetStateComponentFactory();

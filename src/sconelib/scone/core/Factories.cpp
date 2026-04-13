@@ -225,6 +225,19 @@ namespace scone
 		return GetModelFactory().create_rethrow( fp.type(), fp.props(), par );
 	}
 
+	String GetModelFactoryType( const path& model_file )
+	{
+		auto ext = model_file.extension_no_dot();
+		if ( ext == "osim" ) {
+			if ( GetModelFactory().has_type( "ModelOpenSim4" ) )
+				return "ModelOpenSim4";
+			else return "ModelOpenSim3";
+		} else if ( ext == "hfd" ) {
+			return "ModelHyfydy";
+		}
+		SCONE_ERROR( "Unsupported model " + model_file.str() );
+	}
+
 	StateComponentFactory& GetStateComponentFactory()
 	{
 		static StateComponentFactory g_StateComponentFactory = StateComponentFactory();
