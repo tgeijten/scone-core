@@ -117,7 +117,10 @@ namespace scone
 		joint_pn["pos_in_child"] = fix( GetLocalBodyPos( j.GetPosInChild(), bc ) );
 		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
 		if ( !xo::is_identity( ref_ori, 1e-9 ) ) {
-			SCONE_ERROR_IF( weld_joint, "weld_joint cannot have ref_ori" );
+			if ( weld_joint ) {
+				log::warning( "Cannot use weld_joint for ", j.GetName() );
+				weld_joint = false;
+			}
 			joint_pn["ref_ori"] = ref_ori;
 		}
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
