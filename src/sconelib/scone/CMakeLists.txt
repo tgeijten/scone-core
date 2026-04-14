@@ -264,6 +264,7 @@ set(SIM_MODELCOMPONENTS_FILES
 	model/DisplayGeometry.h
 	model/StateComponent.h
 	model/UserInput.h
+	model/PathElement.h
 	model/symmetry_tools.h
 	)
 set(SIM_SENSORSANDACTUATORS_FILES
