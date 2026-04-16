@@ -107,7 +107,10 @@ namespace scone
 	Vec3 DofOpenSim4::GetLocalAxis() const
 	{
 		auto* osJoint = &m_osCoord.getJoint();
-		if ( auto* customJoint = dynamic_cast<const OpenSim::CustomJoint*>( osJoint ) ) {
+		if ( auto* j = dynamic_cast<const JointOpenSim4*>( GetJoint() ); j && j->IsCustomJointWithFunction() ) {
+			return Vec3::neg_unit_z(); // fancy knee joint
+		}
+		else if ( auto* customJoint = dynamic_cast<const OpenSim::CustomJoint*>( osJoint ) ) {
 			auto& st = customJoint->getSpatialTransform();
 			auto myIdx = st.getCoordinateNames().findIndex( m_osCoord.getName() );
 			auto idxVec = st.getCoordinateIndices();
@@ -118,7 +121,8 @@ namespace scone
 		else if ( auto* pinJoint = dynamic_cast<const OpenSim::PinJoint*>( osJoint ) ) {
 			// #todo: this is incorrect, the axis must be rotated according to the joint orientation
 			// #OpenSim: It is unclear how to do this in OpenSim4
-			return Vec3::unit_z();
+			auto q = from_osim_euler_xyz( pinJoint->get_frames( 1 ).get_orientation() );
+			return q * Vec3::unit_z();
 		}
 
 		return Vec3::zero();
@@ -172,6 +176,7 @@ namespace scone
 			pn["limit_damping"] = m_pOsLimitForce->get_damping();
 			pn["limit_range"] = BoundsDeg( m_pOsLimitForce->get_lower_limit(), m_pOsLimitForce->get_upper_limit() );
 		}
+		pn["locked"] = m_osCoord.get_locked();
 		return pn;
 	}
 }

@@ -19,6 +19,8 @@ namespace scone
 
 		bool HasDir() const { return !dir.is_null(); }
 		bool IsCylinder() const { return radius != 0; }
+		Vec3 GetWorldPos() const { return body->GetPosOfPointOnBody( pos ); }
+		Vec3 GetWorldDir() const { return body->GetOrientation() * dir; }
 	};
 }
 

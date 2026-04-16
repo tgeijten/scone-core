@@ -69,8 +69,8 @@ namespace scone
 	Vec3 JointOpenSim4::GetPos() const
 	{
 #if 1
-		// #osim4: this doesn't work for the fancy knee joints
-		auto point = m_osJoint.getParentFrame().getPositionInGround( m_Model.GetTkState() );
+		// #osim4: returning position in child frame works for fancy knee joints
+		auto point = m_osJoint.getChildFrame().getPositionInGround( m_Model.GetTkState() );
 		return from_osim( point );
 #else
 		// #osim4: this code gives an error
@@ -87,7 +87,12 @@ namespace scone
 	Vec3 JointOpenSim4::GetPosInParent() const
 	{
 		auto& f0 = m_osJoint.get_frames( 0 );
-		return from_osim( f0.get_translation() );
+		if ( IsCustomJointWithFunction() ) {
+			// this is a fancy joint for which the frame translation is incorrect
+			// we instead compute the child position and transform it to in the parent frame
+			return GetParentBody().GetLocalPosOfPoint( GetPos() );
+		}
+		else return from_osim( f0.get_translation() );
 	}
 
 	Vec3 JointOpenSim4::GetPosInChild() const
@@ -106,5 +111,21 @@ namespace scone
 	{
 		auto& f1 = m_osJoint.get_frames( 1 );
 		return from_osim_euler_xyz( f1.get_orientation() );
+	}
+
+	bool JointOpenSim4::IsCustomJointWithFunction() const
+	{
+		if ( auto* cj = dynamic_cast<OpenSim::CustomJoint*>( &m_osJoint ) ) {
+			const OpenSim::SpatialTransform& spatialTransform = cj->getSpatialTransform();
+			for ( int i = 0; i < 6; ++i ) {
+				const OpenSim::TransformAxis& axis = spatialTransform.getTransformAxis( i );
+				const OpenSim::Function* f = &axis.getFunction();
+				if ( auto* mf = dynamic_cast<const OpenSim::MultiplierFunction*>( f ) )
+					f = mf->getFunction();
+				if ( dynamic_cast<const OpenSim::SimmSpline*>( f ) || dynamic_cast<const OpenSim::PolynomialFunction*>( f ) )
+					return true;
+			}
+		}
+		return false;
 	}
 }

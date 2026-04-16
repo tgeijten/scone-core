@@ -10,6 +10,7 @@
 #include "string_tools.h"
 #include "Angle.h"
 #include "scone/model/Ligament.h"
+#include "scone/model/muscle_tools.h"
 
 namespace scone
 {
@@ -84,7 +85,7 @@ namespace scone
 			body_pn["inertia"] = gb.inertia;
 			if ( keep_body_origin_ && !b.GetLocalComPos().is_null() )
 				body_pn["com_pos"] = fix( b.GetLocalComPos() );
-			if ( use_body_mass_threshold_ && !( IsWeldedBody( b ) && use_weld_joints_ ) && gb.mass > 0 && gb.mass < body_mass_threshold_ )
+			if ( use_body_mass_threshold_ && !( IsAlignedWeldedBody( b ) && use_weld_joints_ ) && gb.mass > 0 && gb.mass < body_mass_threshold_ )
 				log::warning( gb.name, " mass is below threshold (", gb.mass, " < ", body_mass_threshold_, ")" );
 
 			// joint
@@ -107,20 +108,17 @@ namespace scone
 	void ModelConverter::ConvertJoint( const Joint& j, PropNode& body_pn ) const
 	{
 		bool pin_joint = use_pin_joints_ && j.GetDofs().size() == 1;
-		bool weld_joint = use_weld_joints_ && IsWeldJoint( j );
+		const bool weld_joint = use_weld_joints_ && IsAlignedWeldJoint( j );
 		auto& bp = j.GetParentBody();
 		auto& bc = j.GetBody();
 		auto& joint_pn = body_pn.add_child( GetJointType( j ) );
 		joint_pn["name"] = j.GetName();
 		joint_pn["parent"] = j.GetParentBody().GetName();
-		joint_pn["pos_in_parent"] = fix( GetLocalBodyPos( j.GetPosInParent(), bp ) );
-		joint_pn["pos_in_child"] = fix( GetLocalBodyPos( j.GetPosInChild(), bc ) );
+		joint_pn["pos_in_parent"] = fix( ConvertOsimLocalBodyPos( j.GetPosInParent(), bp ) );
+		joint_pn["pos_in_child"] = fix( ConvertOsimLocalBodyPos( j.GetPosInChild(), bc ) );
 		auto ref_ori = xo::quat_from_quats( bp.GetOrientation(), bc.GetOrientation() );
 		if ( !xo::is_identity( ref_ori, 1e-9 ) ) {
-			if ( weld_joint ) {
-				log::warning( "Cannot use weld_joint for ", j.GetName() );
-				weld_joint = false;
-			}
+			SCONE_ERROR_IF( weld_joint, "Unexpected weld_joint: " + j.GetName() );
 			joint_pn["ref_ori"] = ref_ori;
 		}
 		auto limits = Bounds3Deg{ {0,0}, {0,0}, {0,0} };
@@ -132,7 +130,11 @@ namespace scone
 				auto dof_info = dof->GetInfo();
 				if ( pin_joint )
 					joint_pn["axis"] = axis;
-				if ( dof_info.has_key( "limit_stiffness" ) ) {
+
+				if ( use_zero_limits_for_locked_dof_ && dof_info.get( "locked", false ) ) {
+					limits[axis_idx] = { 0,0 };
+				}
+				else if ( dof_info.has_key( "limit_stiffness" ) ) {
 					// convert stiffness and damping
 					if ( use_stiffness_from_limit_force_ ) {
 						auto kp = dof_info.get<Real>( "limit_stiffness" );
@@ -171,10 +173,11 @@ namespace scone
 			mus_pn["tendon_strain_at_one_norm_force"] = s;
 		auto& path_pn = mus_pn.add_child( "path" );
 		auto mp = m.GetLocalMusclePath();
+		FixPathWrappingDirections( mp, m.GetName() );
 		for ( auto& pe : mp ) {
 			auto& ppn = path_pn.add_child();
 			ppn["body"] = GetBodyName( *pe.body );
-			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
+			ppn["pos"] = fix( ConvertOsimLocalBodyPos( pe.pos, *pe.body ) );
 			if ( !pe.dir.is_null() ) {
 				ppn["dir"] = fix( -pe.body->GetOrientation() * pe.dir );
 				if ( use_cylinder_wrapping && pe.radius != REAL_0 )
@@ -194,7 +197,7 @@ namespace scone
 		for ( auto& pe : mp ) {
 			auto& ppn = path_pn.add_child();
 			ppn["body"] = GetBodyName( *pe.body );
-			ppn["pos"] = fix( GetLocalBodyPos( pe.pos, *pe.body ) );
+			ppn["pos"] = fix( ConvertOsimLocalBodyPos( pe.pos, *pe.body ) );
 			if ( !pe.dir.is_null() ) {
 				ppn["dir"] = fix( -pe.body->GetOrientation() * pe.dir );
 				if ( use_cylinder_wrapping && pe.radius != REAL_0 )
@@ -209,7 +212,7 @@ namespace scone
 		cg_pn["name"] = cg.GetName();
 		cg_pn.append( to_prop_node( cg.GetShape() ) );
 		cg_pn["body"] = GetBodyName( cg.GetBody() );
-		cg_pn["pos"] = GetLocalBodyPos( cg.GetPos(), cg.GetBody() );
+		cg_pn["pos"] = ConvertOsimLocalBodyPos( cg.GetPos(), cg.GetBody() );
 		cg_pn["ori"] = fix( Vec3( xo::vec3degd( xo::euler_xyz_from_quat( cg.GetOri() ) ) ) );
 	}
 
@@ -218,7 +221,7 @@ namespace scone
 		for ( const auto& g : b.GetDisplayGeometries() ) {
 			auto& geom_pn = body_pn.add_child( "mesh" );
 			geom_pn["file"] = g.filename_;
-			geom_pn["pos"] = fix( GetLocalBodyPos( g.pos_, b ) );
+			geom_pn["pos"] = fix( ConvertOsimLocalBodyPos( g.pos_, b ) );
 			if ( g.ori_ != Quat::identity() )
 				geom_pn["ori"] = g.ori_;
 			if ( g.scale_ != Vec3::one() )
@@ -233,7 +236,7 @@ namespace scone
 		dof_pn["source"] = GetDofSourceName( d, use_pin_joints_ );
 		auto range = xo::boundsd( d.GetRange().min, d.GetRange().max );
 		dof_pn["range"] = d.IsRotational() ? xo::boundsd( BoundsDeg( BoundsRad( range ) ) ) : range;
-		if ( d.GetDefaultPos() != 0.0 )
+		if ( d.GetDefaultPos() != 0.0 && d.GetDefaultPos() != d.GetPos() )
 			dof_pn["default"] = d.IsRotational() ? xo::rad_to_deg( d.GetDefaultPos() ) : d.GetDefaultPos();
 	}
 
@@ -266,7 +269,7 @@ namespace scone
 		return global_bodies_[GetCompoundRoot( b ).GetName()];
 	}
 
-	Vec3 ModelConverter::GetLocalBodyPos( const Vec3& osim_pos, const Body& b ) const
+	Vec3 ModelConverter::ConvertOsimLocalBodyPos( const Vec3& osim_pos, const Body& b ) const
 	{
 		if ( !keep_body_origin_ ) {
 			auto& bi = GetGlobalBody( b );
@@ -316,7 +319,7 @@ namespace scone
 
 		if ( use_pin_joints_ && j.GetDofs().size() == 1 ) return "pin_joint";
 		else if ( use_ball_socket_joints_ && IsBallSocketJoint( j ) ) return "ball_socket_joint";
-		else if ( use_weld_joints_ && IsWeldJoint( j ) ) return "weld_joint";
+		else if ( use_weld_joints_ && IsAlignedWeldJoint( j ) ) return "weld_joint";
 		else return "joint";
 	}
 

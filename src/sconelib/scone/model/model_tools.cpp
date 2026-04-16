@@ -71,9 +71,15 @@ namespace scone
 		return j.GetParentBody().GetMass() > 0 || trans_dofs == 0;
 	}
 
-	bool IsWeldJoint( const Joint& j )
+	bool AreBodiesAligned( const Joint& j, Real e )
 	{
-		return IsWeldedBody( j.GetBody() );
+		auto ref_ori = xo::quat_from_quats( j.GetParentBody().GetOrientation(), j.GetBody().GetOrientation() );
+		return xo::is_identity( ref_ori, e );
+	}
+
+	bool IsAlignedWeldJoint( const Joint& j )
+	{
+		return IsAlignedWeldedBody( j.GetBody() );
 	}
 
 	bool IsBallSocketJoint( const Joint& j )
@@ -81,10 +87,10 @@ namespace scone
 		return IsRealJoint( j ) && j.GetDofs().size() == 3;
 	}
 
-	bool IsWeldedBody( const Body& b )
+	bool IsAlignedWeldedBody( const Body& b )
 	{
 		auto* j = b.GetJoint();
-		return j && IsRealJoint( *j ) && j->GetDofs().empty() && b.GetMass() > 0;
+		return j && IsRealJoint( *j ) && j->GetDofs().empty() && b.GetMass() > 0 && AreBodiesAligned( *j );
 	}
 
 	const Body* GetWeldedRoot( const Body& b )

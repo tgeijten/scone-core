@@ -13,5 +13,6 @@ namespace scone
 {
 	SCONE_API void WriteMuscleInfo( Model& model );
 	SCONE_API PropNode GetPathInfo( const std::vector<PathElement>& p );
+	SCONE_API int FixPathWrappingDirections( std::vector<PathElement>& p, const String& name );
 }
 

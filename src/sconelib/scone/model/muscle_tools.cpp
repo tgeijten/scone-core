@@ -13,6 +13,7 @@
 #include <fstream>
 #include "scone/core/Log.h"
 #include "xo/numerical/bounds.h"
+#include "xo/geometry/geometry_algorithms.h"
 
 namespace scone
 {
@@ -114,5 +115,28 @@ namespace scone
 			else pn.add_key_value( pe.body->GetName(), pe.pos );
 		}
 		return pn;
+	}
+
+	int FixPathWrappingDirections( std::vector<PathElement>& p, const String& name )
+	{
+		SCONE_ASSERT( p.size() > 1 );
+		int fixes = 0;
+		for ( index_t i = 1; i < p.size() - 1; ++i ) {
+			if ( p[i].HasDir() ) {
+				auto m1 = p[i - 1].GetWorldPos();
+				auto& m2 = p[i + 1].GetWorldPos();
+				auto md = normalized( m2 - m1 );
+				auto& w1 = p[i].GetWorldPos();
+				auto& w2 = w1 + p[i].GetWorldDir();
+				auto [pm, pw] = xo::closest_line_line( m1, m2, w1, w2 );
+				auto c = xo::cross_product( p[i].dir, md );
+				auto s = xo::dot_product( c, pm - pw );
+				if ( s < 0 ) {
+					p[i].dir = -p[i].dir;
+					++fixes;
+				}
+			}
+		}
+		return fixes;
 	}
 }

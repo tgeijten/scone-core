@@ -32,6 +32,8 @@ namespace scone
 		virtual Quat GetOriInParent() const override;
 		virtual Quat GetOriInChild() const override;
 
+		bool IsCustomJointWithFunction() const;
+
 	private:
 		class ModelOpenSim4& m_Model;
 		OpenSim::Joint& m_osJoint;
