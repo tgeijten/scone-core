@@ -124,10 +124,10 @@ namespace scone
 		for ( index_t i = 1; i < p.size() - 1; ++i ) {
 			if ( p[i].HasDir() ) {
 				auto m1 = p[i - 1].GetWorldPos();
-				auto& m2 = p[i + 1].GetWorldPos();
+				auto m2 = p[i + 1].GetWorldPos();
 				auto md = normalized( m2 - m1 );
-				auto& w1 = p[i].GetWorldPos();
-				auto& w2 = w1 + p[i].GetWorldDir();
+				auto w1 = p[i].GetWorldPos();
+				auto w2 = w1 + p[i].GetWorldDir();
 				auto [pm, pw] = xo::closest_line_line( m1, m2, w1, w2 );
 				auto c = xo::cross_product( p[i].dir, md );
 				auto s = xo::dot_product( c, pm - pw );
