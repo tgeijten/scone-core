@@ -9,6 +9,7 @@
 #include "DofMeasure.h"
 #include "scone/model/Model.h"
 #include "scone/core/string_tools.h"
+#include "xo/container/prop_node_tools.h"
 
 namespace scone
 {
@@ -16,19 +17,21 @@ namespace scone
 		Measure( props, par, model, loc ),
 		dof( *FindByLocation( model.GetDofs(), props.get< String >( "dof" ), loc ) ),
 		parent( nullptr ),
-		range_count( 0 )
+		INIT_MEMBER( props, in_degrees, dof.IsRotational() ),
+		INIT_MEMBER( props, position, RangePenalty<Real>() ),
+		INIT_MEMBER( props, velocity, RangePenalty<Real>() ),
+		INIT_MEMBER( props, acceleration, RangePenalty<Real>() ),
+		limit_torque( props.get_any<RangePenalty<Real>>( { "force", "limit_torque" }, RangePenalty<Real>() ) ),
+		INIT_MEMBER( props, actuator_torque, RangePenalty<Real>() ),
+		INIT_MEMBER( props, use_average_acceleration_per_frame, false ),
+		range_count( 0 ),
+		prev_velocity( 0 ),
+		prev_time( 0 )
 	{
 		if ( props.try_get< String >( "parent" ) )
 			parent = FindByLocation( model.GetDofs(), props.get< String >( "parent" ), loc );
 
-		INIT_PROP( props, position, RangePenalty<Real>() );
-		INIT_PROP( props, velocity, RangePenalty<Real>() );
-		INIT_PROP( props, acceleration, RangePenalty<Real>() );
-		INIT_PROP( props, in_degrees, dof.IsRotational() );
 		SCONE_ERROR_IF( !dof.IsRotational() && in_degrees, dof.GetName() + " is translational but uses in_degrees = 1" );
-		limit_torque = props.get_any<RangePenalty<Real>>( { "force", "limit_torque" }, RangePenalty<Real>() );
-		INIT_PROP( props, actuator_torque, RangePenalty<Real>() );
-
 		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() ) + int( !limit_torque.IsNull() );
 		if ( name_.empty() )
 			name_ = dof.GetName();
@@ -85,16 +88,27 @@ namespace scone
 
 	UpdateResult DofMeasure::UpdateMeasure( const Model& model, double timestamp )
 	{
+		Real dt = timestamp - prev_time;
+		Real vel = ConvertDofValue( dof.GetVel() + ( parent ? parent->GetVel() : 0 ) );
+		Real acc = 0.0;
+		if ( use_average_acceleration_per_frame )
+			acc = dt > 0.0 ? ( vel - prev_velocity ) / dt : 0.0;
+		else acc = ConvertDofValue( dof.GetAcc() + ( parent ? parent->GetAcc() : 0 ) );
+
 		if ( !position.IsNull() )
 			position.AddSample( timestamp, ConvertDofValue( dof.GetPos() + ( parent ? parent->GetPos() : 0 ) ) );
 		if ( !velocity.IsNull() )
-			velocity.AddSample( timestamp, ConvertDofValue( dof.GetVel() + ( parent ? parent->GetVel() : 0 ) ) );
+			velocity.AddSample( timestamp, vel );
 		if ( !acceleration.IsNull() )
-			acceleration.AddSample( timestamp, ConvertDofValue( dof.GetAcc() + ( parent ? parent->GetAcc() : 0 ) ) );
+			acceleration.AddSample( timestamp, acc );
 		if ( !limit_torque.IsNull() )
 			limit_torque.AddSample( timestamp, dof.GetLimitMoment() );
 		if ( !actuator_torque.IsNull() )
 			actuator_torque.AddSample( timestamp, dof.GetActuatorTorque() );
+
+		prev_time = timestamp;
+		prev_velocity = vel;
+
 		return false;
 	}
 

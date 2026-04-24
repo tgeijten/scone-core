@@ -52,7 +52,7 @@ namespace scone
 		/// Optional parent dof which will be added to the dof value.
 		Dof* parent;
 
-		/// Set if rotations are in degrees or radians; default = 1
+		/// Set if rotations are in degrees or radians; default = 1.
 		bool in_degrees;
 
 		/// Penalty for when the DOF position [deg or m] is out of range.
@@ -70,6 +70,9 @@ namespace scone
 		/// Penalty for the DOF actuator torque (this value is signed!).
 		RangePenalty<Real> actuator_torque;
 
+		/// Use average acceleration per frame based on velocity for smoother results; default = 0.
+		bool use_average_acceleration_per_frame;
+
 	protected:
 		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
 		virtual String GetClassSignature() const override;
@@ -77,6 +80,8 @@ namespace scone
 
 	private:
 		int range_count;
+		Real prev_velocity;
+		Real prev_time;
 		Real ConvertDofValue( Real value ) const { return in_degrees ? Radian( value ).deg_value() : value; }
 	};
 }
