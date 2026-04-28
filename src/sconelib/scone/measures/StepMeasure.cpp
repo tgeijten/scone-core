@@ -97,6 +97,12 @@ namespace scone
 
 	String StepMeasure::GetClassSignature() const
 	{
-		return stringf( "SL" );
+		if ( !stride_length.IsNull() )
+			return stringf( "S%d", int( 100 * stride_length.min ) );
+		else if ( !stride_duration.IsNull() )
+			return stringf( "SD%d", int( 100 * stride_duration.min ) );
+		else if ( !stride_velocity.IsNull() )
+			return stringf( "SV%d", int( 100 * stride_velocity.min ) );
+		return stringf( "S" );
 	}
 }
