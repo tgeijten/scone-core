@@ -32,6 +32,8 @@ namespace scone
 		INIT_PROP( props, angular_acceleration, RangePenalty<Real>() );
 
 		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() );
+		if ( name_.empty() )
+			name_ = body.GetName();
 	}
 
 	double BodyMeasure::ComputeResult( const Model& model )
