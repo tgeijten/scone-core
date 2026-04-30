@@ -20,6 +20,7 @@ namespace scone
 		Measure( props, par, model, loc )
 	{
 		INIT_PROP( props, stride_length, RangePenalty<Real>() );
+		INIT_PROP( props, stride_width, RangePenalty<Real>() );
 		INIT_PROP( props, stride_duration, RangePenalty<Real>() );
 		INIT_PROP( props, stride_velocity, RangePenalty<Real>() );
 		INIT_PROP( props, load_threshold, 0.01 );
@@ -68,6 +69,8 @@ namespace scone
 		{
 			if ( !stride_length.IsNull() )
 				stride_length.AddSample( cycles[idx].length() );
+			if ( !stride_width.IsNull() )
+				stride_width.AddSample( cycles[idx].width() );
 			if ( !stride_duration.IsNull() )
 				stride_duration.AddSample( cycles[idx].duration() );
 			if ( !stride_velocity.IsNull() )
@@ -76,18 +79,19 @@ namespace scone
 
 		// calculate penalty
 		double penalty = 0;
-		if ( !stride_length.IsNull() )
-		{
+		if ( !stride_length.IsNull() ) {
 			penalty += stride_length.GetResult();
 			report_.set( "stride_length_penalty", stride_length.GetResult() );
 		}
-		if ( !stride_duration.IsNull() )
-		{
+		if ( !stride_width.IsNull() ) {
+			penalty += stride_width.GetResult();
+			report_.set( "stride_width_penalty", stride_width.GetResult() );
+		}
+		if ( !stride_duration.IsNull() ) {
 			penalty += stride_duration.GetResult();
 			report_.set( "stride_duration_penalty", stride_duration.GetResult() );
 		}
-		if ( !stride_velocity.IsNull() )
-		{
+		if ( !stride_velocity.IsNull() ) {
 			penalty += stride_velocity.GetResult();
 			report_.set( "stride_velocity_penalty", stride_velocity.GetResult() );
 		}

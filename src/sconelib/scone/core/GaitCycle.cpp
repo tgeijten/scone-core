@@ -62,6 +62,16 @@ namespace scone
 		}
 		std::sort( cycles.begin(), cycles.end(), []( auto&& a, auto&& b ) { return a.begin_ < b.begin_; } );
 
+		// compute prev_opposite_end_pos for all cycles
+		for ( int i = 1; i < cycles.size(); ++i ) {
+			for ( int j = i - 1; j > 0; --j ) {
+				if ( cycles[i].side_ != cycles[j].side_ ) {
+					cycles[i].opposite_end_pos_ = cycles[j].end_pos_;
+					break;
+				}
+			}
+		}
+
 		return cycles;
 	}
 }

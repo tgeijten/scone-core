@@ -26,16 +26,16 @@ namespace scone
 	public:
 		StepMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc );
 
-		/// Penalty for stride length [m] when out of range
-		/// (Optional); default range [-inf, inf].
+		/// Penalty for stride length [m] when out of range (Optional); default range [-inf, inf].
 		RangePenalty<double> stride_length;
 
-		/// Penalty for stride duration [s] when out of range
-		/// (Optional); default range [-inf, inf].
+		/// Penalty for stride width [m] when out of range (Optional); default range [-inf, inf].
+		RangePenalty<double> stride_width;
+
+		/// Penalty for stride duration [s] when out of range (Optional); default range [-inf, inf].
 		RangePenalty<double> stride_duration;
 
-		/// Penalty for velocity [m/s] when out of range
-		/// (Optional); default range [-inf, inf].
+		/// Penalty for velocity [m/s] when out of range (Optional); default range [-inf, inf].
 		RangePenalty<double> stride_velocity;
 
 		/// Load threshold for step detection; default = 0.01.
