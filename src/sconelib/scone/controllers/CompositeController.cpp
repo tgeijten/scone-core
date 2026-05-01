@@ -46,15 +46,17 @@ namespace scone
 			}
 		} while ( controllers_.size() > 0 && controllers_.size() < child_count );
 
-		// show error if child controllers have identical names
+		// show warning on controller names
 		if ( controllers_.size() > 1 && child_names.empty() ) {
+			// check multiple empty names
+			size_t nameless_children = xo::count_if( controllers_, [&]( auto&& c ) { return c->GetName().empty(); } );
+			if ( nameless_children > 1 )
+				log::debug( "CompositeController contains ", nameless_children, " child Controllers with no name" );
+			// check identical names
 			for ( auto it1 = controllers_.begin(); it1 != controllers_.end(); ++it1 )
-				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 ) {
-					if ( ( *it1 )->GetName().empty() && ( *it2 )->GetName().empty() )
-						log::debug( "Multiple child controllers have no name and may use the same parameters" );
-					else if ( ( *it1 )->GetName() == ( *it2 )->GetName() )
+				for ( auto it2 = it1 + 1; it2 != controllers_.end(); ++it2 )
+					if ( !( *it1 )->GetName().empty() && ( *it1 )->GetName() == ( *it2 )->GetName() )
 						log::warning( "Multiple child controllers are named " + xo::quoted( ( *it1 )->GetName() ) + " and may use the same parameters" );
-				}
 		}
 	}
 
