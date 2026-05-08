@@ -105,10 +105,9 @@ namespace scone
 		Storage& operator=( const Storage& other ) {
 			m_Labels = other.m_Labels;
 			m_LabelIndexMap = other.m_LabelIndexMap;
-			m_Data.clear();
-			m_Data.reserve( other.m_Data.size() );
-			for ( auto it = other.m_Data.begin(); it != other.m_Data.end(); ++it )
-				m_Data.push_back( *it );
+			m_Data = other.m_Data;
+			for ( auto& f : m_Data )
+				f.m_Store = this; // update pointers to Storage
 			m_InterpolationCache.clear();
 			return *this;
 		};
@@ -116,6 +115,8 @@ namespace scone
 			m_Labels = std::move( other.m_Labels );
 			m_LabelIndexMap = std::move( other.m_LabelIndexMap );
 			m_Data = std::move( other.m_Data );
+			for ( auto& f : m_Data )
+				f.m_Store = this; // update pointers to Storage
 			m_InterpolationCache.clear();
 			return *this;
 		};
