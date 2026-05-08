@@ -19,8 +19,13 @@ namespace scone
 		for ( auto side : { Side::Left, Side::Right } )
 		{
 			string leg_name = ( side == Side::Left ) ? "leg0_l" : "leg1_r";
-			index_t grf_chan = sto.GetChannelIndex( leg_name + ".grf_norm_y" );
-			index_t cop_chan = sto.GetChannelIndex( leg_name + ".cop_x" );
+			index_t grf_chan = sto.TryGetChannelIndex( leg_name + ".grf_norm_y" );
+			index_t cop_chan = sto.TryGetChannelIndex( leg_name + ".cop_x" );
+
+			if ( grf_chan == no_index || cop_chan == no_index ) {
+				log::debug( "Could not find grf_norm and cop channel for ", leg_name );
+				continue;
+			}
 
 			// skip to first touch down
 			index_t flight_idx = FindNextFlight( sto, 0u, grf_chan, opt.touch_force_threshold );
