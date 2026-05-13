@@ -160,20 +160,24 @@ namespace scone
 		target_ori_( target_ori ),
 		kp_( kp ),
 		kv_( kv ),
+		mom_sign_( 1.0 ),
 		name_( body_.GetName() + '-' + muscle_.GetName() + ".POS" )
 	{
+		const auto& rb = body_.GetRealBody();
 		if ( !joint_ ) {
-			const auto& rb = body_.GetRealBody();
 			for ( const auto* j : muscle_.GetJoints() )
 				if ( &j->GetParentBody() == &rb || &j->GetBody() == &rb ) { joint_ = j; break; }
 		}
+		if ( &muscle_.GetOriginBody() == &rb )
+			mom_sign_ = -1.0;
+
 		SCONE_ERROR_IF( !joint_, muscle_.GetName() + " does not cross joints on " + body_.GetName() );
 	}
 
 	Real BodyPostureMuscleSensor::GetValue() const {
 		auto rot = xo::rotation_vector_from_quat( -body_.GetOrientation() * target_ori_ );
 		auto ang_vel = body_.GetAngVel();
-		auto mom = xo::normalized( muscle_.GetMomentArm3D( *joint_ ) );
+		auto mom = mom_sign_ * xo::normalized( muscle_.GetMomentArm3D( *joint_ ) );
 		auto p = kp_ * xo::dot_product( rot, mom ) - kv_ * xo::dot_product( ang_vel, mom );
 		return p;
 	}

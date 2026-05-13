@@ -243,6 +243,7 @@ namespace scone
 		const Quat target_ori_;
 		const Real kp_;
 		const Real kv_;
+		Real mom_sign_;
 		const String name_;
 	};
 
