@@ -221,7 +221,7 @@ namespace scone
 
 	ModelUP CreateModel( const FactoryProps& fp, Params& par, const path& scenario_dir )
 	{
-		xo::current_find_file_path( scenario_dir );
+		xo::set_current_find_file_path( scenario_dir );
 		return GetModelFactory().create_rethrow( fp.type(), fp.props(), par );
 	}
 
