@@ -171,7 +171,7 @@ namespace scone
 		virtual const Storage<Real, TimeInSeconds>& GetData() const { return m_Data; }
 		virtual Storage<Real, TimeInSeconds>&& ReleaseData() { return std::move( m_Data ); }
 		virtual Storage<Real, TimeInSeconds>::Frame& GetCurrentFrame() { SCONE_ASSERT( !m_Data.IsEmpty() ); return m_Data.Back(); }
-		virtual std::vector<path> WriteResults( const path& file_base ) const;
+		virtual std::vector<path> WriteResults( const path& file_base, const Storage<Real, TimeInSeconds>* alt_storage = nullptr ) const;
 		virtual void ExportMuscleInfo( const path& filename ) const;
 
 		// get dynamic model statistics

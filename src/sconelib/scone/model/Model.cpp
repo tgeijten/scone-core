@@ -592,11 +592,12 @@ namespace scone
 		return pn;
 	}
 
-	std::vector<path> Model::WriteResults( const path& file ) const
+	std::vector<path> Model::WriteResults( const path& file, const Storage<Real, TimeInSeconds>* alt_storage ) const
 	{
 		std::vector<path> files;
 		auto storage_file = file + "." + GetStoreDataProfile().fileFormat;
-		WriteStorage( m_Data, storage_file, ( file.parent_path().filename() / file.stem() ).str(), GetStoreDataInterval() );
+		std::string name = ( file.parent_path().filename() / file.stem() ).str();
+		WriteStorage( alt_storage ? *alt_storage : m_Data, storage_file, name, GetStoreDataInterval() );
 		files.push_back( storage_file );
 
 		if ( GetSconeSetting<bool>( "results.controller" ) )
