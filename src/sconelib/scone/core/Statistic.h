@@ -91,7 +91,7 @@ namespace scone
 			m_nSamples = 0;
 		}
 
-		double GetPrevTime() { return m_PrevTime; }
+		TimeInSeconds GetPrevTime() const { return m_PrevTime; }
 
 		T GetAverage() const
 		{
