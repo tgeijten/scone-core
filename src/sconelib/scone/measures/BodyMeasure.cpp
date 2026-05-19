@@ -22,6 +22,7 @@ namespace scone
 		INIT_PROP( props, target_orientation, Quat::identity() );
 		INIT_PROP( props, direction, Vec3::zero() );
 		INIT_PROP( props, relative_to_model_com, false );
+		INIT_PROP( props, use_local_direction, false );
 		INIT_PROP( props, magnitude, direction.is_null() );
 		INIT_PROP( props, scale, Vec3::one() );
 		INIT_PROP( props, position, RangePenalty<Real>() );
@@ -149,5 +150,14 @@ namespace scone
 			frame[name + ".ang_vel_penalty"] = angular_velocity.GetLatest();
 		if ( !acceleration.IsNull() )
 			frame[name + ".acc_penalty"] = acceleration.GetLatest();
+	}
+
+	Real BodyMeasure::GetPenaltyValue( const Vec3 v ) const
+	{
+		if ( magnitude )
+			return length( scaled( v, scale ) );
+		else if ( use_local_direction )
+			return dot_product( body.GetOrientation() * direction, v );
+		else return dot_product( direction, v );
 	}
 }

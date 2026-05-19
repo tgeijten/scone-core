@@ -11,7 +11,7 @@
 #include "Measure.h"
 #include "RangePenalty.h"
 #include "scone/core/Angle.h"
-#include "scone/model/Dof.h"
+#include "scone/model/Body.h"
 #include "scone/core/Quat.h"
 
 namespace scone
@@ -41,14 +41,17 @@ namespace scone
 		/// Direction vector [3] in which to measure (global coordinate frame), or zero when measuring magnitude (default);
 		Vec3 direction;
 
-		/// Measure the magnitude instead of dot product; default = true if direction equals zero
-		bool magnitude;
-
 		/// Magnitude scaling [3]; default = [ 1 1 1 ]
 		Vec3 scale;
 
+		/// Measure the magnitude instead of dot product; default = true if direction equals zero
+		bool magnitude;
+
 		/// Offset is measured relative to model COM; default = false.
 		bool relative_to_model_com;
+
+		/// Direction is in the local body frame; default = false.
+		bool use_local_direction;
 
 		/// When measurring acceleration, take the magnitude along the axes weights instead of dot product; default = true.
 		bool acceleration_magnitude;
@@ -77,9 +80,7 @@ namespace scone
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
 
 	private:
-		Real GetPenaltyValue( const Vec3 v ) const  {
-			return magnitude ? length( scaled( v, scale ) ) : dot_product( direction, v );
-		}
+		Real GetPenaltyValue( const Vec3 v ) const;
 		int range_count;
 	};
 }
