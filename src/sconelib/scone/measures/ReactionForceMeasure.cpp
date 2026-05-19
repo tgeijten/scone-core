@@ -18,7 +18,10 @@ namespace scone
 		Measure( props, par, model, loc ),
 		RangePenalty<Real>( props ),
 		INIT_MEMBER( props, use_force_per_leg, false )
-	{}
+	{
+		if ( name_.empty() )
+			name_ = "grf";
+	}
 
 	double ReactionForceMeasure::ComputeResult( const Model& model )
 	{
@@ -56,7 +59,6 @@ namespace scone
 
 	void ReactionForceMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
-		// #todo: store joint load value
-		frame["legs.load_penalty"] = GetLatest();
+		frame[name_ + ".load_penalty"] = GetLatest();
 	}
 }
