@@ -71,7 +71,7 @@ namespace scone
 		m_GroundBody( nullptr ),
 		m_Controller( nullptr ),
 		m_Measure( nullptr ),
-		m_ShouldTerminate( false ),
+		m_TerminationRequested( false ),
 		m_PrevStoreDataTime( 0 ),
 		m_PrevStoreDataStep( 0 ),
 		m_SimulationTimer( false ),
@@ -553,7 +553,7 @@ namespace scone
 		// m_UserData is not cleared because SconePy uses it to store the scenario
 		SCONE_ASSERT( !m_InitialStateValues.empty() );
 		SetStateValues( m_InitialStateValues, 0.0 );
-		m_ShouldTerminate = false;
+		m_TerminationRequested = false;
 		if ( m_SensorDelayStorage.GetFrameCount() > 1 )
 			m_SensorDelayStorage.ShrinkToSize( 1 );
 		m_Data.Clear();
@@ -870,7 +870,7 @@ namespace scone
 		m_Sensors.clear();
 		m_SensorDelayAdapters.clear();
 
-		m_ShouldTerminate = false;
+		m_TerminationRequested = false;
 		m_SensorDelayStorage.Clear();
 		m_Data.Clear();
 		m_UserData.clear();

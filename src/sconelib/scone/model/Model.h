@@ -158,10 +158,11 @@ namespace scone
 		virtual void AdvancePlayback( const std::vector<Real>& state, TimeInSeconds timestamp ) { SCONE_THROW_NOT_IMPLEMENTED; }
 		virtual double GetSimulationEndTime() const = 0;
 		virtual void SetSimulationEndTime( double time ) = 0;
-		virtual bool HasSimulationEnded() { return m_ShouldTerminate || GetTime() >= GetSimulationEndTime(); }
-		virtual void RequestTermination() { m_ShouldTerminate = true; }
-		virtual void RequestTermination( const String& reason ) { m_ShouldTerminate = true; m_TerminationReason = reason; }
-		virtual const String& GetTerminationReason() const { return m_TerminationReason; }
+		virtual bool HasSimulationEnded() { return m_TerminationRequested || GetTime() >= GetSimulationEndTime(); }
+		virtual void RequestTermination() { m_TerminationRequested = true; }
+		void RequestTermination( const String& reason ) { RequestTermination(); m_TerminationReason = reason; }
+		bool IsTerminated() const { return m_TerminationRequested; }
+		const String& GetTerminationReason() const { return m_TerminationReason; }
 		virtual PropNode GetSimulationReport() const;
 		virtual TimeInSeconds GetSimulationDuration() const { return m_SimulationTimer().secondsd(); }
 		virtual void UpdatePerformanceStats( const path& filename ) const {}
@@ -421,7 +422,7 @@ namespace scone
 		DelayedActuatorGroup m_DelayedActuators;
 
 		// simulation data
-		bool m_ShouldTerminate;
+		bool m_TerminationRequested;
 		String m_TerminationReason;
 		Storage< Real > m_SensorDelayStorage;
 		Storage< Real, TimeInSeconds > m_Data;
