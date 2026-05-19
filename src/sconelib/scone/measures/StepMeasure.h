@@ -41,7 +41,7 @@ namespace scone
 		/// Load threshold for step detection; default = 0.01.
 		Real load_threshold;
 
-		/// Minimum duration of the stance phase [s], shorter contacts are considered as 'bump' during the swing phase; default = 0.2.
+		/// Minimum duration of the stance phase [s], shorter contacts are considered as 'bump' during the swing phase; default = 0.1.
 		Real min_stance_duration_threshold;
 
 		/// Number of initial gait cycles of which the calculation is
