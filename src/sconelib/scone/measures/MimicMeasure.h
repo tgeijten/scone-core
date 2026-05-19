@@ -83,7 +83,5 @@ namespace scone
 		};
 		std::vector< Channel > state_storage_map_;
 		std::vector< std::pair< String, double > > channel_errors_;
-
-		TimeInSeconds termination_time_;
 	};
 }

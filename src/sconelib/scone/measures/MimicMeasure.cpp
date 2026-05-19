@@ -30,8 +30,7 @@ namespace scone
 		INIT_MEMBER( pn, peak_error_limit, 2 * average_error_limit ),
 		INIT_MEMBER( pn, time_offset, 0 ),
 		INIT_MEMBER( pn, activation_error_weight, 1.0 ),
-		storage_( g_storage_cache( file ) ),
-		termination_time_( 0.0 )
+		storage_( g_storage_cache( file ) )
 	{
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
@@ -93,7 +92,6 @@ namespace scone
 		bool peak_limit_reached = peak_error_limit != 0 && error > peak_error_limit;
 		
 		if ( average_limit_reached || peak_limit_reached ) {
-			termination_time_ = model.GetTime();
 			String msg = average_limit_reached ? "average_error_limit reached" : "peak_error_limit reached";
 			return GetName() + ": " + msg;
 		}
@@ -106,12 +104,13 @@ namespace scone
 		auto result = use_best_match ? mimic_result_.GetLowest() : mimic_result_.GetAverage();
 		report_.set( "mimic_error", result );
 
-		if ( termination_time_ > 0.0 ) {
+		if ( model.IsTerminated() ) {
 			auto penalty_duration = xo::max( 0.0, xo::min( model.GetSimulationEndTime(), stop_time ) - model.GetTime() );
 			if ( penalty_duration > 0.0 ) {
 				auto penalty = threshold.value_or( 0.0 ) + threshold_transition + peak_error_limit * penalty_duration;
 				result += penalty;
 				report_.set( "early_termination_penalty", penalty );
+				report_.set( "penalty_duration", penalty_duration );
 			}
 		}
 
