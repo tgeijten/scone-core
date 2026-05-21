@@ -22,7 +22,7 @@ namespace scone
 	public:
 		Polynomial( size_t degree );
 		Polynomial( const PropNode& props, Params& par );
-		virtual ~Polynomial();
+		virtual ~Polynomial() = default;
 
 		/// Degree of the polynomial, coefficients are parameterized through coefficient0, coefficient1, etc.
 		size_t degree;

@@ -11,6 +11,7 @@
 #include "Function.h"
 #include "PropNode.h"
 #include "scone/optimization/Params.h"
+#include "xo/numerical/piecewise_linear_function.h"
 
 namespace scone
 {
@@ -19,7 +20,7 @@ namespace scone
 	{
 	public:
 		PieceWiseLinearFunction( const PropNode& props, Params& par );
-		virtual ~PieceWiseLinearFunction();
+		virtual ~PieceWiseLinearFunction() = default;
 
 		/// Number of control points in this function.
 		size_t control_points;
@@ -37,7 +38,6 @@ namespace scone
 		virtual String GetSignature() override;
 
 	private:
-		struct Impl;
-		u_ptr< Impl > m_pImpl;
+		xo::piecewise_linear_function<Real> m_Func;
 	};
 }

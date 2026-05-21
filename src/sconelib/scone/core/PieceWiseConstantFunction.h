@@ -11,6 +11,7 @@
 #include "Function.h"
 #include "PropNode.h"
 #include "scone/optimization/Params.h"
+#include "xo/numerical/piecewise_constant_function.h"
 
 namespace scone
 {
@@ -19,7 +20,7 @@ namespace scone
 	{
 	public:
 		PieceWiseConstantFunction( const PropNode& props, Params& par );
-		virtual ~PieceWiseConstantFunction();
+		virtual ~PieceWiseConstantFunction() = default;
 
 		/// Number of control points in this function.
 		size_t control_points;
@@ -36,7 +37,6 @@ namespace scone
 		virtual String GetSignature() override;
 
 	private:
-		struct Impl;
-		u_ptr< Impl > m_pImpl;
+		xo::piecewise_constant_function<Real> m_Func;
 	};
 }

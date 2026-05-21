@@ -92,7 +92,7 @@ namespace scone
 		return false;
 	}
 
-	scone::String FeedForwardController::GetClassSignature() const
+	String FeedForwardController::GetClassSignature() const
 	{
 		if ( !m_Functions.empty() )
 			return "F" + m_Functions.front()->GetSignature();

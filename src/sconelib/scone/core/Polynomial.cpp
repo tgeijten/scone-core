@@ -24,10 +24,6 @@ namespace scone
 			SetCoefficient( i, par.get( stringf( "C%d", i ), props.get_child( stringf( "coefficient%d", i ) ) ) );
 	}
 
-	Polynomial::~Polynomial()
-	{
-	}
-
 	Real Polynomial::GetValue( Real x )
 	{
 		Real r = 0;
