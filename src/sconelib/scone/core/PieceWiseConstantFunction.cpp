@@ -14,24 +14,24 @@
 namespace scone
 {
 	PieceWiseConstantFunction::PieceWiseConstantFunction( const PropNode& props, Params& par ) :
+		INIT_MEMBER_REQUIRED( props, control_points ),
 		control_point_y( props.get_child( "control_point_y" ) ),
 		control_point_dt( props.try_get_child( "control_point_dt" ) )
 	{
-		INIT_PROP_REQUIRED( props, control_points );
-		SCONE_CHECK_RANGE( control_points, 1, 99 );
+		SCONE_CHECK_RANGE( control_points, 1, 100 );
 
-		for ( index_t cpidx = 0; cpidx < control_points; ++cpidx )
+		Real cp_x = 0.0;
+		for ( index_t cp_idx = 0; cp_idx < control_points; ++cp_idx )
 		{
-			Real xVal = 0.0;
-			if ( cpidx > 0 )
+			if ( cp_idx > 0 )
 			{
 				SCONE_ASSERT_MSG( control_point_dt, "PieceWiseConstantFunction must have control_point_dt when control_points > 1" );
-				double dt = par.get( stringf( "DT%d", cpidx - 1 ), *control_point_dt );
+				TimeInSeconds dt = par.get( stringf( "DT%d", cp_idx - 1 ), *control_point_dt );
 				SCONE_ASSERT_MSG( dt > 0.0, "control_point_dt must be > 0" );
-				xVal = m_Func.point( cpidx - 1 ).first + dt;
+				cp_x += dt;
 			}
-			Real yVal = par.get( stringf( "Y%d", cpidx ), control_point_y );
-			m_Func.insert_point( xVal, yVal );
+			Real cp_y = par.get( stringf( "Y%d", cp_idx ), control_point_y );
+			m_Func.insert_point( cp_x, cp_y );
 		}
 	}
 

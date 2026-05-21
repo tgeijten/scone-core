@@ -31,6 +31,9 @@ namespace scone
 		/// Parameter for the dt value of each control point.
 		const PropNode* control_point_dt;
 
+		/// Parameter for the time of the first control point; default = 0.
+		TimeInSeconds control_point_t0;
+
 		virtual Real GetValue( Real x ) override;
 
 		// a signature describing the function
