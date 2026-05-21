@@ -42,23 +42,22 @@ namespace scone
 
 				// see if this actuator is on the right side
 				if ( target_area.side_ == Side::None || target_area.side_ == ai.side )
-					m_ActInfos.push_back( ai );
+					act_infos_.push_back( ai );
 			}
 		}
 
-		if ( m_ActInfos.empty() )
+		if ( act_infos_.empty() )
 			SCONE_ERROR( "No matching actuators (include=\"" + include + "\", exclude=\"" + exclude + "\")" );
 
-		for ( ActInfo& ai : m_ActInfos )
+		for ( ActInfo& ai : act_infos_ )
 		{
 			if ( symmetric )
 			{
 				// check if we've already processed a mirrored version of this ActInfo
-				auto it = std::find_if( m_ActInfos.begin(), m_ActInfos.end(), [&]( ActInfo& oai ) { return ai.name == oai.name; } );
-				if ( it->function_idx != NoIndex || !it->mode_weights.empty() )
+				auto it = std::find_if( act_infos_.begin(), act_infos_.end(), [&]( ActInfo& oai ) { return ai.name == oai.name; } );
+				if ( it->function_idx != NoIndex )
 				{
 					ai.function_idx = it->function_idx;
-					ai.mode_weights = it->mode_weights;
 					continue;
 				}
 			}
@@ -67,9 +66,10 @@ namespace scone
 			String prefix = symmetric ? ai.name : ai.full_name;
 			ScopedParamSetPrefixer prefixer( par, prefix + "." );
 			auto fp = FindFactoryProps( GetFunctionFactory(), props, "Function" );
-			m_Functions.push_back( CreateFunction( fp, par ) );
-			ai.function_idx = m_Functions.size() - 1;
+			functions_.push_back( CreateFunction( fp, par ) );
+			ai.function_idx = functions_.size() - 1;
 		}
+		function_results_.resize( functions_.size() );
 	}
 
 	bool FeedForwardController::ComputeControls( Model& model, double time )
@@ -77,16 +77,15 @@ namespace scone
 		SCONE_PROFILE_FUNCTION( model.GetProfiler() );
 
 		// evaluate functions
-		std::vector< double > funcresults( m_Functions.size() );
-		for ( size_t idx = 0; idx < m_Functions.size(); ++idx )
-			funcresults[idx] = m_Functions[idx]->GetValue( time );
+		for ( size_t idx = 0; idx < functions_.size(); ++idx )
+			function_results_[idx] = functions_[idx]->GetValue( time );
 
 		// apply results to all actuators
 		auto& actuators = model.GetActuators();
-		for ( ActInfo& ai : m_ActInfos )
+		for ( ActInfo& ai : act_infos_ )
 		{
 			// apply results directly to control value
-			actuators[ai.actuator_idx]->AddInput( funcresults[ai.function_idx] );
+			actuators[ai.actuator_idx]->AddInput( function_results_[ai.function_idx] );
 		}
 
 		return false;
@@ -94,8 +93,8 @@ namespace scone
 
 	String FeedForwardController::GetClassSignature() const
 	{
-		if ( !m_Functions.empty() )
-			return "F" + m_Functions.front()->GetSignature();
+		if ( !functions_.empty() )
+			return "F" + functions_.front()->GetSignature();
 		else return String();
 	}
 }

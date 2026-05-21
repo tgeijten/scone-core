@@ -51,10 +51,10 @@ namespace scone
 			String full_name;
 			size_t function_idx;
 			size_t actuator_idx;
-			std::vector< double > mode_weights;
 		};
 
-		std::vector< FunctionUP > m_Functions;
-		std::vector< ActInfo > m_ActInfos;
+		std::vector<FunctionUP> functions_;
+		std::vector<ActInfo> act_infos_;
+		std::vector<Real> function_results_;
 	};
 }
