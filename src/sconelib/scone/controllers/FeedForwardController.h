@@ -42,19 +42,14 @@ namespace scone
 		virtual String GetClassSignature() const override;
 
 	private:
-		// actuator info
-		struct ActInfo
-		{
-			ActInfo() : side( Side::None ), function_idx( NoIndex ), actuator_idx( NoIndex ) {};
-			String name;
-			Side side;
-			String full_name;
-			size_t function_idx;
-			size_t actuator_idx;
+		struct ActuatorInfo {
+			ActuatorInfo( Actuator* act ) : actuator( act ), function_idx( no_index ) {}
+			Actuator* actuator;
+			index_t function_idx;
 		};
 
 		std::vector<FunctionUP> functions_;
-		std::vector<ActInfo> act_infos_;
+		std::vector<ActuatorInfo> act_infos_;
 		std::vector<Real> function_results_;
 	};
 }

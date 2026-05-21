@@ -14,6 +14,7 @@
 
 #include "scone/core/Factories.h"
 #include "scone/core/profiler_config.h"
+#include "scone/core/IncludeExcludePattern.h"
 
 namespace scone
 {
@@ -23,47 +24,33 @@ namespace scone
 		INIT_MEMBER( props, include, "*" ),
 		INIT_MEMBER( props, exclude, "" )
 	{
-		INIT_PROP( props, symmetric, target_area.symmetric_ );
-
 		// setup actuator info
-		auto incl = xo::pattern_matcher( include );
-		auto excl = xo::pattern_matcher( exclude );
-		auto& actuators = model.GetActuators();
-		for ( size_t idx = 0; idx < actuators.size(); ++idx )
+		IncludeExcludePattern pat( include, exclude );
+		for ( auto* act : model.GetActuators() )
 		{
-			const auto& name = actuators[idx]->GetName();
-			if ( incl( name ) && !excl( name ) )
-			{
-				ActInfo ai;
-				ai.full_name = actuators[idx]->GetName();
-				ai.name = GetNameNoSide( ai.full_name );
-				ai.side = GetSideFromName( ai.full_name );
-				ai.actuator_idx = idx;
-
-				// see if this actuator is on the right side
-				if ( target_area.side_ == Side::None || target_area.side_ == ai.side )
-					act_infos_.push_back( ai );
-			}
+			bool good_side = target_area.side_ == Side::None || target_area.side_ == act->GetSide();
+			if ( good_side && pat( act->GetName() ) )
+				act_infos_.emplace_back( act );
 		}
 
 		if ( act_infos_.empty() )
 			SCONE_ERROR( "No matching actuators (include=\"" + include + "\", exclude=\"" + exclude + "\")" );
 
-		for ( ActInfo& ai : act_infos_ )
+		// create functions
+		for ( auto& ai : act_infos_ )
 		{
+			auto name = GetNameNoSide( ai.actuator->GetName() );
 			if ( symmetric )
 			{
-				// check if we've already processed a mirrored version of this ActInfo
-				auto it = std::find_if( act_infos_.begin(), act_infos_.end(), [&]( ActInfo& oai ) { return ai.name == oai.name; } );
-				if ( it->function_idx != NoIndex )
-				{
+				auto it = xo::find_if( act_infos_, [&]( auto& o ) { return xo::str_begins_with( o.actuator->GetName(), name ); } );
+				if ( it != act_infos_.end() && it->function_idx != no_index ) {
 					ai.function_idx = it->function_idx;
 					continue;
 				}
 			}
 
 			// create a new function
-			String prefix = symmetric ? ai.name : ai.full_name;
+			String prefix = symmetric ? name : ai.actuator->GetName();
 			ScopedParamSetPrefixer prefixer( par, prefix + "." );
 			auto fp = FindFactoryProps( GetFunctionFactory(), props, "Function" );
 			functions_.push_back( CreateFunction( fp, par ) );
@@ -81,12 +68,8 @@ namespace scone
 			function_results_[idx] = functions_[idx]->GetValue( time );
 
 		// apply results to all actuators
-		auto& actuators = model.GetActuators();
-		for ( ActInfo& ai : act_infos_ )
-		{
-			// apply results directly to control value
-			actuators[ai.actuator_idx]->AddInput( function_results_[ai.function_idx] );
-		}
+		for ( auto& ai : act_infos_ )
+			ai.actuator->AddInput( function_results_[ai.function_idx] );
 
 		return false;
 	}
