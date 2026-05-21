@@ -12,7 +12,7 @@
 #include "scone/core/HasData.h"
 #include "scone/core/Storage.h"
 #include "scone/core/PropNode.h"
-#include "xo/container/circular_deque.h"
+#include "Side.h"
 
 namespace scone
 {
@@ -20,7 +20,7 @@ namespace scone
 	{
 	public:
 		Actuator();
-		virtual ~Actuator();
+		virtual ~Actuator() = default;
 
 		virtual void AddInput( double v ) { m_ActuatorInput += v; }
 
@@ -29,9 +29,10 @@ namespace scone
 
 		virtual Real GetMinInput() const = 0;
 		virtual Real GetMaxInput() const = 0;
+		virtual Side GetSide() const { return GetSideFromName( GetName() ); }
 
 		virtual void StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const override;
-		virtual PropNode GetInfo() const;
+		virtual PropNode GetInfo() const { return PropNode(); }
 
 		virtual void ClearInput() { m_ActuatorInput = 0.0; }
 

@@ -90,11 +90,6 @@ namespace scone
 		return std::max( 0.0, vel + disp );
 	}
 
-	Side Muscle::GetSide() const
-	{
-		return GetSideFromName( GetName() );
-	}
-
 	bool Muscle::ActsOnDof( const Dof& dof ) const
 	{
 		return xo::contains( m_Dofs, &dof );

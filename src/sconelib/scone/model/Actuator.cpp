@@ -15,17 +15,9 @@ namespace scone
 		m_ActuatorInput( 0.0 )
 	{}
 
-	Actuator::~Actuator()
-	{}
-
 	void Actuator::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		if ( flags( StoreDataTypes::ActuatorInput ) )
 			frame[GetName() + ".input"] = GetInput();
-	}
-
-	PropNode Actuator::GetInfo() const
-	{
-		return PropNode();
 	}
 }

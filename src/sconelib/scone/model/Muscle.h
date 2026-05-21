@@ -15,7 +15,6 @@
 #include "scone/core/Storage.h"
 
 #include "Actuator.h"
-#include "Side.h"
 #include "PathElement.h"
 
 #include <vector>
@@ -90,8 +89,6 @@ namespace scone
 		virtual void InitializeActivation( Real u ) = 0;
 		virtual void SetMinActivation( Real min_act ) { m_MinActivation = min_act; }
 		virtual void SetMaxActivation( Real max_act ) { m_MaxActivation = max_act; }
-
-		virtual Side GetSide() const;
 
 		virtual bool ActsOnDof( const Dof& dof ) const;
 		virtual bool ActsOnJoint( const Joint& joint ) const;
