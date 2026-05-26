@@ -29,6 +29,7 @@
 
 #include "scone/core/PieceWiseConstantFunction.h"
 #include "scone/core/PieceWiseLinearFunction.h"
+#include "scone/core/PieceWiseCubicSpline.h"
 #include "scone/core/Polynomial.h"
 #include "scone/core/ConstantFunction.h"
 #include "scone/core/SineWave.h"
@@ -174,6 +175,7 @@ namespace scone
 			.register_type<PieceWiseConstantFunction>( "PieceWiseConstant" )
 			.register_type<PieceWiseLinearFunction>()
 			.register_type<PieceWiseLinearFunction>( "PieceWiseLinear" )
+			.register_type<PieceWiseCubicSpline>()
 			.register_type<Polynomial>()
 			.register_type<ConstantFunction>( "Constant" )
 			.register_type<SineWave>()

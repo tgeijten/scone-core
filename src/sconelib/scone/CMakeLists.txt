@@ -25,6 +25,8 @@ set(CORE_MATH_FILES
 	core/PieceWiseConstantFunction.h
 	core/PieceWiseLinearFunction.cpp
 	core/PieceWiseLinearFunction.h
+	core/PieceWiseCubicSpline.cpp
+	core/PieceWiseCubicSpline.h
 	core/Polynomial.h
 	core/Polynomial.cpp
 	core/ConstantFunction.h
