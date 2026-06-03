@@ -302,17 +302,17 @@ namespace scone
 	void GaitStateController::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		// store states
+		String prefix = !GetName().empty() ? GetName() + "." : "";
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
+			frame[prefix + m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
 
 		// store normalized sagittal pos
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx ) {
-			frame[m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
-			frame[m_LegStates[idx].leg.GetName() + ".sag_pos_norm"] = m_LegStates[idx].sagittal_pos / m_LegStates[idx].leg_length;
+			frame[prefix + m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
+			frame[prefix + m_LegStates[idx].leg.GetName() + ".sag_pos_norm"] = m_LegStates[idx].sagittal_pos / m_LegStates[idx].leg_length;
 		}
 
-		for ( auto& cc : m_ConditionalControllers )
-		{
+		for ( auto& cc : m_ConditionalControllers ) {
 			if ( cc.active )
 				cc.controller->StoreData( frame, flags );
 		}
