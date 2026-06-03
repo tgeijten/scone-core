@@ -61,7 +61,8 @@ namespace scone
 		INIT_MEMBER( props, use_model_com_reference_pos, false ),
 		INIT_MEMBER( props, symmetric, true ),
 		INIT_MEMBER( props, omnidirectional, false ),
-		INIT_MEMBER( props, allow_stance_swing_transition, false )
+		INIT_MEMBER( props, allow_stance_swing_transition, false ),
+		m_Prefix( par.prefix() )
 	{
 		// show a helpful error message when no legs are defined
 		if ( model.GetLegs().empty() )
@@ -82,7 +83,7 @@ namespace scone
 		{
 			ScopedParamSetPrefixer prefixer( par, symmetric ? "" : leg.GetName() + '.' );
 			auto& ls = m_LegStates.emplace_back( LegState( model, leg, props, par ) );
-			ls.custom_value_name = xo::concat_str( GetName(), ls.leg.GetName() + ".state", '.' );
+			ls.custom_value_name = m_Prefix + ls.leg.GetName() + ".state";
 			model.SetCustomValue( ls.custom_value_name, ls.state );
 			//log::TraceF( "leg %d leg_length=%.5f", m_LegStates.back()->leg.GetIndex(), m_LegStates.back()->leg_length );
 		}
@@ -302,14 +303,13 @@ namespace scone
 	void GaitStateController::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		// store states
-		String prefix = !GetName().empty() ? GetName() + "." : "";
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx )
-			frame[prefix + m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
+			frame[m_Prefix + m_LegStates[idx].leg.GetName() + ".state"] = m_LegStates[idx].state;
 
 		// store normalized sagittal pos
 		for ( size_t idx = 0; idx < m_LegStates.size(); ++idx ) {
-			frame[prefix + m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
-			frame[prefix + m_LegStates[idx].leg.GetName() + ".sag_pos_norm"] = m_LegStates[idx].sagittal_pos / m_LegStates[idx].leg_length;
+			frame[m_Prefix + m_LegStates[idx].leg.GetName() + ".sag_pos"] = m_LegStates[idx].sagittal_pos;
+			frame[m_Prefix + m_LegStates[idx].leg.GetName() + ".sag_pos_norm"] = m_LegStates[idx].sagittal_pos / m_LegStates[idx].leg_length;
 		}
 
 		for ( auto& cc : m_ConditionalControllers ) {

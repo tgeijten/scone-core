@@ -135,6 +135,7 @@ namespace scone
 
 	private:
 		std::vector<LegState> m_LegStates;
+		String m_Prefix;
 
 		// struct that defines if a controller is active (bitset denotes state(s), leg target should be part of controller)
 		SCONE_DECLARE_STRUCT_AND_PTR( ConditionalController );
