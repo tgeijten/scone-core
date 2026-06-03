@@ -80,4 +80,12 @@ namespace scone
 			return "F" + functions_.front()->GetSignature();
 		else return String();
 	}
+
+	void FeedForwardController::StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const
+	{
+		SCONE_ASSERT( !functions_.empty() );
+		String postfix = ".F" + functions_.front()->GetSignature();
+		for ( auto& ai : act_infos_ )
+			frame[ai.actuator->GetName() + postfix] = function_results_[ai.function_idx];
+	}
 }
