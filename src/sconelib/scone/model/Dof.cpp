@@ -29,11 +29,6 @@ namespace scone
 		return mom;
 	}
 
-	Side Dof::GetSide() const
-	{
-		return GetSideFromName( GetName() );
-	}
-
 	PropNode Dof::GetInfo() const
 	{
 		PropNode pn = Actuator::GetInfo();
