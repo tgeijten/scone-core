@@ -5,6 +5,7 @@
   * [[#Actuator|Actuator]]
   * [[#Body|Body]]
   * [[#Dof|Dof]]
+  * [[#ForceAtPoint|ForceAtPoint]]
   * [[#Joint|Joint]]
   * [[#Leg|Leg]]
   * [[#Measure|Measure]]
@@ -24,7 +25,7 @@
 | **is_array_dtype_float64**() | bool | Verify if the NumPy floating point type is 64 bit |
 | **is_supported**(arg0: str) | bool | Verify if a specific Model type is supported |
 | **load_model**(arg0: str, arg1: str = %%'%%%%'%%) | [[#Model|Model]] | Load a .scone Model with an optional .par to initialize the parameters |
-| **load_scenario**(arg0: str, arg1: Dict[str, str] = {}) | [[#Scenario|Scenario]] | Load a .scone scenario, with an optional Dict of additional settings |
+| **load_scenario**(arg0: str, arg1: dict[str, str] = {}) | [[#Scenario|Scenario]] | Load a .scone scenario, with an optional Dict of additional settings |
 | **replace_string_tags**(arg0: str) | str | Replace the 'DATE_TIME' tag with the current date and time |
 | **scone_dir**() | str | Get the SCONE Scenarios directory |
 | **scone_results_dir**() | str | Get the SCONE Results directory |
@@ -36,6 +37,7 @@
 ===== Actuator =====
 
 ^ Signature ^ Returns ^ Description ^
+| **version**() | str | Get the SCONE version |
 | **add_input**(arg0: float) | None | Add input value to this Actuator |
 | **clear_input**() | None | Clear the Actuator input (this is done automatically after each simulation step) |
 | **input**() | float | Get the current Actuator input |
@@ -47,6 +49,7 @@
 ===== Body =====
 
 ^ Signature ^ Returns ^ Description ^
+| **name**() | str | Get the name of this Actuator |
 | **add_external_force**(arg0: [[#Vec3|Vec3]]) | None | Add an external force to this Body |
 | **add_external_moment**(arg0: [[#Vec3|Vec3]]) | None | Add an external moment to this Body |
 | **ang_acc**() | [[#Vec3|Vec3]] | Get the angular acceleration of this Body |
@@ -56,6 +59,7 @@
 | **com_pos**() | [[#Vec3|Vec3]] | Get the center-of-mass position of this Body |
 | **com_vel**() | [[#Vec3|Vec3]] | Get the center-of-mass velocity of this Body |
 | **contact_force**() | [[#Vec3|Vec3]] | Get the sum of all contact forces acting on this Body |
+| **contact_forces**() | list[ [[#ForceAtPoint|ForceAtPoint]] ] | Get the contact forces and positions acting on this Body for each contact geometry |
 | **contact_moment**() | [[#Vec3|Vec3]] | Get the sum of all contact moments acting on this Body |
 | **contact_point**() | [[#Vec3|Vec3]] | Get the average position of contacts acting on this Body |
 | **external_force**() | [[#Vec3|Vec3]] | Get the external perturbation force acting on this Body |
@@ -80,6 +84,7 @@
 ===== Dof =====
 
 ^ Signature ^ Returns ^ Description ^
+| **set_pos**(arg0: [[#Vec3|Vec3]]) | None | Set the position of this Body |
 | **actuator_torque**() | float | Get the actuator torque [Nm] applied to this dof |
 | **is_actuated**() | bool | Check if this Dof is actuated via a Joint Motor (see Joint) |
 | **is_rotational**() | bool | Check if this is a rotational Dof |
@@ -93,9 +98,23 @@
 | **vel**() | float | Get the velocity of this Dof |
 
 
+===== ForceAtPoint =====
+
+^ Signature ^ Returns ^ Description ^
+| **vel**() | float | Get the velocity of this Dof |
+| **moment**() | [[#Vec3|Vec3]] | Compute the moment |
+
+=== Properties ===
+
+^ Signature  ^ Description  ^
+| ''force'' | force component |
+| ''point'' | point component |
+
+
 ===== Joint =====
 
 ^ Signature ^ Returns ^ Description ^
+| **moment**() | [[#Vec3|Vec3]] | Compute the moment |
 | **add_motor_torque**(arg0: [[#Vec3|Vec3]]) | None | Add a torque [Nm%%^%%3] to this joint motor |
 | **body**() | [[#Body|Body]] | Get the child Body of this Joint |
 | **has_motor**() | bool | See if this Joint has a Joint Motor |
@@ -104,6 +123,7 @@
 | **load**() | float | Get the scalar joint load [BW] |
 | **motor_max_torque**() | float | Get the max torque [Nm] for the joint motor |
 | **motor_torque**() | [[#Vec3|Vec3]] | Get the current motor torque [Nm%%^%%3] |
+| **muscle_moment**() | [[#Vec3|Vec3]] | Get the sum of all Muscle moments [Nm%%^%%3] acting on this Joint |
 | **name**() | str | Get the name of this Joint |
 | **parent_body**() | [[#Body|Body]] | Get the parent Body of this Joint |
 | **pos**() | [[#Vec3|Vec3]] | Get the position of this Joint |
@@ -119,6 +139,7 @@
 ===== Leg =====
 
 ^ Signature ^ Returns ^ Description ^
+| **set_motor_target_velocity**(arg0: [[#Vec3|Vec3]]) | None | Set the target velocity of the joint motor |
 | **base_body**() | [[#Body|Body]] | Get the base Body of this Leg |
 | **contact_force**() | [[#Vec3|Vec3]] | Get the contact force applied to this Leg |
 | **contact_load**() | float | Get the contact load applied to this Leg |
@@ -134,6 +155,7 @@
 ===== Measure =====
 
 ^ Signature ^ Returns ^ Description ^
+| **upper_body**() | [[#Body|Body]] | Get the upper Body of this Leg |
 | **current_result**(arg0: scone::Model) | float | Get the current_result |
 | **current_weighted_result**(arg0: scone::Model) | float | Get the current_weighted_result |
 | **final_result**(arg0: scone::Model) | float | Get the final_result |
@@ -144,11 +166,12 @@
 ===== Model =====
 
 ^ Signature ^ Returns ^ Description ^
+| **name**() | str | Get the name |
 | **actuator_input_array**() | numpy.ndarray | Get an array of current actuator inputs |
-| **actuators**() | List[ [[#Actuator|Actuator]] ] | Get the array of Actuators in this Model |
+| **actuators**() | list[ [[#Actuator|Actuator]] ] | Get the array of Actuators in this Model |
 | **adjust_state_for_load**(arg0: float) | None | Adjust the Model state so that is has a specific contact load [BW] |
 | **advance_simulation_to**(arg0: float) | None | Advance the Model simulation to a specific time [s] |
-| **bodies**() | List[ [[#Body|Body]] ] | Get the array of Bodies in this Model |
+| **bodies**() | list[ [[#Body|Body]] ] | Get the array of Bodies in this Model |
 | **com_pos**() | [[#Vec3|Vec3]] | Get the com_pos [m] of this Model |
 | **com_vel**() | [[#Vec3|Vec3]] | Get the com_vel [m/s] of this Model |
 | **contact_force**() | float | Get the contact force [N] applied to this Model |
@@ -165,7 +188,7 @@
 | **delayed_vestibular_array**() | numpy.ndarray | Get an array of current delayed vestibular sensors |
 | **dof_position_array**() | numpy.ndarray | Get an array of current dof positions |
 | **dof_velocity_array**() | numpy.ndarray | Get an array of current dof velocities |
-| **dofs**() | List[ [[#Dof|Dof]] ] | Get the array of Dofs in this Model |
+| **dofs**() | list[ [[#Dof|Dof]] ] | Get the array of Dofs in this Model |
 | **final_measure**() | float | Get the final (aggregate) value of the Measure defined in this Model (useful for shooting-based optimizations) |
 | **find_actuator**(arg0: str) | [[#Actuator|Actuator]] | Find a actuator with a specific name |
 | **find_body**(arg0: str) | [[#Body|Body]] | Find a body with a specific name |
@@ -174,19 +197,20 @@
 | **find_muscle**(arg0: str) | [[#Muscle|Muscle]] | Find a muscle with a specific name |
 | **find_muscle_or_group**(arg0: str) | [[#Muscle|Muscle]] | Find a muscle or muscle group with a specific name |
 | **get_control_parameter**(arg0: str) | float | Get the current value of a control parameter |
-| **get_control_parameter_names**() | List[str] | Get a list of all control parameter names in this Model |
+| **get_control_parameter_names**() | list[str] | Get a list of all control parameter names in this Model |
 | **get_custom_value**(arg0: str) | float | Get a custom value previously set by set_custom_value or another component |
-| **get_custom_value_names**() | List[str] | Get a list of all custom values in this Model |
+| **get_custom_value_names**() | list[str] | Get a list of all custom values in this Model |
 | **get_ray_distance**(arg0: [[#Vec3|Vec3]], arg1: [[#Vec3|Vec3]], arg2: float) | float | Get the distance of a ray cast with a position and direction, up unit max_dist |
 | **get_store_data**() | bool | Get if data is stored during Model simulation |
 | **gravity**() | [[#Vec3|Vec3]] | Get the gravity of this Model |
+| **ground_reaction_force**() | float | Get the total ground reaction force [N] for this Model |
 | **has_custom_value**(arg0: str) | bool | Check if a custom value exists |
 | **has_simulation_ended**() | bool | Check if the simulation has terminated |
 | **init_muscle_activations**(arg0: numpy.ndarray) | None | Initialize all muscle activations (must call init_state_from_dofs() afterwards) |
 | **init_state_from_dofs**() | None | Initialize the Model state from the current Dof values and equilibrate all muscles (must be called after modifying Dofs) |
 | **integration_step**() | int | Get the integration step of this Model |
-| **joints**() | List[ [[#Joint|Joint]] ] | Get the array of Joints in this Model |
-| **legs**() | List[ [[#Leg|Leg]] ] | Get the array of Legs in this Model |
+| **joints**() | list[ [[#Joint|Joint]] ] | Get the array of Joints in this Model |
+| **legs**() | list[ [[#Leg|Leg]] ] | Get the array of Legs in this Model |
 | **log_measure_report**() | None | Log the Measure report |
 | **mass**() | float | Get the mass [kg] of this Model |
 | **measure**() | [[#Measure|Measure]] | Get the Measure defined inside this Model |
@@ -195,9 +219,10 @@
 | **muscle_fiber_length_array**() | numpy.ndarray | Get an array of current muscle fiber lengths |
 | **muscle_fiber_velocity_array**() | numpy.ndarray | Get an array of current muscle fiber velocities |
 | **muscle_force_array**() | numpy.ndarray | Get an array of current muscle forces |
-| **muscles**() | List[ [[#Muscle|Muscle]] ] | Get the array of Muscles in this Model |
+| **muscles**() | list[ [[#Muscle|Muscle]] ] | Get the array of Muscles in this Model |
 | **name**() | str | Get the name of this Model |
 | **reset**() | None | Reset the model to its initial state |
+| **self_contact_force**() | float | Get the total self contact force [N] for this Model |
 | **set_actuator_inputs**(arg0: numpy.ndarray) | None | Set the actuator inputs for this Model |
 | **set_control_parameter**(arg0: str, arg1: float) | int | Set a control parameter (use get_control_parameter_names() for a list of available control parameters) |
 | **set_custom_value**(arg0: str, arg1: float) | None | Set a custom value that can be accessed by other components |
@@ -205,10 +230,10 @@
 | **set_dof_positions**(arg0: numpy.ndarray) | None | Set the dof positions for this Model (must call init_state_from_dofs() afterwards) |
 | **set_dof_velocities**(arg0: numpy.ndarray) | None | Set the dof velocities for this Model (must call init_state_from_dofs() afterwards) |
 | **set_simulation_end_time**(arg0: float) | None | Set the simulation end time [s] for this Model |
-| **set_state**(arg0: Dict[str, float]) | None | Set the current state for this Model |
+| **set_state**(arg0: dict[str, float]) | None | Set the current state for this Model |
 | **set_store_data**(arg0: bool) | None | Set if data must be stored during Model simulation (slow, do not use in optimizations) |
 | **set_store_data_profile**(arg0: int) | None | Set store data profile, 0 = default, 1 = minimal |
-| **state**() | Dict[str, float] | Get the current state of this Model |
+| **state**() | dict[str, float] | Get the current state of this Model |
 | **store_external_data**(arg0: str, arg1: float) | None | Store external data to current data frame |
 | **time**() | float | Get the current simulation time [s] |
 | **write_results**(arg0: str, arg1: str) | None | Write the simulation results to a .sto file |
@@ -217,10 +242,11 @@
 ===== Muscle =====
 
 ^ Signature ^ Returns ^ Description ^
+| **write_results**(arg0: str, arg1: str) | None | Write the simulation results to a .sto file |
 | **activation**() | float | Get the activation of this Muscle |
 | **dof_moment**(arg0: [[#Dof|Dof]]) | float | Get the moment of this muscle over a dof |
 | **dof_moment_arm**(arg0: [[#Dof|Dof]]) | float | Get the moment arm of this muscle over a dof |
-| **dofs**() | List[ [[#Dof|Dof]] ] | Get the array of Dofs this Muscle affects |
+| **dofs**() | list[ [[#Dof|Dof]] ] | Get the array of Dofs this Muscle affects |
 | **excitation**() | float | Get the excitation of this Muscle |
 | **fiber_length**() | float | Get the current fiber length of this Muscle |
 | **fiber_length_norm**() | float | Get the current normalized fiber length this Muscle |
@@ -232,7 +258,7 @@
 | **insertion_body**() | [[#Body|Body]] | Get the insertion Body of this Muscle |
 | **joint_moment**(arg0: [[#Joint|Joint]]) | [[#Vec3|Vec3]] | Get the 3D moment of this muscle over a joint |
 | **joint_moment_arm**(arg0: [[#Joint|Joint]]) | [[#Vec3|Vec3]] | Get the 3D moment arm of this muscle over a joint |
-| **joints**() | List[ [[#Joint|Joint]] ] | Get the array of Joints this Muscle crosses |
+| **joints**() | list[ [[#Joint|Joint]] ] | Get the array of Joints this Muscle crosses |
 | **mass**(arg0: float = 250000.0, arg1: float = 1059.7) | float | Get the mass of the Muscle for a specific tension and density |
 | **max_isometric_force**() | float | Get the maximum isometric force of this Muscle |
 | **name**() | str | Get the name of this Muscle |
@@ -249,6 +275,7 @@
 ===== Optimizer =====
 
 ^ Signature ^ Returns ^ Description ^
+| **volume**(arg0: float = 250000.0) | float | Get the volume of the Muscle for a specific tension |
 | **current_step**() | int | Get the current optimization step |
 | **enable_console_output**() | None | Enable console output |
 | **finished**() | bool | Check if the optimization has finished |
@@ -263,6 +290,7 @@
 ===== Quat =====
 
 ^ Signature ^ Returns ^ Description ^
+| **wait**(arg0: int) | bool | Wait a number milliseconds for the optimization to finish |
 | **array**() | numpy.ndarray | Convert to NumPy array |
 | **normalize**() | float | Normalize this Quaternion |
 | **to_euler_xyz**() | [[#Vec3|Vec3]] | Get the XYZ Euler angles of this Quaternion |
@@ -285,16 +313,18 @@
 ===== Scenario =====
 
 ^ Signature ^ Returns ^ Description ^
+| **to_rotation_vector**() | [[#Vec3|Vec3]] | Convert to rotation vector |
 | **create_optimizer**() | [[#Optimizer|Optimizer]] | Create an Optimizer from this Scenario |
 | **get**(arg0: str) | str | Get a Property in this Scenario |
 | **set**(arg0: str, arg1: str) | None | Set a Property in this Scenario |
-| **set_multiple**(arg0: Dict[str, str]) | None | Set multiple Properties in this Scenario |
+| **set_multiple**(arg0: dict[str, str]) | None | Set multiple Properties in this Scenario |
 | **start_optimization**() | [[#Optimizer|Optimizer]] | Create and start an Optimizer from this Scenario |
 
 
 ===== Vec3 =====
 
 ^ Signature ^ Returns ^ Description ^
+| **start_optimization**() | [[#Optimizer|Optimizer]] | Create and start an Optimizer from this Scenario |
 | **array**() | numpy.ndarray | Convert to NumPy array |
 | **dot**(arg0: [[#Vec3|Vec3]]) | float | Vec3 dot product |
 | **length**() | float | Get the length of this Vec3 |
