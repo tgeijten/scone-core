@@ -52,6 +52,8 @@
 #include "scone/measures/MuscleMeasure.h"
 #include "scone/measures/StepMeasure.h"
 #include "scone/measures/SimulationMeasure.h"
+#include "scone/measures/JointMeasure.h"
+#include "scone/measures/GaitAnalysisMeasure.h"
 
 #include "scone/core/Exception.h"
 #include "scone/optimization/CmaOptimizerSpot.h"
@@ -73,7 +75,6 @@
 #ifdef SCONE_SNEL
 #	include "scone/controllers/SpinalController.h"
 #endif
-#include "scone/measures/JointMeasure.h"
 
 namespace scone
 {
@@ -134,6 +135,7 @@ namespace scone
 			.register_type<BalanceMeasure>()
 			.register_type<MimicMeasure>()
 			.register_type<StepMeasure>()
+			.register_type<GaitAnalysisMeasure>()
 			.register_type<SimulationMeasure>();
 
 		return g_MeasureFactory;

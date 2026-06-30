@@ -44,8 +44,7 @@ namespace scone
 		/// Minimum duration of the stance phase [s], shorter contacts are considered as 'bump' during the swing phase; default = 0.1.
 		Real min_stance_duration_threshold;
 
-		/// Number of initial gait cycles of which the calculation is
-		/// disregarded in the final measure; default = 1 (>0).
+		/// Number of initial gait cycles that are discarded for the final measure; default = 1.
 		int initiation_cycles;
 
 		virtual UpdateResult UpdateMeasure( const Model& model, double timestamp ) override;
@@ -54,5 +53,6 @@ namespace scone
 
 	private:
 		Storage<Real> stored_data_;
+		std::vector<std::pair<RangePenalty<double>*, string>> penalties_;
 	};
 }

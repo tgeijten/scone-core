@@ -86,6 +86,8 @@ set(CORE_TOOL_FILES
 	core/string_tools.h
 	core/GaitCycle.cpp
 	core/GaitCycle.h
+	core/GaitPlotData.cpp
+	core/GaitPlotData.h
 	core/ModelConverter.cpp
 	core/ModelConverter.h
 	core/CachedVar.h
@@ -183,6 +185,8 @@ set(MEASURE_FILES
 	measures/GaitCycleMeasure.h
 	measures/GaitMeasure.cpp
 	measures/GaitMeasure.h
+	measures/GaitAnalysisMeasure.cpp
+	measures/GaitAnalysisMeasure.h
 	measures/HeightMeasure.cpp
 	measures/HeightMeasure.h
 	measures/JumpMeasure.cpp

@@ -17,19 +17,25 @@ namespace scone
 {
 	StepMeasure::StepMeasure( const PropNode& props, Params& par,
 		const Model& model, const Location& loc ) :
-		Measure( props, par, model, loc )
+		Measure( props, par, model, loc ),
+		INIT_MEMBER( props, stride_length, RangePenalty<Real>() ),
+		INIT_MEMBER( props, stride_width, RangePenalty<Real>() ),
+		INIT_MEMBER( props, stride_duration, RangePenalty<Real>() ),
+		INIT_MEMBER( props, stride_velocity, RangePenalty<Real>() ),
+		INIT_MEMBER( props, load_threshold, 0.01 ),
+		INIT_MEMBER( props, min_stance_duration_threshold, 0.1 ),
+		INIT_MEMBER( props, initiation_cycles, 1 ),
+		penalties_{
+			{ &stride_length, "stride_length" },
+			{ &stride_width, "stride_width" },
+			{ &stride_duration, "stride_duration" },
+			{ &stride_velocity, "stride_velocity" }
+		}
 	{
-		INIT_PROP( props, stride_length, RangePenalty<Real>() );
-		INIT_PROP( props, stride_width, RangePenalty<Real>() );
-		INIT_PROP( props, stride_duration, RangePenalty<Real>() );
-		INIT_PROP( props, stride_velocity, RangePenalty<Real>() );
-		INIT_PROP( props, load_threshold, 0.01 );
-		INIT_PROP( props, min_stance_duration_threshold, 0.1 );
-		INIT_PROP( props, initiation_cycles, 1 );
-
 		SCONE_THROW_IF( initiation_cycles < 1, "initiation_cycles should be >= 1" );
-		SCONE_THROW_IF( stride_length.IsNull() && stride_duration.IsNull() && stride_velocity.IsNull(),
-			"Any of stride_length / stride_duration / stride_velocity should be defined" );
+
+		auto pencount = xo::count_if( penalties_, [&]( auto&& p ) { return !p.first->IsNull(); } );
+		SCONE_THROW_IF( pencount == 0, "No penalties defined in StepMeasure" );
 	}
 
 	UpdateResult StepMeasure::UpdateMeasure( const Model& model, double timestamp )
@@ -78,22 +84,12 @@ namespace scone
 		}
 
 		// calculate penalty
-		double penalty = 0;
-		if ( !stride_length.IsNull() ) {
-			penalty += stride_length.GetResult();
-			report_.set( "stride_length_penalty", stride_length.GetResult() );
-		}
-		if ( !stride_width.IsNull() ) {
-			penalty += stride_width.GetResult();
-			report_.set( "stride_width_penalty", stride_width.GetResult() );
-		}
-		if ( !stride_duration.IsNull() ) {
-			penalty += stride_duration.GetResult();
-			report_.set( "stride_duration_penalty", stride_duration.GetResult() );
-		}
-		if ( !stride_velocity.IsNull() ) {
-			penalty += stride_velocity.GetResult();
-			report_.set( "stride_velocity_penalty", stride_velocity.GetResult() );
+		Real penalty = 0;
+		for ( auto&& [pen, name] : penalties_ ) {
+			if ( !pen->IsNull() ) {
+				penalty += pen->GetResult();
+				report_.set( name + "_penalty", pen->GetResult() );
+			}
 		}
 
 		return penalty;
