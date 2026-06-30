@@ -24,6 +24,7 @@ namespace scone
 		INIT_MEMBER( props, load_threshold, 0.01 ),
 		INIT_MEMBER( props, min_stance_duration_threshold, 0.1 ),
 		INIT_MEMBER( props, skip_cycles, 2 ),
+		INIT_MEMBER( props, contact_timing_offset_, 0.5 ),
 		INIT_MEMBER( props, include, "*" ),
 		INIT_MEMBER( props, exclude, "" )
 	{
@@ -63,14 +64,13 @@ namespace scone
 					continue;
 				auto plot_idx = xo::index_of( plot, plots_ );
 				for ( Side side : { Side::Left, Side::Right } ) {
-					// find plot channel in existing data (i.e. grf)
+					// find plot channel in existing data (i.e. grf or single sided channel)
 					auto& channel_pattern = side == Side::Left ? plot.left_channel_ : plot.right_channel_;
 					auto storage_idx = xo::find_index_if( labels, [&]( auto& l ) { return channel_pattern( l ); } );
-					if ( storage_idx != no_index && match( labels[storage_idx] ) )
+					if ( storage_idx != no_index && match( labels[storage_idx] ) ) {
 						channels_.push_back( AnalysisChannel{ no_index, storage_idx, plot_idx, side } );
-
-					if ( storage_idx != no_index )
 						continue;
+					}
 
 					// find plot channel in states
 					auto state_idx = xo::find_index_if( state_names, [&]( auto& l ) { return channel_pattern( l ); } );
@@ -107,6 +107,7 @@ namespace scone
 
 		GaitCycleExtractionSettings cfg{ load_threshold, min_stance_duration_threshold };
 		auto cycles = ExtractGaitCycles( storage_, cfg );
+		Real lookback = storage_.GetAverageFrameDuration() * contact_timing_offset_;
 
 		for ( index_t cycle_idx = skip_cycles; cycle_idx < cycles.size(); ++cycle_idx ) {
 			const auto& cycle = cycles[cycle_idx];
@@ -114,12 +115,11 @@ namespace scone
 				if ( ch.side_ != cycle.side_ )
 					continue;
 				const auto& plot = plots_[ch.plot_idx_];
-				double lookahead = 0.5 * cycle.duration() / plot.norm_data_.size();
 				double factor = plot.mirror_left_ && cycle.side_ == Side::Left ? -plot.channel_multiply_ : plot.channel_multiply_;
 				double error = 0.0;
 				for ( const auto& r : plot.norm_data_ ) {
 					double x = 1.0 * xo::index_of( r, plot.norm_data_ ) / ( plot.norm_data_.size() - 1 );
-					auto f = storage_.ComputeInterpolatedFrame( cycle.begin_ + x * cycle.duration() - lookahead );
+					auto f = storage_.ComputeInterpolatedFrame( cycle.begin_ + x * cycle.duration() - lookback );
 					auto value = plot.channel_offset_ + factor * f.value( ch.storage_idx_ );
 					error += xo::abs( r.get_excess( value ) ) / xo::max( 0.01, r.length() );
 				}
@@ -137,7 +137,6 @@ namespace scone
 
 			auto avg_error = ch.total_error_ / ch.cycles_;
 			report_.set( name, avg_error );
-			//log::debug( name, "\tc=", ch.cycles_, "\te=", avg_error );
 			penalty += avg_error;
 		}
 

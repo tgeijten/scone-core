@@ -38,6 +38,9 @@ namespace scone
 		/// Number of initial gait cycles that are discarded for the final measure; default = 1.
 		int skip_cycles;
 
+		/// Fraction of a sample to shift detected contact onset backward in time (0-1); default = 0.5.
+		Real contact_timing_offset_;
+
 		/// Channels in template to include (semicolon separated); default = "*"
 		String include;
 
