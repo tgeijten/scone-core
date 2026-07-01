@@ -707,6 +707,7 @@ namespace scone
 
 		model_pn["actuators"] = GetActuators().size();
 		model_pn["legs"] = GetLegCount();
+		model_pn["planar"] = IsPlanar();
 		if ( auto objects = CheckSymmetry( *this ); !objects.empty() ) {
 			auto& asym_pn = model_pn.add_child( "asymmetries" );
 			asym_pn.merge( objects );
