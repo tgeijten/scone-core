@@ -261,14 +261,6 @@ namespace scone
 		LuaVec3 com_vel() { return bod_.GetComVel(); }
 		/// get the current acceleration at the body com [m/s%%^%%2]
 		LuaVec3 com_acc() { return bod_.GetComAcc(); }
-		/// get the com offset of the body in the local coordinate frame [m]
-		LuaVec3 local_com_pos() { return bod_.GetLocalComPos(); }
-		/// get the local position of a point in the world coordinate frame [m]
-		LuaVec3 local_pos( const LuaVec3* p ) { return bod_.GetLocalPosOfPoint( LUA_ARG_REF( p ) ); }
-		/// get the global position [m] of a local point p on the body
-		LuaVec3 point_pos( const LuaVec3* p ) { return bod_.GetPosOfPointOnBody( LUA_ARG_REF( p ) ); }
-		/// get the global linear velocity [m/s] of a local point p on the body
-		LuaVec3 point_vel( const LuaVec3* p ) { return bod_.GetLinVelOfPointOnBody( LUA_ARG_REF( p ) ); }
 		/// get the body orientation as a quaternion
 		LuaQuat ori() { return bod_.GetOrientation(); }
 		/// get the body orientation as a 3d rotation vector [rad]
@@ -277,8 +269,18 @@ namespace scone
 		LuaVec3 ang_vel() { return bod_.GetAngVel(); }
 		/// get the angular acceleration [rad/s%%^%%2] of the body
 		LuaVec3 ang_acc() { return bod_.GetAngAcc(); }
+		/// get the com offset of the body in the local coordinate frame [m]
+		LuaVec3 local_com_pos() { return bod_.GetLocalComPos(); }
+		/// get the local position of a point in the world coordinate frame [m]
+		LuaVec3 local_pos( const LuaVec3* p ) { return bod_.GetLocalPosOfPoint( LUA_ARG_REF( p ) ); }
+		/// get the global position [m] of a local point p on the body
+		LuaVec3 point_pos( const LuaVec3* p ) { return bod_.GetPosOfPointOnBody( LUA_ARG_REF( p ) ); }
+		/// get the global linear velocity [m/s] of a local point p on the body
+		LuaVec3 point_vel( const LuaVec3* p ) { return bod_.GetLinVelOfPointOnBody( LUA_ARG_REF( p ) ); }
+		/// get the global linear acceleration [m/s%%^%%2] of a local point p on the body
+		LuaVec3 point_acc( const LuaVec3* p ) { return bod_.GetLinAccOfPointOnBody( LUA_ARG_REF( p ) ); }
 		/// check if this body has a parent joint
-		bool has_parent() { return bod_.GetJoint() != nullptr; }
+		bool has_parent() { return bod_.HasParent(); }
 		/// get the parent joint, error if not existing
 		struct LuaJoint parent_joint();
 		/// get the parent joint, error if not existing
@@ -291,12 +293,6 @@ namespace scone
 		LuaVec3 contact_point() { return bod_.GetContactPoint(); }
 		/// get individual contact forces applied to this body, per geometry
 		std::vector<ForceAtPoint> contact_forces() { return bod_.GetContactForceValues(); }
-		/// add external force [N] to body com or latest external force position
-		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
-		/// add external moment [Nm] to body
-		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
-		/// set external force vector [N%%^%%3] (world coordinated frame) applied to a local position on the body [m%%^%%3]
-		void set_external_force_at( const LuaVec3* f, const LuaVec3* p ) { bod_.SetExternalForceAtPoint( LUA_ARG_REF( f ), LUA_ARG_REF( p ) ); }
 		/// set the origin position [m] of the body
 		void set_pos( const LuaVec3* p ) { bod_.SetPos( LUA_ARG_REF( p ) ); }
 		/// set the com position [m] of the body
@@ -307,6 +303,18 @@ namespace scone
 		void set_lin_vel( const LuaVec3* v ) { bod_.SetLinVel( LUA_ARG_REF( v ) ); }
 		/// set the angular velocity [rad/s] of the body
 		void set_ang_vel( const LuaVec3* v ) { bod_.SetAngVel( LUA_ARG_REF( v ) ); }
+		/// set external force vector [N%%^%%3] in the world coordinated frame
+		void set_external_force( const LuaVec3* f ) { bod_.SetExternalForce( LUA_ARG_REF( f ) ); }
+		/// set external force vector [N%%^%%3] (world coordinated frame) applied to a local position on the body [m]
+		void set_external_force_at( const LuaVec3* f, const LuaVec3* p ) { bod_.SetExternalForceAtPoint( LUA_ARG_REF( f ), LUA_ARG_REF( p ) ); }
+		/// set external moment vector [N%%^%%3] in the world coordinated frame
+		void set_external_moment( const LuaVec3* m ) { bod_.SetExternalMoment( LUA_ARG_REF( m ) ); }
+		/// add external force [N] to body com or latest external force position
+		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
+		/// add external moment [Nm] to body
+		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
+		/// clear all external forces and moments applied to this body
+		void clear_external_force_moment() { bod_.ClearExternalForceAndMoment(); }
 
 		Body& bod_;
 	};

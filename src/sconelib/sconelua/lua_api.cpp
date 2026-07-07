@@ -82,6 +82,7 @@ namespace scone
 			"local_pos", &LuaBody::local_pos,
 			"point_pos", &LuaBody::point_pos,
 			"point_vel", &LuaBody::point_vel,
+			"point_acc", &LuaBody::point_acc,
 			"ori", &LuaBody::ori,
 			"ang_pos", &LuaBody::ang_pos,
 			"ang_vel", &LuaBody::ang_vel,
@@ -93,13 +94,17 @@ namespace scone
 			"contact_moment", &LuaBody::contact_moment,
 			"contact_point", &LuaBody::contact_point,
 			"contact_forces", &LuaBody::contact_forces,
-			"add_external_force", &LuaBody::add_external_force,
-			"add_external_moment", &LuaBody::add_external_moment,
 			"set_pos", &LuaBody::set_pos,
 			"set_com_pos", &LuaBody::set_com_pos,
 			"set_ori", &LuaBody::set_ori,
 			"set_lin_vel", &LuaBody::set_lin_vel,
-			"set_ang_vel", &LuaBody::set_ang_vel
+			"set_ang_vel", &LuaBody::set_ang_vel,
+			"set_external_force", &LuaBody::set_external_force,
+			"set_external_force_at", &LuaBody::set_external_force_at,
+			"set_external_moment", &LuaBody::set_external_moment,
+			"add_external_force", &LuaBody::add_external_force,
+			"add_external_moment", &LuaBody::add_external_moment,
+			"clear_external_force_moment", &LuaBody::clear_external_force_moment
 			);
 
 		lua.new_usertype<LuaJoint>( "LuaJoint", sol::constructors<>(),
