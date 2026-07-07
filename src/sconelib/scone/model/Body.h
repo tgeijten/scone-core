@@ -80,6 +80,7 @@ namespace scone
 		virtual Model& GetModel() = 0;
 
 		const Joint* GetJoint() const { return m_Joint; }
+		bool HasParent() const { return m_Joint != nullptr; }
 		const Body* GetParentBody() const;
 		bool IsChildOf( const Body& parent ) const;
 
