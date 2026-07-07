@@ -249,12 +249,22 @@ namespace scone
 		LuaNumber mass() { return bod_.GetMass(); }
 		/// get the diagonal of the inertia tensor of the body
 		LuaVec3 inertia_diagonal() { return bod_.GetInertiaTensorDiagonal(); }
-		/// get the current com position [m]
+		/// get the current position at the body origin [m]
+		LuaVec3 pos() { return bod_.GetOriginPos(); }
+		/// get the current velocity at the body origin [m/s]
+		LuaVec3 vel() { return bod_.GetOriginVel(); }
+		/// get the current acceleration at the body origin [m/s%%^%%2]
+		LuaVec3 acc() { return bod_.GetOriginAcc(); }
+		/// get the current position at the body com [m]
 		LuaVec3 com_pos() { return bod_.GetComPos(); }
-		/// get the current com velocity [m/s]
+		/// get the current velocity at the body com [m/s]
 		LuaVec3 com_vel() { return bod_.GetComVel(); }
-		/// get the current com acceleration [m/s%%^%%2]
+		/// get the current acceleration at the body com [m/s%%^%%2]
 		LuaVec3 com_acc() { return bod_.GetComAcc(); }
+		/// get the com offset of the body in the local coordinate frame [m]
+		LuaVec3 local_com_pos() { return bod_.GetLocalComPos(); }
+		/// get the local position of a point in the world coordinate frame [m]
+		LuaVec3 local_pos( const LuaVec3* p ) { return bod_.GetLocalPosOfPoint( LUA_ARG_REF( p ) ); }
 		/// get the global position [m] of a local point p on the body
 		LuaVec3 point_pos( const LuaVec3* p ) { return bod_.GetPosOfPointOnBody( LUA_ARG_REF( p ) ); }
 		/// get the global linear velocity [m/s] of a local point p on the body
@@ -273,11 +283,11 @@ namespace scone
 		struct LuaJoint parent_joint();
 		/// get the parent joint, error if not existing
 		LuaBody parent_body() { return GetRefRemoveConst( bod_.GetParentBody(), "Body has no parent" );  }
-		/// get the contact force vector [N] applied to this body via contact geometry
+		/// get the contact force vector [N] applied to this body via contact geometry, in the world coordinate frame
 		LuaVec3 contact_force() { return bod_.GetContactForce(); }
-		/// get the contact moment vector [Nm] applied to this body via contact geometry
+		/// get the contact moment vector [Nm] applied to this body via contact geometry, in the world coordinate frame
 		LuaVec3 contact_moment() { return bod_.GetContactMoment(); }
-		/// get contact point vector [m] of a contact force applied to this body (zero if no contact)
+		/// get contact point [m%%^%%3] of a contact force applied to this body in the world coordinate frame (zero if no contact)
 		LuaVec3 contact_point() { return bod_.GetContactPoint(); }
 		/// get individual contact forces applied to this body, per geometry
 		std::vector<ForceAtPoint> contact_forces() { return bod_.GetContactForceValues(); }
@@ -285,8 +295,10 @@ namespace scone
 		void add_external_force( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalForce( Vec3d( x, y, z ) ); }
 		/// add external moment [Nm] to body
 		void add_external_moment( LuaNumber x, LuaNumber y, LuaNumber z ) { bod_.AddExternalMoment( Vec3d( x, y, z ) ); }
-		/// set external force vector [N%%^%%3] to applied to the body at a position vector [m%%^%%3]
+		/// set external force vector [N%%^%%3] (world coordinated frame) applied to a local position on the body [m%%^%%3]
 		void set_external_force_at( const LuaVec3* f, const LuaVec3* p ) { bod_.SetExternalForceAtPoint( LUA_ARG_REF( f ), LUA_ARG_REF( p ) ); }
+		/// set the origin position [m] of the body
+		void set_pos( const LuaVec3* p ) { bod_.SetPos( LUA_ARG_REF( p ) ); }
 		/// set the com position [m] of the body
 		void set_com_pos( const LuaVec3* p ) { bod_.SetComPos( LUA_ARG_REF( p ) ); }
 		/// set the orientation of the body
