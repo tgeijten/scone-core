@@ -49,9 +49,11 @@ namespace scone
 	{
 		double penalty = 0.0;
 		for ( const auto& [pen, name] : penalties_ ) {
-			penalty += pen->GetResult();
-			if ( penalty_count > 1 )
-				report_.set( name_ + "." + name + "_penalty", stringf( "%g", pen->GetResult() ) );
+			if ( !pen->IsNull() ) {
+				penalty += pen->GetResult();
+				if ( penalty_count > 1 )
+					report_.set( name_ + "." + name + "_penalty", stringf( "%g", pen->GetResult() ) );
+			}
 		}
 
 		return  penalty;
