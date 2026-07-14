@@ -15,24 +15,32 @@ namespace scone
 	BodyMeasure::BodyMeasure( const PropNode& props, Params& par, const Model& model, const Location& loc ) :
 		Measure( props, par, model, loc ),
 		body( *FindByLocation( model.GetBodies(), props.get< String >( "body" ), loc ) ),
-		range_count( 0 )
+		INIT_MEMBER( props, target_position, Vec3::zero() ),
+		INIT_MEMBER( props, target_orientation, Quat::identity() ),
+		INIT_MEMBER( props, offset, Vec3::zero() ),
+		INIT_MEMBER( props, direction, Vec3::zero() ),
+		INIT_MEMBER( props, scale, Vec3::one() ),
+		INIT_MEMBER( props, magnitude, direction.is_null() ),
+		INIT_MEMBER( props, relative_to_model_com, false ),
+		INIT_MEMBER( props, use_local_direction, false ),
+		INIT_MEMBER( props, position, RangePenalty<Real>() ),
+		INIT_MEMBER( props, orientation, RangePenalty<Real>() ),
+		INIT_MEMBER( props, velocity, RangePenalty<Real>() ),
+		INIT_MEMBER( props, angular_velocity, RangePenalty<Real>() ),
+		INIT_MEMBER( props, acceleration, RangePenalty<Real>() ),
+		INIT_MEMBER( props, angular_acceleration, RangePenalty<Real>() ),
+		penalty_count( 0 ),
+		penalties_{
+			{ &position, "pos" },
+			{ &orientation, "ori" },
+			{ &velocity, "vel" },
+			{ &angular_velocity, "ang_vel" },
+			{ &acceleration, "acc" },
+			{ &angular_acceleration, "ang_acc" },
+		}
 	{
-		INIT_PROP( props, offset, Vec3::zero() );
-		INIT_PROP( props, target_position, Vec3::zero() );
-		INIT_PROP( props, target_orientation, Quat::identity() );
-		INIT_PROP( props, direction, Vec3::zero() );
-		INIT_PROP( props, relative_to_model_com, false );
-		INIT_PROP( props, use_local_direction, false );
-		INIT_PROP( props, magnitude, direction.is_null() );
-		INIT_PROP( props, scale, Vec3::one() );
-		INIT_PROP( props, position, RangePenalty<Real>() );
-		INIT_PROP( props, orientation, RangePenalty<Real>() );
-		INIT_PROP( props, velocity, RangePenalty<Real>() );
-		INIT_PROP( props, angular_velocity, RangePenalty<Real>() );
-		INIT_PROP( props, acceleration, RangePenalty<Real>() );
-		INIT_PROP( props, angular_acceleration, RangePenalty<Real>() );
-
-		range_count = int( !position.IsNull() ) + int( !velocity.IsNull() ) + int( !acceleration.IsNull() );
+		penalty_count = xo::count_if( penalties_, [&]( auto&& p ) { return !p.first->IsNull(); } );
+		SCONE_THROW_IF( penalty_count == 0, "No penalties defined in BodyMeasure" );
 		if ( name_.empty() )
 			name_ = body.GetName();
 	}
@@ -40,35 +48,10 @@ namespace scone
 	double BodyMeasure::ComputeResult( const Model& model )
 	{
 		double penalty = 0.0;
-		if ( !position.IsNull() )
-		{
-			penalty += position.GetResult();
-			if ( range_count > 1 )
-				report_.set( name_ + ".pos_penalty", stringf( "%g", position.GetResult() ) );
-		}
-		if ( !orientation.IsNull() )
-		{
-			penalty += orientation.GetResult();
-			if ( range_count > 1 )
-				report_.set( name_ + ".ori_penalty", stringf( "%g", orientation.GetResult() ) );
-		}
-		if ( !velocity.IsNull() )
-		{
-			penalty += velocity.GetResult();
-			if ( range_count > 1 )
-				report_.set( name_ + ".vel_penalty", stringf( "%g", velocity.GetResult() ) );
-		}
-		if ( !angular_velocity.IsNull() )
-		{
-			penalty += angular_velocity.GetResult();
-			if ( range_count > 1 )
-				report_.set( name_ + ".ang_vel_penalty", stringf( "%g", angular_velocity.GetResult() ) );
-		}
-		if ( !acceleration.IsNull() )
-		{
-			penalty += acceleration.GetResult();
-			if ( range_count > 1 )
-				report_.set( name_ + ".acc_penalty", stringf( "%g", acceleration.GetResult() ) );
+		for ( const auto& [pen, name] : penalties_ ) {
+			penalty += pen->GetResult();
+			if ( penalty_count > 1 )
+				report_.set( name_ + "." + name + "_penalty", stringf( "%g", pen->GetResult() ) );
 		}
 
 		return  penalty;
@@ -140,16 +123,10 @@ namespace scone
 	void BodyMeasure::StoreData( Storage< Real >::Frame& frame, const StoreDataFlags& flags ) const
 	{
 		String name = GetName().empty() ? body.GetName() : GetName() + "." + body.GetName();
-		if ( !position.IsNull() )
-			frame[name + ".pos_penalty"] = position.GetLatest();
-		if ( !orientation.IsNull() )
-			frame[name + ".ori_penalty"] = orientation.GetLatest();
-		if ( !velocity.IsNull() )
-			frame[name + ".vel_penalty"] = velocity.GetLatest();
-		if ( !angular_velocity.IsNull() )
-			frame[name + ".ang_vel_penalty"] = angular_velocity.GetLatest();
-		if ( !acceleration.IsNull() )
-			frame[name + ".acc_penalty"] = acceleration.GetLatest();
+		for ( const auto& [pen, pen_name] : penalties_ ) {
+			if ( !pen->IsNull() )
+				frame[name + '.' + pen_name + "_penalty"] = pen->GetLatest();
+		}
 	}
 
 	Real BodyMeasure::GetPenaltyValue( const Vec3 v ) const

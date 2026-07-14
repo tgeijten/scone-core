@@ -81,6 +81,8 @@ namespace scone
 
 	private:
 		Real GetPenaltyValue( const Vec3 v ) const;
-		int range_count;
+
+		size_t penalty_count;
+		std::vector<std::pair<RangePenalty<Real>*, string>> penalties_;
 	};
 }
