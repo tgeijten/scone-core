@@ -10,6 +10,8 @@
 
 #include "Measure.h"
 #include "RangePenalty.h"
+#include <vector>
+#include "xo/numerical/derivatives.h"
 
 namespace scone
 {
@@ -23,6 +25,12 @@ namespace scone
 		/// measure force per leg instead of sum of forces; defaut = false.
 		bool use_force_per_leg;
 
+		/// penalty for load change velocity [BW/s]
+		RangePenalty<Real> velocity;
+
+		/// penalty for load change acceleration [BW/s^2]
+		RangePenalty<Real> acceleration;
+
 		virtual double ComputeResult( const Model& model ) override;
 		virtual double GetCurrentResult( const Model& model ) override;
 		virtual void Reset( Model& model ) override;
@@ -30,5 +38,7 @@ namespace scone
 
 	protected:
 		virtual void StoreData( Storage<Real>::Frame& frame, const StoreDataFlags& flags ) const override;
+
+		std::vector<std::pair<String, xo::derivatives<Real, TimeInSeconds>>> derivatives_;
 	};
 }
