@@ -19,8 +19,8 @@ namespace scone
 		Measure( props, par, model, loc ),
 		RangePenalty<Real>( props ),
 		INIT_MEMBER( props, use_force_per_leg, false ),
-		INIT_MEMBER( props, velocity, {} ),
-		INIT_MEMBER( props, acceleration, {} )
+		INIT_MEMBER( props, velocity, RangePenalty<Real>{} ),
+		INIT_MEMBER( props, acceleration, RangePenalty<Real>{} )
 	{
 		if ( name_.empty() )
 			name_ = "grf";
@@ -68,7 +68,7 @@ namespace scone
 
 		AddSample( timestamp, leg_load );
 
-		for ( auto& [leg, d] : xo::zip( model.GetLegs(), derivatives_ ) ) {
+		for ( auto&& [leg, d] : xo::zip( model.GetLegs(), derivatives_ ) ) {
 			d.second.update( leg.GetLoad(), timestamp );
 			if ( !velocity.IsNull() )
 				velocity.AddSample( d.second.velocity() );
