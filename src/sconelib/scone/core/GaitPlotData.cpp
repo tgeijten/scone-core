@@ -23,21 +23,35 @@ namespace scone
 	{
 		auto* norm_min = pn.try_get_child( "norm_min" );
 		auto* norm_max = pn.try_get_child( "norm_max" );
-		if ( norm_min && norm_max )
+		bool has_min_max = norm_min && norm_max;
+
+		auto* norm_mean = pn.try_get_child( "norm_mean" );
+		auto* norm_std = pn.try_get_child( "norm_std" );
+		bool has_mean_std = norm_mean && norm_std;
+
+		if ( has_min_max || has_mean_std )
 		{
-			if ( norm_min->size() == norm_max->size() )
+			xo_error_if( has_min_max && norm_min->size() != norm_max->size(), "Mismatch in norm_min and norm_max array length for " + title_ );
+			xo_error_if( has_mean_std && norm_mean->size() != norm_std->size(), "Mismatch in norm_mean and norm_std array length for " + title_ );
+			auto norm_size = has_min_max ? norm_min->size() : norm_mean->size();
+			norm_data_.reserve( norm_size );
+			for ( index_t i = 0; i < norm_size; ++i )
 			{
-				norm_data_.reserve( norm_min->size() );
-				for ( index_t i = 0; i < norm_min->size(); ++i )
-				{
-					auto yt = norm_max->get<double>( i ) + norm_offset_;
-					auto yb = norm_min->get<double>( i ) + norm_offset_;
-					y_min_ = xo::min( y_min_, yb );
-					y_max_ = xo::max( y_max_, yt );
-					double x = 100.0 * i / ( norm_min->size() - 1 );
-					norm_data_.emplace_back( yb, yt );
-				}
-			} else log::warning( "Invalid norm data for ", title_, ", norm_min has ", norm_min->size(), " data points, norm_max has ", norm_max->size() );
+				double yt, yb;
+				if ( has_min_max ) {
+					yt = norm_max->get<double>( i ) + norm_offset_;
+					yb = norm_min->get<double>( i ) + norm_offset_;
+				} else if ( has_mean_std ) {
+					auto mean = norm_mean->get<double>( i ) + norm_offset_;
+					yt = mean + norm_std->get<double>( i );
+					yb = mean - norm_std->get<double>( i );
+				} else { xo_error( "Unexpected error reading GaitDataPlot" ); }
+
+				y_min_ = xo::min( y_min_, yb );
+				y_max_ = xo::max( y_max_, yt );
+				double x = 100.0 * i / ( norm_size - 1 );
+				norm_data_.emplace_back( yb, yt );
+			}
 		}
 	}
 }
