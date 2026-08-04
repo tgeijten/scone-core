@@ -19,7 +19,8 @@ namespace scone
 		INIT_MEMBER( pn, channel_multiply_, 1.0 ),
 		INIT_MEMBER( pn, norm_offset_, 0 ),
 		INIT_MEMBER( pn, mirror_left_, false ),
-		norm_event_( pn.try_get<xo::bounds<double>>( "norm_event" ) )
+		norm_event_( pn.try_get<xo::bounds<double>>( "norm_event" ) ),
+		INIT_MEMBER( pn, norm_data_multiply_, 1.0 )
 	{
 		auto* norm_min = pn.try_get_child( "norm_min" );
 		auto* norm_max = pn.try_get_child( "norm_max" );
