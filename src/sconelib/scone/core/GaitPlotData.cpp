@@ -19,8 +19,9 @@ namespace scone
 		INIT_MEMBER( pn, channel_multiply_, 1.0 ),
 		INIT_MEMBER( pn, norm_offset_, 0 ),
 		INIT_MEMBER( pn, mirror_left_, false ),
-		norm_event_( pn.try_get<xo::bounds<double>>( "norm_event" ) ),
-		INIT_MEMBER( pn, norm_data_multiply_, 1.0 )
+		norm_event_( pn.try_get<xo::boundsd>( "norm_event" ) ),
+		INIT_MEMBER( pn, normalize_norm_data_, false ),
+		norm_data_mean_range_{ xo::boundsd::no_bounds() }
 	{
 		auto* norm_min = pn.try_get_child( "norm_min" );
 		auto* norm_max = pn.try_get_child( "norm_max" );
@@ -38,18 +39,22 @@ namespace scone
 			norm_data_.reserve( norm_size );
 			for ( index_t i = 0; i < norm_size; ++i )
 			{
-				double yt, yb;
+				double yt, yb, mean;
 				if ( has_min_max ) {
 					yt = norm_max->get<double>( i ) + norm_offset_;
 					yb = norm_min->get<double>( i ) + norm_offset_;
+					mean = ( yt + yb ) / 2;
 				} else if ( has_mean_std ) {
-					auto mean = norm_mean->get<double>( i ) + norm_offset_;
+					mean = norm_mean->get<double>( i ) + norm_offset_;
 					yt = mean + norm_std->get<double>( i );
 					yb = mean - norm_std->get<double>( i );
 				} else { xo_error( "Unexpected error reading GaitDataPlot" ); }
 
+
 				y_min_ = xo::min( y_min_, yb );
 				y_max_ = xo::max( y_max_, yt );
+				norm_data_mean_range_.extend( mean );
+
 				double x = 100.0 * i / ( norm_size - 1 );
 				norm_data_.emplace_back( yb, yt );
 			}

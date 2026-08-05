@@ -33,7 +33,10 @@ namespace scone
 
 		std::vector<xo::bounds<double>> norm_data_;
 		xo::optional<xo::bounds<double>> norm_event_;
-		double norm_data_multiply_;
+		bool normalize_norm_data_;
+
+		// derived variables
+		xo::boundsd norm_data_mean_range_;
 	};
 }
 
