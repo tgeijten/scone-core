@@ -50,7 +50,6 @@ namespace scone
 					yb = mean - norm_std->get<double>( i );
 				} else { xo_error( "Unexpected error reading GaitDataPlot" ); }
 
-
 				y_min_ = xo::min( y_min_, yb );
 				y_max_ = xo::max( y_max_, yt );
 				norm_data_mean_range_.extend( mean );

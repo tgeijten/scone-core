@@ -56,12 +56,14 @@ namespace scone
 		std::vector<GaitPlotData> plots_;
 
 		struct AnalysisChannel {
-			index_t state_idx_;
-			index_t storage_idx_;
-			index_t plot_idx_;
-			Side side_;
+			const index_t state_idx_;
+			const index_t storage_idx_;
+			const index_t plot_idx_;
+			const Side side_;
+
 			double total_error_ = 0.0;
 			size_t cycles_ = 0;
+			xo::boundsd value_range_ = xo::boundsd::no_bounds();
 		};
 		std::vector<AnalysisChannel> channels_;
 	};

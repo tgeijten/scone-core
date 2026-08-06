@@ -92,10 +92,13 @@ namespace scone
 			frame.SetVec3( idx * 6 + 3, fv.point );
 		}
 
-		// store state channels
-		for ( const auto& ch : channels_ ) {
-			if ( ch.state_idx_ != no_index )
-				frame[ch.storage_idx_] = state.GetValue( ch.state_idx_ );
+		// store channel values
+		for ( auto& ch : channels_ ) {
+			if ( ch.state_idx_ != no_index ) {
+				auto value = plots_[ch.plot_idx_].TransformValue( state.GetValue( ch.state_idx_ ), ch.side_ );
+				frame[ch.storage_idx_] = value;
+				ch.value_range_.extend( value );
+			}
 		}
 
 		return false;
@@ -112,20 +115,21 @@ namespace scone
 		for ( index_t cycle_idx = skip_cycles; cycle_idx < cycles.size(); ++cycle_idx ) {
 			const auto& cycle = cycles[cycle_idx];
 			for ( auto& ch : channels_ ) {
-				if ( ch.side_ != cycle.side_ )
-					continue;
-				const auto& plot = plots_[ch.plot_idx_];
-				double factor = plot.mirror_left_ && cycle.side_ == Side::Left ? -plot.channel_multiply_ : plot.channel_multiply_;
-				double error = 0.0;
-				for ( const auto& r : plot.norm_data_ ) {
-					double x = 1.0 * xo::index_of( r, plot.norm_data_ ) / ( plot.norm_data_.size() - 1 );
-					auto f = storage_.ComputeInterpolatedFrame( cycle.begin_ + x * cycle.duration() - lookback );
-					auto value = plot.channel_offset_ + factor * f.value( ch.storage_idx_ );
-					error += xo::abs( r.get_excess( value ) ) / xo::max( 0.01, r.length() );
+				if ( ch.side_ == cycle.side_ ) {
+					const auto& plot = plots_[ch.plot_idx_];
+					double norm_multiply = plot.GetNormalizeNormDataFactor( ch.value_range_.upper );
+					double error = 0.0;
+					for ( index_t norm_idx = 0; norm_idx < plot.norm_data_.size(); ++norm_idx ) {
+						auto r = norm_multiply * plot.norm_data_[norm_idx];
+						auto x = double( norm_idx ) / ( plot.norm_data_.size() - 1 );
+						auto f = storage_.ComputeInterpolatedFrame( cycle.begin_ + x * cycle.duration() - lookback );
+						auto value = f.value( ch.storage_idx_ );
+						error += xo::abs( r.get_excess( value ) ) / xo::max( 0.01, r.length() );
+					}
+					error /= plot.norm_data_.size();
+					ch.total_error_ += error;
+					ch.cycles_++;
 				}
-				error /= plot.norm_data_.size();
-				ch.total_error_ += error;
-				ch.cycles_++;
 			}
 		}
 

@@ -6,6 +6,7 @@
 #include "xo/string/pattern_matcher.h"
 #include "xo/container/flat_map.h"
 #include "xo/numerical/bounds.h"
+#include "scone/model/Side.h"
 
 namespace scone
 {
@@ -15,6 +16,10 @@ namespace scone
 		~GaitPlotData() = default;
 
 		bool HasNormData() const { return !norm_data_.empty(); }
+		double GetChannelMultiply( const Side& s ) const { return mirror_left_ && s == Side::Left ? -channel_multiply_ : channel_multiply_; }
+		double TransformValue( double v, const Side& s ) const { return channel_offset_ + GetChannelMultiply( s ) * v; }
+		bool MustNormalizeNormData() const { return normalize_norm_data_ && HasNormData() && norm_data_mean_range_.upper > 0; }
+		double GetNormalizeNormDataFactor( double upper ) const { return MustNormalizeNormData() ? upper / norm_data_mean_range_.upper : 1.0; }
 
 		String title_;
 		xo::pattern_matcher left_channel_;
