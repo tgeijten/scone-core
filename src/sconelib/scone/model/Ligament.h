@@ -64,7 +64,5 @@ namespace scone
 		void InitJointsDofs();
 		mutable std::vector<const Joint*> m_Joints;
 		mutable std::vector<const Dof*> m_Dofs;
-		Real m_MinActivation;
-		Real m_MaxActivation;
 	};
 }
