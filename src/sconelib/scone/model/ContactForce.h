@@ -34,10 +34,10 @@ namespace scone
 		Real GetStiffness() const { return m_Stiffness; }
 		Real GetDamping() const { return m_Damping; }
 
-		const std::vector< ContactGeometry* >& GetContactGeometries() const { return m_Geometries; }
+		const std::vector< const ContactGeometry* >& GetContactGeometries() const { return m_Geometries; }
 
 	protected:
-		std::vector< ContactGeometry* > m_Geometries;
+		std::vector< const ContactGeometry* > m_Geometries;
 		Real m_StaticFriction = 0;
 		Real m_DynamicFriction = 0;
 		Real m_Stiffness = 0;
