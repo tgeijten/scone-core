@@ -50,6 +50,7 @@
 
 ^ Signature ^ Returns ^ Description ^
 | **name**() | str | Get the name of this Actuator |
+| **acc**() | [[#Vec3|Vec3]] | Get the acceleration of the Body origin |
 | **add_external_force**(arg0: [[#Vec3|Vec3]]) | None | Add an external force to this Body |
 | **add_external_moment**(arg0: [[#Vec3|Vec3]]) | None | Add an external moment to this Body |
 | **ang_acc**() | [[#Vec3|Vec3]] | Get the angular acceleration of this Body |
@@ -65,26 +66,32 @@
 | **external_force**() | [[#Vec3|Vec3]] | Get the external perturbation force acting on this Body |
 | **external_force_at**() | [[#Vec3|Vec3]] | Get the position at which the average external force is applied |
 | **external_moment**() | [[#Vec3|Vec3]] | Get the external perturbation moment acting on this Body |
+| **has_parent**() | bool | Get if this Body has a parent Joint |
 | **inertia_diag**() | [[#Vec3|Vec3]] | Get the inertia diagonal of this Body |
+| **local_com_pos**() | [[#Vec3|Vec3]] | Get the com offset of this Body in the local coordinate frame |
+| **local_pos**(arg0: [[#Vec3|Vec3]]) | [[#Vec3|Vec3]] | Get the local position of a point in the world coordinate frame |
 | **mass**() | float | Get the mass of this Body |
 | **name**() | str | Get the name of this Body |
 | **orientation**() | [[#Quat|Quat]] | Get the orientation of this Body |
 | **point_acc**(arg0: [[#Vec3|Vec3]]) | [[#Vec3|Vec3]] | Get the world linear acceleration of a local point on this Body |
 | **point_pos**(arg0: [[#Vec3|Vec3]]) | [[#Vec3|Vec3]] | Get the world position of a local point on this Body |
 | **point_vel**(arg0: [[#Vec3|Vec3]]) | [[#Vec3|Vec3]] | Get the world linear velocity of a local point on this Body |
+| **pos**() | [[#Vec3|Vec3]] | Get the position of the Body origin |
 | **set_ang_vel**(arg0: [[#Vec3|Vec3]]) | None | Set the angular velocity of this Body |
+| **set_com_pos**(arg0: [[#Vec3|Vec3]]) | None | Set the center-of-mass position of this Body |
 | **set_external_force**(arg0: [[#Vec3|Vec3]]) | None | Set the external force at the center-of-mass of this Body |
 | **set_external_force_at**(arg0: [[#Vec3|Vec3]], arg1: [[#Vec3|Vec3]]) | None | Set the external force at local point on this Body |
 | **set_external_moment**(arg0: [[#Vec3|Vec3]]) | None | Set the external moment of this Body |
 | **set_lin_vel**(arg0: [[#Vec3|Vec3]]) | None | Set the linear velocity of this Body |
 | **set_orientation**(arg0: [[#Quat|Quat]]) | None | Set the orientation of this Body |
 | **set_pos**(arg0: [[#Vec3|Vec3]]) | None | Set the position of this Body |
+| **vel**() | [[#Vec3|Vec3]] | Get the velocity of the Body origin |
 
 
 ===== Dof =====
 
 ^ Signature ^ Returns ^ Description ^
-| **set_pos**(arg0: [[#Vec3|Vec3]]) | None | Set the position of this Body |
+| **vel**() | [[#Vec3|Vec3]] | Get the velocity of the Body origin |
 | **actuator_torque**() | float | Get the actuator torque [Nm] applied to this dof |
 | **is_actuated**() | bool | Check if this Dof is actuated via a Joint Motor (see Joint) |
 | **is_rotational**() | bool | Check if this is a rotational Dof |
