@@ -105,12 +105,12 @@ namespace scone
 				log::trace( timestamp, ": State changed to Recover, com_pos=", com_pos );
 
 				if ( terminate_on_peak )
-					return true;
+					return "Terminate on unsuccessful take-off, com_vel_y=" + xo::to_str( com_vel.y );
 			}
 			break;
 
 		case Flight:
-			if ( com_vel.y < 0 || grf > 0 )
+			if ( com_vel.y < 0 )
 			{
 				state = Landing;
 				peak_com = com_pos;
@@ -118,7 +118,7 @@ namespace scone
 				log::trace( timestamp, ": State changed to Landing, com_pos=", com_pos );
 
 				if ( terminate_on_peak )
-					return true;
+					return "Terminate on peak, com_vel_y=" + xo::to_str( com_vel.y );
 			}
 			break;
 
@@ -137,7 +137,7 @@ namespace scone
 				recover_cop_dist = std::min( recover_cop_dist, model.GetLeg( 0 ).GetFootBody().GetComPos().x );
 
 			if ( timestamp - recover_start_time >= recover_time )
-				return true;
+				return "recover_time passed";
 			break;
 		}
 
